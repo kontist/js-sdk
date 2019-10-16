@@ -1,17 +1,18 @@
 import * as ClientOAuth2 from "client-oauth2";
+import { ClientOpts, GetAuthUriOpts, GetTokenOpts } from "./types";
 
-class Client {
-  oauth2Client: ClientOAuth2;
-  state: string;
+export class Client {
+  private oauth2Client: ClientOAuth2;
+  private state: string;
 
   constructor(opts: ClientOpts) {
     const baseUrl = opts.baseUrl || "https://api.kontist.com";
     const { clientId, redirectUri, scopes } = opts;
 
     this.oauth2Client = new ClientOAuth2({
-      clientId,
-      authorizationUri: `${baseUrl}/api/oauth/authorize`,
       accessTokenUri: `${baseUrl}/api/oauth/token`,
+      authorizationUri: `${baseUrl}/api/oauth/authorize`,
+      clientId,
       redirectUri,
       scopes
     });
@@ -21,7 +22,7 @@ class Client {
       .substr(2);
   }
 
-  getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
+  public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
     const query: {
       [key: string]: string | string[];
     } = {};
@@ -35,17 +36,14 @@ class Client {
     }
 
     const uri = await this.oauth2Client.code.getUri({
-      state: this.state,
-      query
+      query,
+      state: this.state
     });
 
     return uri;
   };
 
-  getToken = async (
-    callbackUri: string,
-    opts: GetTokenOpts = {}
-  ): Promise<ClientOAuth2.Token> => {
+  public getToken = async (callbackUri: string, opts: GetTokenOpts = {}): Promise<ClientOAuth2.Token> => {
     const options: {
       state: string;
       body?: {
@@ -61,12 +59,7 @@ class Client {
       };
     }
 
-    const tokenData = await this.oauth2Client.code.getToken(
-      callbackUri,
-      options
-    );
+    const tokenData = await this.oauth2Client.code.getToken(callbackUri, options);
     return tokenData;
   };
 }
-
-export default Client;
