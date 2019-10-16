@@ -1,0 +1,17 @@
+{
+  "name": "kontist-sdk",
+  "version": "0.0.1",
+  "description": "Kontist client SDK",
+  "main": "dist/index.js",
+  "types": "lib/main.d.ts",
+  "repository": "https://github.com/kontist/sdk.git",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "yarn build"
+  },
+  "dependencies": {
+    "client-oauth2": "^4.2.5"
+  }
+}
