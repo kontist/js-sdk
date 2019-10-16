@@ -16,7 +16,9 @@ class Client {
       scopes
     });
 
-    this.state = new Date().getTime().toString();
+    this.state = Math.random()
+      .toString()
+      .substr(2);
   }
 
   getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
