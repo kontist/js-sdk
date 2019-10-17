@@ -1,13 +1,13 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { ClientOpts, GetAuthUriOpts, GetTokenOpts } from "./types";
+import { KONTIST_API_BASE_URL } from "./constants";
 
 export class Client {
   private oauth2Client: ClientOAuth2;
   private state: string;
 
   constructor(opts: ClientOpts) {
-    const baseUrl = opts.baseUrl || "https://api.kontist.com";
-    const { clientId, redirectUri, scopes } = opts;
+    const baseUrl = opts.baseUrl || KONTIST_API_BASE_URL;
 
     this.oauth2Client = new ClientOAuth2({
       accessTokenUri: `${baseUrl}/api/oauth/token`,
