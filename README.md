@@ -19,26 +19,33 @@ yarn add @kontist/client
 ## Usage
 
 ```typescript
+import express from "express";
 import { Client } from "@kontist/client";
 
+const CALLBACK_PATH = "/auth/callback";
+const REDIRECT_URI = "YOUR_BASE_URL" + CALLBACK_PATH;
+
+// create a client
 const client = new Client({
   clientId: "YOUR_CLIENT_ID",
-  redirectUri: "YOUR_REDIRECT_URI",
+  redirectUri: REDIRECT_URI,
   scopes: ["transactions"]
 });
 
-client.getAuthUri().then(uri => {
-  /* redirect your user to this uri so he can provide his credentials */
-});
+// redirect not authenticated user to Kontist form
+app.get("/auth", (req, res) => {
+  client.getAuthUri().then(uri => {
+    res.redirect(uri);
+  });
+};
 
-// from where your `redirectUri` callback is called
-// in this case we will use express handler as an example
-app.get("/auth/callback", (req, res) => {
-  const callbackUri = req.originalUrl;
+// get user token data
+app.get(CALLBACK_PATH, (req, res) => {
+  const callbackUrl = req.originalUrl;
 
-  client.getToken(callbackUri).then(
+  client.getToken(callbackUrl).then(
     tokenData => {
-      /* got access token */
+      /* got access token, login successful */
     },
     err => {
       /* handle error */
