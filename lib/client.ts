@@ -8,8 +8,11 @@ export class Client {
 
   constructor(opts: ClientOpts) {
     const baseUrl = opts.baseUrl || KONTIST_API_BASE_URL;
+    const { clientId, redirectUri, scopes, oauthClient } = opts;
 
-    this.oauth2Client = new ClientOAuth2({
+    this.oauth2Client =
+      oauthClient ||
+      new ClientOAuth2({
       accessTokenUri: `${baseUrl}/api/oauth/token`,
       authorizationUri: `${baseUrl}/api/oauth/authorize`,
       clientId,
