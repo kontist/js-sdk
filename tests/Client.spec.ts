@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Client } from "../lib";
+import { Client, Constants } from "../lib";
 import * as sinon from "sinon";
 
 describe("OAuth2 client tests", () => {
@@ -21,7 +21,7 @@ describe("OAuth2 client tests", () => {
   describe("client with mandatory parameters", () => {
     let client: Client;
 
-    before(() => {
+    beforeEach(() => {
       client = new Client({
         clientId,
         redirectUri,
@@ -36,7 +36,7 @@ describe("OAuth2 client tests", () => {
     describe("client.getAuthUri()", () => {
       it("should return proper redirect url", async () => {
         const url = await client.getAuthUri();
-        const expectedUrl = `https://api.kontist.com/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
+        const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
         expect(url).to.equal(expectedUrl);
       });
 
@@ -47,7 +47,7 @@ describe("OAuth2 client tests", () => {
           codeChallenge,
           codeChallengeMethod
         });
-        const expectedUrl = `https://api.kontist.com/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
+        const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
         expect(url).to.equal(expectedUrl);
       });
     });
