@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "Kontist client SDK",
   "main": "dist/index.js",
-  "types": "lib/types.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/kontist/sdk.git",
   "author": "",
   "license": "MIT",
