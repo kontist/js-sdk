@@ -13,12 +13,12 @@ export class Client {
     this.oauth2Client =
       oauthClient ||
       new ClientOAuth2({
-      accessTokenUri: `${baseUrl}/api/oauth/token`,
-      authorizationUri: `${baseUrl}/api/oauth/authorize`,
-      clientId,
-      redirectUri,
-      scopes
-    });
+        accessTokenUri: `${baseUrl}/api/oauth/token`,
+        authorizationUri: `${baseUrl}/api/oauth/authorize`,
+        clientId,
+        redirectUri,
+        scopes
+      });
 
     this.state = Math.random()
       .toString()
@@ -46,7 +46,10 @@ export class Client {
     return uri;
   };
 
-  public getToken = async (callbackUri: string, opts: GetTokenOpts = {}): Promise<ClientOAuth2.Token> => {
+  public getToken = async (
+    callbackUri: string,
+    opts: GetTokenOpts = {}
+  ): Promise<ClientOAuth2.Token> => {
     const options: {
       state: string;
       body?: {
@@ -62,7 +65,10 @@ export class Client {
       };
     }
 
-    const tokenData = await this.oauth2Client.code.getToken(callbackUri, options);
+    const tokenData = await this.oauth2Client.code.getToken(
+      callbackUri,
+      options
+    );
     return tokenData;
   };
 }
