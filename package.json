@@ -12,7 +12,8 @@
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "dependencies": {
-    "client-oauth2": "^4.2.5"
+    "client-oauth2": "^4.2.5",
+    "graphql-request": "^1.8.2"
   },
   "devDependencies": {
     "@types/chai": "^4.2.3",
