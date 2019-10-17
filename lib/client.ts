@@ -78,6 +78,30 @@ export class Client {
     return token;
   };
 
+  public setToken = (
+    accessToken: string,
+    refreshToken?: string,
+    tokenType?: string
+  ): ClientOAuth2.Token => {
+    const data = {};
+    let token;
+
+    if (tokenType && refreshToken) {
+      token = this.oauth2Client.createToken(
+        accessToken,
+        refreshToken,
+        tokenType,
+        data
+      );
+    } else if (refreshToken) {
+      token = this.oauth2Client.createToken(accessToken, refreshToken, data);
+    } else {
+      token = this.oauth2Client.createToken(accessToken, data);
+    }
+
+    this.token = token;
+    return token;
+  };
 
   public rawQuery = async (
     query: string,
