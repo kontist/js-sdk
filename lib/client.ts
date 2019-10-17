@@ -1,10 +1,14 @@
 import * as ClientOAuth2 from "client-oauth2";
+import { GraphQLClient } from "graphql-request";
 import { ClientOpts, GetAuthUriOpts, GetTokenOpts } from "./types";
 import { KONTIST_API_BASE_URL } from "./constants";
+import { Variables } from "graphql-request/dist/src/types";
 
 export class Client {
   private oauth2Client: ClientOAuth2;
+  private graphQLClient: GraphQLClient;
   private state: string;
+  private token?: ClientOAuth2.Token;
 
   constructor(opts: ClientOpts) {
     const baseUrl = opts.baseUrl || KONTIST_API_BASE_URL;
@@ -23,6 +27,8 @@ export class Client {
     this.state = Math.random()
       .toString()
       .substr(2);
+
+    this.graphQLClient = new GraphQLClient(`${baseUrl}/api/graphql`);
   }
 
   public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
@@ -65,10 +71,29 @@ export class Client {
       };
     }
 
-    const tokenData = await this.oauth2Client.code.getToken(
-      callbackUri,
-      options
+    const token = await this.oauth2Client.code.getToken(callbackUri, options);
+
+    this.token = token;
+
+    return token;
+  };
+
+
+  public rawQuery = async (
+    query: string,
+    variables?: Variables
+  ): Promise<Object> => {
+    if (!this.token) {
+      throw new Error("User unauthorized");
+    }
+
+    this.graphQLClient.setHeader(
+      "Authorization",
+      `Bearer ${this.token.accessToken}`
     );
-    return tokenData;
+
+    const { data } = await this.graphQLClient.rawRequest(query, variables);
+
+    return data;
   };
 }

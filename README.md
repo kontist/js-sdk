@@ -53,3 +53,19 @@ app.get(CALLBACK_PATH, (req, res) => {
   );
 });
 ```
+
+### GraphQL queries
+
+#### Raw
+
+```typescript
+const query = `{
+  viewer {
+    mainAccount {
+      id
+    }
+  }
+}`;
+
+const result = await client.rawQuery(query);
+```
