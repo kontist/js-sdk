@@ -1,8 +1,9 @@
 import ClientOAuth2 = require("client-oauth2");
 
 export type ClientOpts = {
-  clientId: string;
   baseUrl?: string;
+  clientId: string;
+  oauthClient?: ClientOAuth2;
   redirectUri: string;
   scopes: string[];
 };
