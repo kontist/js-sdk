@@ -7,19 +7,19 @@ JavaScript SDK for connecting to Kontist using OAuth2 and GraphQL.
 Add as dependency to your project:
 
 ```bash
-npm install kontist-sdk
+npm install @kontist/client
 ```
 
 or
 
 ```bash
-yarn add kontist-sdk
+yarn add @kontist/client
 ```
 
 ## Usage
 
 ```typescript
-import { Client } from "kontist-sdk";
+import { Client } from "@kontist/client";
 
 const client = new Client({
   clientId: "YOUR_CLIENT_ID",
