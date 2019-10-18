@@ -1,9 +1,9 @@
-name: Publish on push to master
+name: Publish on tag
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - v*
 
 jobs:
   publish:
@@ -23,14 +23,6 @@ jobs:
         run: |
           git config --global user.email "developer@kontist.com"
           git config --global user.name "GitHub"
-      - name: npm increase patch version
-        run: |
-          git checkout master
-          npm version patch
-          git remote add origin-kontist "https://${GIT_TOKEN}@github.com/kontist/sdk.git"
-          git push --set-upstream origin-kontist master --follow-tags --no-verify
-        env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: npm publish
         run: npm publish
         env:
