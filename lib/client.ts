@@ -3,11 +3,11 @@ import { GraphQLClient } from "graphql-request";
 import { sha256 } from 'js-sha256';
 import { Variables } from "graphql-request/dist/src/types";
 import { btoa } from "abab";
-import { get } from "lodash";
+import * as _ from "lodash";
 
 import { ClientOpts, GetAuthUriOpts, GetTokenOpts } from "./types";
 import { KONTIST_API_BASE_URL } from "./constants";
-import { Query, TransactionListItem } from "./graphql/schema";
+import { Query, TransactionListItem, TransactionsConnectionEdge } from "./graphql/schema";
 
 export class Client {
   private oauth2Client: ClientOAuth2;
@@ -166,7 +166,7 @@ export class Client {
 
     const result: Query = await this.rawQuery(query);
 
-    const transactions = get(
+    const transactions = _.get(
       result,
       "viewer.mainAccount.transactions.edges",
       []
