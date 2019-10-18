@@ -11,7 +11,13 @@ export type Scalars = {
 export type Account = {
    __typename?: 'Account',
   id: Scalars['ID'],
+  transaction?: Maybe<TransactionDetails>,
   transactions: TransactionsConnection,
+};
+
+
+export type AccountTransactionArgs = {
+  id: Scalars['ID']
 };
 
 
@@ -21,6 +27,22 @@ export type AccountTransactionsArgs = {
   after?: Maybe<Scalars['String']>,
   before?: Maybe<Scalars['String']>
 };
+
+export type DirectDebitFee = {
+   __typename?: 'DirectDebitFee',
+  id: Scalars['Int'],
+  type: TransactionFeeType,
+  amount: Scalars['Int'],
+  date?: Maybe<Scalars['String']>,
+  invoiceStatus: InvoiceStatus,
+};
+
+export enum InvoiceStatus {
+  Open = 'OPEN',
+  Closed = 'CLOSED',
+  Rejected = 'REJECTED',
+  Pending = 'PENDING'
+}
 
 export type PageInfo = {
    __typename?: 'PageInfo',
@@ -35,8 +57,8 @@ export type Query = {
   viewer: User,
 };
 
-export type SerializedTransactionProjection = {
-   __typename?: 'SerializedTransactionProjection',
+export type TransactionDetails = {
+   __typename?: 'TransactionDetails',
   id: Scalars['ID'],
   amount: Scalars['Int'],
   name?: Maybe<Scalars['String']>,
@@ -57,10 +79,36 @@ export type SerializedTransactionProjection = {
   invoicePreviewUrl?: Maybe<Scalars['String']>,
   invoiceDownloadUrl?: Maybe<Scalars['String']>,
   documentType?: Maybe<Scalars['String']>,
+  fees: Array<TransactionFee>,
+  directDebitFees: Array<DirectDebitFee>,
 };
 
-export type TransactionProjection = {
-   __typename?: 'TransactionProjection',
+export type TransactionFee = {
+   __typename?: 'TransactionFee',
+  type: TransactionFeeType,
+  status: TransactionFeeStatus,
+  unitAmount?: Maybe<Scalars['Int']>,
+  usedAt?: Maybe<Scalars['String']>,
+};
+
+export enum TransactionFeeStatus {
+  Created = 'CREATED',
+  Charged = 'CHARGED',
+  Refunded = 'REFUNDED',
+  Cancelled = 'CANCELLED',
+  RefundInitiated = 'REFUND_INITIATED'
+}
+
+export enum TransactionFeeType {
+  Atm = 'ATM',
+  ForeignTransaction = 'FOREIGN_TRANSACTION',
+  DirectDebitReturn = 'DIRECT_DEBIT_RETURN',
+  SecondReminderEmail = 'SECOND_REMINDER_EMAIL',
+  CardReplacement = 'CARD_REPLACEMENT'
+}
+
+export type TransactionListItem = {
+   __typename?: 'TransactionListItem',
   id: Scalars['ID'],
   amount: Scalars['Int'],
   name?: Maybe<Scalars['String']>,
@@ -72,6 +120,15 @@ export type TransactionProjection = {
   foreignCurrency?: Maybe<Scalars['String']>,
   e2eId?: Maybe<Scalars['String']>,
   mandateNumber?: Maybe<Scalars['String']>,
+  paymentMethod: Scalars['String'],
+  category?: Maybe<Scalars['String']>,
+  userSelectedBookingDate?: Maybe<Scalars['String']>,
+  purpose?: Maybe<Scalars['String']>,
+  bookingType: TransactionProjectionType,
+  invoiceNumber?: Maybe<Scalars['String']>,
+  invoicePreviewUrl?: Maybe<Scalars['String']>,
+  invoiceDownloadUrl?: Maybe<Scalars['String']>,
+  documentType?: Maybe<Scalars['String']>,
 };
 
 export enum TransactionProjectionType {
@@ -112,7 +169,7 @@ export type TransactionsConnection = {
 
 export type TransactionsConnectionEdge = {
    __typename?: 'TransactionsConnectionEdge',
-  node: SerializedTransactionProjection,
+  node: TransactionListItem,
   cursor: Scalars['String'],
 };
 

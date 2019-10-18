@@ -3,11 +3,7 @@ import { GraphQLClient } from "graphql-request";
 import { ClientOpts, GetAuthUriOpts, GetTokenOpts } from "./types";
 import { KONTIST_API_BASE_URL } from "./constants";
 import { Variables } from "graphql-request/dist/src/types";
-import {
-  Query,
-  TransactionProjection,
-  SerializedTransactionProjection
-} from "./graphql/schema";
+import { Query, TransactionListItem } from "./graphql/schema";
 
 export class Client {
   private oauth2Client: ClientOAuth2;
@@ -126,9 +122,7 @@ export class Client {
     return data;
   };
 
-  public getAllTransactions = async (): Promise<
-    Array<SerializedTransactionProjection>
-  > => {
+  public getAllTransactions = async (): Promise<Array<TransactionListItem>> => {
     const query = `{
       viewer {
           mainAccount {
