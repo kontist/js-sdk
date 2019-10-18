@@ -56,6 +56,10 @@ app.get(CALLBACK_PATH, (req, res) => {
 
 ### GraphQL queries
 
+#### Generating types
+
+Trigger `schema:generate` to have typescript GraphQL types up to date. Please note that you would need to have disabled auth on GraphQL endpoint defined under schema property in `codegen.yml`.
+
 #### Raw
 
 ```typescript
