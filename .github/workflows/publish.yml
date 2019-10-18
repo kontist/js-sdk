@@ -25,6 +25,7 @@ jobs:
           git config --global user.name "GitHub"
       - name: npm increase patch version
         run: |
+          git checkout master
           npm version patch
           git remote add origin-kontist "https://${GIT_TOKEN}@github.com/kontist/sdk.git"
           git push --set-upstream origin-kontist master --follow-tags
