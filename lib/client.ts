@@ -1,13 +1,15 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { GraphQLClient } from "graphql-request";
+import { sha256 } from 'js-sha256';
+import { Variables } from "graphql-request/dist/src/types";
+import { btoa } from "abab";
+
 import { ClientOpts, GetAuthUriOpts, GetTokenOpts } from "./types";
 import { KONTIST_API_BASE_URL } from "./constants";
-import { Variables } from "graphql-request/dist/src/types";
 
 export class Client {
   private oauth2Client: ClientOAuth2;
   private graphQLClient: GraphQLClient;
-  private state: string;
   private token?: ClientOAuth2.Token;
 
   constructor(opts: ClientOpts) {
@@ -21,53 +23,52 @@ export class Client {
         authorizationUri: `${baseUrl}/api/oauth/authorize`,
         clientId,
         redirectUri,
-        scopes
+        scopes,
+        state: opts.state
       });
-
-    this.state = Math.random()
-      .toString()
-      .substr(2);
 
     this.graphQLClient = new GraphQLClient(`${baseUrl}/api/graphql`);
   }
 
+  /**
+   * Build a uri to which the user must be redirected for login.
+   */
   public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
     const query: {
       [key: string]: string | string[];
     } = {};
 
-    if (opts.codeChallenge) {
-      query.code_challenge = opts.codeChallenge;
+    if (opts.verifier) {
+      // Implemented according to https://tools.ietf.org/html/rfc7636#appendix-A
+      const challenge =
+        (btoa(String.fromCharCode.apply(null, sha256.array(opts.verifier))) || "")
+          .split("=")[0]
+          .replace("+", "-")
+          .replace("/", "_")
+
+      query.code_challenge = challenge;
+      query.code_challenge_method = 'S256';
     }
 
-    if (opts.codeChallengeMethod) {
-      query.code_challenge_method = opts.codeChallengeMethod;
-    }
-
-    const uri = await this.oauth2Client.code.getUri({
-      query,
-      state: this.state
-    });
-
-    return uri;
+    return this.oauth2Client.code.getUri({ query });
   };
 
+  /**
+   * This method must be called during the callback via `redirectUri`.
+   */
   public getToken = async (
     callbackUri: string,
     opts: GetTokenOpts = {}
   ): Promise<ClientOAuth2.Token> => {
     const options: {
-      state: string;
       body?: {
         code_verifier: string;
       };
-    } = {
-      state: this.state
-    };
+    } = {};
 
-    if (opts.codeVerifier) {
+    if (opts.verifier) {
       options.body = {
-        code_verifier: opts.codeVerifier
+        code_verifier: opts.verifier
       };
     }
 
@@ -78,6 +79,9 @@ export class Client {
     return token;
   };
 
+  /**
+   * Use a previously created token for all upcoming requests.
+   */
   public setToken = (
     accessToken: string,
     refreshToken?: string,
@@ -103,6 +107,9 @@ export class Client {
     return token;
   };
 
+  /**
+   * Send a raw GraphQL request and return its response.
+   */
   public rawQuery = async (
     query: string,
     variables?: Variables
