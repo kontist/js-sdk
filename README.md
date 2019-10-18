@@ -84,7 +84,7 @@ const result = await client.rawQuery(query);
         // initialize Kontist client
         let client = new Kontist.Client({
             clientId: "<your client id>",
-            redirectUri: "YOUR_BASE_URL",
+            redirectUri: "<your base url>",
             scopes: ["transactions"],
             state: sessionStorage.getItem("state")
         });
