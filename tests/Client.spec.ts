@@ -26,7 +26,8 @@ describe("OAuth2 client tests", () => {
       client = new Client({
         clientId,
         redirectUri,
-        scopes
+        scopes,
+        state: "25843739712322056"
       });
     });
 
@@ -34,7 +35,8 @@ describe("OAuth2 client tests", () => {
       client = new Client({
         clientId,
         redirectUri,
-        scopes
+        scopes,
+        state: "25843739712322056"
       });
       expect(client).to.exist;
     });
@@ -46,12 +48,12 @@ describe("OAuth2 client tests", () => {
         expect(url).to.equal(expectedUrl);
       });
 
-      it("should return proper redirect url when codeChallenge and codeChallengeMethod are provided", async () => {
+      it("should return proper redirect url when verifier is provided", async () => {
+        const codeVerifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
         const codeChallenge = "xc3uY4-XMuobNWXzzfEqbYx3rUYBH69_zu4EFQIJH8w";
         const codeChallengeMethod = "S256";
         const url = await client.getAuthUri({
-          codeChallenge,
-          codeChallengeMethod
+          verifier: codeVerifier
         });
         const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
         expect(url).to.equal(expectedUrl);
@@ -80,11 +82,12 @@ describe("OAuth2 client tests", () => {
           clientId,
           oauthClient,
           redirectUri,
-          scopes
+          scopes,
+          state: "25843739712322056"
         });
 
         tokenData = await clientMock.getToken(callbackUrl, {
-          codeVerifier: oauth2PKCECodeVerifier
+          verifier: oauth2PKCECodeVerifier
         });
       });
 
@@ -93,7 +96,6 @@ describe("OAuth2 client tests", () => {
         const [url, opts] = stub.getCall(0).args;
         expect(url).to.equal(callbackUrl);
         expect(opts).to.deep.equal({
-          state: "25843739712322056",
           body: {
             code_verifier: oauth2PKCECodeVerifier
           }

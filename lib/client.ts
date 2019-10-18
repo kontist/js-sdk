@@ -6,6 +6,7 @@ import { btoa } from "abab";
 
 import { ClientOpts, GetAuthUriOpts, GetTokenOpts } from "./types";
 import { KONTIST_API_BASE_URL } from "./constants";
+import { Query, TransactionListItem } from "./graphql/schema";
 
 export class Client {
   private oauth2Client: ClientOAuth2;
@@ -113,7 +114,7 @@ export class Client {
   public rawQuery = async (
     query: string,
     variables?: Variables
-  ): Promise<Object> => {
+  ): Promise<Query> => {
     if (!this.token) {
       throw new Error("User unauthorized");
     }
@@ -126,5 +127,53 @@ export class Client {
     const { data } = await this.graphQLClient.rawRequest(query, variables);
 
     return data;
+  };
+
+  public getAllTransactions = async (): Promise<Array<TransactionListItem>> => {
+    const query = `{
+      viewer {
+          mainAccount {
+            transactions {
+              edges {
+                node {
+                  id
+                  amount
+                  name
+                  iban
+                  type
+                  bookingDate
+                  valutaDate
+                  originalAmount
+                  foreignCurrency
+                  e2eId
+                  mandateNumber
+                  paymentMethod
+                  category
+                  userSelectedBookingDate
+                  purpose
+                  bookingType
+                  invoiceNumber
+                  invoicePreviewUrl
+                  invoiceDownloadUrl
+                  documentType
+                }
+              }
+            }
+          }
+        }
+      }`;
+
+    const result: Query = await this.rawQuery(query);
+
+    const transactions = (
+      (result &&
+        result.viewer &&
+        result.viewer.mainAccount &&
+        result.viewer.mainAccount.transactions &&
+        result.viewer.mainAccount.transactions.edges) ||
+      []
+    ).map(node => node.node);
+
+    return transactions;
   };
 }
