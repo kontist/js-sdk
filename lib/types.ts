@@ -1,4 +1,4 @@
-import ClientOAuth2 = require("client-oauth2");
+import * as ClientOAuth2 from "client-oauth2";
 
 export type ClientOpts = {
   baseUrl?: string;
@@ -6,13 +6,13 @@ export type ClientOpts = {
   oauthClient?: ClientOAuth2;
   redirectUri: string;
   scopes: string[];
+  state: string;
 };
 
 export type GetAuthUriOpts = {
-  codeChallenge?: string;
-  codeChallengeMethod?: string;
+  verifier?: string;
 };
 
 export type GetTokenOpts = {
-  codeVerifier?: string;
+  verifier?: string;
 };

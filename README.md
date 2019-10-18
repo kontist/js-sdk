@@ -16,7 +16,7 @@ or
 yarn add @kontist/client
 ```
 
-## Usage
+## Usage (NodeJS / TypeScript)
 
 ```typescript
 import express from "express";
@@ -24,32 +24,104 @@ import { Client } from "@kontist/client";
 
 const CALLBACK_PATH = "/auth/callback";
 const REDIRECT_URI = "YOUR_BASE_URL" + CALLBACK_PATH;
+const state = (Math.random() + "").substring(2);
+const verifier = (Math.random() + "").substring(2);
 
 // create a client
 const client = new Client({
   clientId: "YOUR_CLIENT_ID",
   redirectUri: REDIRECT_URI,
-  scopes: ["transactions"]
+  scopes: ["transactions"],
+  state
 });
 
 // redirect not authenticated user to Kontist form
 app.get("/auth", (req, res) => {
-  client.getAuthUri().then(uri => {
-    res.redirect(uri);
-  });
-};
+  const uri = await client.getAuthUri({ verifier });
+  res.redirect(uri);
+});
 
 // get user token data
 app.get(CALLBACK_PATH, (req, res) => {
   const callbackUrl = req.originalUrl;
 
-  client.getToken(callbackUrl).then(
-    tokenData => {
-      /* got access token, login successful */
-    },
-    err => {
-      /* handle error */
-    }
-  );
+  try {
+    const token = await client.getToken(callbackUrl, { verifier });
+    /* got access token, login successful */
+  } catch (e) {
+    /* handle error */
+  }
 });
+```
+
+### GraphQL queries
+
+#### Raw
+
+```typescript
+const query = `{
+  viewer {
+    mainAccount {
+      id
+    }
+  }
+}`;
+
+const result = await client.rawQuery(query);
+```
+
+
+## Usage (Browser)
+
+```html
+<html>
+<body>
+    <script src="dist/bundle.js"></script>
+    <script>
+        // persist a random value
+        sessionStorage.setItem("state", sessionStorage.getItem("state") || (Math.random() + "").substring(2));
+
+        // initialize Kontist client
+        let client = new Kontist.Client({
+            clientId: "<your client id>",
+            redirectUri: "<your base url>",
+            scopes: ["transactions"],
+            state: sessionStorage.getItem("state")
+        });
+
+        let params = (new URL(document.location)).searchParams;
+        let code = params.get("code");
+        if (!code) {
+            // page not called with "code" query parameter, let's redirect the user to the login
+            let verifier = (Math.random() + "").substring(2);
+            sessionStorage.setItem("verifier", verifier);
+            client.getAuthUri({ verifier: verifier }).then(function(url) {
+                window.location = url;
+            });
+        } else {
+
+            // we have a code, the client now can fetch a token
+            let verifier = sessionStorage.getItem("verifier");
+            client.getToken(document.location.href, { verifier: verifier })
+              .then(function() {
+
+                // do a simple graphql query and output the account id
+                client.rawQuery(
+                `{
+                    viewer {
+                        mainAccount {
+                            id
+                        }
+                    }
+                }`
+                ).then(function(result) {
+                    console.log(result);
+                });
+
+            });
+        }
+
+    </script>
+</body>
+</html>
 ```

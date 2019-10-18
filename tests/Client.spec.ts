@@ -26,11 +26,18 @@ describe("OAuth2 client tests", () => {
       client = new Client({
         clientId,
         redirectUri,
-        scopes
+        scopes,
+        state: "25843739712322056"
       });
     });
 
     it("should be able to create a client", () => {
+      client = new Client({
+        clientId,
+        redirectUri,
+        scopes,
+        state: "25843739712322056"
+      });
       expect(client).to.exist;
     });
 
@@ -41,12 +48,12 @@ describe("OAuth2 client tests", () => {
         expect(url).to.equal(expectedUrl);
       });
 
-      it("should return proper redirect url when codeChallenge and codeChallengeMethod are provided", async () => {
+      it("should return proper redirect url when verifier is provided", async () => {
+        const codeVerifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
         const codeChallenge = "xc3uY4-XMuobNWXzzfEqbYx3rUYBH69_zu4EFQIJH8w";
         const codeChallengeMethod = "S256";
         const url = await client.getAuthUri({
-          codeChallenge,
-          codeChallengeMethod
+          verifier: codeVerifier
         });
         const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
         expect(url).to.equal(expectedUrl);
@@ -75,11 +82,12 @@ describe("OAuth2 client tests", () => {
           clientId,
           oauthClient,
           redirectUri,
-          scopes
+          scopes,
+          state: "25843739712322056"
         });
 
         tokenData = await clientMock.getToken(callbackUrl, {
-          codeVerifier: oauth2PKCECodeVerifier
+          verifier: oauth2PKCECodeVerifier
         });
       });
 
@@ -88,7 +96,6 @@ describe("OAuth2 client tests", () => {
         const [url, opts] = stub.getCall(0).args;
         expect(url).to.equal(callbackUrl);
         expect(opts).to.deep.equal({
-          state: "25843739712322056",
           body: {
             code_verifier: oauth2PKCECodeVerifier
           }
@@ -97,6 +104,28 @@ describe("OAuth2 client tests", () => {
 
       it("should return token data", () => {
         expect(tokenData.data).to.deep.equal(tokenResponseData);
+      });
+    });
+
+    describe("client.setToken()", () => {
+      it("should be able to set access token", () => {
+        const accessToken =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNThmNzg5Ny03YzdlLTQzMWItYTY2MS0yMDYzNjE0YzM0YTYiLCJzY29wZSI6InRyYW5zYWN0aW9ucyIsImNsaWVudF9pZCI6IjI2OTkwMjE2LWUzNDAtNGY1NC1iNWE1LWRmOWJhYWNjMDQ0MSIsImlhdCI6MTU3MTMyNzYwOSwiZXhwIjoxNTcxMzMxMjA5fQ.JrDN1w5bh43QgV3buXQSlD5utk74NIXbOGETFPMJH6A";
+        const refreshToken =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNThmNzg5Ny03YzdlLTQzMWItYTY2MS0yMDYzNjE0YzM0YTYiLCJzY29wZSI6InJlZnJlc2ggdHJhbnNhY3Rpb25zIiwiY2xpZW50X2lkIjoiMjY5OTAyMTYtZTM0MC00ZjU0LWI1YTUtZGY5YmFhY2MwNDQxIiwiaWF0IjoxNTcxMzI3NjA5LCJleHAiOjE1NzEzMzQ4MDl9.HWSA7hB54WEznBaWzvZKwd_fXuLBQqD0kHugidkzW4U";
+        const tokenType = "bearer";
+
+        let token = client.setToken(accessToken);
+        expect(token.accessToken).to.equal(accessToken);
+
+        token = client.setToken(accessToken, refreshToken);
+        expect(token.accessToken).to.equal(accessToken);
+        expect(token.refreshToken).to.equal(refreshToken);
+
+        token = client.setToken(accessToken, refreshToken, tokenType);
+        expect(token.accessToken).to.equal(accessToken);
+        expect(token.refreshToken).to.equal(refreshToken);
+        expect(token.tokenType).to.equal(tokenType);
       });
     });
   });
