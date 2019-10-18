@@ -13,17 +13,24 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
       - name: npm install, build and test
         run: |
-          npm install --ignore-scripts
+          npm ci
           npm run build --if-present
           npm test
+      - name: setup git
+        run: |
+          git config --global user.email "developer@kontist.com"
+          git config --global user.name "GitHub"
       - name: npm increase patch version
-        run: npm version patch
+        run: |
+          npm version patch
+          git remote add origin-kontist "https://${GIT_TOKEN}@github.com/kontist/sdk.git"
+          git push --set-upstream origin-kontist master --follow-tags
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: npm publish
-        run: npm publish  
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-
-
