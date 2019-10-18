@@ -28,7 +28,7 @@ jobs:
           git checkout master
           npm version patch
           git remote add origin-kontist "https://${GIT_TOKEN}@github.com/kontist/sdk.git"
-          git push --set-upstream origin-kontist master --follow-tags
+          git push --set-upstream origin-kontist master --follow-tags --no-verify
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: npm publish
