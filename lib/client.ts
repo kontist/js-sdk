@@ -13,10 +13,12 @@ export class Client {
   private oauth2Client: ClientOAuth2;
   private graphQLClient: GraphQLClient;
   private token?: ClientOAuth2.Token;
+  private verifier?: string;
 
   constructor(opts: ClientOpts) {
     const baseUrl = opts.baseUrl || KONTIST_API_BASE_URL;
-    const { clientId, redirectUri, scopes, oauthClient } = opts;
+    const { clientId, redirectUri, scopes, oauthClient, state, verifier } = opts;
+    this.verifier = verifier;
 
     this.oauth2Client =
       oauthClient ||
@@ -26,7 +28,7 @@ export class Client {
         clientId,
         redirectUri,
         scopes,
-        state: opts.state
+        state
       });
 
     this.graphQLClient = new GraphQLClient(`${baseUrl}/api/graphql`);
@@ -40,10 +42,10 @@ export class Client {
       [key: string]: string | string[];
     } = {};
 
-    if (opts.verifier) {
+    if (this.verifier) {
       // Implemented according to https://tools.ietf.org/html/rfc7636#appendix-A
       const challenge =
-        (btoa(String.fromCharCode.apply(null, sha256.array(opts.verifier))) || "")
+        (btoa(String.fromCharCode.apply(null, sha256.array(this.verifier))) || "")
           .split("=")[0]
           .replace("+", "-")
           .replace("/", "_")
@@ -68,9 +70,9 @@ export class Client {
       };
     } = {};
 
-    if (opts.verifier) {
+    if (this.verifier) {
       options.body = {
-        code_verifier: opts.verifier
+        code_verifier: this.verifier
       };
     }
 

@@ -21,13 +21,15 @@ describe("OAuth2 client tests", () => {
 
   describe("client with mandatory parameters", () => {
     let client: Client;
+    const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
 
     beforeEach(() => {
       client = new Client({
         clientId,
         redirectUri,
         scopes,
-        state: "25843739712322056"
+        state: "25843739712322056",
+        verifier
       });
     });
 
@@ -36,25 +38,29 @@ describe("OAuth2 client tests", () => {
         clientId,
         redirectUri,
         scopes,
-        state: "25843739712322056"
+        state: "25843739712322056",
+        verifier
       });
       expect(client).to.exist;
     });
 
     describe("client.getAuthUri()", () => {
       it("should return proper redirect url", async () => {
+        client = new Client({
+          clientId,
+          redirectUri,
+          scopes,
+          state: "25843739712322056"
+        });
         const url = await client.getAuthUri();
         const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
         expect(url).to.equal(expectedUrl);
       });
 
       it("should return proper redirect url when verifier is provided", async () => {
-        const codeVerifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
         const codeChallenge = "xc3uY4-XMuobNWXzzfEqbYx3rUYBH69_zu4EFQIJH8w";
         const codeChallengeMethod = "S256";
-        const url = await client.getAuthUri({
-          verifier: codeVerifier
-        });
+        const url = await client.getAuthUri();
         const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
         expect(url).to.equal(expectedUrl);
       });
@@ -83,12 +89,11 @@ describe("OAuth2 client tests", () => {
           oauthClient,
           redirectUri,
           scopes,
-          state: "25843739712322056"
-        });
-
-        tokenData = await clientMock.getToken(callbackUrl, {
+          state: "25843739712322056",
           verifier: oauth2PKCECodeVerifier
         });
+
+        tokenData = await clientMock.getToken(callbackUrl);
       });
 
       it("should call oauthClient.code.getToken() with proper arguments", () => {
