@@ -36,13 +36,13 @@ const client = new Client({
 });
 
 // redirect not authenticated user to Kontist form
-app.get("/auth", (req, res) => {
+app.get("/auth", async (req, res) => {
   const uri = await client.getAuthUri({ verifier });
   res.redirect(uri);
 });
 
 // get user token data
-app.get(CALLBACK_PATH, (req, res) => {
+app.get(CALLBACK_PATH, async (req, res) => {
   const callbackUrl = req.originalUrl;
 
   try {
