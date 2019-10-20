@@ -41,7 +41,7 @@ describe("OAuth2 client tests", () => {
       expect(client).to.exist;
     });
 
-    describe("client.getAuthUri()", () => {
+    describe("client.auth.getAuthUri()", () => {
       it("should return proper redirect url", async () => {
         const url = await client.auth.getAuthUri();
         const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
