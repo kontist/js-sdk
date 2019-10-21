@@ -9,7 +9,15 @@ export class Auth {
   private verifier?: string;
 
   constructor(baseUrl: string, opts: ClientOpts) {
-    const { clientId, redirectUri, scopes, oauthClient, verifier } = opts;
+    const {
+      clientId,
+      clientSecret,
+      oauthClient,
+      redirectUri,
+      scopes,
+      state,
+      verifier
+    } = opts;
     this.verifier = verifier;
 
     this.oauth2Client =
@@ -18,9 +26,10 @@ export class Auth {
         accessTokenUri: `${baseUrl}/api/oauth/token`,
         authorizationUri: `${baseUrl}/api/oauth/authorize`,
         clientId,
+        clientSecret,
         redirectUri,
         scopes,
-        state: opts.state
+        state
       });
   }
 
