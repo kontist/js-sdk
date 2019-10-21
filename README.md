@@ -43,7 +43,7 @@ app.get(CALLBACK_PATH, async (req, res) => {
   const callbackUrl = req.originalUrl;
 
   try {
-    const token = await client.auth.getToken(callbackUrl);
+    const token = await client.auth.fetchToken(callbackUrl);
     /* got access token, login successful */
   } catch (e) {
     /* handle error */
@@ -102,7 +102,7 @@ const result = await client.graphQL.rawQuery(query);
         });
       } else {
         // we have a code, the client now can fetch a token
-        client.auth.getToken(document.location.href).then(function() {
+        client.auth.fetchToken(document.location.href).then(function() {
           // do a simple graphql query and output the account id
           client.graphQL
             .rawQuery(

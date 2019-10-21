@@ -52,8 +52,7 @@ export class Auth {
    * This method must be called during the callback via `redirectUri`.
    */
   public fetchToken = async (
-    callbackUri: string,
-    opts: GetTokenOpts = {}
+    callbackUri: string
   ): Promise<ClientOAuth2.Token> => {
     const options: {
       body?: {
