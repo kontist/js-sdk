@@ -1,19 +1,13 @@
 import { get } from "lodash";
-import { GraphQLClient } from "./client";
 import {
   Query,
   TransactionListItem,
   TransactionsConnectionEdge
 } from "./schema";
+import { Model } from "./model";
 
-export class Transaction {
-  private client: GraphQLClient;
-
-  constructor(graphqlClient: GraphQLClient) {
-    this.client = graphqlClient;
-  }
-
-  public getAll = async (): Promise<Array<TransactionListItem>> => {
+export class Transaction extends Model {
+  async fetchAll(): Promise<Array<TransactionListItem>> {
     const query = `{
       viewer {
           mainAccount {
@@ -56,5 +50,5 @@ export class Transaction {
     ).map((edge: TransactionsConnectionEdge) => edge.node);
 
     return transactions;
-  };
+  }
 }
