@@ -89,7 +89,7 @@ const result = await client.graphQL.rawQuery(query);
       );
 
       // initialize Kontist client
-      let client = new Kontist.Client({
+      const client = new Kontist.Client({
         clientId: "<your client id>",
         redirectUri: "<your base url>",
         scopes: ["transactions"],
@@ -97,8 +97,8 @@ const result = await client.graphQL.rawQuery(query);
         verifier: sessionStorage.getItem("verifier")
       });
 
-      let params = new URL(document.location).searchParams;
-      let code = params.get("code");
+      const params = new URL(document.location).searchParams;
+      const code = params.get("code");
       if (!code) {
         // page not called with "code" query parameter, let's redirect the user to the login
         client.auth.getAuthUri().then(function(url) {
