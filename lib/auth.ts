@@ -6,9 +6,11 @@ import { ClientOpts, GetTokenOpts, GetAuthUriOpts } from "./types";
 export class Auth {
   private oauth2Client: ClientOAuth2;
   private _token: ClientOAuth2.Token | null = null;
+  private verifier?: string;
 
   constructor(baseUrl: string, opts: ClientOpts) {
-    const { clientId, redirectUri, scopes, oauthClient } = opts;
+    const { clientId, redirectUri, scopes, oauthClient, verifier } = opts;
+    this.verifier = verifier;
 
     this.oauth2Client =
       oauthClient ||
@@ -30,10 +32,10 @@ export class Auth {
       [key: string]: string | string[];
     } = {};
 
-    if (opts.verifier) {
+    if (this.verifier) {
       // Implemented according to https://tools.ietf.org/html/rfc7636#appendix-A
       const challenge = (
-        btoa(String.fromCharCode.apply(null, sha256.array(opts.verifier))) || ""
+        btoa(String.fromCharCode.apply(null, sha256.array(this.verifier))) || ""
       )
         .split("=")[0]
         .replace("+", "-")
@@ -59,9 +61,9 @@ export class Auth {
       };
     } = {};
 
-    if (opts.verifier) {
+    if (this.verifier) {
       options.body = {
-        code_verifier: opts.verifier
+        code_verifier: this.verifier
       };
     }
 

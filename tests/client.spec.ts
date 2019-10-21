@@ -18,6 +18,5 @@ describe("Client", () => {
 
       expect(client).to.exist;
     });
-
   });
 });
