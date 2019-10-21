@@ -10,11 +10,7 @@ Add as dependency to your project:
 npm install @kontist/client
 ```
 
-or
-
-```bash
-yarn add @kontist/client
-```
+You will need a valid client id and setup your redirect uri for authentication. You may request your client id in the API Console on https://kontist.dev/console/.
 
 ## Usage (NodeJS / TypeScript)
 
