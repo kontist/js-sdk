@@ -7,6 +7,7 @@ export type ClientOpts = {
   redirectUri: string;
   scopes: string[];
   state: string;
+  verifier?: string;
 };
 
 export type GetAuthUriOpts = {

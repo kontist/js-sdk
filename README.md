@@ -32,12 +32,13 @@ const client = new Client({
   clientId: "YOUR_CLIENT_ID",
   redirectUri: REDIRECT_URI,
   scopes: ["transactions"],
-  state
+  state,
+  verifier
 });
 
 // redirect not authenticated user to Kontist form
 app.get("/auth", async (req, res) => {
-  const uri = await client.getAuthUri({ verifier });
+  const uri = await client.getAuthUri();
   res.redirect(uri);
 });
 
@@ -46,7 +47,7 @@ app.get(CALLBACK_PATH, async (req, res) => {
   const callbackUrl = req.originalUrl;
 
   try {
-    const token = await client.getToken(callbackUrl, { verifier });
+    const token = await client.getToken(callbackUrl);
     /* got access token, login successful */
   } catch (e) {
     /* handle error */
@@ -80,29 +81,28 @@ const result = await client.rawQuery(query);
     <script>
         // persist a random value
         sessionStorage.setItem("state", sessionStorage.getItem("state") || (Math.random() + "").substring(2));
+        sessionStorage.setItem("verifier", sessionStorage.getItem("verifier") || (Math.random() + "").substring(2));
 
         // initialize Kontist client
         let client = new Kontist.Client({
             clientId: "<your client id>",
             redirectUri: "<your base url>",
             scopes: ["transactions"],
-            state: sessionStorage.getItem("state")
+            state: sessionStorage.getItem("state"),
+            verifier: sessionStorage.getItem("verifier")
         });
 
         let params = (new URL(document.location)).searchParams;
         let code = params.get("code");
         if (!code) {
             // page not called with "code" query parameter, let's redirect the user to the login
-            let verifier = (Math.random() + "").substring(2);
-            sessionStorage.setItem("verifier", verifier);
-            client.getAuthUri({ verifier: verifier }).then(function(url) {
+            client.getAuthUri().then(function(url) {
                 window.location = url;
             });
         } else {
 
             // we have a code, the client now can fetch a token
-            let verifier = sessionStorage.getItem("verifier");
-            client.getToken(document.location.href, { verifier: verifier })
+            client.getToken(document.location.href)
               .then(function() {
 
                 // do a simple graphql query and output the account id
