@@ -14,6 +14,10 @@ jobs:
         with:
           node-version: 12
           registry-url: "https://registry.npmjs.org"
+      - name: install aws cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
       - name: npm install, build and test
         run: |
           npm ci
@@ -27,3 +31,9 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: cdn upload
+        run: aws s3 cp ./dist/bundle.js s3://${AWS_CDN_BUCKET}/sdk.min.js
+        env:
+          AWS_CDN_BUCKET: ${{ secrets.AWS_CDN_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets. AWS_SECRET_ACCESS_KEY }}
