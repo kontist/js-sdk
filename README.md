@@ -46,8 +46,10 @@ app.get(CALLBACK_PATH, async (req, res) => {
   try {
     const token = await client.auth.fetchToken(callbackUrl);
     /* got access token, login successful */
+    res.send("Successful, your token is " + token.accessToken);
   } catch (e) {
     /* handle error */
+    res.send("Failed: " + JSON.stringify(e));
   }
 });
 
