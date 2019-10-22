@@ -22,6 +22,7 @@ const CALLBACK_PATH = "/auth/callback";
 const REDIRECT_URI = "YOUR_BASE_URL" + CALLBACK_PATH;
 const state = (Math.random() + "").substring(2);
 const verifier = (Math.random() + "").substring(2);
+const app = express();
 
 // create a client
 const client = new Client({
@@ -48,6 +49,10 @@ app.get(CALLBACK_PATH, async (req, res) => {
   } catch (e) {
     /* handle error */
   }
+});
+
+app.listen(3000, function () {
+  console.log('Listening on port 3000!');
 });
 ```
 
