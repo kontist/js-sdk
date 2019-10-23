@@ -53,8 +53,8 @@ app.get(CALLBACK_PATH, async (req, res) => {
   }
 });
 
-app.listen(3000, function () {
-  console.log('Listening on port 3000!');
+app.listen(3000, function() {
+  console.log("Listening on port 3000!");
 });
 ```
 
@@ -79,7 +79,7 @@ const result = await client.graphQL.rawQuery(query);
 ```html
 <html>
   <body>
-    <script src="dist/bundle.js"></script>
+    <script src="https://cdn.kontist.com/sdk.min.js"></script>
     <script>
       // persist a random value
       sessionStorage.setItem(
