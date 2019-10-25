@@ -74,6 +74,20 @@ const query = `{
 const result = await client.graphQL.rawQuery(query);
 ```
 
+#### Transactions
+
+An example to show how to fetch all user transactions
+
+```typescript
+let transactionPage = await client.models.transaction.fetchAll();
+let transactions = transactionPage.items;
+
+while (transactionPage.nextPage) {
+  transactionPage = await transactionPage.nextPage();
+  transactions = transactions.concat(transactionPage.items);
+}
+```
+
 ## Usage (Browser)
 
 ```html
