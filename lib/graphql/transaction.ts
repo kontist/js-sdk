@@ -1,13 +1,13 @@
 import { get } from "lodash";
 import {
   Query,
-  TransactionListItem,
+  Transaction as TransactionEntry,
   TransactionsConnectionEdge
 } from "./schema";
 import { Model } from "./model";
 
 export class Transaction extends Model {
-  async fetchAll(): Promise<Array<TransactionListItem>> {
+  async fetchAll(): Promise<Array<TransactionEntry>> {
     const query = `{
       viewer {
           mainAccount {
