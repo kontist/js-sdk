@@ -17,7 +17,7 @@ export class Transaction extends Model<TransactionEntry> {
       query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String) {
         viewer {
           mainAccount {
-            transactions(first: $first, last:$last, after: $after, before: $before) {
+            transactions(first: $first, last: $last, after: $after, before: $before) {
               edges {
                 node {
                     id
