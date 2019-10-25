@@ -88,6 +88,29 @@ while (transactionPage.nextPage) {
 }
 ```
 
+#### Transfers
+
+To create a transfer:
+
+```typescript
+const transfer = await client.models.transfer.create({
+  amount: <amount>,
+  recipient: <recipent_name>,
+  iban: <recipent_iban>,
+  note: <optional_description>,
+  e2eId: <optional_e2eId>,
+});
+```
+
+To confirm a transfer:
+
+```typescript
+const result = await client.models.transfer.confirm(
+  <transfer_id>,
+  <sms_token>
+);
+```
+
 ## Usage (Browser)
 
 ```html
