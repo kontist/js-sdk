@@ -6,12 +6,14 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any,
 };
 
 export type Account = {
    __typename?: 'Account',
-  id: Scalars['ID'],
-  transaction?: Maybe<TransactionDetails>,
+  id: Scalars['Int'],
+  transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
 };
 
@@ -28,14 +30,52 @@ export type AccountTransactionsArgs = {
   before?: Maybe<Scalars['String']>
 };
 
+export type Client = {
+   __typename?: 'Client',
+  id: Scalars['ID'],
+  redirectUri?: Maybe<Scalars['String']>,
+  name: Scalars['String'],
+  grantTypes?: Maybe<Array<GrantType>>,
+  scopes?: Maybe<Array<ScopeType>>,
+};
+
+export type CreateClientInput = {
+  name: Scalars['String'],
+  secret?: Maybe<Scalars['String']>,
+  redirectUri?: Maybe<Scalars['String']>,
+  grantTypes: Array<GrantType>,
+  scopes: Array<ScopeType>,
+};
+
+export type CreateTransferInput = {
+  recipient: Scalars['String'],
+  iban: Scalars['String'],
+  amount: Scalars['Int'],
+  note?: Maybe<Scalars['String']>,
+  e2eId?: Maybe<Scalars['String']>,
+};
+
+
 export type DirectDebitFee = {
    __typename?: 'DirectDebitFee',
   id: Scalars['Int'],
   type: TransactionFeeType,
   amount: Scalars['Int'],
-  date?: Maybe<Scalars['String']>,
+  usedAt?: Maybe<Scalars['DateTime']>,
   invoiceStatus: InvoiceStatus,
 };
+
+export enum DocumentType {
+  Voucher = 'VOUCHER',
+  Invoice = 'INVOICE'
+}
+
+export enum GrantType {
+  Password = 'PASSWORD',
+  AuthorizationCode = 'AUTHORIZATION_CODE',
+  RefreshToken = 'REFRESH_TOKEN',
+  ClientCredentials = 'CLIENT_CREDENTIALS'
+}
 
 export enum InvoiceStatus {
   Open = 'OPEN',
@@ -43,6 +83,41 @@ export enum InvoiceStatus {
   Rejected = 'REJECTED',
   Pending = 'PENDING'
 }
+
+export type Mutation = {
+   __typename?: 'Mutation',
+  createTransfer: Transfer,
+  confirmTransfer: Transfer,
+  createClient: Client,
+  updateClient: Client,
+  deleteClient: Client,
+};
+
+
+export type MutationCreateTransferArgs = {
+  transfer: CreateTransferInput
+};
+
+
+export type MutationConfirmTransferArgs = {
+  authorizationToken: Scalars['String'],
+  transferId: Scalars['String']
+};
+
+
+export type MutationCreateClientArgs = {
+  client: CreateClientInput
+};
+
+
+export type MutationUpdateClientArgs = {
+  client: UpdateClientInput
+};
+
+
+export type MutationDeleteClientArgs = {
+  id: Scalars['String']
+};
 
 export type PageInfo = {
    __typename?: 'PageInfo',
@@ -57,30 +132,41 @@ export type Query = {
   viewer: User,
 };
 
-export type TransactionDetails = {
-   __typename?: 'TransactionDetails',
+export enum ScopeType {
+  Offline = 'OFFLINE',
+  Accounts = 'ACCOUNTS',
+  Users = 'USERS',
+  Transactions = 'TRANSACTIONS',
+  Transfers = 'TRANSFERS',
+  Subscriptions = 'SUBSCRIPTIONS',
+  Statements = 'STATEMENTS',
+  Admin = 'ADMIN',
+  Clients = 'CLIENTS'
+}
+
+export type Transaction = {
+   __typename?: 'Transaction',
   id: Scalars['ID'],
   amount: Scalars['Int'],
-  name?: Maybe<Scalars['String']>,
   iban?: Maybe<Scalars['String']>,
   type: TransactionProjectionType,
-  bookingDate: Scalars['String'],
-  valutaDate?: Maybe<Scalars['String']>,
-  originalAmount?: Maybe<Scalars['Int']>,
-  foreignCurrency?: Maybe<Scalars['String']>,
+  valutaDate?: Maybe<Scalars['DateTime']>,
   e2eId?: Maybe<Scalars['String']>,
   mandateNumber?: Maybe<Scalars['String']>,
+  fees: Array<TransactionFee>,
+  bookingDate: Scalars['DateTime'],
+  directDebitFees: Array<DirectDebitFee>,
+  name?: Maybe<Scalars['String']>,
   paymentMethod: Scalars['String'],
   category?: Maybe<Scalars['String']>,
-  userSelectedBookingDate?: Maybe<Scalars['String']>,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
   purpose?: Maybe<Scalars['String']>,
-  bookingType: TransactionProjectionType,
-  invoiceNumber?: Maybe<Scalars['String']>,
-  invoicePreviewUrl?: Maybe<Scalars['String']>,
-  invoiceDownloadUrl?: Maybe<Scalars['String']>,
-  documentType?: Maybe<Scalars['String']>,
-  fees: Array<TransactionFee>,
-  directDebitFees: Array<DirectDebitFee>,
+  documentNumber?: Maybe<Scalars['String']>,
+  documentPreviewUrl?: Maybe<Scalars['String']>,
+  documentDownloadUrl?: Maybe<Scalars['String']>,
+  documentType?: Maybe<DocumentType>,
+  foreignCurrency?: Maybe<Scalars['String']>,
+  originalAmount?: Maybe<Scalars['Int']>,
 };
 
 export type TransactionFee = {
@@ -88,7 +174,7 @@ export type TransactionFee = {
   type: TransactionFeeType,
   status: TransactionFeeStatus,
   unitAmount?: Maybe<Scalars['Int']>,
-  usedAt?: Maybe<Scalars['String']>,
+  usedAt?: Maybe<Scalars['DateTime']>,
 };
 
 export enum TransactionFeeStatus {
@@ -106,30 +192,6 @@ export enum TransactionFeeType {
   SecondReminderEmail = 'SECOND_REMINDER_EMAIL',
   CardReplacement = 'CARD_REPLACEMENT'
 }
-
-export type TransactionListItem = {
-   __typename?: 'TransactionListItem',
-  id: Scalars['ID'],
-  amount: Scalars['Int'],
-  name?: Maybe<Scalars['String']>,
-  iban?: Maybe<Scalars['String']>,
-  type: TransactionProjectionType,
-  bookingDate: Scalars['String'],
-  valutaDate?: Maybe<Scalars['String']>,
-  originalAmount?: Maybe<Scalars['Int']>,
-  foreignCurrency?: Maybe<Scalars['String']>,
-  e2eId?: Maybe<Scalars['String']>,
-  mandateNumber?: Maybe<Scalars['String']>,
-  paymentMethod: Scalars['String'],
-  category?: Maybe<Scalars['String']>,
-  userSelectedBookingDate?: Maybe<Scalars['String']>,
-  purpose?: Maybe<Scalars['String']>,
-  bookingType: TransactionProjectionType,
-  invoiceNumber?: Maybe<Scalars['String']>,
-  invoicePreviewUrl?: Maybe<Scalars['String']>,
-  invoiceDownloadUrl?: Maybe<Scalars['String']>,
-  documentType?: Maybe<Scalars['String']>,
-};
 
 export enum TransactionProjectionType {
   Atm = 'ATM',
@@ -169,18 +231,46 @@ export type TransactionsConnection = {
 
 export type TransactionsConnectionEdge = {
    __typename?: 'TransactionsConnectionEdge',
-  node: TransactionListItem,
+  node: Transaction,
   cursor: Scalars['String'],
 };
 
 export type Transfer = {
    __typename?: 'Transfer',
-  status: Scalars['String'],
-  purpose: Scalars['String'],
+  status: TransferStatus,
+  amount: Scalars['Int'],
+  note?: Maybe<Scalars['String']>,
+  id: Scalars['String'],
+  recipient: Scalars['String'],
+  iban: Scalars['String'],
+  e2eId?: Maybe<Scalars['String']>,
+};
+
+export enum TransferStatus {
+  Created = 'CREATED',
+  Authorized = 'AUTHORIZED',
+  Confirmed = 'CONFIRMED',
+  Booked = 'BOOKED'
+}
+
+export type UpdateClientInput = {
+  name?: Maybe<Scalars['String']>,
+  secret?: Maybe<Scalars['String']>,
+  redirectUri?: Maybe<Scalars['String']>,
+  grantTypes?: Maybe<Array<GrantType>>,
+  scopes?: Maybe<Array<ScopeType>>,
+  id: Scalars['String'],
 };
 
 export type User = {
    __typename?: 'User',
   id: Scalars['ID'],
   mainAccount?: Maybe<Account>,
+  clients: Array<Client>,
+  client?: Maybe<Client>,
+};
+
+
+export type UserClientArgs = {
+  id: Scalars['String']
 };
