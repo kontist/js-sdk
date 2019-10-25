@@ -8,9 +8,6 @@ import { Model } from "./model";
 import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
 
-const safeGet = (source: any, path: any, defaultValue: any) =>
-  get(source, path, defaultValue) || defaultValue;
-
 export class Transaction extends Model<TransactionEntry> {
   async fetch(args?: FetchOptions): Promise<ResultPage<TransactionEntry>> {
     const query = `
@@ -50,7 +47,7 @@ export class Transaction extends Model<TransactionEntry> {
     }`;
     const result: Query = await this.client.rawQuery(query, args);
 
-    const transactions = safeGet(
+    const transactions = get(
       result,
       "viewer.mainAccount.transactions.edges",
       []
