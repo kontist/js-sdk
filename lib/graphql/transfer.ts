@@ -1,7 +1,9 @@
 import { CreateTransferInput, Transfer as TransferEntry } from "./schema";
 import { Model } from "./model";
+import { FetchOptions } from "./types";
+import { ResultPage } from "./resultPage";
 
-export class Transfer extends Model {
+export class Transfer extends Model<TransferEntry> {
   async create(transfer: CreateTransferInput): Promise<TransferEntry> {
     const query = `mutation {
       createTransfer(
@@ -47,5 +49,9 @@ export class Transfer extends Model {
 
     const result = await this.client.rawQuery(query);
     return result.confirmTransfer;
+  }
+
+  async fetch(args?: FetchOptions): Promise<ResultPage<TransferEntry>> {
+    throw new Error("not implemented yet");
   }
 }
