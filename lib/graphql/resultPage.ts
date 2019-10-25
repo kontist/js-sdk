@@ -1,12 +1,12 @@
 import { PageInfo } from "./schema";
 import { IFetch } from "./interfaces";
 
-export class ResultPage {
-  items: Array<Object>;
-  nextPage?: () => Promise<ResultPage>;
-  previousPage?: () => Promise<ResultPage>;
+export class ResultPage<T> {
+  items: Array<T>;
+  nextPage?: () => Promise<ResultPage<T>>;
+  previousPage?: () => Promise<ResultPage<T>>;
 
-  constructor(model: IFetch, items: Array<Object>, pageInfo: PageInfo) {
+  constructor(model: IFetch<T>, items: Array<T>, pageInfo: PageInfo) {
     this.items = items;
 
     if (pageInfo.hasNextPage) {

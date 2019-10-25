@@ -11,8 +11,8 @@ import { ResultPage } from "./resultPage";
 const safeGet = (source: any, path: any, defaultValue: any) =>
   get(source, path, defaultValue) || defaultValue;
 
-export class Transaction extends Model {
-  async fetch(args?: FetchOptions): Promise<ResultPage> {
+export class Transaction extends Model<TransactionEntry> {
+  async fetch(args?: FetchOptions): Promise<ResultPage<TransactionEntry>> {
     const query = `
       query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String) {
         viewer {
