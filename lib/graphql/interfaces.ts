@@ -7,5 +7,5 @@ export interface IResultPageInterface {
 }
 
 export interface IFetch {
-  fetchAll(args?: FetchOptions): Promise<IResultPageInterface>;
+  fetch(args?: FetchOptions): Promise<IResultPageInterface>;
 }

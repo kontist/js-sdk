@@ -10,12 +10,11 @@ export class ResultPage {
     this.items = items;
 
     if (pageInfo.hasNextPage) {
-      this.nextPage = () => model.fetchAll({ after: pageInfo.endCursor });
+      this.nextPage = () => model.fetch({ after: pageInfo.endCursor });
     }
 
     if (pageInfo.hasPreviousPage) {
-      this.previousPage = () =>
-        model.fetchAll({ before: pageInfo.startCursor });
+      this.previousPage = () => model.fetch({ before: pageInfo.startCursor });
     }
   }
 }

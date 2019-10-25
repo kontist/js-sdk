@@ -10,7 +10,7 @@ export class Model implements IFetch {
     this.client = graphqlClient;
   }
 
-  async fetchAll(args?: FetchOptions): Promise<ResultPage> {
+  async fetch(args?: FetchOptions): Promise<ResultPage> {
     throw new Error("Must be overridden by subclasses!");
   }
 }
