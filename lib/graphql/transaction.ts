@@ -32,6 +32,9 @@ export class Transaction extends Model<TransactionEntry> {
                     category
                     userSelectedBookingDate
                     purpose
+                    documentNumber
+                    documentPreviewUrl
+                    documentDownloadUrl
                     documentType
                 }
               }
