@@ -33,12 +33,12 @@ export class Transfer extends Model<TransferEntry> {
   }
 
   async confirmOne(
-    transferId: string,
+    confirmationId: string,
     authorizationToken: string
   ): Promise<TransferEntry> {
     const query = `mutation {
-        confirmTransfer(
-        transferId: "${transferId}"
+      confirmTransfer(
+        transferId: "${confirmationId}"
         authorizationToken: "${authorizationToken}"
       ) {
         status
