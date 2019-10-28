@@ -93,7 +93,7 @@ while (transactionPage.nextPage) {
 To create a transfer:
 
 ```typescript
-const transfer = await client.models.transfer.create({
+const transfer = await client.models.transfer.createOne({
   amount: <amount>,
   recipient: <recipent_name>,
   iban: <recipent_iban>,
@@ -105,7 +105,7 @@ const transfer = await client.models.transfer.create({
 To confirm a transfer:
 
 ```typescript
-const result = await client.models.transfer.confirm(
+const result = await client.models.transfer.confirmOne(
   <transfer_id>,
   <sms_token>
 );

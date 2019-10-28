@@ -4,7 +4,7 @@ import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
 
 export class Transfer extends Model<TransferEntry> {
-  async create(transfer: CreateTransferInput): Promise<TransferEntry> {
+  async createOne(transfer: CreateTransferInput): Promise<TransferEntry> {
     const query = `mutation {
       createTransfer(
         transfer: { 
@@ -28,7 +28,8 @@ export class Transfer extends Model<TransferEntry> {
     return result.createTransfer;
   }
 
-  async confirm(
+
+  async confirmOne(
     transferId: string,
     authorizationToken: string
   ): Promise<TransferEntry> {
