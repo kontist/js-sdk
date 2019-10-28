@@ -12,7 +12,7 @@ export class Transfer extends Model<TransferEntry> {
           iban: "${transfer.iban}", 
           amount: ${transfer.amount}, 
           e2eId: "${transfer.e2eId}", 
-          note: "${transfer.note}" 
+          purpose: "${transfer.purpose}" 
         }
       ) {
         id
