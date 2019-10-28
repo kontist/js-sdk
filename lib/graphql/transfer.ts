@@ -1,4 +1,8 @@
-import { CreateTransferInput, Transfer as TransferEntry } from "./schema";
+import {
+  CreateTransferInput,
+  Transfer as TransferEntry,
+  BatchTransfer
+} from "./schema";
 import { Model } from "./model";
 import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
@@ -28,7 +32,6 @@ export class Transfer extends Model<TransferEntry> {
     return result.createTransfer;
   }
 
-
   async confirmOne(
     transferId: string,
     authorizationToken: string
@@ -50,6 +53,44 @@ export class Transfer extends Model<TransferEntry> {
 
     const result = await this.client.rawQuery(query);
     return result.confirmTransfer;
+  }
+
+  async createMany(transfers: Array<CreateTransferInput>): Promise<string> {
+    const query = `mutation createTransfers($transfers: [CreateTransferInput!]!) {
+      createTransfers(transfers: $transfers) {
+        confirmationId
+      }
+    }`;
+
+    const result = await this.client.rawQuery(query, { transfers });
+    return result.createTransfers.confirmationId;
+  }
+
+  async confirmMany(
+    confirmationId: string,
+    authorizationToken: string
+  ): Promise<BatchTransfer> {
+    const query = `mutation {
+      confirmTransfers(
+        confirmationId: "${confirmationId}"
+        authorizationToken: "${authorizationToken}"
+      ) {
+        id
+        status
+        transfers {
+          id
+          status
+          recipient
+          iban
+          purpose
+          amount
+          e2eId
+        }
+      }
+    }`;
+
+    const result = await this.client.rawQuery(query);
+    return result.confirmTransfers;
   }
 
   async fetch(args?: FetchOptions): Promise<ResultPage<TransferEntry>> {
