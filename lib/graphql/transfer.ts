@@ -28,10 +28,13 @@ export class Transfer extends Model<TransferEntry> {
     confirmationId: string,
     authorizationToken: string
   ): Promise<TransferEntry> {
-    const query = `mutation {
+    const query = `mutation confirmTransfer(
+      $confirmationId: String!
+      $authorizationToken: String!
+    ) {
       confirmTransfer(
-        transferId: "${confirmationId}"
-        authorizationToken: "${authorizationToken}"
+        transferId: $confirmationId
+        authorizationToken: $authorizationToken
       ) {
         id
         status
@@ -43,7 +46,10 @@ export class Transfer extends Model<TransferEntry> {
       }
     }`;
 
-    const result = await this.client.rawQuery(query);
+    const result = await this.client.rawQuery(query, {
+      confirmationId,
+      authorizationToken
+    });
     return result.confirmTransfer;
   }
 
