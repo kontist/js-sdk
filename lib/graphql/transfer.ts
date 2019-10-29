@@ -9,26 +9,18 @@ import { ResultPage } from "./resultPage";
 
 export class Transfer extends Model<TransferEntry> {
   async createOne(transfer: CreateTransferInput): Promise<TransferEntry> {
-    const query = `mutation {
-      createTransfer(
-        transfer: { 
-          recipient: "${transfer.recipient}", 
-          iban: "${transfer.iban}", 
-          amount: ${transfer.amount}, 
-          e2eId: "${transfer.e2eId}", 
-          purpose: "${transfer.purpose}" 
-        }
-      ) {
+    const query = `mutation createTransfer($transfer: CreateTransferInput!) {
+      createTransfer(transfer: $transfer) {
         id
         status
         amount
-        note
+        purpose
         iban
         e2eId
       }
     }`;
 
-    const result = await this.client.rawQuery(query);
+    const result = await this.client.rawQuery(query, { transfer });
     return result.createTransfer;
   }
 
@@ -41,10 +33,10 @@ export class Transfer extends Model<TransferEntry> {
         transferId: "${confirmationId}"
         authorizationToken: "${authorizationToken}"
       ) {
+        id
         status
         amount
-        note
-        id
+        purpose
         recipient
         iban
         e2eId
