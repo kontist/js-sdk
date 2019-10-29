@@ -15,6 +15,8 @@ export type Account = {
   id: Scalars['Int'],
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
+  transfer?: Maybe<Transfer>,
+  transfers: TransfersConnection,
 };
 
 
@@ -24,6 +26,20 @@ export type AccountTransactionArgs = {
 
 
 export type AccountTransactionsArgs = {
+  first?: Maybe<Scalars['Int']>,
+  last?: Maybe<Scalars['Int']>,
+  after?: Maybe<Scalars['String']>,
+  before?: Maybe<Scalars['String']>
+};
+
+
+export type AccountTransferArgs = {
+  id: Scalars['ID']
+};
+
+
+export type AccountTransfersArgs = {
+  where?: Maybe<TransfersConnectionFilter>,
   first?: Maybe<Scalars['Int']>,
   last?: Maybe<Scalars['Int']>,
   after?: Maybe<Scalars['String']>,
@@ -277,6 +293,22 @@ export type Transfer = {
   recipient: Scalars['String'],
   iban: Scalars['String'],
   e2eId?: Maybe<Scalars['String']>,
+};
+
+export type TransfersConnection = {
+   __typename?: 'TransfersConnection',
+  edges: Array<TransfersConnectionEdge>,
+  pageInfo: PageInfo,
+};
+
+export type TransfersConnectionEdge = {
+   __typename?: 'TransfersConnectionEdge',
+  node: Transfer,
+  cursor: Scalars['String'],
+};
+
+export type TransfersConnectionFilter = {
+  status?: Maybe<TransferStatus>,
 };
 
 export enum TransferStatus {
