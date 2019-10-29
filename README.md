@@ -97,7 +97,7 @@ const transfer = await client.models.transfer.createOne({
   amount: <amount>,
   recipient: <recipent_name>,
   iban: <recipent_iban>,
-  note: <optional_description>,
+  purpose: <optional_description>,
   e2eId: <optional_e2eId>,
 });
 ```
@@ -106,8 +106,35 @@ To confirm a transfer:
 
 ```typescript
 const result = await client.models.transfer.confirmOne(
-  <transfer_id>,
-  <sms_token>
+  <confirmation_id>,
+  <authorization_token>
+);
+```
+
+To create multiple transfers:
+
+```typescript
+const transfer = await client.models.transfer.createMany([{
+  amount: <amount>,
+  recipient: <recipent_name>,
+  iban: <recipent_iban>,
+  purpose: <optional_description>,
+  e2eId: <optional_e2eId>,
+}, {
+  amount: <amount>,
+  recipient: <recipent_name>,
+  iban: <recipent_iban>,
+  purpose: <optional_description>,
+  e2eId: <optional_e2eId>,
+}]);
+```
+
+To confirm multiple transfers:
+
+```typescript
+const result = await client.models.transfer.confirmMany(
+  <confirmation_id>,
+  <authorization_token>
 );
 ```
 
