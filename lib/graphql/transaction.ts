@@ -1,8 +1,8 @@
 import { get } from "lodash";
 import {
   Query,
-  Transaction as TransactionEntry,
-  TransactionsConnectionEdge
+  TransactionsConnectionEdge,
+  Transaction as TransactionEntry
 } from "./schema";
 import { Model } from "./model";
 import { FetchOptions } from "./types";

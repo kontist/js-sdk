@@ -2,7 +2,7 @@ import { GraphQLClient as GQLClient } from "graphql-request";
 import { Variables } from "graphql-request/dist/src/types";
 
 import { Auth } from "../auth";
-import { Query } from "./schema";
+import { RawQueryResponse } from "./types";
 
 export class GraphQLClient {
   private client: GQLClient;
@@ -18,7 +18,7 @@ export class GraphQLClient {
   public rawQuery = async (
     query: string,
     variables?: Variables
-  ): Promise<Query> => {
+  ): Promise<RawQueryResponse> => {
     if (!this.auth.token) {
       throw new Error("User unauthorized");
     }

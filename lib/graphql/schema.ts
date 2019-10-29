@@ -15,6 +15,8 @@ export type Account = {
   id: Scalars['Int'],
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
+  transfer?: Maybe<Transfer>,
+  transfers: TransfersConnection,
 };
 
 
@@ -29,6 +31,35 @@ export type AccountTransactionsArgs = {
   after?: Maybe<Scalars['String']>,
   before?: Maybe<Scalars['String']>
 };
+
+
+export type AccountTransferArgs = {
+  id: Scalars['ID']
+};
+
+
+export type AccountTransfersArgs = {
+  where?: Maybe<TransfersConnectionFilter>,
+  first?: Maybe<Scalars['Int']>,
+  last?: Maybe<Scalars['Int']>,
+  after?: Maybe<Scalars['String']>,
+  before?: Maybe<Scalars['String']>
+};
+
+export type BatchTransfer = {
+   __typename?: 'BatchTransfer',
+  id: Scalars['String'],
+  status: BatchTransferStatus,
+  transfers: Array<Transfer>,
+};
+
+export enum BatchTransferStatus {
+  AuthorizationRequired = 'AUTHORIZATION_REQUIRED',
+  ConfirmationRequired = 'CONFIRMATION_REQUIRED',
+  Accepted = 'ACCEPTED',
+  Failed = 'FAILED',
+  Successful = 'SUCCESSFUL'
+}
 
 export type Client = {
    __typename?: 'Client',
@@ -51,8 +82,13 @@ export type CreateTransferInput = {
   recipient: Scalars['String'],
   iban: Scalars['String'],
   amount: Scalars['Int'],
-  note?: Maybe<Scalars['String']>,
+  purpose?: Maybe<Scalars['String']>,
   e2eId?: Maybe<Scalars['String']>,
+};
+
+export type CreateTransfersResult = {
+   __typename?: 'CreateTransfersResult',
+  confirmationId: Scalars['String'],
 };
 
 
@@ -88,6 +124,8 @@ export type Mutation = {
    __typename?: 'Mutation',
   createTransfer: Transfer,
   confirmTransfer: Transfer,
+  createTransfers: CreateTransfersResult,
+  confirmTransfers: BatchTransfer,
   createClient: Client,
   updateClient: Client,
   deleteClient: Client,
@@ -102,6 +140,17 @@ export type MutationCreateTransferArgs = {
 export type MutationConfirmTransferArgs = {
   authorizationToken: Scalars['String'],
   transferId: Scalars['String']
+};
+
+
+export type MutationCreateTransfersArgs = {
+  transfers: Array<CreateTransferInput>
+};
+
+
+export type MutationConfirmTransfersArgs = {
+  authorizationToken: Scalars['String'],
+  confirmationId: Scalars['String']
 };
 
 
@@ -239,11 +288,27 @@ export type Transfer = {
    __typename?: 'Transfer',
   status: TransferStatus,
   amount: Scalars['Int'],
-  note?: Maybe<Scalars['String']>,
+  purpose?: Maybe<Scalars['String']>,
   id: Scalars['String'],
   recipient: Scalars['String'],
   iban: Scalars['String'],
   e2eId?: Maybe<Scalars['String']>,
+};
+
+export type TransfersConnection = {
+   __typename?: 'TransfersConnection',
+  edges: Array<TransfersConnectionEdge>,
+  pageInfo: PageInfo,
+};
+
+export type TransfersConnectionEdge = {
+   __typename?: 'TransfersConnectionEdge',
+  node: Transfer,
+  cursor: Scalars['String'],
+};
+
+export type TransfersConnectionFilter = {
+  status?: Maybe<TransferStatus>,
 };
 
 export enum TransferStatus {
