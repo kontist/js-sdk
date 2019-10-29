@@ -46,10 +46,11 @@ export class Transfer extends Model<TransferEntry> {
       }
     }`;
 
-    const result = await this.client.rawQuery(query, {
+    const variables = {
       confirmationId,
       authorizationToken
-    });
+    };
+    const result = await this.client.rawQuery(query, variables);
     return result.confirmTransfer;
   }
 
@@ -68,10 +69,13 @@ export class Transfer extends Model<TransferEntry> {
     confirmationId: string,
     authorizationToken: string
   ): Promise<BatchTransfer> {
-    const query = `mutation {
+    const query = `mutation confirmTransfer(
+      $confirmationId: String!
+      $authorizationToken: String!
+    ) {
       confirmTransfers(
-        confirmationId: "${confirmationId}"
-        authorizationToken: "${authorizationToken}"
+        confirmationId: $confirmationId
+        authorizationToken: $authorizationToken
       ) {
         id
         status
@@ -87,7 +91,11 @@ export class Transfer extends Model<TransferEntry> {
       }
     }`;
 
-    const result = await this.client.rawQuery(query);
+    const variables = {
+      confirmationId,
+      authorizationToken
+    };
+    const result = await this.client.rawQuery(query, variables);
     return result.confirmTransfers;
   }
 
