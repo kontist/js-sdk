@@ -9,6 +9,12 @@ import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
 
 export class Transaction extends Model<TransactionEntry> {
+  /**
+   * Fetches first 50 transactions which match the query
+   *
+   * @param args  query parameters
+   * @returns     result page
+   */
   async fetch(args?: FetchOptions): Promise<ResultPage<TransactionEntry>> {
     const query = `
       query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String) {
