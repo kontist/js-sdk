@@ -9,6 +9,8 @@ import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
 
 export class Transaction extends Model<TransactionEntry> {
+  private lastResult!: ResultPage<TransactionEntry>;
+
   /**
    * Fetches first 50 transactions which match the query
    *
