@@ -8,20 +8,15 @@ import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
 
 export class Transfer extends Model<TransferEntry> {
-  async createOne(transfer: CreateTransferInput): Promise<TransferEntry> {
+  async createOne(transfer: CreateTransferInput): Promise<string> {
     const query = `mutation createTransfer($transfer: CreateTransferInput!) {
       createTransfer(transfer: $transfer) {
         id
-        status
-        amount
-        purpose
-        iban
-        e2eId
       }
     }`;
 
     const result = await this.client.rawQuery(query, { transfer });
-    return result.createTransfer;
+    return result.createTransfer.id;
   }
 
   async confirmOne(
