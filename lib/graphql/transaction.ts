@@ -1,4 +1,4 @@
-import { get } from "lodash";
+import get = require("lodash/get");
 import {
   Query,
   TransactionsConnectionEdge,
