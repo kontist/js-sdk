@@ -10,11 +10,3 @@ export type ClientOpts = {
   state: string;
   verifier?: string;
 };
-
-export type GetAuthUriOpts = {
-  verifier?: string;
-};
-
-export type GetTokenOpts = {
-  verifier?: string;
-};

@@ -1,7 +1,7 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { sha256 } from "js-sha256";
 import { btoa } from "abab";
-import { ClientOpts, GetTokenOpts, GetAuthUriOpts } from "./types";
+import { ClientOpts } from "./types";
 
 export class Auth {
   private oauth2Client: ClientOAuth2;
@@ -36,7 +36,7 @@ export class Auth {
   /**
    * Build a uri to which the user must be redirected for login.
    */
-  public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
+  public getAuthUri = async (): Promise<string> => {
     const query: {
       [key: string]: string | string[];
     } = {};
