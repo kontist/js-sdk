@@ -2,31 +2,28 @@ import { ResultPage } from "./resultPage";
 import { Model } from "./model";
 
 export abstract class IterableModel<T> extends Model<T> {
-  private lastResult!: ResultPage<T>;
-
   [Symbol.asyncIterator]() {
+    let lastResult!: ResultPage<T>;
+
     return {
       next: async (args: Object = {}) => {
         // this is the first call or items are empty
-        if (!this.lastResult) {
-          this.lastResult = await this.fetch(args);
+        if (!lastResult) {
+          lastResult = await this.fetch(args);
         }
 
-        if (
-          this.lastResult.items.length === 0 &&
-          this.lastResult.pageInfo.hasNextPage
-        ) {
-          this.lastResult = await this.fetch({
+        if (lastResult.items.length === 0 && lastResult.pageInfo.hasNextPage) {
+          lastResult = await this.fetch({
             ...args,
-            after: this.lastResult.pageInfo.endCursor
+            after: lastResult.pageInfo.endCursor
           });
         }
 
         // return the items as long as there are some
-        if (this.lastResult.items.length > 0) {
+        if (lastResult.items.length > 0) {
           return {
             done: false,
-            value: this.lastResult.items.pop()
+            value: lastResult.items.pop()
           };
         }
 
