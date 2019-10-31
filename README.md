@@ -58,6 +58,63 @@ app.listen(3000, function() {
 });
 ```
 
+## Usage (Browser)
+
+```html
+<html>
+  <body>
+    <script src="https://cdn.kontist.com/sdk.min.js"></script>
+    <script>
+      // persist a random value
+      sessionStorage.setItem(
+        "state",
+        sessionStorage.getItem("state") || (Math.random() + "").substring(2)
+      );
+      sessionStorage.setItem(
+        "verifier",
+        sessionStorage.getItem("verifier") || (Math.random() + "").substring(2)
+      );
+
+      // initialize Kontist client
+      const client = new Kontist.Client({
+        clientId: "<your client id>",
+        redirectUri: "<your base url>",
+        scopes: ["transactions"],
+        state: sessionStorage.getItem("state"),
+        verifier: sessionStorage.getItem("verifier")
+      });
+
+      const params = new URL(document.location).searchParams;
+      const code = params.get("code");
+      if (!code) {
+        // page not called with "code" query parameter, let's redirect the user to the login
+        client.auth.getAuthUri().then(function(url) {
+          window.location = url;
+        });
+      } else {
+        // we have a code, the client now can fetch a token
+        client.auth.fetchToken(document.location.href).then(function() {
+          // do a simple graphql query and output the account id
+          client.graphQL
+            .rawQuery(
+              `{
+                          viewer {
+                              mainAccount {
+                                  id
+                              }
+                          }
+                      }`
+            )
+            .then(function(result) {
+              console.log(result);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
+```
+
 ### GraphQL queries
 
 #### Raw
@@ -136,61 +193,4 @@ const result = await client.models.transfer.confirmMany(
   <confirmation_id>,
   <authorization_token>
 );
-```
-
-## Usage (Browser)
-
-```html
-<html>
-  <body>
-    <script src="https://cdn.kontist.com/sdk.min.js"></script>
-    <script>
-      // persist a random value
-      sessionStorage.setItem(
-        "state",
-        sessionStorage.getItem("state") || (Math.random() + "").substring(2)
-      );
-      sessionStorage.setItem(
-        "verifier",
-        sessionStorage.getItem("verifier") || (Math.random() + "").substring(2)
-      );
-
-      // initialize Kontist client
-      const client = new Kontist.Client({
-        clientId: "<your client id>",
-        redirectUri: "<your base url>",
-        scopes: ["transactions"],
-        state: sessionStorage.getItem("state"),
-        verifier: sessionStorage.getItem("verifier")
-      });
-
-      const params = new URL(document.location).searchParams;
-      const code = params.get("code");
-      if (!code) {
-        // page not called with "code" query parameter, let's redirect the user to the login
-        client.auth.getAuthUri().then(function(url) {
-          window.location = url;
-        });
-      } else {
-        // we have a code, the client now can fetch a token
-        client.auth.fetchToken(document.location.href).then(function() {
-          // do a simple graphql query and output the account id
-          client.graphQL
-            .rawQuery(
-              `{
-                          viewer {
-                              mainAccount {
-                                  id
-                              }
-                          }
-                      }`
-            )
-            .then(function(result) {
-              console.log(result);
-            });
-        });
-      }
-    </script>
-  </body>
-</html>
 ```
