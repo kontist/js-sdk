@@ -58,6 +58,12 @@ app.listen(3000, function() {
 });
 ```
 
+You should be able to issue new accessToken by simply calling:
+
+```typescript
+await token.refresh((newToken) => { ... });
+```
+
 ## Usage (Browser)
 
 ```html
