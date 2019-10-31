@@ -79,3 +79,55 @@ export const FETCH_TRANSACTIONS = `query fetchTransactions ($first: Int, $last: 
     }
   }
 }`;
+
+export const CREATE_TRANSFER = `mutation createTransfer($transfer: CreateTransferInput!) {
+  createTransfer(transfer: $transfer) {
+    id
+  }
+}`;
+
+export const CONFIRM_TRANSFER = `mutation confirmTransfer(
+  $confirmationId: String!
+  $authorizationToken: String!
+) {
+  confirmTransfer(
+    transferId: $confirmationId
+    authorizationToken: $authorizationToken
+  ) {
+    id
+    status
+    amount
+    purpose
+    recipient
+    iban
+    e2eId
+  }
+}`;
+
+export const CREATE_TRANSFERS = `mutation createTransfers($transfers: [CreateTransferInput!]!) {
+  createTransfers(transfers: $transfers) {
+    confirmationId
+  }
+}`;
+
+export const CONFIRM_TRANSFERS = `mutation confirmTransfer(
+  $confirmationId: String!
+  $authorizationToken: String!
+) {
+  confirmTransfers(
+    confirmationId: $confirmationId
+    authorizationToken: $authorizationToken
+  ) {
+    id
+    status
+    transfers {
+      id
+      status
+      recipient
+      iban
+      purpose
+      amount
+      e2eId
+    }
+  }
+}`;

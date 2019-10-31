@@ -6,6 +6,12 @@ import {
 import { Model } from "./model";
 import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
+import {
+  CREATE_TRANSFER,
+  CONFIRM_TRANSFER,
+  CREATE_TRANSFERS,
+  CONFIRM_TRANSFERS
+} from "./queries";
 
 export class Transfer extends Model<TransferEntry> {
   /**
@@ -15,13 +21,7 @@ export class Transfer extends Model<TransferEntry> {
    * @returns         confirmation id used to confirm the transfer
    */
   async createOne(transfer: CreateTransferInput): Promise<string> {
-    const query = `mutation createTransfer($transfer: CreateTransferInput!) {
-      createTransfer(transfer: $transfer) {
-        id
-      }
-    }`;
-
-    const result = await this.client.rawQuery(query, { transfer });
+    const result = await this.client.rawQuery(CREATE_TRANSFER, { transfer });
     return result.createTransfer.id;
   }
 
@@ -36,29 +36,10 @@ export class Transfer extends Model<TransferEntry> {
     confirmationId: string,
     authorizationToken: string
   ): Promise<TransferEntry> {
-    const query = `mutation confirmTransfer(
-      $confirmationId: String!
-      $authorizationToken: String!
-    ) {
-      confirmTransfer(
-        transferId: $confirmationId
-        authorizationToken: $authorizationToken
-      ) {
-        id
-        status
-        amount
-        purpose
-        recipient
-        iban
-        e2eId
-      }
-    }`;
-
-    const variables = {
+    const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       confirmationId,
       authorizationToken
-    };
-    const result = await this.client.rawQuery(query, variables);
+    });
     return result.confirmTransfer;
   }
 
@@ -69,13 +50,7 @@ export class Transfer extends Model<TransferEntry> {
    * @returns           confirmation id used to confirm the transfer
    */
   async createMany(transfers: Array<CreateTransferInput>): Promise<string> {
-    const query = `mutation createTransfers($transfers: [CreateTransferInput!]!) {
-      createTransfers(transfers: $transfers) {
-        confirmationId
-      }
-    }`;
-
-    const result = await this.client.rawQuery(query, { transfers });
+    const result = await this.client.rawQuery(CREATE_TRANSFERS, { transfers });
     return result.createTransfers.confirmationId;
   }
 
@@ -90,33 +65,10 @@ export class Transfer extends Model<TransferEntry> {
     confirmationId: string,
     authorizationToken: string
   ): Promise<BatchTransfer> {
-    const query = `mutation confirmTransfer(
-      $confirmationId: String!
-      $authorizationToken: String!
-    ) {
-      confirmTransfers(
-        confirmationId: $confirmationId
-        authorizationToken: $authorizationToken
-      ) {
-        id
-        status
-        transfers {
-          id
-          status
-          recipient
-          iban
-          purpose
-          amount
-          e2eId
-        }
-      }
-    }`;
-
-    const variables = {
+    const result = await this.client.rawQuery(CONFIRM_TRANSFERS, {
       confirmationId,
       authorizationToken
-    };
-    const result = await this.client.rawQuery(query, variables);
+    });
     return result.confirmTransfers;
   }
 
