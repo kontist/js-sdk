@@ -9,23 +9,25 @@ describe("Auth", () => {
   const scopes = ["transactions"];
   const state = "25843739712322056";
   const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
+  const clientSecret = "very-secret";
 
   let client: Client;
 
   describe("client.auth.getAuthUri()", () => {
-    it("should return proper redirect url", async () => {
+    it("should return proper redirect url when clientSecret is provided", async () => {
       client = new Client({
         clientId,
         redirectUri,
         scopes,
-        state
+        state,
+        clientSecret
       });
       const url = await client.auth.getAuthUri();
       const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
       expect(url).to.equal(expectedUrl);
     });
 
-    it("should return proper redirect url when verifier is provided", async () => {
+    it("should return proper redirect url when code verifier is provided", async () => {
       client = new Client({
         clientId,
         redirectUri,
