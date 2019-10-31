@@ -4,11 +4,11 @@ import {
   TransactionsConnectionEdge,
   Transaction as TransactionEntry
 } from "./schema";
-import { Model } from "./model";
+import { IterableModel } from "./iterableModel";
 import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
 
-export class Transaction extends Model<TransactionEntry> {
+export class Transaction extends IterableModel<TransactionEntry> {
   /**
    * Fetches first 50 transactions which match the query
    *

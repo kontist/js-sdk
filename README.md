@@ -79,13 +79,16 @@ const result = await client.graphQL.rawQuery(query);
 An example to show how to fetch all user transactions
 
 ```typescript
-let transactionPage = await client.models.transaction.fetch();
-let transactions = transactionPage.items;
-
-while (transactionPage.nextPage) {
-  transactionPage = await transactionPage.nextPage();
-  transactions = transactions.concat(transactionPage.items);
+let transactions = [];
+for await (const transaction of client.models.transaction) {
+  transactions = transactions.concat(transaction);
 }
+```
+
+To fetch up to 50 latest transactions:
+
+```typescript
+const transactions = await client.models.transaction.fetch();
 ```
 
 #### Transfers
