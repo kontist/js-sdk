@@ -1,12 +1,25 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { sha256 } from "js-sha256";
 import { btoa } from "abab";
-import { ClientOpts } from "./types";
+import {
+  ClientOpts,
+  Challenge,
+  ChallengeStatus,
+  HttpMethod
+} from "./types";
+import "cross-fetch/polyfill";
+
+export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
+
+const CHALLENGE_POLL_INTERVAL = 3000;
 
 export class Auth {
   private oauth2Client: ClientOAuth2;
   private _token: ClientOAuth2.Token | null = null;
+  private baseUrl: string;
   private verifier?: string;
+  private challengePollInterval: number = CHALLENGE_POLL_INTERVAL;
+  private challengePollIntervalId?: ReturnType<typeof setInterval>;
 
   /**
    * Client OAuth2 module instance.
@@ -27,6 +40,7 @@ export class Auth {
       verifier
     } = opts;
     this.verifier = verifier;
+    this.baseUrl = baseUrl;
 
     if (verifier && clientSecret) {
       throw new Error(
@@ -131,6 +145,81 @@ export class Auth {
     this._token = token;
 
     return token;
+  };
+
+  /**
+   * Perform a request against Kontist REST API
+   */
+  private request = async (path: string, method: HttpMethod, body?: string) => {
+    if (!this.token) {
+      throw new Error("User unauthorized");
+    }
+
+    const requestUrl = new URL(path, this.baseUrl).href;
+
+    const response = await fetch(requestUrl, {
+      method,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.token.accessToken}`
+      },
+      body
+    });
+
+    return response.json();
+  };
+
+  /**
+   * Called periodically by `createMFAChallenge` until
+   * the challenge expires or its status is updated
+   */
+  private pollChallengeStatus = (
+    pendingChallenge: Challenge,
+    resolve: Function,
+    reject: Function
+  ) => async () => {
+    const challenge = await this.request(
+      `${MFA_CHALLENGE_PATH}/${pendingChallenge.id}`,
+      HttpMethod.GET
+    );
+
+    if (new Date(challenge.expiresAt) < new Date()) {
+      if (this.challengePollIntervalId) {
+        clearInterval(this.challengePollIntervalId);
+      }
+      reject(new Error("Challenge expired"));
+    } else if (challenge.status === ChallengeStatus.DENIED) {
+      if (this.challengePollIntervalId) {
+        clearInterval(this.challengePollIntervalId);
+      }
+      reject(new Error("Challenge denied"));
+    } else if (challenge.status === ChallengeStatus.VERIFIED) {
+      if (this.challengePollIntervalId) {
+        clearInterval(this.challengePollIntervalId);
+      }
+      const { token: confirmedToken } = await this.request(
+        `${MFA_CHALLENGE_PATH}/${challenge.id}/token`,
+        HttpMethod.POST
+      );
+
+      this.setToken(confirmedToken);
+      resolve(confirmedToken);
+    }
+  };
+
+  /**
+   * Create an MFA challenge and request a confirmed access token when verified
+   */
+  public createMFAChallenge = async () => {
+    const challenge = await this.request(MFA_CHALLENGE_PATH, HttpMethod.POST);
+
+    return new Promise((resolve, reject) => {
+      this.challengePollIntervalId = setInterval(
+        this.pollChallengeStatus(challenge, resolve, reject),
+        this.challengePollInterval
+      );
+    });
   };
 
   /**
