@@ -98,12 +98,13 @@ app.listen(3000, function() {
           client.graphQL
             .rawQuery(
               `{
-                          viewer {
-                              mainAccount {
-                                  id
-                              }
-                          }
-                      }`
+              viewer {
+                mainAccount {
+                  iban
+                  balance
+                }
+              }
+            }`
             )
             .then(function(result) {
               console.log(result);
