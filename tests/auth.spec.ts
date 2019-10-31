@@ -51,31 +51,52 @@ describe("Auth", () => {
     let oauthClient: ClientOAuth2;
     let tokenData: ClientOAuth2.Token;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       oauthClient = new ClientOAuth2({});
 
       sinon.stub(oauthClient.code, "getToken").callsFake(async () => {
         return new ClientOAuth2.Token(oauthClient, tokenResponseData);
       });
-
-      const client = createClient({ verifier, oauthClient });
-
-      tokenData = await client.auth.fetchToken(callbackUrl);
     });
 
-    it("should call oauthClient.code.getToken() with proper arguments", () => {
-      const stub = oauthClient.code.getToken as sinon.SinonStub;
-      const [url, opts] = stub.getCall(0).args;
-      expect(url).to.equal(callbackUrl);
-      expect(opts).to.deep.equal({
-        body: {
-          code_verifier: verifier
-        }
+    describe("for code verifier", () => {
+      beforeEach(async () => {
+        const client = createClient({ verifier, oauthClient });
+        tokenData = await client.auth.fetchToken(callbackUrl);
+      });
+
+      it("should call oauthClient.code.getToken() with proper arguments", () => {
+        const stub = oauthClient.code.getToken as sinon.SinonStub;
+        const [url, opts] = stub.getCall(0).args;
+        expect(url).to.equal(callbackUrl);
+        expect(opts).to.deep.equal({
+          body: {
+            code_verifier: verifier
+          }
+        });
+      });
+
+      it("should return token data", () => {
+        expect(tokenData.data).to.deep.equal(tokenResponseData);
       });
     });
 
-    it("should return token data", () => {
-      expect(tokenData.data).to.deep.equal(tokenResponseData);
+    describe("for client secret", () => {
+      beforeEach(async () => {
+        const client = createClient({ clientSecret, oauthClient });
+        tokenData = await client.auth.fetchToken(callbackUrl);
+      });
+
+      it("should call oauthClient.code.getToken() with an empty object", () => {
+        const stub = oauthClient.code.getToken as sinon.SinonStub;
+        const [url, opts] = stub.getCall(0).args;
+        expect(url).to.equal(callbackUrl);
+        expect(opts).to.deep.equal({});
+      });
+
+      it("should return token data", () => {
+        expect(tokenData.data).to.deep.equal(tokenResponseData);
+      });
     });
   });
 
