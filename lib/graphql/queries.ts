@@ -32,3 +32,12 @@ export const GET_USER = `query {
     vatRate
   }
 }`;
+
+export const GET_ACCOUNT = `query {
+  viewer {
+    mainAccount {
+      iban
+      balance
+    }
+  }
+}`;
