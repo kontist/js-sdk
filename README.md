@@ -19,9 +19,9 @@ import express from "express";
 import { Client } from "@kontist/client";
 
 const CALLBACK_PATH = "/auth/callback";
-const REDIRECT_URI = "YOUR_BASE_URL" + CALLBACK_PATH;
+const REDIRECT_URI = <YOUR_BASE_URL> + CALLBACK_PATH;
+const clientSecret = <YOUR_CLIENT_SECRET>;
 const state = (Math.random() + "").substring(2);
-const verifier = (Math.random() + "").substring(2);
 const app = express();
 
 // create a client
@@ -29,8 +29,8 @@ const client = new Client({
   clientId: "YOUR_CLIENT_ID",
   redirectUri: REDIRECT_URI,
   scopes: ["transactions"],
-  state,
-  verifier
+  clientSecret,
+  state
 });
 
 // redirect not authenticated user to Kontist form
