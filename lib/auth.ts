@@ -8,6 +8,13 @@ export class Auth {
   private _token: ClientOAuth2.Token | null = null;
   private verifier?: string;
 
+  /**
+   * Client OAuth2 module instance.
+   *
+   * @param baseUrl  Kontist API base url
+   * @param opts     OAuth2 client data including at least clientId, redirectUri,
+   *                 scopes, state and clientSecret or verifier (for PKCE).
+   */
   constructor(baseUrl: string, opts: ClientOpts) {
     const {
       clientId,
@@ -59,6 +66,9 @@ export class Auth {
 
   /**
    * This method must be called during the callback via `redirectUri`.
+   *
+   * @param callbackUri  `redirectUri` containing OAuth2 data after user authentication
+   * @returns            token object which might contain token(s), scope(s), token type and expiration time
    */
   public fetchToken = async (
     callbackUri: string
@@ -83,7 +93,12 @@ export class Auth {
   };
 
   /**
-   * Use a previously created token for all upcoming requests.
+   * Sets up  previously created token for all upcoming requests.
+   *
+   * @param accessToken   access token
+   * @param refreshToken  optional refresh token
+   * @param tokenType     token type
+   * @returns             token object which might contain token(s), scope(s), token type and expiration time
    */
   public setToken = (
     accessToken: string,
@@ -111,6 +126,11 @@ export class Auth {
     return token;
   };
 
+  /**
+   * Returns current token used for API requests.
+   *
+   * @returns  token object which might contain token(s), scope(s), token type and expiration time
+   */
   get token(): ClientOAuth2.Token | null {
     return this._token;
   }
