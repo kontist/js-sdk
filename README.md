@@ -19,9 +19,9 @@ import express from "express";
 import { Client } from "@kontist/client";
 
 const CALLBACK_PATH = "/auth/callback";
-const REDIRECT_URI = "YOUR_BASE_URL" + CALLBACK_PATH;
+const REDIRECT_URI = <YOUR_BASE_URL> + CALLBACK_PATH;
+const clientSecret = <YOUR_CLIENT_SECRET>;
 const state = (Math.random() + "").substring(2);
-const verifier = (Math.random() + "").substring(2);
 const app = express();
 
 // create a client
@@ -29,8 +29,8 @@ const client = new Client({
   clientId: "YOUR_CLIENT_ID",
   redirectUri: REDIRECT_URI,
   scopes: ["transactions"],
-  state,
-  verifier
+  clientSecret,
+  state
 });
 
 // redirect not authenticated user to Kontist form
@@ -56,6 +56,70 @@ app.get(CALLBACK_PATH, async (req, res) => {
 app.listen(3000, function() {
   console.log("Listening on port 3000!");
 });
+```
+
+You should be able to issue new accessToken by simply calling:
+
+```typescript
+await token.refresh((newToken) => { ... });
+```
+
+## Usage (Browser)
+
+```html
+<html>
+  <body>
+    <script src="https://cdn.kontist.com/sdk.min.js"></script>
+    <script>
+      // persist a random value
+      sessionStorage.setItem(
+        "state",
+        sessionStorage.getItem("state") || (Math.random() + "").substring(2)
+      );
+      sessionStorage.setItem(
+        "verifier",
+        sessionStorage.getItem("verifier") || (Math.random() + "").substring(2)
+      );
+
+      // initialize Kontist client
+      const client = new Kontist.Client({
+        clientId: "<your client id>",
+        redirectUri: "<your base url>",
+        scopes: ["transactions"],
+        state: sessionStorage.getItem("state"),
+        verifier: sessionStorage.getItem("verifier")
+      });
+
+      const params = new URL(document.location).searchParams;
+      const code = params.get("code");
+      if (!code) {
+        // page not called with "code" query parameter, let's redirect the user to the login
+        client.auth.getAuthUri().then(function(url) {
+          window.location = url;
+        });
+      } else {
+        // we have a code, the client now can fetch a token
+        client.auth.fetchToken(document.location.href).then(function() {
+          // do a simple graphql query and output the account id
+          client.graphQL
+            .rawQuery(
+              `{
+              viewer {
+                mainAccount {
+                  iban
+                  balance
+                }
+              }
+            }`
+            )
+            .then(function(result) {
+              console.log(result);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
 ```
 
 ### GraphQL queries
@@ -139,61 +203,4 @@ const result = await client.models.transfer.confirmMany(
   <confirmation_id>,
   <authorization_token>
 );
-```
-
-## Usage (Browser)
-
-```html
-<html>
-  <body>
-    <script src="https://cdn.kontist.com/sdk.min.js"></script>
-    <script>
-      // persist a random value
-      sessionStorage.setItem(
-        "state",
-        sessionStorage.getItem("state") || (Math.random() + "").substring(2)
-      );
-      sessionStorage.setItem(
-        "verifier",
-        sessionStorage.getItem("verifier") || (Math.random() + "").substring(2)
-      );
-
-      // initialize Kontist client
-      const client = new Kontist.Client({
-        clientId: "<your client id>",
-        redirectUri: "<your base url>",
-        scopes: ["transactions"],
-        state: sessionStorage.getItem("state"),
-        verifier: sessionStorage.getItem("verifier")
-      });
-
-      const params = new URL(document.location).searchParams;
-      const code = params.get("code");
-      if (!code) {
-        // page not called with "code" query parameter, let's redirect the user to the login
-        client.auth.getAuthUri().then(function(url) {
-          window.location = url;
-        });
-      } else {
-        // we have a code, the client now can fetch a token
-        client.auth.fetchToken(document.location.href).then(function() {
-          // do a simple graphql query and output the account id
-          client.graphQL
-            .rawQuery(
-              `{
-                          viewer {
-                              mainAccount {
-                                  id
-                              }
-                          }
-                      }`
-            )
-            .then(function(result) {
-              console.log(result);
-            });
-        });
-      }
-    </script>
-  </body>
-</html>
 ```
