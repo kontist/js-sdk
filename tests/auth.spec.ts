@@ -11,30 +11,28 @@ describe("Auth", () => {
   const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
   const clientSecret = "very-secret";
 
+  const createClient = (opts = {}) => {
+    return new Client({
+      clientId,
+      redirectUri,
+      scopes,
+      state,
+      ...opts
+    });
+  };
+
   let client: Client;
 
   describe("client.auth.getAuthUri()", () => {
     it("should return proper redirect url when clientSecret is provided", async () => {
-      client = new Client({
-        clientId,
-        redirectUri,
-        scopes,
-        state,
-        clientSecret
-      });
+      client = createClient({ clientSecret });
       const url = await client.auth.getAuthUri();
       const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
       expect(url).to.equal(expectedUrl);
     });
 
     it("should return proper redirect url when code verifier is provided", async () => {
-      client = new Client({
-        clientId,
-        redirectUri,
-        scopes,
-        state,
-        verifier
-      });
+      client = createClient({ verifier });
       const codeChallenge = "xc3uY4-XMuobNWXzzfEqbYx3rUYBH69_zu4EFQIJH8w";
       const codeChallengeMethod = "S256";
       const url = await client.auth.getAuthUri();
@@ -60,16 +58,9 @@ describe("Auth", () => {
         return new ClientOAuth2.Token(oauthClient, tokenResponseData);
       });
 
-      const clientMock = new Client({
-        clientId,
-        oauthClient,
-        redirectUri,
-        scopes,
-        state,
-        verifier
-      });
+      const client = createClient({ verifier, oauthClient });
 
-      tokenData = await clientMock.auth.fetchToken(callbackUrl);
+      tokenData = await client.auth.fetchToken(callbackUrl);
     });
 
     it("should call oauthClient.code.getToken() with proper arguments", () => {
@@ -114,14 +105,7 @@ describe("Auth", () => {
     it("should throw an error", () => {
       let error;
       try {
-        client = new Client({
-          clientId,
-          redirectUri,
-          scopes,
-          state,
-          verifier,
-          clientSecret: "some-secret"
-        });
+        client = createClient({ verifier, clientSecret });
       } catch (err) {
         error = err;
       }
