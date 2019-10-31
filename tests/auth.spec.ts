@@ -107,4 +107,26 @@ describe("Auth", () => {
       expect(token.tokenType).to.equal(tokenType);
     });
   });
+
+  describe("when both code verifier and code secret are provided", () => {
+    it("should throw an error", () => {
+      let error;
+      try {
+        client = new Client({
+          clientId,
+          redirectUri,
+          scopes,
+          state,
+          verifier,
+          clientSecret: "some-secret"
+        });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error.message).to.equal(
+        "You can provide only one parameter from ['verifier', 'clientSecret']."
+      );
+    });
+  });
 });

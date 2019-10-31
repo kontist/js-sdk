@@ -13,7 +13,8 @@ export class Auth {
    *
    * @param baseUrl  Kontist API base url
    * @param opts     OAuth2 client data including at least clientId, redirectUri,
-   *                 scopes, state and clientSecret or verifier (for PKCE).
+   *                 scopes, state and clientSecret or code verifier (for PKCE).
+   * @throws         throws when both clientSecret and code verifier are provided
    */
   constructor(baseUrl: string, opts: ClientOpts) {
     const {
@@ -26,6 +27,12 @@ export class Auth {
       verifier
     } = opts;
     this.verifier = verifier;
+
+    if (verifier && clientSecret) {
+      throw new Error(
+        "You can provide only one parameter from ['verifier', 'clientSecret']."
+      );
+    }
 
     this.oauth2Client =
       oauthClient ||
