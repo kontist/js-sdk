@@ -19,7 +19,7 @@ const CONFIRM_TRANSFER = `mutation confirmTransfer(
   $authorizationToken: String!
 ) {
   confirmTransfer(
-    transferId: $confirmationId
+    confirmationId: $confirmationId
     authorizationToken: $authorizationToken
   ) {
     id
@@ -36,7 +36,7 @@ const CONFIRM_TRANSFER = `mutation confirmTransfer(
   }
 }`;
 
-const CREATE_TRANSFERS = `mutation createTransfers($transfers: [CreateTransferInput!]!) {
+const CREATE_TRANSFERS = `mutation($transfers: [CreateSepaTransferInput!]!) {
   createTransfers(transfers: $transfers) {
     confirmationId
   }
