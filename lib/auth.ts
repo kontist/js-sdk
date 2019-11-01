@@ -183,7 +183,7 @@ export class Auth {
   };
 
   /**
-   * Called periodically by `createMFAChallenge` until
+   * Called periodically by `getMFAConfirmedToken` until
    * the challenge expires or its status is updated
    */
   private pollChallengeStatus = (
@@ -217,7 +217,7 @@ export class Auth {
   /**
    * Create an MFA challenge and request a confirmed access token when verified
    */
-  public createMFAChallenge = async () => {
+  public getMFAConfirmedToken = async () => {
     const challenge = await this.request(MFA_CHALLENGE_PATH, HttpMethod.POST);
 
     return new Promise((resolve, reject) => {

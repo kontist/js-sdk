@@ -141,7 +141,7 @@ describe("Auth", () => {
     });
   });
 
-  describe("client.auth.createMFAChallenge()", () => {
+  describe("client.auth.getMFAConfirmedToken()", () => {
     const setup = (updatedChallenge: Object) => {
       const challenge = {
         id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
@@ -185,7 +185,7 @@ describe("Auth", () => {
           status: ChallengeStatus.VERIFIED
         });
 
-        const response: any = await client.auth.createMFAChallenge();
+        const response: any = await client.auth.getMFAConfirmedToken();
 
         expect(requestStub.callCount).to.equal(4);
         expect(response.accessToken).to.equal(confirmedToken);
@@ -205,7 +205,7 @@ describe("Auth", () => {
         let error;
 
         try {
-          await client.auth.createMFAChallenge();
+          await client.auth.getMFAConfirmedToken();
         } catch (err) {
           error = err;
         }
@@ -227,7 +227,7 @@ describe("Auth", () => {
         let error;
 
         try {
-          await client.auth.createMFAChallenge();
+          await client.auth.getMFAConfirmedToken();
         } catch (err) {
           error = err;
         }

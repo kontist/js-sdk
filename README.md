@@ -223,8 +223,8 @@ Kontist SDK exposes a method to initiate the MFA flow after you successfully rec
 const token = await client.auth.fetchToken(callbackUrl);
 
 try {
-  // create an MFA challenge
-  const confirmedToken = await client.auth.createMFAChallenge();
+  // create an MFA challenge and wait for confirmation
+  const confirmedToken = await client.auth.getMFAConfirmedToken();
   // once it has been verified, your `client` instance will have a confirmed access token
   // the confirmed token is also returned in case you want to store it
 } catch (err) {
