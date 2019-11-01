@@ -96,7 +96,22 @@ export type CreateClientInput = {
   scopes: Array<ScopeType>,
 };
 
-export type CreateTransferInput = {
+export type CreateConfirmationResult = {
+   __typename?: 'CreateConfirmationResult',
+  id: Scalars['String'],
+  recipient: Scalars['String'],
+  iban: Scalars['String'],
+  amount: Scalars['Int'],
+  status?: Maybe<Scalars['String']>,
+  executeAt?: Maybe<Scalars['DateTime']>,
+  lastExecutionDate?: Maybe<Scalars['DateTime']>,
+  purpose?: Maybe<Scalars['String']>,
+  e2eId?: Maybe<Scalars['String']>,
+  reoccurrence?: Maybe<StandingOrderReoccurenceType>,
+  nextOccurrence?: Maybe<Scalars['DateTime']>,
+};
+
+export type CreateSepaTransferInput = {
   recipient: Scalars['String'],
   iban: Scalars['String'],
   amount: Scalars['Int'],
@@ -104,8 +119,39 @@ export type CreateTransferInput = {
   e2eId?: Maybe<Scalars['String']>,
 };
 
-export type CreateTransfersResult = {
-   __typename?: 'CreateTransfersResult',
+export type CreateStandingOrderInput = {
+  recipient: Scalars['String'],
+  iban: Scalars['String'],
+  amount: Scalars['Int'],
+  executeAt: Scalars['DateTime'],
+  lastExecutionDate?: Maybe<Scalars['DateTime']>,
+  purpose?: Maybe<Scalars['String']>,
+  e2eId?: Maybe<Scalars['String']>,
+  reoccurrence: StandingOrderReoccurenceType,
+};
+
+export type CreateTimedOrderInput = {
+  recipient: Scalars['String'],
+  iban: Scalars['String'],
+  amount: Scalars['Int'],
+  executeAt: Scalars['DateTime'],
+  purpose?: Maybe<Scalars['String']>,
+  e2eId?: Maybe<Scalars['String']>,
+};
+
+export type CreateTransferInput = {
+  recipient: Scalars['String'],
+  iban: Scalars['String'],
+  amount: Scalars['Int'],
+  executeAt?: Maybe<Scalars['DateTime']>,
+  lastExecutionDate?: Maybe<Scalars['DateTime']>,
+  purpose?: Maybe<Scalars['String']>,
+  e2eId?: Maybe<Scalars['String']>,
+  reoccurrence?: Maybe<StandingOrderReoccurenceType>,
+};
+
+export type CreateTransferResult = {
+   __typename?: 'CreateTransferResult',
   confirmationId: Scalars['String'],
 };
 
@@ -157,13 +203,63 @@ export enum InvoiceStatus {
 
 export type Mutation = {
    __typename?: 'Mutation',
-  createTransfer: Transfer,
-  confirmTransfer: Transfer,
-  createTransfers: CreateTransfersResult,
+  createTransfers: CreateTransferResult,
   confirmTransfers: BatchTransfer,
+  createSepaTransfer: CreateTransferResult,
+  confirmSepaTransfer: Transfer,
+  createStandingOrder: CreateTransferResult,
+  confirmStandingOrder: StandingOrder,
+  createTimedOrder: CreateTransferResult,
+  confirmTimedOrder: TimedOrder,
+  createTransfer: CreateTransferResult,
+  confirmTransfer: CreateConfirmationResult,
   createClient: Client,
   updateClient: Client,
   deleteClient: Client,
+};
+
+
+export type MutationCreateTransfersArgs = {
+  transfers: Array<CreateSepaTransferInput>
+};
+
+
+export type MutationConfirmTransfersArgs = {
+  authorizationToken: Scalars['String'],
+  confirmationId: Scalars['String']
+};
+
+
+export type MutationCreateSepaTransferArgs = {
+  transfer: CreateSepaTransferInput
+};
+
+
+export type MutationConfirmSepaTransferArgs = {
+  authorizationToken: Scalars['String'],
+  confirmationId: Scalars['String']
+};
+
+
+export type MutationCreateStandingOrderArgs = {
+  standingOrder: CreateStandingOrderInput
+};
+
+
+export type MutationConfirmStandingOrderArgs = {
+  authorizationToken: Scalars['String'],
+  confirmationId: Scalars['String']
+};
+
+
+export type MutationCreateTimedOrderArgs = {
+  timedOrder: CreateTimedOrderInput
+};
+
+
+export type MutationConfirmTimedOrderArgs = {
+  authorizationToken: Scalars['String'],
+  confirmationId: Scalars['String']
 };
 
 
@@ -173,17 +269,6 @@ export type MutationCreateTransferArgs = {
 
 
 export type MutationConfirmTransferArgs = {
-  authorizationToken: Scalars['String'],
-  transferId: Scalars['String']
-};
-
-
-export type MutationCreateTransfersArgs = {
-  transfers: Array<CreateTransferInput>
-};
-
-
-export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String']
 };
@@ -484,6 +569,57 @@ export enum ScopeType {
   Statements = 'STATEMENTS',
   Admin = 'ADMIN',
   Clients = 'CLIENTS'
+}
+
+export type StandingOrder = {
+   __typename?: 'StandingOrder',
+  id: Scalars['String'],
+  status: StandingOrderStatus,
+  iban: Scalars['String'],
+  recipient: Scalars['String'],
+  purpose?: Maybe<Scalars['String']>,
+  amount: Scalars['Int'],
+  executeAt: Scalars['DateTime'],
+  lastExecutionDate?: Maybe<Scalars['DateTime']>,
+  e2eId?: Maybe<Scalars['String']>,
+  reoccurrence: StandingOrderReoccurenceType,
+  nextOccurrence?: Maybe<Scalars['DateTime']>,
+};
+
+export enum StandingOrderReoccurenceType {
+  Monthly = 'MONTHLY',
+  Quarterly = 'QUARTERLY',
+  EverySixMonths = 'EVERY_SIX_MONTHS',
+  Annually = 'ANNUALLY'
+}
+
+export enum StandingOrderStatus {
+  Created = 'CREATED',
+  Active = 'ACTIVE',
+  Inactive = 'INACTIVE',
+  Canceled = 'CANCELED'
+}
+
+export type TimedOrder = {
+   __typename?: 'TimedOrder',
+  id: Scalars['ID'],
+  executeAt: Scalars['String'],
+  status: TimedOrderStatus,
+  purpose?: Maybe<Scalars['String']>,
+  iban: Scalars['String'],
+  recipient: Scalars['String'],
+  e2eId?: Maybe<Scalars['String']>,
+  amount: Scalars['Int'],
+};
+
+export enum TimedOrderStatus {
+  Created = 'CREATED',
+  AuthorizationRequired = 'AUTHORIZATION_REQUIRED',
+  ConfirmationRequired = 'CONFIRMATION_REQUIRED',
+  Scheduled = 'SCHEDULED',
+  Executed = 'EXECUTED',
+  Canceled = 'CANCELED',
+  Failed = 'FAILED'
 }
 
 export type Transaction = {
