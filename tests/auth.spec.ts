@@ -185,10 +185,10 @@ describe("Auth", () => {
           status: ChallengeStatus.VERIFIED
         });
 
-        const response = await client.auth.createMFAChallenge();
+        const response: any = await client.auth.createMFAChallenge();
 
         expect(requestStub.callCount).to.equal(4);
-        expect(response).to.equal(confirmedToken);
+        expect(response.accessToken).to.equal(confirmedToken);
         expect(client.auth.token && client.auth.token.accessToken).to.equal(
           confirmedToken
         );

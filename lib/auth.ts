@@ -202,8 +202,8 @@ export class Auth {
         HttpMethod.POST
       );
 
-      this.setToken(confirmedToken);
-      return resolve(confirmedToken);
+      const token = this.setToken(confirmedToken);
+      return resolve(token);
     }
   };
 
