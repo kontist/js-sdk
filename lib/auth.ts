@@ -188,10 +188,10 @@ export class Auth {
 
     if (new Date(challenge.expiresAt) < new Date()) {
       clearInterval(this.challengePollIntervalId as IntervalID);
-      reject(new Error("Challenge expired"));
+      return reject(new Error("Challenge expired"));
     } else if (challenge.status === ChallengeStatus.DENIED) {
       clearInterval(this.challengePollIntervalId as IntervalID);
-      reject(new Error("Challenge denied"));
+      return reject(new Error("Challenge denied"));
     } else if (challenge.status === ChallengeStatus.VERIFIED) {
         clearInterval(this.challengePollIntervalId as IntervalID);
       const { token: confirmedToken } = await this.request(
@@ -200,7 +200,7 @@ export class Auth {
       );
 
       this.setToken(confirmedToken);
-      resolve(confirmedToken);
+      return resolve(confirmedToken);
     }
   };
 
