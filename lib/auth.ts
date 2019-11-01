@@ -172,6 +172,13 @@ export class Auth {
       body
     });
 
+    if (!response.ok) {
+      throw new KontistSDKError({
+        status: response.status,
+        message: response.statusText
+      })
+    }
+
     return response.json();
   };
 
