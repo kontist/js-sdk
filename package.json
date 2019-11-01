@@ -4,7 +4,7 @@
   "description": "Kontist client SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/kontist/sdk.git",
+  "repository": "https://github.com/kontist/js-sdk.git",
   "author": "",
   "license": "MIT",
   "scripts": {
