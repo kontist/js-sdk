@@ -157,7 +157,7 @@ const transactions = await client.models.transaction.fetch();
 
 #### Transfers
 
-To create and confirm a transfer:
+To create and confirm a transfer / timed order / standing order:
 
 ```typescript
 const confirmationId = await client.models.transfer.createOne({
@@ -166,6 +166,9 @@ const confirmationId = await client.models.transfer.createOne({
   iban: <recipent_iban>,
   purpose: <optional_description>,
   e2eId: <optional_e2eId>,
+  executeAt: <optional_order_execution_date> // mandatory for timed and standing order
+  lastExecutionDate: <optional_last_execution_date> // optional for standing order
+  reoccurrence: <optional_order_reoccurrence> // mandatory for standing order
 });
 
 // wait for sms
