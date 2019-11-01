@@ -1,7 +1,8 @@
 import {
   CreateTransferInput,
   Transfer as TransferEntry,
-  BatchTransfer
+  BatchTransfer,
+  CreateConfirmationResult
 } from "./schema";
 import { Model } from "./model";
 import { FetchOptions } from "./types";
@@ -9,7 +10,7 @@ import { ResultPage } from "./resultPage";
 
 const CREATE_TRANSFER = `mutation createTransfer($transfer: CreateTransferInput!) {
   createTransfer(transfer: $transfer) {
-    id
+    confirmationId
   }
 }`;
 
@@ -22,12 +23,16 @@ const CONFIRM_TRANSFER = `mutation confirmTransfer(
     authorizationToken: $authorizationToken
   ) {
     id
-    status
-    amount
-    purpose
     recipient
     iban
+    amount
+    status
+    executeAt
+    lastExecutionDate
+    purpose
     e2eId
+    reoccurrence
+    nextOccurrence
   }
 }`;
 
@@ -59,20 +64,20 @@ const CONFIRM_TRANSFERS = `mutation confirmTransfer(
   }
 }`;
 
-export class Transfer extends Model<TransferEntry> {
+export class Transfer extends Model<CreateTransferInput> {
   /**
-   * Creates single wire transfer
+   * Creates single wire transfer / timed order / standing order
    *
    * @param transfer  transfer data including at least recipient, IBAN and amount
    * @returns         confirmation id used to confirm the transfer
    */
   async createOne(transfer: CreateTransferInput): Promise<string> {
     const result = await this.client.rawQuery(CREATE_TRANSFER, { transfer });
-    return result.createTransfer.id;
+    return result.createTransfer.confirmationId;
   }
 
   /**
-   * Confirms single transfer
+   * Creates single wire transfer / timed order / standing order
    *
    * @param confirmationId      confirmation id obtained as a result of `transfer.createOne` call
    * @param authorizationToken  sms token
@@ -81,7 +86,7 @@ export class Transfer extends Model<TransferEntry> {
   async confirmOne(
     confirmationId: string,
     authorizationToken: string
-  ): Promise<TransferEntry> {
+  ): Promise<CreateConfirmationResult> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       confirmationId,
       authorizationToken
