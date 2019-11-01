@@ -157,31 +157,30 @@ const transactions = await client.models.transaction.fetch();
 
 #### Transfers
 
-To create a transfer:
+To create and confirm a transfer:
 
 ```typescript
-const transfer = await client.models.transfer.createOne({
+const confirmationId = await client.models.transfer.createOne({
   amount: <amount>,
   recipient: <recipent_name>,
   iban: <recipent_iban>,
   purpose: <optional_description>,
   e2eId: <optional_e2eId>,
 });
-```
 
-To confirm a transfer:
+// wait for sms
+const smsToken = ...
 
-```typescript
 const result = await client.models.transfer.confirmOne(
-  <confirmation_id>,
-  <authorization_token>
+  confirmationId,
+  smsToken
 );
 ```
 
-To create multiple transfers:
+To create and confirm multiple transfers (with only one confirmation):
 
 ```typescript
-const transfer = await client.models.transfer.createMany([{
+const confirmationId = await client.models.transfer.createMany([{
   amount: <amount>,
   recipient: <recipent_name>,
   iban: <recipent_iban>,
@@ -194,13 +193,12 @@ const transfer = await client.models.transfer.createMany([{
   purpose: <optional_description>,
   e2eId: <optional_e2eId>,
 }]);
-```
 
-To confirm multiple transfers:
+// wait for sms
+const smsToken = ...
 
-```typescript
 const result = await client.models.transfer.confirmMany(
-  <confirmation_id>,
-  <authorization_token>
+  confirmationId,
+  smsToken
 );
 ```
