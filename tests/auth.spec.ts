@@ -149,12 +149,7 @@ describe("Auth", () => {
       };
       const confirmedToken = "cnf-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
-      const client = new Client({
-        clientId,
-        redirectUri,
-        scopes,
-        state
-      });
+      const client = createClient();
 
       client.auth["challengePollInterval"] = 0;
 
