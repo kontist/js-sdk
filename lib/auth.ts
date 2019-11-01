@@ -13,13 +13,15 @@ export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
 
 const CHALLENGE_POLL_INTERVAL = 3000;
 
+type IntervalID = ReturnType<typeof setInterval>;
+
 export class Auth {
   private oauth2Client: ClientOAuth2;
   private _token: ClientOAuth2.Token | null = null;
   private baseUrl: string;
   private verifier?: string;
   private challengePollInterval: number = CHALLENGE_POLL_INTERVAL;
-  private challengePollIntervalId?: ReturnType<typeof setInterval>;
+  private challengePollIntervalId?: IntervalID;
 
   /**
    * Client OAuth2 module instance.
@@ -185,19 +187,13 @@ export class Auth {
     );
 
     if (new Date(challenge.expiresAt) < new Date()) {
-      if (this.challengePollIntervalId) {
-        clearInterval(this.challengePollIntervalId);
-      }
+      clearInterval(this.challengePollIntervalId as IntervalID);
       reject(new Error("Challenge expired"));
     } else if (challenge.status === ChallengeStatus.DENIED) {
-      if (this.challengePollIntervalId) {
-        clearInterval(this.challengePollIntervalId);
-      }
+      clearInterval(this.challengePollIntervalId as IntervalID);
       reject(new Error("Challenge denied"));
     } else if (challenge.status === ChallengeStatus.VERIFIED) {
-      if (this.challengePollIntervalId) {
-        clearInterval(this.challengePollIntervalId);
-      }
+        clearInterval(this.challengePollIntervalId as IntervalID);
       const { token: confirmedToken } = await this.request(
         `${MFA_CHALLENGE_PATH}/${challenge.id}/token`,
         HttpMethod.POST
