@@ -1,12 +1,14 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { sha256 } from "js-sha256";
 import { btoa } from "abab";
+import { ClientOpts, Challenge, ChallengeStatus, HttpMethod } from "./types";
 import {
-  ClientOpts,
-  Challenge,
-  ChallengeStatus,
-  HttpMethod
-} from "./types";
+  ChallengeExpiredError,
+  ChallengeDeniedError,
+  UserUnauthorizedError,
+  KontistSDKError
+} from "./errors";
+
 import "cross-fetch/polyfill";
 
 export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
@@ -45,9 +47,10 @@ export class Auth {
     this.baseUrl = baseUrl;
 
     if (verifier && clientSecret) {
-      throw new Error(
-        "You can provide only one parameter from ['verifier', 'clientSecret']."
-      );
+      throw new KontistSDKError({
+        message:
+          "You can provide only one parameter from ['verifier', 'clientSecret']."
+      });
     }
 
     this.oauth2Client =
@@ -154,7 +157,7 @@ export class Auth {
    */
   private request = async (path: string, method: HttpMethod, body?: string) => {
     if (!this.token) {
-      throw new Error("User unauthorized");
+      throw new UserUnauthorizedError();
     }
 
     const requestUrl = new URL(path, this.baseUrl).href;
@@ -188,12 +191,12 @@ export class Auth {
 
     if (new Date(challenge.expiresAt) < new Date()) {
       clearInterval(this.challengePollIntervalId as IntervalID);
-      return reject(new Error("Challenge expired"));
+      return reject(new ChallengeExpiredError());
     } else if (challenge.status === ChallengeStatus.DENIED) {
       clearInterval(this.challengePollIntervalId as IntervalID);
-      return reject(new Error("Challenge denied"));
+      return reject(new ChallengeDeniedError());
     } else if (challenge.status === ChallengeStatus.VERIFIED) {
-        clearInterval(this.challengePollIntervalId as IntervalID);
+      clearInterval(this.challengePollIntervalId as IntervalID);
       const { token: confirmedToken } = await this.request(
         `${MFA_CHALLENGE_PATH}/${challenge.id}/token`,
         HttpMethod.POST
