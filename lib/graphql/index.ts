@@ -4,14 +4,7 @@ import { Transfer } from "./transfer";
 import { Transaction } from "./transaction";
 import { GraphQLClient } from "./client";
 
-export type Models = {
-  transaction: Transaction;
-  transfer: Transfer;
-  account: Account;
-  user: User;
-};
-
-export const getModels = (graphQLClient: GraphQLClient): Models => ({
+export const getModels = (graphQLClient: GraphQLClient) => ({
   transaction: new Transaction(graphQLClient),
   transfer: new Transfer(graphQLClient),
   account: new Account(graphQLClient),
