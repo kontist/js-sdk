@@ -205,12 +205,6 @@ export type Mutation = {
    __typename?: 'Mutation',
   createTransfers: CreateTransferResult,
   confirmTransfers: BatchTransfer,
-  createSepaTransfer: CreateTransferResult,
-  confirmSepaTransfer: Transfer,
-  createStandingOrder: CreateTransferResult,
-  confirmStandingOrder: StandingOrder,
-  createTimedOrder: CreateTransferResult,
-  confirmTimedOrder: TimedOrder,
   createTransfer: CreateTransferResult,
   confirmTransfer: CreateConfirmationResult,
   createClient: Client,
@@ -225,39 +219,6 @@ export type MutationCreateTransfersArgs = {
 
 
 export type MutationConfirmTransfersArgs = {
-  authorizationToken: Scalars['String'],
-  confirmationId: Scalars['String']
-};
-
-
-export type MutationCreateSepaTransferArgs = {
-  transfer: CreateSepaTransferInput
-};
-
-
-export type MutationConfirmSepaTransferArgs = {
-  authorizationToken: Scalars['String'],
-  confirmationId: Scalars['String']
-};
-
-
-export type MutationCreateStandingOrderArgs = {
-  standingOrder: CreateStandingOrderInput
-};
-
-
-export type MutationConfirmStandingOrderArgs = {
-  authorizationToken: Scalars['String'],
-  confirmationId: Scalars['String']
-};
-
-
-export type MutationCreateTimedOrderArgs = {
-  timedOrder: CreateTimedOrderInput
-};
-
-
-export type MutationConfirmTimedOrderArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String']
 };
@@ -598,28 +559,6 @@ export enum StandingOrderStatus {
   Active = 'ACTIVE',
   Inactive = 'INACTIVE',
   Canceled = 'CANCELED'
-}
-
-export type TimedOrder = {
-   __typename?: 'TimedOrder',
-  id: Scalars['ID'],
-  executeAt: Scalars['String'],
-  status: TimedOrderStatus,
-  purpose?: Maybe<Scalars['String']>,
-  iban: Scalars['String'],
-  recipient: Scalars['String'],
-  e2eId?: Maybe<Scalars['String']>,
-  amount: Scalars['Int'],
-};
-
-export enum TimedOrderStatus {
-  Created = 'CREATED',
-  AuthorizationRequired = 'AUTHORIZATION_REQUIRED',
-  ConfirmationRequired = 'CONFIRMATION_REQUIRED',
-  Scheduled = 'SCHEDULED',
-  Executed = 'EXECUTED',
-  Canceled = 'CANCELED',
-  Failed = 'FAILED'
 }
 
 export type Transaction = {
