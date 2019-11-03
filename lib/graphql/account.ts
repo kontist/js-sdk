@@ -1,7 +1,15 @@
 import { Account as AccountModel, Query } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { GET_ACCOUNT } from "./queries";
+
+const GET_ACCOUNT = `query {
+  viewer {
+    mainAccount {
+      iban
+      balance
+    }
+  }
+}`;
 
 export class Account extends Model<AccountModel> {
   async fetch(): Promise<ResultPage<AccountModel>> {

@@ -6,12 +6,58 @@ import {
 import { Model } from "./model";
 import { FetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
-import {
-  CREATE_TRANSFER,
-  CONFIRM_TRANSFER,
-  CREATE_TRANSFERS,
-  CONFIRM_TRANSFERS
-} from "./queries";
+
+const CREATE_TRANSFER = `mutation createTransfer($transfer: CreateTransferInput!) {
+  createTransfer(transfer: $transfer) {
+    id
+  }
+}`;
+
+const CONFIRM_TRANSFER = `mutation confirmTransfer(
+  $confirmationId: String!
+  $authorizationToken: String!
+) {
+  confirmTransfer(
+    transferId: $confirmationId
+    authorizationToken: $authorizationToken
+  ) {
+    id
+    status
+    amount
+    purpose
+    recipient
+    iban
+    e2eId
+  }
+}`;
+
+const CREATE_TRANSFERS = `mutation createTransfers($transfers: [CreateTransferInput!]!) {
+  createTransfers(transfers: $transfers) {
+    confirmationId
+  }
+}`;
+
+const CONFIRM_TRANSFERS = `mutation confirmTransfer(
+  $confirmationId: String!
+  $authorizationToken: String!
+) {
+  confirmTransfers(
+    confirmationId: $confirmationId
+    authorizationToken: $authorizationToken
+  ) {
+    id
+    status
+    transfers {
+      id
+      status
+      recipient
+      iban
+      purpose
+      amount
+      e2eId
+    }
+  }
+}`;
 
 export class Transfer extends Model<TransferEntry> {
   /**

@@ -1,7 +1,41 @@
 import { User as UserModel, Query } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { GET_USER } from "./queries";
+
+const GET_USER = `query {
+  viewer {
+    birthDate
+    birthPlace
+    businessPurpose
+    city
+    companyType
+    country
+    createdAt
+    economicSector
+    email
+    firstName
+    gender
+    identificationLink
+    identificationStatus
+    isUSPerson
+    lastName
+    mobileNumber
+    nationality
+    otherEconomicSector
+    postCode
+    publicId
+    referralCode
+    street
+    taxCutoffLine
+    taxPaymentFrequency
+    taxRate
+    untrustedPhoneNumber
+    vatCutoffLine
+    vatNumber
+    vatPaymentFrequency
+    vatRate
+  }
+}`;
 
 export class User extends Model<UserModel> {
   async fetch(): Promise<ResultPage<UserModel>> {
