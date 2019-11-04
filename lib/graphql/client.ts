@@ -8,8 +8,8 @@ export class GraphQLClient {
   private client: GQLClient;
   private auth: Auth;
 
-  constructor(baseUrl: string, auth: Auth) {
-    this.client = new GQLClient(`${baseUrl}/api/graphql`);
+  constructor(endpoint: string, auth: Auth) {
+    this.client = new GQLClient(endpoint);
     this.auth = auth;
   }
   /**
