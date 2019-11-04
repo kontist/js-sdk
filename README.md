@@ -228,8 +228,8 @@ try {
   // once it has been verified, your `client` instance will have a confirmed access token
   // the confirmed token is also returned in case you want to store it
 } catch (err) {
-  // if the challenge expires, a `Challenge expired` error will be thrown
-  // if the challenge is denied, a `Challenge denied` error will be thrown
+  // if the challenge expires, a `ChallengeExpiredError` will be thrown
+  // if the challenge is denied, a `ChallengeDeniedError` will be thrown
   console.log(err);
 }
 ```
