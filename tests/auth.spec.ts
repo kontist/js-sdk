@@ -5,7 +5,6 @@ import ClientOAuth2 = require("client-oauth2");
 import { Client, Constants } from "../lib";
 import { MFA_CHALLENGE_PATH } from "../lib/auth";
 import { HttpMethod, ChallengeStatus } from "../lib/types";
-import { ErrorType } from "../lib/errors";
 
 describe("Auth", () => {
   const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
@@ -212,7 +211,6 @@ describe("Auth", () => {
 
         expect(requestStub.callCount).to.equal(3);
         expect(error.message).to.equal("Challenge denied");
-        expect(error.type).to.equal(ErrorType.CHALLENGE_DENIED_ERROR);
         expect(error.name).to.equal("ChallengeDeniedError");
 
         requestStub.restore();
@@ -234,7 +232,6 @@ describe("Auth", () => {
 
         expect(requestStub.callCount).to.equal(3);
         expect(error.message).to.equal("Challenge expired");
-        expect(error.type).to.equal(ErrorType.CHALLENGE_EXPIRED_ERROR);
         expect(error.name).to.equal("ChallengeExpiredError");
 
         requestStub.restore();
