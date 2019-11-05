@@ -1,7 +1,7 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { sha256 } from "js-sha256";
 import { btoa } from "abab";
-import { ClientOpts, Challenge, ChallengeStatus, HttpMethod, CreateDeviceParams, CreateDeviceResult } from "./types";
+import { ClientOpts, Challenge, ChallengeStatus, HttpMethod, CreateDeviceParams, CreateDeviceResult, VerifyDeviceParams } from "./types";
 import {
   ChallengeExpiredError,
   ChallengeDeniedError,
@@ -14,10 +14,13 @@ import "cross-fetch/polyfill";
 
 export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
 export const CREATE_DEVICE_PATH = "/api/user/devices";
+export const VERIFY_DEVICE_PATH = (deviceId: string) => `/api/user/devices/${deviceId}/verify`;
 
 const CHALLENGE_POLL_INTERVAL = 3000;
 
 type TimeoutID = ReturnType<typeof setTimeout>;
+
+const HTTP_STATUS_NO_CONTENT = 204;
 
 export class Auth {
   private oauth2Client: ClientOAuth2;
@@ -182,6 +185,10 @@ export class Auth {
       });
     }
 
+    if (response.status === HTTP_STATUS_NO_CONTENT) {
+      return;
+    }
+
     return response.json();
   };
 
@@ -257,6 +264,13 @@ export class Auth {
    */
   public createDevice = (params: CreateDeviceParams): Promise<CreateDeviceResult> => {
     return this.request(CREATE_DEVICE_PATH, HttpMethod.POST, params);
+  };
+
+  /**
+   * Verify a device and return its `deviceId` and `challengeId` for verification
+   */
+  public verifyDevice = (deviceId: string, params: VerifyDeviceParams): Promise<void> => {
+    return this.request(VERIFY_DEVICE_PATH(deviceId), HttpMethod.POST, params);
   };
 
   /**

@@ -42,3 +42,8 @@ export type CreateDeviceResult = {
   deviceId: string,
   challengeId: string,
 };
+
+export type VerifyDeviceParams = {
+  challengeId: string,
+  signature: string,
+};
