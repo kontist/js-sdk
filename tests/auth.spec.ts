@@ -238,4 +238,34 @@ describe("Auth", () => {
       });
     });
   });
+
+  describe("client.auth.cancelMFAConfirmation()", () => {
+    it("should cancel polling and reject the corresponding promise", async () => {
+      const client = createClient();
+      const requestStub = sinon.stub(client.auth, <any>"request").resolves({
+        id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
+        status: ChallengeStatus.PENDING,
+        expiresAt: moment().add(10, "minutes")
+      });
+      const clearTimeoutSpy = sinon.spy(global, "clearTimeout");
+
+      let error;
+      try {
+        setTimeout(() => {
+          client.auth.cancelMFAConfirmation();
+        }, 100);
+
+        await client.auth.getMFAConfirmedToken();
+      } catch (err) {
+        error = err;
+      }
+
+      expect(clearTimeoutSpy.callCount).to.equal(1);
+      expect(error.message).to.equal("MFA confirmation canceled");
+      expect(error.name).to.equal("MFAConfirmationCanceledError");
+
+      requestStub.restore();
+      clearTimeoutSpy.restore();
+    });
+  });
 });

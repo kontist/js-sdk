@@ -5,6 +5,7 @@ import { ClientOpts, Challenge, ChallengeStatus, HttpMethod } from "./types";
 import {
   ChallengeExpiredError,
   ChallengeDeniedError,
+  MFAConfirmationCanceledError,
   UserUnauthorizedError,
   KontistSDKError
 } from "./errors";
@@ -24,6 +25,7 @@ export class Auth {
   private verifier?: string;
   private challengePollInterval: number = CHALLENGE_POLL_INTERVAL;
   private challengePollTimeoutId?: TimeoutID;
+  private rejectMFAConfirmation: Function | null = null;
 
   /**
    * Client OAuth2 module instance.
@@ -196,6 +198,8 @@ export class Auth {
       HttpMethod.GET
     );
 
+    this.rejectMFAConfirmation = null;
+
     const hasExpired = new Date(challenge.expiresAt) < new Date();
     const wasDenied = challenge.status === ChallengeStatus.DENIED;
     const wasVerified = challenge.status === ChallengeStatus.VERIFIED;
@@ -214,6 +218,7 @@ export class Auth {
       return resolve(token);
     }
 
+    this.rejectMFAConfirmation = reject;
     this.challengePollTimeoutId = setTimeout(
       this.pollChallengeStatus(pendingChallenge, resolve, reject),
       this.challengePollInterval
@@ -229,6 +234,16 @@ export class Auth {
     return new Promise((resolve, reject) =>
       this.pollChallengeStatus(challenge, resolve, reject)()
     );
+  };
+
+  /**
+   * Clear pending MFA confirmation
+   */
+  public cancelMFAConfirmation = () => {
+    clearTimeout(this.challengePollTimeoutId as TimeoutID);
+    if (typeof this.rejectMFAConfirmation === "function") {
+      this.rejectMFAConfirmation(new MFAConfirmationCanceledError());
+    }
   };
 
   /**

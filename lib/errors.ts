@@ -7,6 +7,7 @@ export enum ErrorMessage {
   KONTIST_SDK_ERROR = "An error occurred",
   CHALLENGE_EXPIRED_ERROR = "Challenge expired",
   CHALLENGE_DENIED_ERROR = "Challenge denied",
+  MFA_CONFIRMATION_CANCELED_ERROR = "MFA confirmation canceled",
   USER_UNAUTHORIZED_ERROR = "User unauthorized"
 }
 
@@ -43,6 +44,17 @@ export class ChallengeDeniedError extends KontistSDKError {
       ...opts
     });
     Object.setPrototypeOf(this, ChallengeDeniedError.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
+export class MFAConfirmationCanceledError extends KontistSDKError {
+  constructor(opts: ErrorOpts = {}) {
+    super({
+      message: ErrorMessage.MFA_CONFIRMATION_CANCELED_ERROR,
+      ...opts
+    });
+    Object.setPrototypeOf(this, MFAConfirmationCanceledError.prototype);
     this.name = this.constructor.name;
   }
 }
