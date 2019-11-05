@@ -15,7 +15,7 @@ export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
 
 const CHALLENGE_POLL_INTERVAL = 3000;
 
-type IntervalID = ReturnType<typeof setInterval>;
+type TimeoutID = ReturnType<typeof setTimeout>;
 
 export class Auth {
   private oauth2Client: ClientOAuth2;
@@ -23,7 +23,7 @@ export class Auth {
   private baseUrl: string;
   private verifier?: string;
   private challengePollInterval: number = CHALLENGE_POLL_INTERVAL;
-  private challengePollIntervalId?: IntervalID;
+  private challengePollTimeoutId?: TimeoutID;
 
   /**
    * Client OAuth2 module instance.
@@ -176,15 +176,15 @@ export class Auth {
       throw new KontistSDKError({
         status: response.status,
         message: response.statusText
-      })
+      });
     }
 
     return response.json();
   };
 
   /**
-   * Called periodically by `getMFAConfirmedToken` until
-   * the challenge expires or its status is updated
+   * Called by `getMFAConfirmedToken`. Calls itself periodically
+   * until the challenge expires or its status is updated
    */
   private pollChallengeStatus = (
     pendingChallenge: Challenge,
@@ -196,14 +196,15 @@ export class Auth {
       HttpMethod.GET
     );
 
-    if (new Date(challenge.expiresAt) < new Date()) {
-      clearInterval(this.challengePollIntervalId as IntervalID);
+    const hasExpired = new Date(challenge.expiresAt) < new Date();
+    const wasDenied = challenge.status === ChallengeStatus.DENIED;
+    const wasVerified = challenge.status === ChallengeStatus.VERIFIED;
+
+    if (hasExpired) {
       return reject(new ChallengeExpiredError());
-    } else if (challenge.status === ChallengeStatus.DENIED) {
-      clearInterval(this.challengePollIntervalId as IntervalID);
+    } else if (wasDenied) {
       return reject(new ChallengeDeniedError());
-    } else if (challenge.status === ChallengeStatus.VERIFIED) {
-      clearInterval(this.challengePollIntervalId as IntervalID);
+    } else if (wasVerified) {
       const { token: confirmedToken } = await this.request(
         `${MFA_CHALLENGE_PATH}/${challenge.id}/token`,
         HttpMethod.POST
@@ -212,6 +213,11 @@ export class Auth {
       const token = this.setToken(confirmedToken);
       return resolve(token);
     }
+
+    this.challengePollTimeoutId = setTimeout(
+      this.pollChallengeStatus(pendingChallenge, resolve, reject),
+      this.challengePollInterval
+    );
   };
 
   /**
@@ -220,12 +226,9 @@ export class Auth {
   public getMFAConfirmedToken = async () => {
     const challenge = await this.request(MFA_CHALLENGE_PATH, HttpMethod.POST);
 
-    return new Promise((resolve, reject) => {
-      this.challengePollIntervalId = setInterval(
-        this.pollChallengeStatus(challenge, resolve, reject),
-        this.challengePollInterval
-      );
-    });
+    return new Promise((resolve, reject) =>
+      this.pollChallengeStatus(challenge, resolve, reject)()
+    );
   };
 
   /**
