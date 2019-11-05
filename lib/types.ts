@@ -32,3 +32,13 @@ export enum HttpMethod {
   HEAD = "HEAD",
   DELETE = "DELETE"
 }
+
+export type CreateDeviceParams = {
+  name: string,
+  key: string,
+};
+
+export type CreateDeviceResult = {
+  deviceId: string,
+  challengeId: string,
+};

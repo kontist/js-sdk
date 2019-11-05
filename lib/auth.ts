@@ -1,7 +1,7 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { sha256 } from "js-sha256";
 import { btoa } from "abab";
-import { ClientOpts, Challenge, ChallengeStatus, HttpMethod } from "./types";
+import { ClientOpts, Challenge, ChallengeStatus, HttpMethod, CreateDeviceParams, CreateDeviceResult } from "./types";
 import {
   ChallengeExpiredError,
   ChallengeDeniedError,
@@ -13,6 +13,7 @@ import {
 import "cross-fetch/polyfill";
 
 export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
+export const CREATE_DEVICE_PATH = "/api/user/devices";
 
 const CHALLENGE_POLL_INTERVAL = 3000;
 
@@ -157,7 +158,7 @@ export class Auth {
   /**
    * Perform a request against Kontist REST API
    */
-  private request = async (path: string, method: HttpMethod, body?: string) => {
+  private request = async (path: string, method: HttpMethod, body?: string | Object) => {
     if (!this.token) {
       throw new UserUnauthorizedError();
     }
@@ -171,7 +172,7 @@ export class Auth {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.token.accessToken}`
       },
-      body
+      body: JSON.stringify(body)
     });
 
     if (!response.ok) {
@@ -249,6 +250,13 @@ export class Auth {
     if (typeof this.rejectMFAConfirmation === "function") {
       this.rejectMFAConfirmation(new MFAConfirmationCanceledError());
     }
+  };
+
+  /**
+   * Create a device and return its `deviceId` and `challengeId` for verification
+   */
+  public createDevice = (params: CreateDeviceParams): Promise<CreateDeviceResult> => {
+    return this.request(CREATE_DEVICE_PATH, HttpMethod.POST, params);
   };
 
   /**
