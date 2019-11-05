@@ -1,7 +1,18 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { sha256 } from "js-sha256";
 import { btoa } from "abab";
-import { ClientOpts, Challenge, ChallengeStatus, HttpMethod, CreateDeviceParams, CreateDeviceResult, VerifyDeviceParams } from "./types";
+import {
+  ClientOpts,
+  Challenge,
+  ChallengeStatus,
+  HttpMethod,
+  CreateDeviceParams,
+  CreateDeviceResult,
+  VerifyDeviceParams,
+  DeviceChallenge,
+  VerifyDeviceChallengeParams,
+  VerifyDeviceChallengeResult
+} from "./types";
 import {
   ChallengeExpiredError,
   ChallengeDeniedError,
@@ -14,7 +25,14 @@ import "cross-fetch/polyfill";
 
 export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
 export const CREATE_DEVICE_PATH = "/api/user/devices";
-export const VERIFY_DEVICE_PATH = (deviceId: string) => `/api/user/devices/${deviceId}/verify`;
+export const VERIFY_DEVICE_PATH = (deviceId: string) =>
+  `/api/user/devices/${deviceId}/verify`;
+export const CREATE_DEVICE_CHALLENGE_PATH = (deviceId: string) =>
+  `/api/user/devices/${deviceId}/challenges`;
+export const VERIFY_DEVICE_CHALLENGE_PATH = (
+  deviceId: string,
+  challengeId: string
+) => `/api/user/devices/${deviceId}/challenges/${challengeId}/verify`;
 
 const CHALLENGE_POLL_INTERVAL = 3000;
 
@@ -161,7 +179,11 @@ export class Auth {
   /**
    * Perform a request against Kontist REST API
    */
-  private request = async (path: string, method: HttpMethod, body?: string | Object) => {
+  private request = async (
+    path: string,
+    method: HttpMethod,
+    body?: string | Object
+  ) => {
     if (!this.token) {
       throw new UserUnauthorizedError();
     }
@@ -262,15 +284,49 @@ export class Auth {
   /**
    * Create a device and return its `deviceId` and `challengeId` for verification
    */
-  public createDevice = (params: CreateDeviceParams): Promise<CreateDeviceResult> => {
+  public createDevice = (
+    params: CreateDeviceParams
+  ): Promise<CreateDeviceResult> => {
     return this.request(CREATE_DEVICE_PATH, HttpMethod.POST, params);
   };
 
   /**
-   * Verify a device and return its `deviceId` and `challengeId` for verification
+   * Verify the device by providing signed OTP recived via SMS
    */
-  public verifyDevice = (deviceId: string, params: VerifyDeviceParams): Promise<void> => {
+  public verifyDevice = (
+    deviceId: string,
+    params: VerifyDeviceParams
+  ): Promise<void> => {
     return this.request(VERIFY_DEVICE_PATH(deviceId), HttpMethod.POST, params);
+  };
+
+  /**
+   * Create a device challenge and return string to sign by private key
+   */
+  public createDeviceChallenge = (
+    deviceId: string
+  ): Promise<DeviceChallenge> => {
+    return this.request(
+      CREATE_DEVICE_CHALLENGE_PATH(deviceId),
+      HttpMethod.POST
+    );
+  };
+
+  /**
+   * Verify the device challenge and update access token
+   */
+  public verifyDeviceChallenge = async (
+    deviceId: string,
+    challengeId: string,
+    params: VerifyDeviceChallengeParams
+  ): Promise<ClientOAuth2.Token> => {
+    const { token: accessToken }: VerifyDeviceChallengeResult = await this.request(
+      VERIFY_DEVICE_CHALLENGE_PATH(deviceId, challengeId),
+      HttpMethod.POST,
+      params
+    );
+    const { refreshToken } = this._token || {};
+    return this.setToken(accessToken, refreshToken);
   };
 
   /**

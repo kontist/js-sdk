@@ -34,16 +34,29 @@ export enum HttpMethod {
 }
 
 export type CreateDeviceParams = {
-  name: string,
-  key: string,
+  name: string;
+  key: string;
 };
 
 export type CreateDeviceResult = {
-  deviceId: string,
-  challengeId: string,
+  deviceId: string;
+  challengeId: string;
 };
 
 export type VerifyDeviceParams = {
-  challengeId: string,
-  signature: string,
+  challengeId: string;
+  signature: string;
+};
+
+export type DeviceChallenge = {
+  id: string;
+  stringToSign: string;
+};
+
+export type VerifyDeviceChallengeParams = {
+  signature: string;
+};
+
+export type VerifyDeviceChallengeResult = {
+  token: string;
 };
