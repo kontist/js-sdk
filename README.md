@@ -235,3 +235,11 @@ try {
 ```
 
 After obtaining a confirmed auth token with this method, you will have access to all banking APIs.
+
+If you want to cancel a pending MFA confirmation, you can call the following method:
+
+```typescript
+client.auth.cancelMFAConfirmation();
+```
+
+The Promise returned by `getMFAConfirmedToken` will then reject with a `MFAConfirmationCanceledError`.
