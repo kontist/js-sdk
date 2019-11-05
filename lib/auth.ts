@@ -193,10 +193,15 @@ export class Auth {
     resolve: Function,
     reject: Function
   ) => async () => {
-    const challenge = await this.request(
-      `${MFA_CHALLENGE_PATH}/${pendingChallenge.id}`,
-      HttpMethod.GET
-    );
+    let challenge;
+    try {
+      challenge = await this.request(
+        `${MFA_CHALLENGE_PATH}/${pendingChallenge.id}`,
+        HttpMethod.GET
+      );
+    } catch (error) {
+      return reject(error);
+    }
 
     this.rejectMFAConfirmation = null;
 
