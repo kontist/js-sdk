@@ -128,6 +128,13 @@ Kontist SDK allows renewing access tokens in browser environments using this sim
 const token = await kontistClient.auth.refreshTokenSilently();
 ```
 
+Optionally, this method accepts a number as an argument to specify after how many milliseconds the refresh request should timeout (default is 10000):
+
+```typescript
+// abort after 20 seconds
+const token = await kontistClient.auth.refreshTokenSilently(20000);
+```
+
 ### Password-based authentication
 
 If you'd rather handle the authentication UI flow in your app, and when your oAuth2 client supports `grant_type: password`, you could request an access token in exchange for a user's credentials in one step:

@@ -1,9 +1,9 @@
 import { SilentAuthorizationError } from "../errors";
 import { TimeoutID } from "../types";
 
-const SERVER_MESSAGE_TIMEOUT = 10000;
+const DEFAULT_SERVER_MESSAGE_TIMEOUT = 10000;
 
-export const authorizeSilently = (uri: string, origin: string) => {
+export const authorizeSilently = (uri: string, origin: string, timeout?: number) => {
   return new Promise((resolve, reject) => {
     let timeoutId: TimeoutID;
     const iframe = document.createElement("iframe");
@@ -47,6 +47,6 @@ export const authorizeSilently = (uri: string, origin: string) => {
           message: "Server did not respond with authorization code, aborting."
         })
       );
-    }, SERVER_MESSAGE_TIMEOUT);
+    }, timeout || DEFAULT_SERVER_MESSAGE_TIMEOUT);
   });
 };

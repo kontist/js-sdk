@@ -452,6 +452,7 @@ describe("Auth", () => {
     it("should request a silent authorization and fetch a new token", async () => {
       const dummyToken = "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
       const client = createClient();
+      const customTimeout = 20000;
       const tokenResponseData = {
         access_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
         refresh_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ1",
@@ -468,7 +469,7 @@ describe("Auth", () => {
         .stub(utils, "authorizeSilently")
         .resolves(code);
 
-      const token = await client.auth.refreshTokenSilently();
+      const token = await client.auth.refreshTokenSilently(customTimeout);
 
       expect(fetchTokenStub.callCount).to.equal(1);
       expect(fetchTokenStub.getCall(0).args[0]).to.equal(
@@ -476,10 +477,11 @@ describe("Auth", () => {
       );
 
       expect(silentAuthorizationStub.callCount).to.equal(1);
-      const [firstArg, secondArg] = silentAuthorizationStub.getCall(0).args;
+      const [firstArg, secondArg, thirdArg] = silentAuthorizationStub.getCall(0).args;
       expect(firstArg).to.include("prompt=none");
       expect(firstArg).to.include("response_mode=web_message");
       expect(secondArg).to.equal(Constants.KONTIST_API_BASE_URL);
+      expect(thirdArg).to.equal(customTimeout);
 
       expect(token.accessToken).to.equal(dummyToken);
 
