@@ -1,7 +1,10 @@
 import { expect } from "chai";
-import { Client, Constants } from "../lib";
 import * as sinon from "sinon";
+import * as moment from "moment";
 import ClientOAuth2 = require("client-oauth2");
+import { Client, Constants } from "../lib";
+import { MFA_CHALLENGE_PATH } from "../lib/auth";
+import { HttpMethod, ChallengeStatus } from "../lib/types";
 
 describe("Auth", () => {
   const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
@@ -134,6 +137,135 @@ describe("Auth", () => {
       expect(error.message).to.equal(
         "You can provide only one parameter from ['verifier', 'clientSecret']."
       );
+    });
+  });
+
+  describe("client.auth.getMFAConfirmedToken()", () => {
+    const setup = (updatedChallenge: Object) => {
+      const challenge = {
+        id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
+        status: ChallengeStatus.PENDING,
+        expiresAt: moment().add(10, "minutes")
+      };
+      const confirmedToken = "cnf-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
+
+      const client = createClient();
+
+      client.auth["challengePollInterval"] = 0;
+
+      const requestStub = sinon.stub(client.auth, <any>"request");
+      requestStub
+        .withArgs(MFA_CHALLENGE_PATH, HttpMethod.POST)
+        .resolves(challenge);
+      requestStub
+        .withArgs(`${MFA_CHALLENGE_PATH}/${challenge.id}`, HttpMethod.GET)
+        .onFirstCall()
+        .resolves(challenge)
+        .onSecondCall()
+        .resolves({
+          ...challenge,
+          ...updatedChallenge
+        });
+      requestStub
+        .withArgs(
+          `${MFA_CHALLENGE_PATH}/${challenge.id}/token`,
+          HttpMethod.POST
+        )
+        .resolves({
+          token: confirmedToken
+        });
+
+      return { requestStub, confirmedToken, client };
+    };
+
+    describe("when challenge is verified", () => {
+      it("should set and return confirmed access token", async () => {
+        const { requestStub, confirmedToken, client } = setup({
+          status: ChallengeStatus.VERIFIED
+        });
+
+        const response: any = await client.auth.getMFAConfirmedToken();
+
+        expect(requestStub.callCount).to.equal(4);
+        expect(response.accessToken).to.equal(confirmedToken);
+        expect(client.auth.token && client.auth.token.accessToken).to.equal(
+          confirmedToken
+        );
+
+        requestStub.restore();
+      });
+    });
+
+    describe("when challenge is denied", () => {
+      it("should throw a `Challenge denied` error", async () => {
+        const { requestStub, client } = setup({
+          status: ChallengeStatus.DENIED
+        });
+        let error;
+
+        try {
+          await client.auth.getMFAConfirmedToken();
+        } catch (err) {
+          error = err;
+        }
+
+        expect(requestStub.callCount).to.equal(3);
+        expect(error.message).to.equal("Challenge denied");
+        expect(error.name).to.equal("ChallengeDeniedError");
+
+        requestStub.restore();
+      });
+    });
+
+    describe("when challenge is expired", () => {
+      it("should throw a `Challenge expired` error", async () => {
+        const { requestStub, client } = setup({
+          expiresAt: moment().subtract(2, "minutes")
+        });
+        let error;
+
+        try {
+          await client.auth.getMFAConfirmedToken();
+        } catch (err) {
+          error = err;
+        }
+
+        expect(requestStub.callCount).to.equal(3);
+        expect(error.message).to.equal("Challenge expired");
+        expect(error.name).to.equal("ChallengeExpiredError");
+
+        requestStub.restore();
+      });
+    });
+  });
+
+  describe("client.auth.cancelMFAConfirmation()", () => {
+    it("should cancel polling and reject the corresponding promise", async () => {
+      const client = createClient();
+      const requestStub = sinon.stub(client.auth, <any>"request").resolves({
+        id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
+        status: ChallengeStatus.PENDING,
+        expiresAt: moment().add(10, "minutes")
+      });
+      const clearTimeoutSpy = sinon.spy(global, "clearTimeout");
+
+      let error;
+      try {
+        setTimeout(() => {
+          client.auth.cancelMFAConfirmation();
+        }, 100);
+
+        await client.auth.getMFAConfirmedToken();
+      } catch (err) {
+        error = err;
+      }
+
+      expect(clearTimeoutSpy.callCount).to.equal(1);
+      expect(error.message).to.equal("MFA confirmation canceled");
+      expect(error.name).to.equal("MFAConfirmationCanceledError");
+
+      requestStub.restore();
+      clearTimeoutSpy.restore();
     });
   });
 });

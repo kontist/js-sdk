@@ -10,3 +10,25 @@ export type ClientOpts = {
   state: string;
   verifier?: string;
 };
+
+export type Challenge = {
+  id: string;
+  expiresAt: Date;
+  status: ChallengeStatus;
+};
+
+export enum ChallengeStatus {
+  PENDING = "PENDING",
+  VERIFIED = "VERIFIED",
+  DENIED = "DENIED"
+}
+
+export enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  PATCH = "PATCH",
+  OPTIONS = "OPTIONS",
+  HEAD = "HEAD",
+  DELETE = "DELETE"
+}

@@ -205,3 +205,42 @@ const result = await client.models.transfer.confirmMany(
   smsToken
 );
 ```
+
+## MFA (Multi-Factor Authentication)
+
+Accessing Kontist banking APIs require Multi-Factor Authentication (MFA).
+
+MFA is available once you have installed the Kontist application and paired your device in it.
+
+The following steps are necessary to complete the MFA procedure:
+1. initiate the procedure by creating a challenge (Kontist SDK exposes a method to do that)
+2. click the push notification you received on your phone, it will open the Kontist application
+3. login (if applicable) and confirm the MFA by clicking on the corresponding button
+
+Kontist SDK exposes a method to initiate the MFA flow after you successfully received the initial access token:
+
+```typescript
+// fetch a regular access token
+const token = await client.auth.fetchToken(callbackUrl);
+
+try {
+  // create an MFA challenge and wait for confirmation
+  const confirmedToken = await client.auth.getMFAConfirmedToken();
+  // once it has been verified, your `client` instance will have a confirmed access token
+  // the confirmed token is also returned in case you want to store it
+} catch (err) {
+  // if the challenge expires, a `ChallengeExpiredError` will be thrown
+  // if the challenge is denied, a `ChallengeDeniedError` will be thrown
+  console.log(err);
+}
+```
+
+After obtaining a confirmed auth token with this method, you will have access to all banking APIs.
+
+If you want to cancel a pending MFA confirmation, you can call the following method:
+
+```typescript
+client.auth.cancelMFAConfirmation();
+```
+
+The Promise returned by `getMFAConfirmedToken` will then reject with a `MFAConfirmationCanceledError`.
