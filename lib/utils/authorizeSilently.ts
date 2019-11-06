@@ -3,7 +3,11 @@ import { TimeoutID } from "../types";
 
 const DEFAULT_SERVER_MESSAGE_TIMEOUT = 10000;
 
-export const authorizeSilently = (uri: string, origin: string, timeout?: number) => {
+export const authorizeSilently = (
+  uri: string,
+  origin: string,
+  timeout?: number
+) => {
   return new Promise((resolve, reject) => {
     let timeoutId: TimeoutID;
     const iframe = document.createElement("iframe");
@@ -27,11 +31,16 @@ export const authorizeSilently = (uri: string, origin: string, timeout?: number)
 
       cleanup();
 
-      if (!event.data.error) {
+      if (event.data && !event.data.error) {
         const { code } = event.data.response;
         return resolve(code);
       } else {
-        return reject(event.data.error);
+        const error =
+          (event.data && event.data.error) ||
+          new SilentAuthorizationError({
+            message: "Invalid message received from server"
+          });
+        return reject(error);
       }
     };
 
