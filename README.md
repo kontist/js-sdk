@@ -122,6 +122,12 @@ await token.refresh((newToken) => { ... });
 </html>
 ```
 
+Kontist SDK allows renewing access tokens in browser environments using this simple method:
+
+```typescript
+const token = await kontistClient.auth.refreshTokenSilently();
+```
+
 ### Password-based authentication
 
 If you'd rather handle the authentication UI flow in your app, and when your oAuth2 client supports `grant_type: password`, you could request an access token in exchange for a user's credentials in one step:
@@ -136,7 +142,7 @@ const client = new Kontist.Client({
 client.auth.fetchTokenFromCredentials({ username, password })
 	.then((tokenData) => {
 	  // do something with tokenData.accessToken
-	  // 
+	  //
 	  // or start using client to make authenticated requests
 	});
 ```
