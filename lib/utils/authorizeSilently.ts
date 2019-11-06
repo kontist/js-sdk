@@ -36,9 +36,7 @@ export const authorizeSilently = (uri: string, origin: string, timeout?: number)
     };
 
     window.addEventListener("message", onMessageHandler);
-    if (iframe) {
-      iframe.src = uri;
-    }
+    iframe.src = uri;
 
     timeoutId = setTimeout(() => {
       cleanup();
