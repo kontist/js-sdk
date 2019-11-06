@@ -451,7 +451,10 @@ describe("Auth", () => {
 
     it("should request a silent authorization and fetch a new token", async () => {
       const dummyToken = "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
-      const client = createClient();
+      const state = "some?state&with#uri=components";
+      const client = createClient({
+        state
+      });
       const customTimeout = 20000;
       const tokenResponseData = {
         access_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
@@ -473,11 +476,13 @@ describe("Auth", () => {
 
       expect(fetchTokenStub.callCount).to.equal(1);
       expect(fetchTokenStub.getCall(0).args[0]).to.equal(
-        `${origin}?code=${code}&state=${state}`
+        `${origin}?code=${code}&state=${encodeURIComponent(state)}`
       );
 
       expect(silentAuthorizationStub.callCount).to.equal(1);
-      const [firstArg, secondArg, thirdArg] = silentAuthorizationStub.getCall(0).args;
+      const [firstArg, secondArg, thirdArg] = silentAuthorizationStub.getCall(
+        0
+      ).args;
       expect(firstArg).to.include("prompt=none");
       expect(firstArg).to.include("response_mode=web_message");
       expect(secondArg).to.equal(Constants.KONTIST_API_BASE_URL);

@@ -174,7 +174,9 @@ export class Auth {
   /**
    * Refresh auth token silently for browser environments
    */
-  public refreshTokenSilently = async (timeout?: number): Promise<ClientOAuth2.Token> => {
+  public refreshTokenSilently = async (
+    timeout?: number
+  ): Promise<ClientOAuth2.Token> => {
     if (!document || !window) {
       throw new SilentAuthorizationError({
         message:
@@ -191,7 +193,9 @@ export class Auth {
 
     try {
       const code = await authorizeSilently(iframeUri, this.baseUrl, timeout);
-      const fetchTokenUri = `${document.location.origin}?code=${code}&state=${this.state}`;
+      const fetchTokenUri = `${
+        document.location.origin
+      }?code=${code}&state=${encodeURIComponent(this.state)}`;
       const token = await this.fetchToken(fetchTokenUri);
 
       return token;
