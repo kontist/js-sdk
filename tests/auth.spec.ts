@@ -5,6 +5,7 @@ import ClientOAuth2 = require("client-oauth2");
 import { Client, Constants } from "../lib";
 import { MFA_CHALLENGE_PATH } from "../lib/auth";
 import { HttpMethod, ChallengeStatus } from "../lib/types";
+import * as utils from "../lib/utils";
 
 describe("Auth", () => {
   const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
@@ -414,7 +415,9 @@ describe("Auth", () => {
 
     it("should verify device challenge", async () => {
       const client = createClient();
-      const requestStub = sinon.stub(client.auth, <any>"request").resolves(verifyDeviceChallengeResponse);
+      const requestStub = sinon
+        .stub(client.auth, <any>"request")
+        .resolves(verifyDeviceChallengeResponse);
       const result = await client.auth.verifyDeviceChallenge(
         deviceId,
         challengeId,
@@ -428,9 +431,60 @@ describe("Auth", () => {
         verifyDeviceChallengeParams
       ]);
       expect(result.accessToken).to.equal(verifyDeviceChallengeResponse.token);
-      expect(client.auth.token && client.auth.token.accessToken).to.equal(verifyDeviceChallengeResponse.token);
+      expect(client.auth.token && client.auth.token.accessToken).to.equal(
+        verifyDeviceChallengeResponse.token
+      );
 
       requestStub.restore();
+    });
+  });
+
+  describe("client.auth.refreshTokenSilently()", () => {
+    const origin = "http://some.url";
+    const code = "some-random-code";
+    (global as any).window = {};
+    (global as any).document = {
+      location: {
+        origin
+      }
+    };
+
+    it("should request a silent authorization and fetch a new token", async () => {
+      const dummyToken = "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
+      const client = createClient();
+      const tokenResponseData = {
+        access_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        refresh_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ1",
+        token_type: "Bearer"
+      };
+      const oauthClient = new ClientOAuth2({});
+      const fetchTokenStub = sinon
+        .stub(client.auth, "fetchToken")
+        .callsFake(async () => {
+          return new ClientOAuth2.Token(oauthClient, tokenResponseData);
+        });
+
+      const silentAuthorizationStub = sinon
+        .stub(utils, "authorizeSilently")
+        .resolves(code);
+
+      const token = await client.auth.refreshTokenSilently();
+
+      expect(fetchTokenStub.callCount).to.equal(1);
+      expect(fetchTokenStub.getCall(0).args[0]).to.equal(
+        `${origin}?code=${code}&state=${state}`
+      );
+
+      expect(silentAuthorizationStub.callCount).to.equal(1);
+      const [firstArg, secondArg] = silentAuthorizationStub.getCall(0).args;
+      expect(firstArg).to.include("prompt=none");
+      expect(firstArg).to.include("response_mode=web_message");
+      expect(secondArg).to.equal(Constants.KONTIST_API_BASE_URL);
+
+      expect(token.accessToken).to.equal(dummyToken);
+
+      fetchTokenStub.restore();
+      silentAuthorizationStub.restore();
     });
   });
 });

@@ -11,13 +11,17 @@ import {
   VerifyDeviceParams,
   DeviceChallenge,
   VerifyDeviceChallengeParams,
-  VerifyDeviceChallengeResult
+  VerifyDeviceChallengeResult,
+  GetAuthUriOpts,
+  TimeoutID
 } from "./types";
+import { authorizeSilently } from "./utils";
 import {
   ChallengeExpiredError,
   ChallengeDeniedError,
   MFAConfirmationCanceledError,
   UserUnauthorizedError,
+  SilentAuthorizationError,
   KontistSDKError
 } from "./errors";
 
@@ -36,14 +40,13 @@ export const VERIFY_DEVICE_CHALLENGE_PATH = (
 
 const CHALLENGE_POLL_INTERVAL = 3000;
 
-type TimeoutID = ReturnType<typeof setTimeout>;
-
 const HTTP_STATUS_NO_CONTENT = 204;
 
 export class Auth {
   private oauth2Client: ClientOAuth2;
   private _token: ClientOAuth2.Token | null = null;
   private baseUrl: string;
+  private state?: string;
   private verifier?: string;
   private challengePollInterval: number = CHALLENGE_POLL_INTERVAL;
   private challengePollTimeoutId?: TimeoutID;
@@ -69,6 +72,7 @@ export class Auth {
     } = opts;
     this.verifier = verifier;
     this.baseUrl = baseUrl;
+    this.state = state;
 
     if (verifier && clientSecret) {
       throw new KontistSDKError({
@@ -93,10 +97,12 @@ export class Auth {
   /**
    * Build a uri to which the user must be redirected for login.
    */
-  public getAuthUri = async (): Promise<string> => {
+  public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
     const query: {
       [key: string]: string | string[];
-    } = {};
+    } = {
+      ...(opts.query || {})
+    };
 
     if (this.verifier) {
       // Implemented according to https://tools.ietf.org/html/rfc7636#appendix-A
@@ -164,6 +170,37 @@ export class Auth {
 
     return token;
   }
+
+  /**
+   * Refresh auth token silently for browser environments
+   */
+  public refreshTokenSilently = async (): Promise<ClientOAuth2.Token> => {
+    if (!document || !window) {
+      throw new SilentAuthorizationError({
+        message:
+          "Silent auth token refresh is only available in browser environments"
+      });
+    }
+
+    const iframeUri = await this.getAuthUri({
+      query: {
+        prompt: "none",
+        response_mode: "web_message"
+      }
+    });
+
+    try {
+      const code = await authorizeSilently(iframeUri, this.baseUrl);
+      const fetchTokenUri = `${document.location.origin}?code=${code}&state=${this.state}`;
+      const token = await this.fetchToken(fetchTokenUri);
+
+      return token;
+    } catch (error) {
+      throw new SilentAuthorizationError({
+        message: error.message
+      });
+    }
+  };
 
   /**
    * Sets up  previously created token for all upcoming requests.

@@ -1,5 +1,21 @@
 import * as ClientOAuth2 from "client-oauth2";
 
+export enum ChallengeStatus {
+  PENDING = "PENDING",
+  VERIFIED = "VERIFIED",
+  DENIED = "DENIED"
+}
+
+export enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  PATCH = "PATCH",
+  OPTIONS = "OPTIONS",
+  HEAD = "HEAD",
+  DELETE = "DELETE"
+}
+
 export type ClientOpts = {
   baseUrl?: string;
   clientId: string;
@@ -17,20 +33,10 @@ export type Challenge = {
   status: ChallengeStatus;
 };
 
-export enum ChallengeStatus {
-  PENDING = "PENDING",
-  VERIFIED = "VERIFIED",
-  DENIED = "DENIED"
-}
-
-export enum HttpMethod {
-  GET = "GET",
-  POST = "POST",
-  PUT = "PUT",
-  PATCH = "PATCH",
-  OPTIONS = "OPTIONS",
-  HEAD = "HEAD",
-  DELETE = "DELETE"
+export type GetAuthUriOpts = {
+  query?: {
+    [key: string]: string | string[];
+  }
 }
 
 export type CreateDeviceParams = {
@@ -60,3 +66,5 @@ export type VerifyDeviceChallengeParams = {
 export type VerifyDeviceChallengeResult = {
   token: string;
 };
+
+export type TimeoutID = ReturnType<typeof setTimeout>;
