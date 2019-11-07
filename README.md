@@ -61,7 +61,14 @@ app.listen(3000, function() {
 You should be able to issue new accessToken by simply calling:
 
 ```typescript
-await token.refresh((newToken) => { ... });
+const token = await client.auth.refresh();
+```
+
+Optionally, this method accepts a number as an argument to specify after how many milliseconds the refresh request should timeout (default is 10000):
+
+```typescript
+// abort after 20 seconds
+const token = await client.auth.refresh(20000);
 ```
 
 ## Usage (Browser)
@@ -125,14 +132,14 @@ await token.refresh((newToken) => { ... });
 Kontist SDK allows renewing access tokens in browser environments using this simple method:
 
 ```typescript
-const token = await kontistClient.auth.refreshTokenSilently();
+const token = await client.auth.refresh();
 ```
 
 Optionally, this method accepts a number as an argument to specify after how many milliseconds the refresh request should timeout (default is 10000):
 
 ```typescript
 // abort after 20 seconds
-const token = await kontistClient.auth.refreshTokenSilently(20000);
+const token = await client.auth.refresh(20000);
 ```
 
 ### Password-based authentication
