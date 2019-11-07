@@ -127,13 +127,13 @@ await token.refresh((newToken) => { ... });
 If you'd rather handle the authentication UI flow in your app, and when your oAuth2 client supports `grant_type: password`, you could request an access token in exchange for a user's credentials in one step:
 
 ```javascript
-const client = new Client({
+const client = new Kontist.Client({
   baseUrl: "https://staging-api.konto.io",
   clientId: 'YOUR_CLIENT_ID',
   scopes: ["users", "subscriptions", "transfers", "accounts"]
 });
 
-client.fetchTokenFromCredentials({ username, password })
+client.auth.fetchTokenFromCredentials({ username, password })
 	.then((tokenData) => {
 	  // do something with tokenData.accessToken
 	  // 
