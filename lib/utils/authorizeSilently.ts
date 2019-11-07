@@ -1,12 +1,10 @@
-import { SilentAuthorizationError } from "../errors";
+import { RenewTokenError } from "../errors";
 import { TimeoutID } from "../types";
-
-const DEFAULT_SERVER_MESSAGE_TIMEOUT = 10000;
 
 export const authorizeSilently = (
   uri: string,
   origin: string,
-  timeout?: number
+  timeout: number
 ) => {
   return new Promise((resolve, reject) => {
     let timeoutId: TimeoutID;
@@ -37,7 +35,7 @@ export const authorizeSilently = (
       } else {
         const error =
           (event.data && event.data.error) ||
-          new SilentAuthorizationError({
+          new RenewTokenError({
             message: "Invalid message received from server"
           });
         return reject(error);
@@ -50,10 +48,10 @@ export const authorizeSilently = (
     timeoutId = setTimeout(() => {
       cleanup();
       return reject(
-        new SilentAuthorizationError({
+        new RenewTokenError({
           message: "Server did not respond with authorization code, aborting."
         })
       );
-    }, timeout || DEFAULT_SERVER_MESSAGE_TIMEOUT);
+    }, timeout);
   });
 };
