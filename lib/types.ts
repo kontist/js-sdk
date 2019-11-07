@@ -5,9 +5,9 @@ export type ClientOpts = {
   clientId: string;
   clientSecret?: string;
   oauthClient?: ClientOAuth2;
-  redirectUri: string;
+  redirectUri?: string;
   scopes: string[];
-  state: string;
+  state?: string;
   verifier?: string;
 };
 

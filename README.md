@@ -130,8 +130,6 @@ If you'd rather handle the authentication UI flow in your app, and when your oAu
 const client = new Client({
   baseUrl: "https://staging-api.konto.io",
   clientId: 'YOUR_CLIENT_ID',
-  redirectUri: "",
-  state: "",
   scopes: ["users", "subscriptions", "transfers", "accounts"]
 });
 
