@@ -167,7 +167,6 @@ describe("Auth", () => {
 
       const stub = oauthClient.owner.getToken as sinon.SinonStub;
       const args = stub.getCall(0).args;
-      console.log(args);
       expect(args).to.deep.equal([ username, password, { scopes } ]);
     });
   });
