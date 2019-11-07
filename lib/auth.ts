@@ -291,7 +291,7 @@ export class Auth {
   };
 
   /**
-   * Verify the device by providing signed OTP recived via SMS
+   * Verify the device by providing signed OTP received via SMS
    */
   public verifyDevice = (
     deviceId: string,
