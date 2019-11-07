@@ -143,6 +143,29 @@ export class Auth {
   };
 
   /**
+   * Fetches token from owner credentials.
+   * Only works for client IDs that support the 'password' grant type
+   *
+   * @param options     Username, password, and an optional set of scopes
+   *                    When given a set of scopes, they override the default list of
+   *                    scopes of `this` intance
+   *
+   * @returns           token object which might contain token(s), scope(s), token type and expiration time
+   */
+  public fetchTokenFromCredentials = async (options: {
+    username: string;
+    password: string;
+    scopes?: string[]
+  }) => {
+    const getTokenOpts = options.scopes && { scopes: options.scopes };
+    const token = await this.oauth2Client.owner.getToken(options.username, options.password, getTokenOpts);
+
+    this._token = token;
+
+    return token;
+  }
+
+  /**
    * Sets up  previously created token for all upcoming requests.
    *
    * @param accessToken   access token
