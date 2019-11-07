@@ -1,6 +1,7 @@
-type ErrorOpts = {
+export type ErrorOpts = {
   message?: string;
   status?: number;
+  type?: string;
 };
 
 export enum ErrorMessage {
@@ -9,7 +10,8 @@ export enum ErrorMessage {
   CHALLENGE_DENIED_ERROR = "Challenge denied",
   MFA_CONFIRMATION_CANCELED_ERROR = "MFA confirmation canceled",
   RENEW_TOKEN_ERROR = "Token renewal failed",
-  USER_UNAUTHORIZED_ERROR = "User unauthorized"
+  USER_UNAUTHORIZED_ERROR = "User unauthorized",
+  GRAPHQL_ERROR = "An error occurred while processing the GraphQL query"
 }
 
 export enum ErrorStatus {
@@ -18,12 +20,14 @@ export enum ErrorStatus {
 
 export class KontistSDKError extends Error {
   status?: number;
+  type?: string;
 
   constructor(opts: ErrorOpts = {}) {
     super(opts.message);
     Object.setPrototypeOf(this, KontistSDKError.prototype);
     this.name = this.constructor.name;
     this.status = opts.status;
+    this.type = opts.type;
   }
 }
 
@@ -79,6 +83,17 @@ export class RenewTokenError extends KontistSDKError {
       ...opts
     });
     Object.setPrototypeOf(this, RenewTokenError.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
+export class GraphQLError extends KontistSDKError {
+  constructor(opts: ErrorOpts = {}) {
+    super({
+      message: ErrorMessage.GRAPHQL_ERROR,
+      ...opts
+    });
+    Object.setPrototypeOf(this, GraphQLError.prototype);
     this.name = this.constructor.name;
   }
 }
