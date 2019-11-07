@@ -1,4 +1,3 @@
-import get = require("lodash/get");
 import {
   Query,
   TransactionsConnectionEdge,
@@ -56,13 +55,9 @@ export class Transaction extends IterableModel<TransactionEntry> {
   async fetch(args?: FetchOptions): Promise<ResultPage<TransactionEntry>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
 
-    const transactions = get(
-      result,
-      "viewer.mainAccount.transactions.edges",
-      []
-    ).map((edge: TransactionsConnectionEdge) => edge.node);
+    const transactions = (result?.viewer?.mainAccount?.transactions?.edges ?? []).map((edge: TransactionsConnectionEdge) => edge.node);
 
-    const pageInfo = get(result, "viewer.mainAccount.transactions.pageInfo");
+    const pageInfo = result?.viewer?.mainAccount?.transactions?.pageInfo ?? { hasNextPage: false, hasPreviousPage: false};
     return new ResultPage(this, transactions, pageInfo);
   }
 }
