@@ -157,7 +157,7 @@ export class Auth {
     password: string;
     scopes?: string[]
   }) => {
-    const getTokenOpts = options.scopes && { scopes: options.scopes };
+    const getTokenOpts = options.scopes ? { scopes: options.scopes } : {};
     const token = await this.oauth2Client.owner.getToken(options.username, options.password, getTokenOpts);
 
     this._token = token;
