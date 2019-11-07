@@ -14,10 +14,19 @@ export type Account = {
    __typename?: 'Account',
   iban: Scalars['String'],
   balance: Scalars['Int'],
+  transfers: TransfersConnection,
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
   transfer?: Maybe<Transfer>,
-  transfers: TransfersConnection,
+};
+
+
+export type AccountTransfersArgs = {
+  where?: Maybe<TransfersConnectionFilter>,
+  first?: Maybe<Scalars['Int']>,
+  last?: Maybe<Scalars['Int']>,
+  after?: Maybe<Scalars['String']>,
+  before?: Maybe<Scalars['String']>
 };
 
 
@@ -38,15 +47,6 @@ export type AccountTransferArgs = {
   id: Scalars['ID']
 };
 
-
-export type AccountTransfersArgs = {
-  where?: Maybe<TransfersConnectionFilter>,
-  first?: Maybe<Scalars['Int']>,
-  last?: Maybe<Scalars['Int']>,
-  after?: Maybe<Scalars['String']>,
-  before?: Maybe<Scalars['String']>
-};
-
 export type BatchTransfer = {
    __typename?: 'BatchTransfer',
   id: Scalars['String'],
@@ -61,6 +61,11 @@ export enum BatchTransferStatus {
   Failed = 'FAILED',
   Successful = 'SUCCESSFUL'
 }
+
+export type CancelStandingOrderResult = {
+   __typename?: 'CancelStandingOrderResult',
+  confirmationId: Scalars['String'],
+};
 
 export type Client = {
    __typename?: 'Client',
@@ -203,35 +208,32 @@ export enum InvoiceStatus {
 
 export type Mutation = {
    __typename?: 'Mutation',
-  createTransfers: CreateTransferResult,
-  confirmTransfers: BatchTransfer,
-  createTransfer: CreateTransferResult,
-  confirmTransfer: CreateConfirmationResult,
+  cancelStandingOrder: CancelStandingOrderResult,
+  confirmCancelStandingOrder: StandingOrder,
+  cancelTimedOrder: TimedOrder,
   createClient: Client,
   updateClient: Client,
   deleteClient: Client,
+  createTransfer: CreateTransferResult,
+  confirmTransfer: CreateConfirmationResult,
+  createTransfers: CreateTransferResult,
+  confirmTransfers: BatchTransfer,
 };
 
 
-export type MutationCreateTransfersArgs = {
-  transfers: Array<CreateSepaTransferInput>
+export type MutationCancelStandingOrderArgs = {
+  id: Scalars['String']
 };
 
 
-export type MutationConfirmTransfersArgs = {
+export type MutationConfirmCancelStandingOrderArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String']
 };
 
 
-export type MutationCreateTransferArgs = {
-  transfer: CreateTransferInput
-};
-
-
-export type MutationConfirmTransferArgs = {
-  authorizationToken: Scalars['String'],
-  confirmationId: Scalars['String']
+export type MutationCancelTimedOrderArgs = {
+  id: Scalars['String']
 };
 
 
@@ -247,6 +249,28 @@ export type MutationUpdateClientArgs = {
 
 export type MutationDeleteClientArgs = {
   id: Scalars['String']
+};
+
+
+export type MutationCreateTransferArgs = {
+  transfer: CreateTransferInput
+};
+
+
+export type MutationConfirmTransferArgs = {
+  authorizationToken: Scalars['String'],
+  confirmationId: Scalars['String']
+};
+
+
+export type MutationCreateTransfersArgs = {
+  transfers: Array<CreateSepaTransferInput>
+};
+
+
+export type MutationConfirmTransfersArgs = {
+  authorizationToken: Scalars['String'],
+  confirmationId: Scalars['String']
 };
 
 export enum Nationality {
@@ -561,6 +585,33 @@ export enum StandingOrderStatus {
   Canceled = 'CANCELED'
 }
 
+export type Subscription = {
+   __typename?: 'Subscription',
+  newTransaction: Transaction,
+};
+
+export type TimedOrder = {
+   __typename?: 'TimedOrder',
+  id: Scalars['ID'],
+  executeAt: Scalars['String'],
+  status: TimedOrderStatus,
+  purpose?: Maybe<Scalars['String']>,
+  iban: Scalars['String'],
+  recipient: Scalars['String'],
+  e2eId?: Maybe<Scalars['String']>,
+  amount: Scalars['Int'],
+};
+
+export enum TimedOrderStatus {
+  Created = 'CREATED',
+  AuthorizationRequired = 'AUTHORIZATION_REQUIRED',
+  ConfirmationRequired = 'CONFIRMATION_REQUIRED',
+  Scheduled = 'SCHEDULED',
+  Executed = 'EXECUTED',
+  Canceled = 'CANCELED',
+  Failed = 'FAILED'
+}
+
 export type Transaction = {
    __typename?: 'Transaction',
   id: Scalars['ID'],
@@ -728,9 +779,9 @@ export type User = {
   otherEconomicSector?: Maybe<Scalars['String']>,
   vatNumber?: Maybe<Scalars['String']>,
   referralCode?: Maybe<Scalars['String']>,
-  mainAccount?: Maybe<Account>,
   clients: Array<Client>,
   client?: Maybe<Client>,
+  mainAccount?: Maybe<Account>,
 };
 
 
