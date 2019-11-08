@@ -1,6 +1,6 @@
 # Kontist SDK
 
-JavaScript SDK for connecting to Kontist using OAuth2 and GraphQL.
+JavaScript SDK for connecting to Kontist using OAuth2 and GraphQL. Please see https://kontist.dev/sdk for a more complete documentation.
 
 ## Installation
 
