@@ -125,6 +125,52 @@ describe("Auth", () => {
     });
   });
 
+  describe("client.auth.fetchTokenFromCredentials", () => {
+    const username = "user@kontist.com";
+    const password = "test1234";
+    const scopes = ["transfers"];
+
+    const tokenResponseData = {
+      access_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+      token_type: "Bearer"
+    };
+
+    let oauthClient: ClientOAuth2;
+    let client: Client;
+
+    beforeEach(() => {
+      oauthClient = new ClientOAuth2({});
+
+      sinon.stub(oauthClient.owner, "getToken").callsFake(async () => {
+        return new ClientOAuth2.Token(oauthClient, tokenResponseData);
+      });
+
+      client = createClient({ oauthClient });
+    });
+
+    it("should call oauthClient.owner.getToken() with proper arguments", async () => {
+      await client.auth.fetchTokenFromCredentials({ username, password });
+
+      const stub = oauthClient.owner.getToken as sinon.SinonStub;
+      const args = stub.getCall(0).args;
+      expect(args).to.deep.equal([ username, password, {} ]);
+    });
+
+    it("should return token data", async () => {
+      const tokenData = await client.auth.fetchTokenFromCredentials({ username, password });
+
+      expect(tokenData.data).to.deep.equal(tokenResponseData);
+    });
+
+    it("should forward `scopes` to oauthClient.owner.getToken() when set", async () => {
+      await client.auth.fetchTokenFromCredentials({ username, password, scopes });
+
+      const stub = oauthClient.owner.getToken as sinon.SinonStub;
+      const args = stub.getCall(0).args;
+      expect(args).to.deep.equal([ username, password, { scopes } ]);
+    });
+  });
+
   describe("when both code verifier and code secret are provided", () => {
     it("should throw an error", () => {
       let error;
