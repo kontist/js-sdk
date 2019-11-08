@@ -17,10 +17,7 @@ type GraphQLAPIError = {
 export const serializeGraphQLError = (graphQLError: GraphQLAPIError): ErrorOpts => {
   const errorOptions: ErrorOpts = {};
 
-  const errorDetails =
-    graphQLError.response &&
-    graphQLError.response.errors &&
-    graphQLError.response.errors[0];
+  const [errorDetails] = graphQLError.response?.errors ?? [];
 
   if (errorDetails) {
     errorOptions.message = errorDetails.message;
