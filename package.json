@@ -1,5 +1,5 @@
 {
-  "name": "@kontist/client",
+  "name": "kontist",
   "version": "0.0.18",
   "description": "Kontist client SDK",
   "main": "dist/index.js",
