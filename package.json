@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/kontist/js-sdk.git",
-  "author": "",
-  "license": "MIT",
+  "author": "Kontist GmbH",
+  "license": "Apache-2.0",
   "scripts": {
     "build": "tsc && npx webpack",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
