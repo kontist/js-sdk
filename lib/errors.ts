@@ -8,6 +8,7 @@ export enum ErrorMessage {
   CHALLENGE_EXPIRED_ERROR = "Challenge expired",
   CHALLENGE_DENIED_ERROR = "Challenge denied",
   MFA_CONFIRMATION_CANCELED_ERROR = "MFA confirmation canceled",
+  RENEW_TOKEN_ERROR = "Token renewal failed",
   USER_UNAUTHORIZED_ERROR = "User unauthorized"
 }
 
@@ -67,6 +68,17 @@ export class UserUnauthorizedError extends KontistSDKError {
       status: ErrorStatus.USER_UNAUTHORIZED_ERROR
     });
     Object.setPrototypeOf(this, UserUnauthorizedError.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
+export class RenewTokenError extends KontistSDKError {
+  constructor(opts: ErrorOpts = {}) {
+    super({
+      message: ErrorMessage.RENEW_TOKEN_ERROR,
+      ...opts
+    });
+    Object.setPrototypeOf(this, RenewTokenError.prototype);
     this.name = this.constructor.name;
   }
 }
