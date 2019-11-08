@@ -7,7 +7,7 @@ JavaScript SDK for connecting to Kontist using OAuth2 and GraphQL.
 Add as dependency to your project:
 
 ```bash
-npm install @kontist/client
+npm install kontist
 ```
 
 You will need a valid client id and setup your redirect uri for authentication. You may request your client id in the API Console on https://kontist.dev/console/.
@@ -16,7 +16,7 @@ You will need a valid client id and setup your redirect uri for authentication. 
 
 ```typescript
 import express from "express";
-import { Client } from "@kontist/client";
+import { Client } from "kontist";
 
 const CALLBACK_PATH = "/auth/callback";
 const REDIRECT_URI = <YOUR_BASE_URL> + CALLBACK_PATH;
