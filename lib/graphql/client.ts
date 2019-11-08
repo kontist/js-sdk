@@ -3,6 +3,8 @@ import { Variables } from "graphql-request/dist/src/types";
 
 import { Auth } from "../auth";
 import { RawQueryResponse } from "./types";
+import { serializeGraphQLError } from "../utils";
+import { GraphQLError, UserUnauthorizedError } from "../errors";
 
 export class GraphQLClient {
   private client: GQLClient;
@@ -20,7 +22,7 @@ export class GraphQLClient {
     variables?: Variables
   ): Promise<RawQueryResponse> => {
     if (!this.auth.token) {
-      throw new Error("User unauthorized");
+      throw new UserUnauthorizedError();
     }
 
     this.client.setHeader(
@@ -28,8 +30,11 @@ export class GraphQLClient {
       `Bearer ${this.auth.token.accessToken}`
     );
 
-    const { data } = await this.client.rawRequest(query, variables);
-
-    return data;
+    try {
+      const { data } = await this.client.rawRequest(query, variables);
+      return data;
+    } catch (error) {
+      throw new GraphQLError(serializeGraphQLError(error));
+    }
   };
 }
