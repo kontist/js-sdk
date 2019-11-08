@@ -4,7 +4,7 @@ import * as moment from "moment";
 import ClientOAuth2 = require("client-oauth2");
 import { Client, Constants } from "../lib";
 import { MFA_CHALLENGE_PATH } from "../lib/auth";
-import { HttpMethod, ChallengeStatus } from "../lib/types";
+import { HttpMethod, ChallengeStatus, ClientOpts } from "../lib/types";
 import * as utils from "../lib/utils";
 
 describe("Auth", () => {
@@ -184,6 +184,25 @@ describe("Auth", () => {
       expect(error.message).to.equal(
         "You can provide only one parameter from ['verifier', 'clientSecret']."
       );
+    });
+  });
+
+  describe("when code verifier is provided but state or redirectUri are missing", () => {
+    const assertMissingOptionError = (option: keyof ClientOpts) => {
+      let error;
+      try {
+        client = createClient({ verifier, [option]: undefined });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error.message).to.equal(
+        "If you are providing a 'verifier', you must also provide 'state' and 'redirectUri' options."
+      );
+    }
+    it("should throw an error", () => {
+      assertMissingOptionError("state");
+      assertMissingOptionError("redirectUri")
     });
   });
 

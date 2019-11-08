@@ -82,6 +82,13 @@ export class Auth {
       });
     }
 
+    if (verifier && (!state || !redirectUri)) {
+      throw new KontistSDKError({
+        message:
+          "If you are providing a 'verifier', you must also provide 'state' and 'redirectUri' options."
+      });
+    }
+
     this.oauth2Client =
       oauthClient ||
       new ClientOAuth2({
