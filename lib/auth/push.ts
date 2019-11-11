@@ -1,4 +1,4 @@
-import { Challenge, ChallengeStatus, HttpMethod, TimeoutID } from "../types";
+import { PushChallenge, PushChallengeStatus, HttpMethod, TimeoutID } from "../types";
 import {
   ChallengeExpiredError,
   ChallengeDeniedError,
@@ -7,7 +7,7 @@ import {
 import { TokenManager } from "./tokenManager";
 import { HttpRequest } from "../request";
 
-export const MFA_CHALLENGE_PATH = "/api/user/mfa/challenges";
+export const PUSH_CHALLENGE_PATH = "/api/user/mfa/challenges";
 
 const CHALLENGE_POLL_INTERVAL = 3000;
 
@@ -16,7 +16,7 @@ export class PushNotificationMFA {
   private request: HttpRequest;
   private challengePollInterval: number = CHALLENGE_POLL_INTERVAL;
   private challengePollTimeoutId?: TimeoutID;
-  private rejectMFAConfirmation: Function | null = null;
+  private rejectConfirmation: Function | null = null;
 
   /**
    * @param tokenManager  TokenManager instance
@@ -29,29 +29,29 @@ export class PushNotificationMFA {
   }
 
   /**
-   * Called by `getMFAConfirmedToken`. Calls itself periodically
+   * Called by `getConfirmedToken`. Calls itself periodically
    * until the challenge expires or its status is updated
    */
   private pollChallengeStatus = (
-    pendingChallenge: Challenge,
+    pendingChallenge: PushChallenge,
     resolve: Function,
     reject: Function
   ) => async () => {
     let challenge;
     try {
       challenge = await this.request.fetch(
-        `${MFA_CHALLENGE_PATH}/${pendingChallenge.id}`,
+        `${PUSH_CHALLENGE_PATH}/${pendingChallenge.id}`,
         HttpMethod.GET
       );
     } catch (error) {
       return reject(error);
     }
 
-    this.rejectMFAConfirmation = null;
+    this.rejectConfirmation = null;
 
     const hasExpired = new Date(challenge.expiresAt) < new Date();
-    const wasDenied = challenge.status === ChallengeStatus.DENIED;
-    const wasVerified = challenge.status === ChallengeStatus.VERIFIED;
+    const wasDenied = challenge.status === PushChallengeStatus.DENIED;
+    const wasVerified = challenge.status === PushChallengeStatus.VERIFIED;
 
     if (hasExpired) {
       return reject(new ChallengeExpiredError());
@@ -59,7 +59,7 @@ export class PushNotificationMFA {
       return reject(new ChallengeDeniedError());
     } else if (wasVerified) {
       const { token: confirmedToken } = await this.request.fetch(
-        `${MFA_CHALLENGE_PATH}/${challenge.id}/token`,
+        `${PUSH_CHALLENGE_PATH}/${challenge.id}/token`,
         HttpMethod.POST
       );
 
@@ -67,7 +67,7 @@ export class PushNotificationMFA {
       return resolve(token);
     }
 
-    this.rejectMFAConfirmation = reject;
+    this.rejectConfirmation = reject;
     this.challengePollTimeoutId = setTimeout(
       this.pollChallengeStatus(pendingChallenge, resolve, reject),
       this.challengePollInterval
@@ -77,9 +77,9 @@ export class PushNotificationMFA {
   /**
    * Create an MFA challenge and request a confirmed access token when verified
    */
-  public getMFAConfirmedToken = async () => {
+  public getConfirmedToken = async () => {
     const challenge = await this.request.fetch(
-      MFA_CHALLENGE_PATH,
+      PUSH_CHALLENGE_PATH,
       HttpMethod.POST
     );
 
@@ -91,10 +91,10 @@ export class PushNotificationMFA {
   /**
    * Clear pending MFA confirmation
    */
-  public cancelMFAConfirmation = () => {
+  public cancelConfirmation = () => {
     clearTimeout(this.challengePollTimeoutId as TimeoutID);
-    if (typeof this.rejectMFAConfirmation === "function") {
-      this.rejectMFAConfirmation(new MFAConfirmationCanceledError());
+    if (typeof this.rejectConfirmation === "function") {
+      this.rejectConfirmation(new MFAConfirmationCanceledError());
     }
   };
 }

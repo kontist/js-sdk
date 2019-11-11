@@ -237,15 +237,15 @@ The following steps are necessary to complete the MFA procedure:
 2. click the push notification you received on your phone, it will open the Kontist application
 3. login (if applicable) and confirm the MFA by clicking on the corresponding button
 
-Kontist SDK exposes a method to initiate the MFA flow after you successfully received the initial access token:
+Kontist SDK exposes a method to initiate the push notification MFA flow after you successfully received the initial access token:
 
 ```typescript
 // fetch a regular access token
 const token = await client.auth.tokenManager.fetchToken(callbackUrl);
 
 try {
-  // create an MFA challenge and wait for confirmation
-  const confirmedToken = await client.auth.push.getMFAConfirmedToken();
+  // create a push notification challenge and wait for confirmation
+  const confirmedToken = await client.auth.push.getConfirmedToken();
   // once it has been verified, your `client` instance will have a confirmed access token
   // the confirmed token is also returned in case you want to store it
 } catch (err) {
@@ -257,10 +257,10 @@ try {
 
 After obtaining a confirmed auth token with this method, you will have access to all banking APIs.
 
-If you want to cancel a pending MFA confirmation, you can call the following method:
+If you want to cancel a pending push notification confirmation, you can call the following method:
 
 ```typescript
-client.auth.push.cancelMFAConfirmation();
+client.auth.push.cancelConfirmation();
 ```
 
-The Promise returned by `getMFAConfirmedToken` will then reject with a `MFAConfirmationCanceledError`.
+The Promise returned by `getConfirmedToken` will then reject with a `MFAConfirmationCanceledError`.

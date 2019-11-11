@@ -1,11 +1,5 @@
 import * as ClientOAuth2 from "client-oauth2";
 
-export enum ChallengeStatus {
-  PENDING = "PENDING",
-  VERIFIED = "VERIFIED",
-  DENIED = "DENIED"
-}
-
 export enum HttpMethod {
   GET = "GET",
   POST = "POST",
@@ -33,10 +27,16 @@ export type TokenManagerOpts = {
   verifier?: string;
 };
 
-export type Challenge = {
+export enum PushChallengeStatus {
+  PENDING = "PENDING",
+  VERIFIED = "VERIFIED",
+  DENIED = "DENIED"
+}
+
+export type PushChallenge = {
   id: string;
   expiresAt: Date;
-  status: ChallengeStatus;
+  status: PushChallengeStatus;
 };
 
 export type GetAuthUriOpts = {

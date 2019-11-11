@@ -1,17 +1,17 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 import * as moment from "moment";
-import { MFA_CHALLENGE_PATH } from "../../lib/auth/push";
-import { HttpMethod, ChallengeStatus } from "../../lib/types";
+import { PUSH_CHALLENGE_PATH } from "../../lib/auth/push";
+import { HttpMethod, PushChallengeStatus } from "../../lib/types";
 
 import { createClient } from "../helpers";
 
 describe("Auth: PushNotificationMFA", () => {
-  describe("client.auth.push.getMFAConfirmedToken()", () => {
+  describe("client.auth.push.getConfirmedToken()", () => {
     const setup = (updatedChallenge: Object) => {
       const challenge = {
         id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
-        status: ChallengeStatus.PENDING,
+        status: PushChallengeStatus.PENDING,
         expiresAt: moment().add(10, "minutes")
       };
       const confirmedToken = "cnf-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
@@ -22,10 +22,10 @@ describe("Auth: PushNotificationMFA", () => {
 
       const requestStub = sinon.stub(client.auth.push["request"], "fetch");
       requestStub
-        .withArgs(MFA_CHALLENGE_PATH, HttpMethod.POST)
+        .withArgs(PUSH_CHALLENGE_PATH, HttpMethod.POST)
         .resolves(challenge);
       requestStub
-        .withArgs(`${MFA_CHALLENGE_PATH}/${challenge.id}`, HttpMethod.GET)
+        .withArgs(`${PUSH_CHALLENGE_PATH}/${challenge.id}`, HttpMethod.GET)
         .onFirstCall()
         .resolves(challenge)
         .onSecondCall()
@@ -35,7 +35,7 @@ describe("Auth: PushNotificationMFA", () => {
         });
       requestStub
         .withArgs(
-          `${MFA_CHALLENGE_PATH}/${challenge.id}/token`,
+          `${PUSH_CHALLENGE_PATH}/${challenge.id}/token`,
           HttpMethod.POST
         )
         .resolves({
@@ -48,10 +48,10 @@ describe("Auth: PushNotificationMFA", () => {
     describe("when challenge is verified", () => {
       it("should set and return confirmed access token", async () => {
         const { requestStub, confirmedToken, client } = setup({
-          status: ChallengeStatus.VERIFIED
+          status: PushChallengeStatus.VERIFIED
         });
 
-        const response: any = await client.auth.push.getMFAConfirmedToken();
+        const response: any = await client.auth.push.getConfirmedToken();
 
         expect(requestStub.callCount).to.equal(4);
         expect(response.accessToken).to.equal(confirmedToken);
@@ -66,12 +66,12 @@ describe("Auth: PushNotificationMFA", () => {
     describe("when challenge is denied", () => {
       it("should throw a `Challenge denied` error", async () => {
         const { requestStub, client } = setup({
-          status: ChallengeStatus.DENIED
+          status: PushChallengeStatus.DENIED
         });
         let error;
 
         try {
-          await client.auth.push.getMFAConfirmedToken();
+          await client.auth.push.getConfirmedToken();
         } catch (err) {
           error = err;
         }
@@ -92,7 +92,7 @@ describe("Auth: PushNotificationMFA", () => {
         let error;
 
         try {
-          await client.auth.push.getMFAConfirmedToken();
+          await client.auth.push.getConfirmedToken();
         } catch (err) {
           error = err;
         }
@@ -106,14 +106,14 @@ describe("Auth: PushNotificationMFA", () => {
     });
   });
 
-  describe("client.auth.push.cancelMFAConfirmation()", () => {
+  describe("client.auth.push.cancelConfirmation()", () => {
     it("should cancel polling and reject the corresponding promise", async () => {
       const client = createClient();
       const requestStub = sinon
         .stub(client.auth.push["request"], "fetch")
         .resolves({
           id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
-          status: ChallengeStatus.PENDING,
+          status: PushChallengeStatus.PENDING,
           expiresAt: moment().add(10, "minutes")
         });
       const clearTimeoutSpy = sinon.spy(global, "clearTimeout");
@@ -121,10 +121,10 @@ describe("Auth: PushNotificationMFA", () => {
       let error;
       try {
         setTimeout(() => {
-          client.auth.push.cancelMFAConfirmation();
+          client.auth.push.cancelConfirmation();
         }, 100);
 
-        await client.auth.push.getMFAConfirmedToken();
+        await client.auth.push.getConfirmedToken();
       } catch (err) {
         error = err;
       }
