@@ -110,6 +110,17 @@ export class Auth {
   /**
    * @deprecated use tokenManager method directly instead
    *
+   * Refresh auth token silently for browser environments
+   * Renew auth token
+   *
+   * @param timeout  optional timeout for renewal in ms
+   */
+  public refresh = async (timeout?: number): Promise<ClientOAuth2.Token> =>
+    this.tokenManager.refresh(timeout);
+
+  /**
+   * @deprecated use tokenManager method directly instead
+   *
    * Sets up  previously created token for all upcoming requests.
    *
    * @param accessToken   access token
