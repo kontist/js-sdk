@@ -21,13 +21,13 @@ export class GraphQLClient {
     query: string,
     variables?: Variables
   ): Promise<RawQueryResponse> => {
-    if (!this.auth.token) {
+    if (!this.auth.tokenManager.token) {
       throw new UserUnauthorizedError();
     }
 
     this.client.setHeader(
       "Authorization",
-      `Bearer ${this.auth.token.accessToken}`
+      `Bearer ${this.auth.tokenManager.token.accessToken}`
     );
 
     try {

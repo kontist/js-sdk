@@ -27,6 +27,12 @@ export type ClientOpts = {
   verifier?: string;
 };
 
+export type TokenManagerOpts = {
+  oauth2Client: ClientOAuth2;
+  state?: string;
+  verifier?: string;
+};
+
 export type Challenge = {
   id: string;
   expiresAt: Date;
@@ -36,8 +42,8 @@ export type Challenge = {
 export type GetAuthUriOpts = {
   query?: {
     [key: string]: string | string[];
-  }
-}
+  };
+};
 
 export type CreateDeviceParams = {
   name: string;

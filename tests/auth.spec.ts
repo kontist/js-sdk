@@ -3,7 +3,7 @@ import * as sinon from "sinon";
 import * as moment from "moment";
 import ClientOAuth2 = require("client-oauth2");
 import { Client, Constants } from "../lib";
-import { MFA_CHALLENGE_PATH } from "../lib/auth";
+import { MFA_CHALLENGE_PATH } from "../lib/auth/push";
 import { HttpMethod, ChallengeStatus, ClientOpts } from "../lib/types";
 import * as utils from "../lib/utils";
 
@@ -154,21 +154,28 @@ describe("Auth", () => {
 
       const stub = oauthClient.owner.getToken as sinon.SinonStub;
       const args = stub.getCall(0).args;
-      expect(args).to.deep.equal([ username, password, {} ]);
+      expect(args).to.deep.equal([username, password, {}]);
     });
 
     it("should return token data", async () => {
-      const tokenData = await client.auth.fetchTokenFromCredentials({ username, password });
+      const tokenData = await client.auth.fetchTokenFromCredentials({
+        username,
+        password
+      });
 
       expect(tokenData.data).to.deep.equal(tokenResponseData);
     });
 
     it("should forward `scopes` to oauthClient.owner.getToken() when set", async () => {
-      await client.auth.fetchTokenFromCredentials({ username, password, scopes });
+      await client.auth.fetchTokenFromCredentials({
+        username,
+        password,
+        scopes
+      });
 
       const stub = oauthClient.owner.getToken as sinon.SinonStub;
       const args = stub.getCall(0).args;
-      expect(args).to.deep.equal([ username, password, { scopes } ]);
+      expect(args).to.deep.equal([username, password, { scopes }]);
     });
   });
 
@@ -199,14 +206,15 @@ describe("Auth", () => {
       expect(error.message).to.equal(
         "If you are providing a 'verifier', you must also provide 'state' and 'redirectUri' options."
       );
-    }
+    };
+
     it("should throw an error", () => {
       assertMissingOptionError("state");
-      assertMissingOptionError("redirectUri")
+      assertMissingOptionError("redirectUri");
     });
   });
 
-  describe("client.auth.getMFAConfirmedToken()", () => {
+  describe("client.auth.push.getMFAConfirmedToken()", () => {
     const setup = (updatedChallenge: Object) => {
       const challenge = {
         id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
@@ -217,9 +225,9 @@ describe("Auth", () => {
 
       const client = createClient();
 
-      client.auth["challengePollInterval"] = 0;
+      client.auth.push["challengePollInterval"] = 0;
 
-      const requestStub = sinon.stub(client.auth, <any>"request");
+      const requestStub = sinon.stub(client.auth.push["request"], "fetch");
       requestStub
         .withArgs(MFA_CHALLENGE_PATH, HttpMethod.POST)
         .resolves(challenge);
@@ -250,7 +258,7 @@ describe("Auth", () => {
           status: ChallengeStatus.VERIFIED
         });
 
-        const response: any = await client.auth.getMFAConfirmedToken();
+        const response: any = await client.auth.push.getMFAConfirmedToken();
 
         expect(requestStub.callCount).to.equal(4);
         expect(response.accessToken).to.equal(confirmedToken);
@@ -270,7 +278,7 @@ describe("Auth", () => {
         let error;
 
         try {
-          await client.auth.getMFAConfirmedToken();
+          await client.auth.push.getMFAConfirmedToken();
         } catch (err) {
           error = err;
         }
@@ -291,7 +299,7 @@ describe("Auth", () => {
         let error;
 
         try {
-          await client.auth.getMFAConfirmedToken();
+          await client.auth.push.getMFAConfirmedToken();
         } catch (err) {
           error = err;
         }
@@ -305,23 +313,25 @@ describe("Auth", () => {
     });
   });
 
-  describe("client.auth.cancelMFAConfirmation()", () => {
+  describe("client.auth.push.cancelMFAConfirmation()", () => {
     it("should cancel polling and reject the corresponding promise", async () => {
       const client = createClient();
-      const requestStub = sinon.stub(client.auth, <any>"request").resolves({
-        id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
-        status: ChallengeStatus.PENDING,
-        expiresAt: moment().add(10, "minutes")
-      });
+      const requestStub = sinon
+        .stub(client.auth.push["request"], "fetch")
+        .resolves({
+          id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
+          status: ChallengeStatus.PENDING,
+          expiresAt: moment().add(10, "minutes")
+        });
       const clearTimeoutSpy = sinon.spy(global, "clearTimeout");
 
       let error;
       try {
         setTimeout(() => {
-          client.auth.cancelMFAConfirmation();
+          client.auth.push.cancelMFAConfirmation();
         }, 100);
 
-        await client.auth.getMFAConfirmedToken();
+        await client.auth.push.getMFAConfirmedToken();
       } catch (err) {
         error = err;
       }
@@ -335,7 +345,7 @@ describe("Auth", () => {
     });
   });
 
-  describe("client.auth.createDevice()", () => {
+  describe("client.auth.device.createDevice()", () => {
     const createDeviceParams = {
       name: "iPhone XS",
       key:
@@ -350,9 +360,9 @@ describe("Auth", () => {
     it("should create device", async () => {
       const client = createClient();
       const requestStub = sinon
-        .stub(client.auth, <any>"request")
+        .stub(client.auth.device["request"], "fetch")
         .resolves(createDeviceResponse);
-      const result = await client.auth.createDevice(createDeviceParams);
+      const result = await client.auth.device.createDevice(createDeviceParams);
 
       expect(requestStub.callCount).to.equal(1);
       expect(requestStub.getCall(0).args).to.eql([
@@ -366,7 +376,7 @@ describe("Auth", () => {
     });
   });
 
-  describe("client.auth.verifyDevice()", () => {
+  describe("client.auth.device.verifyDevice()", () => {
     const deviceId = "daecde61-18a4-4010-a0f7-a8b21c27996a";
 
     const verifyDeviceParams = {
@@ -376,8 +386,10 @@ describe("Auth", () => {
 
     it("should verify device", async () => {
       const client = createClient();
-      const requestStub = sinon.stub(client.auth, <any>"request").resolves();
-      const result = await client.auth.verifyDevice(
+      const requestStub = sinon
+        .stub(client.auth.device["request"], "fetch")
+        .resolves();
+      const result = await client.auth.device.verifyDevice(
         deviceId,
         verifyDeviceParams
       );
@@ -394,7 +406,7 @@ describe("Auth", () => {
     });
   });
 
-  describe("client.auth.createDeviceChallenge()", () => {
+  describe("client.auth.device.createDeviceChallenge()", () => {
     const deviceId = "daecde61-18a4-4010-a0f7-a8b21c27996a";
 
     const createDeviceChallengeResponse = {
@@ -405,9 +417,9 @@ describe("Auth", () => {
     it("should create device challenge", async () => {
       const client = createClient();
       const requestStub = sinon
-        .stub(client.auth, <any>"request")
+        .stub(client.auth.device["request"], "fetch")
         .resolves(createDeviceChallengeResponse);
-      const result = await client.auth.createDeviceChallenge(deviceId);
+      const result = await client.auth.device.createDeviceChallenge(deviceId);
 
       expect(requestStub.callCount).to.equal(1);
       expect(requestStub.getCall(0).args).to.eql([
@@ -420,7 +432,7 @@ describe("Auth", () => {
     });
   });
 
-  describe("client.auth.verifyDeviceChallenge()", () => {
+  describe("client.auth.device.verifyDeviceChallenge()", () => {
     const deviceId = "daecde61-18a4-4010-a0f7-a8b21c27996a";
     const challengeId = "83d1a026-dc80-48dc-bc15-4b672716050d";
 
@@ -435,9 +447,9 @@ describe("Auth", () => {
     it("should verify device challenge", async () => {
       const client = createClient();
       const requestStub = sinon
-        .stub(client.auth, <any>"request")
+        .stub(client.auth.device["request"], "fetch")
         .resolves(verifyDeviceChallengeResponse);
-      const result = await client.auth.verifyDeviceChallenge(
+      const result = await client.auth.device.verifyDeviceChallenge(
         deviceId,
         challengeId,
         verifyDeviceChallengeParams
@@ -458,7 +470,7 @@ describe("Auth", () => {
     });
   });
 
-  describe("client.auth.refresh()", () => {
+  describe("client.auth.tokenManager.refresh()", () => {
     describe("when client is created with a verifier", () => {
       const origin = "http://some.url";
       const code = "some-random-code";
@@ -483,7 +495,7 @@ describe("Auth", () => {
         };
         const oauthClient = new ClientOAuth2({});
         const fetchTokenStub = sinon
-          .stub(client.auth, "fetchToken")
+          .stub(client.auth.tokenManager, "fetchToken")
           .callsFake(async () => {
             return new ClientOAuth2.Token(oauthClient, tokenResponseData);
           });
@@ -492,7 +504,7 @@ describe("Auth", () => {
           .stub(utils, "authorizeSilently")
           .resolves(code);
 
-        const token = await client.auth.refresh(customTimeout);
+        const token = await client.auth.tokenManager.refresh(customTimeout);
 
         expect(fetchTokenStub.callCount).to.equal(1);
         expect(fetchTokenStub.getCall(0).args[0]).to.equal(
@@ -517,7 +529,7 @@ describe("Auth", () => {
 
     describe("when client is created with a clientSecret", () => {
       it("should request a new token using refresh token", async () => {
-      const oauthClient = new ClientOAuth2({});
+        const oauthClient = new ClientOAuth2({});
 
         const client = createClient({
           oauthClient,
@@ -525,8 +537,10 @@ describe("Auth", () => {
         });
 
         const tokenResponseData = {
-          access_token: "dummy-access-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-          refresh_token: "dummy-refresh-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ1",
+          access_token:
+            "dummy-access-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+          refresh_token:
+            "dummy-refresh-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ1",
           token_type: "Bearer"
         };
 
@@ -535,11 +549,13 @@ describe("Auth", () => {
           tokenResponseData.refresh_token
         );
 
-        const clientOAuth2TokenRefreshStub = sinon.stub(ClientOAuth2.Token.prototype, "refresh").callsFake(async () => {
-          return new ClientOAuth2.Token(oauthClient, tokenResponseData);
-        });
+        const clientOAuth2TokenRefreshStub = sinon
+          .stub(ClientOAuth2.Token.prototype, "refresh")
+          .callsFake(async () => {
+            return new ClientOAuth2.Token(oauthClient, tokenResponseData);
+          });
 
-        await client.auth.refresh();
+        await client.auth.tokenManager.refresh();
 
         expect(clientOAuth2TokenRefreshStub.callCount).to.equal(1);
 
