@@ -35,7 +35,7 @@ const client = new Client({
 
 // redirect not authenticated user to Kontist form
 app.get("/auth", async (req, res) => {
-  const uri = await client.auth.getAuthUri();
+  const uri = await client.auth.tokenManager.getAuthUri();
   res.redirect(uri);
 });
 
@@ -44,7 +44,7 @@ app.get(CALLBACK_PATH, async (req, res) => {
   const callbackUrl = req.originalUrl;
 
   try {
-    const token = await client.auth.fetchToken(callbackUrl);
+    const token = await client.auth.tokenManager.fetchToken(callbackUrl);
     /* got access token, login successful */
     res.send("Successful, your token is " + token.accessToken);
   } catch (e) {
@@ -61,14 +61,14 @@ app.listen(3000, function() {
 You should be able to issue new accessToken by simply calling:
 
 ```typescript
-const token = await client.auth.refresh();
+const token = await client.auth.tokenManager.refresh();
 ```
 
 Optionally, this method accepts a number as an argument to specify after how many milliseconds the refresh request should timeout (default is 10000):
 
 ```typescript
 // abort after 20 seconds
-const token = await client.auth.refresh(20000);
+const token = await client.auth.tokenManager.refresh(20000);
 ```
 
 ## Usage (Browser)
@@ -101,12 +101,12 @@ const token = await client.auth.refresh(20000);
       const code = params.get("code");
       if (!code) {
         // page not called with "code" query parameter, let's redirect the user to the login
-        client.auth.getAuthUri().then(function(url) {
+        client.auth.tokenManager.getAuthUri().then(function(url) {
           window.location = url;
         });
       } else {
         // we have a code, the client now can fetch a token
-        client.auth.fetchToken(document.location.href).then(function() {
+        client.auth.tokenManager.fetchToken(document.location.href).then(function() {
           // do a simple graphql query and output the account id
           client.graphQL
             .rawQuery(
@@ -132,14 +132,14 @@ const token = await client.auth.refresh(20000);
 Kontist SDK allows renewing access tokens in browser environments using this simple method:
 
 ```typescript
-const token = await client.auth.refresh();
+const token = await client.auth.tokenManager.refresh();
 ```
 
 Optionally, this method accepts a number as an argument to specify after how many milliseconds the refresh request should timeout (default is 10000):
 
 ```typescript
 // abort after 20 seconds
-const token = await client.auth.refresh(20000);
+const token = await client.auth.tokenManager.refresh(20000);
 ```
 
 ### GraphQL queries
@@ -241,11 +241,11 @@ Kontist SDK exposes a method to initiate the MFA flow after you successfully rec
 
 ```typescript
 // fetch a regular access token
-const token = await client.auth.fetchToken(callbackUrl);
+const token = await client.auth.tokenManager.fetchToken(callbackUrl);
 
 try {
   // create an MFA challenge and wait for confirmation
-  const confirmedToken = await client.auth.getMFAConfirmedToken();
+  const confirmedToken = await client.auth.push.getMFAConfirmedToken();
   // once it has been verified, your `client` instance will have a confirmed access token
   // the confirmed token is also returned in case you want to store it
 } catch (err) {
@@ -260,7 +260,7 @@ After obtaining a confirmed auth token with this method, you will have access to
 If you want to cancel a pending MFA confirmation, you can call the following method:
 
 ```typescript
-client.auth.cancelMFAConfirmation();
+client.auth.push.cancelMFAConfirmation();
 ```
 
 The Promise returned by `getMFAConfirmedToken` will then reject with a `MFAConfirmationCanceledError`.
