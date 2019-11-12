@@ -70,7 +70,7 @@ export class Auth {
   }
 
   private showDeprecationWarning = (methodName: string): void => {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV !== 'production') {
       const message = `The 'auth.${methodName}' method is deprecated and will be removed in v1.0.0. Please consider using 'auth.tokenManager.${methodName}' instead.`;
       console.warn(message);
     }
