@@ -69,16 +69,27 @@ export class Auth {
     this.push = new PushNotificationMFA(this.tokenManager, request);
   }
 
+  private showDeprecationWarning = (methodName: string): void => {
+    if (process.env.NODE_ENV === "development") {
+      const message = `The 'auth.${methodName}' method is deprecated and will be removed in v1.0.0. Please consider using 'auth.tokenManager.${methodName}' instead.`;
+      console.warn(message);
+    }
+  };
+
   /**
-   * @deprecated use tokenManager method directly instead
+   * @deprecated This method will be removed in v1.0.0.
+   *             Use `auth.tokenManager.getAuthUri` method directly instead.
    *
    * Build a uri to which the user must be redirected for login.
    */
-  public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> =>
-    this.tokenManager.getAuthUri(opts);
+  public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
+    this.showDeprecationWarning("getAuthUri");
+    return this.tokenManager.getAuthUri(opts);
+  };
 
   /**
-   * @deprecated use tokenManager method directly instead
+   * @deprecated This method will be removed in v1.0.0.
+   *             Use `auth.tokenManager.fetchToken` method directly instead.
    *
    * This method must be called during the callback via `redirectUri`.
    *
@@ -87,10 +98,14 @@ export class Auth {
    */
   public fetchToken = async (
     callbackUri: string
-  ): Promise<ClientOAuth2.Token> => this.tokenManager.fetchToken(callbackUri);
+  ): Promise<ClientOAuth2.Token> => {
+    this.showDeprecationWarning("fetchToken");
+    return this.tokenManager.fetchToken(callbackUri);
+  };
 
   /**
-   * @deprecated use tokenManager method directly instead
+   * @deprecated This method will be removed in v1.0.0.
+   *             Use `auth.tokenManager.fetchTokenFromCredentials` method directly instead.
    *
    * Fetches token from owner credentials.
    * Only works for client IDs that support the 'password' grant type
@@ -105,23 +120,30 @@ export class Auth {
     username: string;
     password: string;
     scopes?: string[];
-  }) => this.tokenManager.fetchTokenFromCredentials(opts);
+  }): Promise<ClientOAuth2.Token> => {
+    this.showDeprecationWarning("fetchTokenFromCredentials");
+    return this.tokenManager.fetchTokenFromCredentials(opts);
+  };
 
   /**
-   * @deprecated use tokenManager method directly instead
+   * @deprecated This method will be removed in v1.0.0.
+   *             Use `auth.tokenManager.refresh` method directly instead.
    *
    * Refresh auth token silently for browser environments
    * Renew auth token
    *
    * @param timeout  optional timeout for renewal in ms
    */
-  public refresh = async (timeout?: number): Promise<ClientOAuth2.Token> =>
-    this.tokenManager.refresh(timeout);
+  public refresh = async (timeout?: number): Promise<ClientOAuth2.Token> => {
+    this.showDeprecationWarning("refresh");
+    return this.tokenManager.refresh(timeout);
+  };
 
   /**
-   * @deprecated use tokenManager method directly instead
+   * @deprecated This method will be removed in v1.0.0.
+   *             Use `auth.tokenManager.setToken` method directly instead.
    *
-   * Sets up  previously created token for all upcoming requests.
+   * Sets up previously created token for all upcoming requests.
    *
    * @param accessToken   access token
    * @param refreshToken  optional refresh token
@@ -132,17 +154,21 @@ export class Auth {
     accessToken: string,
     refreshToken?: string,
     tokenType?: string
-  ): ClientOAuth2.Token =>
-    this.tokenManager.setToken(accessToken, refreshToken, tokenType);
+  ): ClientOAuth2.Token => {
+    this.showDeprecationWarning("setToken");
+    return this.tokenManager.setToken(accessToken, refreshToken, tokenType);
+  };
 
   /**
-   * @deprecated use tokenManager getter directly instead
+   * @deprecated This method will be removed in v1.0.0.
+   *             Use `auth.tokenManager.token` getter directly instead.
    *
    * Returns current token used for API requests.
    *
    * @returns  token object which might contain token(s), scope(s), token type and expiration time
    */
   get token(): ClientOAuth2.Token | null {
+    this.showDeprecationWarning("token");
     return this.tokenManager.token;
   }
 }
