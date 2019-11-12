@@ -29,7 +29,7 @@ export const authorizeSilently = (
 
       cleanup();
 
-      if (event.data && !event.data.error) {
+      if (event.data && event.data.response) {
         const { code } = event.data.response;
         return resolve(code);
       } else {
