@@ -7,3 +7,5 @@ yarn-error.log*
 .DS_Store
 .vscode/
 !.vscode/launch.json
+coverage/
+.nyc_output/
