@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2019-11-12
+### Added
+- Expose Interfaces, Types and Errors [#30](https://github.com/kontist/js-sdk/pull/30)
+- Intergrate basic Code Coverage [#27](https://github.com/kontist/js-sdk/pull/27)
+- Add changelog [#29](https://github.com/kontist/js-sdk/pull/29)
+
+### Changed
+- Extended validation of client options [#25](https://github.com/kontist/js-sdk/pull/25)
+
+
 ## [0.18.0] - 2019-11-09
 ### Added
 - Introduce refresh method when doing browser auth via PKCE [#19](https://github.com/kontist/js-sdk/pull/19)
