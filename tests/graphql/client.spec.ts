@@ -15,7 +15,7 @@ describe("Error handling", () => {
     });
 
     const client = createClient();
-    client.auth.setToken("dummy-access-token");
+    client.auth.tokenManager.setToken("dummy-access-token");
 
     let error;
     try {

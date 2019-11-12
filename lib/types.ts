@@ -1,11 +1,5 @@
 import * as ClientOAuth2 from "client-oauth2";
 
-export enum ChallengeStatus {
-  PENDING = "PENDING",
-  VERIFIED = "VERIFIED",
-  DENIED = "DENIED"
-}
-
 export enum HttpMethod {
   GET = "GET",
   POST = "POST",
@@ -27,17 +21,29 @@ export type ClientOpts = {
   verifier?: string;
 };
 
-export type Challenge = {
+export type TokenManagerOpts = {
+  oauth2Client: ClientOAuth2;
+  state?: string;
+  verifier?: string;
+};
+
+export enum PushChallengeStatus {
+  PENDING = "PENDING",
+  VERIFIED = "VERIFIED",
+  DENIED = "DENIED"
+}
+
+export type PushChallenge = {
   id: string;
   expiresAt: Date;
-  status: ChallengeStatus;
+  status: PushChallengeStatus;
 };
 
 export type GetAuthUriOpts = {
   query?: {
     [key: string]: string | string[];
-  }
-}
+  };
+};
 
 export type CreateDeviceParams = {
   name: string;
