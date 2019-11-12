@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { RawQueryResponse } from "../lib/graphql/types";
-import { Transaction } from "../lib/graphql/schema";
-import { createClient, createTransaction } from "./helpers";
+import { RawQueryResponse } from "../../lib/graphql/types";
+import { Transaction } from "../../lib/graphql/schema";
+import { createClient, createTransaction } from "../helpers";
 
 describe("Transaction", () => {
   describe("iterator", () => {

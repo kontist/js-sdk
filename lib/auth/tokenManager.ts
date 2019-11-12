@@ -161,6 +161,40 @@ export class TokenManager {
   };
 
   /**
+   * Sets up  previously created token for all upcoming requests.
+   *
+   * @param accessToken   access token
+   * @param refreshToken  optional refresh token
+   * @param tokenType     token type
+   * @returns             token object which might contain token(s), scope(s), token type and expiration time
+   */
+  public setToken = (
+    accessToken: string,
+    refreshToken?: string,
+    tokenType?: string
+  ): ClientOAuth2.Token => {
+    const data = {};
+    let token;
+
+    if (tokenType && refreshToken) {
+      token = this.oauth2Client.createToken(
+        accessToken,
+        refreshToken,
+        tokenType,
+        data
+      );
+    } else if (refreshToken) {
+      token = this.oauth2Client.createToken(accessToken, refreshToken, data);
+    } else {
+      token = this.oauth2Client.createToken(accessToken, data);
+    }
+
+    this._token = token;
+
+    return token;
+  };
+
+  /**
    * Renew auth token for browser environments using web_message response mode and prompt none
    *
    * @param timeout  timeout for renewal in ms
@@ -195,40 +229,6 @@ export class TokenManager {
         message: error.message
       });
     }
-  };
-
-  /**
-   * Sets up  previously created token for all upcoming requests.
-   *
-   * @param accessToken   access token
-   * @param refreshToken  optional refresh token
-   * @param tokenType     token type
-   * @returns             token object which might contain token(s), scope(s), token type and expiration time
-   */
-  public setToken = (
-    accessToken: string,
-    refreshToken?: string,
-    tokenType?: string
-  ): ClientOAuth2.Token => {
-    const data = {};
-    let token;
-
-    if (tokenType && refreshToken) {
-      token = this.oauth2Client.createToken(
-        accessToken,
-        refreshToken,
-        tokenType,
-        data
-      );
-    } else if (refreshToken) {
-      token = this.oauth2Client.createToken(accessToken, refreshToken, data);
-    } else {
-      token = this.oauth2Client.createToken(accessToken, data);
-    }
-
-    this._token = token;
-
-    return token;
   };
 
   /**

@@ -7,7 +7,7 @@ import { HttpMethod, PushChallengeStatus } from "../../lib/types";
 import { createClient } from "../helpers";
 
 describe("Auth: PushNotificationMFA", () => {
-  describe("client.auth.push.getConfirmedToken()", () => {
+  describe("#getConfirmedToken", () => {
     const setup = (updatedChallenge: Object) => {
       const challenge = {
         id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
@@ -55,7 +55,7 @@ describe("Auth: PushNotificationMFA", () => {
 
         expect(requestStub.callCount).to.equal(4);
         expect(response.accessToken).to.equal(confirmedToken);
-        expect(client.auth.token && client.auth.token.accessToken).to.equal(
+        expect(client.auth.tokenManager.token && client.auth.tokenManager.token.accessToken).to.equal(
           confirmedToken
         );
 
@@ -106,7 +106,7 @@ describe("Auth: PushNotificationMFA", () => {
     });
   });
 
-  describe("client.auth.push.cancelConfirmation()", () => {
+  describe("#cancelConfirmation", () => {
     it("should cancel polling and reject the corresponding promise", async () => {
       const client = createClient();
       const requestStub = sinon

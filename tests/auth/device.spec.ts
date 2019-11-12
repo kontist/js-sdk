@@ -4,7 +4,7 @@ import * as sinon from "sinon";
 import { createClient } from "../helpers";
 
 describe("Auth: DeviceBinding", () => {
-  describe("client.auth.device.createDevice()", () => {
+  describe("#createDevice", () => {
     const createDeviceParams = {
       name: "iPhone XS",
       key:
@@ -35,7 +35,7 @@ describe("Auth: DeviceBinding", () => {
     });
   });
 
-  describe("client.auth.device.verifyDevice()", () => {
+  describe("#verifyDevice", () => {
     const deviceId = "daecde61-18a4-4010-a0f7-a8b21c27996a";
 
     const verifyDeviceParams = {
@@ -65,7 +65,7 @@ describe("Auth: DeviceBinding", () => {
     });
   });
 
-  describe("client.auth.device.createDeviceChallenge()", () => {
+  describe("#createDeviceChallenge", () => {
     const deviceId = "daecde61-18a4-4010-a0f7-a8b21c27996a";
 
     const createDeviceChallengeResponse = {
@@ -91,7 +91,7 @@ describe("Auth: DeviceBinding", () => {
     });
   });
 
-  describe("client.auth.device.verifyDeviceChallenge()", () => {
+  describe("#verifyDeviceChallenge", () => {
     const deviceId = "daecde61-18a4-4010-a0f7-a8b21c27996a";
     const challengeId = "83d1a026-dc80-48dc-bc15-4b672716050d";
 
@@ -121,7 +121,7 @@ describe("Auth: DeviceBinding", () => {
         verifyDeviceChallengeParams
       ]);
       expect(result.accessToken).to.equal(verifyDeviceChallengeResponse.token);
-      expect(client.auth.token && client.auth.token.accessToken).to.equal(
+      expect(client.auth.tokenManager.token && client.auth.tokenManager.token.accessToken).to.equal(
         verifyDeviceChallengeResponse.token
       );
 
