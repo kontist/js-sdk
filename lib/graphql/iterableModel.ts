@@ -6,15 +6,14 @@ export abstract class IterableModel<T> extends Model<T> {
     let lastResult!: ResultPage<T>;
 
     return {
-      next: async (args: Object = {}) => {
+      next: async () => {
         // this is the first call or items are empty
         if (!lastResult) {
-          lastResult = await this.fetch(args);
+          lastResult = await this.fetch();
         }
 
         if (lastResult.items.length === 0 && lastResult.pageInfo.hasNextPage) {
           lastResult = await this.fetch({
-            ...args,
             after: lastResult.pageInfo.endCursor
           });
         }

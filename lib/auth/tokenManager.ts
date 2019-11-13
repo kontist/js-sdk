@@ -39,9 +39,9 @@ export class TokenManager {
 
     if (this.verifier) {
       // Implemented according to https://tools.ietf.org/html/rfc7636#appendix-A
-      const challenge = (
-        btoa(String.fromCharCode.apply(null, sha256.array(this.verifier))) || ""
-      )
+      const challenge = 
+        btoa(String.fromCharCode.apply(null, sha256.array(this.verifier)))!
+      
         .split("=")[0]
         .replace("+", "-")
         .replace("/", "_");

@@ -1,6 +1,7 @@
 import { Account as AccountModel, Query } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
+import { KontistSDKError } from "../errors";
 
 const GET_ACCOUNT = `query {
   viewer {
@@ -13,7 +14,7 @@ const GET_ACCOUNT = `query {
 
 export class Account extends Model<AccountModel> {
   async fetch(): Promise<ResultPage<AccountModel>> {
-    throw new Error("You are allowed only to fetch your account details.");
+    throw new KontistSDKError({ message: "You are allowed only to fetch your account details." });
   }
 
   /**
