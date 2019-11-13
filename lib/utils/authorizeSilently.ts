@@ -17,9 +17,7 @@ export const authorizeSilently = (
       if (iframe && iframe.parentNode) {
         iframe.parentNode.removeChild(iframe);
       }
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      clearTimeout(timeoutId);
     };
 
     const onMessageHandler = (event: MessageEvent) => {
