@@ -100,6 +100,32 @@ describe("authorizeSilently", () => {
     assertListeners();
   });
 
+  describe("when receiving an empty message", () => {
+    let error: any;
+
+    before(async () => {
+      addEventListenerSpy.resetHistory();
+      removeEventListenerSpy.resetHistory();
+
+      setTimeout(() => {
+        window.postMessage(null, "*");
+      }, 100);
+
+      try {
+        await authorizeSilently("http://some.url", "", 10000);
+      } catch (err) {
+        error = err;
+      }
+    });
+
+    it("should throw a RenewTokenError", () => {
+      expect(error).to.be.an.instanceof(RenewTokenError);
+      expect(error.message).to.equal("Invalid message received from server");
+    });
+
+    assertListeners();
+  });
+
   describe("when the message origin is not the expected one", () => {
     let error: any;
 
