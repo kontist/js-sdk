@@ -2,9 +2,8 @@ import {
   CreateTransferInput,
   Transfer as TransferEntry,
   BatchTransfer,
-  CreateConfirmationResult,
-  StandingOrder,
-  TimedOrder
+  TransferType,
+  ConfirmationRequestOrTransfer
 } from "./schema";
 import { Model } from "./model";
 import { FetchOptions } from "./types";
@@ -66,17 +65,35 @@ const CONFIRM_TRANSFERS = `mutation confirmTransfer(
   }
 }`;
 
-const CANCEL_STANDING_ORDER = `mutation cancelStandingOrder($id: String!) {
-  cancelStandingOrder(id: $id) {
-    confirmationId
+const CANCEL_TRANSFER = `mutation cancelTransfer($type: TransferType!, $id: String!) {
+  cancelTransfer(type: $type, id: $id) {
+    ... on ConfirmationRequest {
+      confirmationId
+    }
+
+    ... on Transfer {
+      id
+      recipient
+      iban
+      amount
+      status
+      executeAt
+      lastExecutionDate
+      purpose
+      e2eId
+      reoccurrence
+      nextOccurrence
+    }
   }
 }`;
 
-const CONFIRM_CANCEL_STANDING_ORDER = `mutation confirmCancelStandingOrder(
+const CONFIRM_CANCEL_TRANSFER = `mutation confirmCancelTransfer(
+  $type: TransferType!
   $confirmationId: String!
   $authorizationToken: String!
 ) {
-  confirmCancelStandingOrder(
+  confirmCancelTransfer(
+    type: $type
     confirmationId: $confirmationId
     authorizationToken: $authorizationToken
   ) {
@@ -91,18 +108,6 @@ const CONFIRM_CANCEL_STANDING_ORDER = `mutation confirmCancelStandingOrder(
     e2eId
     reoccurrence
     nextOccurrence
-  }
-}`;
-
-const CANCEL_TIMED_ORDER = `mutation cancelTimedOrder($id: String!) {
-  cancelTimedOrder(id: $id) {
-    id
-    status
-    iban
-    recipient
-    purpose
-    amount
-    executeAt
   }
 }`;
 
@@ -128,7 +133,7 @@ export class Transfer extends Model<CreateTransferInput> {
   async confirmOne(
     confirmationId: string,
     authorizationToken: string
-  ): Promise<CreateConfirmationResult> {
+  ): Promise<TransferEntry> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       confirmationId,
       authorizationToken
@@ -166,43 +171,36 @@ export class Transfer extends Model<CreateTransferInput> {
   }
 
   /**
-   * Cancel standing order
+   * Cancel transfer
    *
-   * @param id        standing order id
-   * @returns         confirmation id used to confirm the cancellation
+   * @param type      transfer type
+   * @param id        transfer id
+   * @returns         confirmation id used to confirm the cancellation or transfer if confirmation is not needed
    */
-  async cancelStandingOrder(id: string): Promise<string> {
-    const result = await this.client.rawQuery(CANCEL_STANDING_ORDER, { id });
-    return result.cancelStandingOrder.confirmationId;
+  async cancelTransfer(type: TransferType,id: string): Promise<ConfirmationRequestOrTransfer> {
+    const result = await this.client.rawQuery(CANCEL_TRANSFER, { type, id });
+    return result.cancelTransfer;
   }
 
   /**
-   * Confirm standing order cancellation
+   * Confirm transfer cancellation
    *
-   * @param confirmationId      confirmation id obtained as a result of `transfer.cancelStandingOrder` call
+   * @param type                transfer type
+   * @param confirmationId      confirmation id obtained as a result of `transfer.cancelTransfer` call
    * @param authorizationToken  sms token
-   * @returns                   canceled standing order
+   * @returns                   canceled transfer
    */
-  async confirmCancelStandingOrder(
+  async confirmCancelTransfer(
+    type: TransferType,
     confirmationId: string,
     authorizationToken: string
-  ): Promise<StandingOrder> {
-    const result = await this.client.rawQuery(CONFIRM_CANCEL_STANDING_ORDER, {
+  ): Promise<TransferEntry> {
+    const result = await this.client.rawQuery(CONFIRM_CANCEL_TRANSFER, {
+      type,
       confirmationId,
       authorizationToken
     });
-    return result.confirmCancelStandingOrder;
-  }
-
-  /**
-   * Cancel timed order
-   *
-   * @param id        timed order id
-   * @returns         canceled timed order
-   */
-  async cancelTimedOrder(id: string): Promise<TimedOrder> {
-    const result = await this.client.rawQuery(CANCEL_TIMED_ORDER, { id });
-    return result.cancelTimedOrder;
+    return result.confirmCancelTransfer;
   }
 
   async fetch(args?: FetchOptions): Promise<ResultPage<TransferEntry>> {
