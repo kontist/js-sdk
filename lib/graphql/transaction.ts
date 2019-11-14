@@ -6,9 +6,9 @@ import {
 import { IterableModel } from "./iterableModel";
 import {
   FetchOptions,
-  SubscriptionListeners,
   SubscriptionEvent,
-  SubscriptionType
+  SubscriptionType,
+  Unsubscribe
 } from "./types";
 import { ResultPage } from "./resultPage";
 
@@ -54,17 +54,13 @@ const FETCH_TRANSACTIONS = `query fetchTransactions ($first: Int, $last: Int, $a
   }
 }`;
 
-const SUBSCRIPTION_QUERIES = {
-  newTransaction: `subscription {
-    newTransaction {
-      ${TRANSACTION_FIELDS}
-    }
-  }`
-};
+export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
+  newTransaction {
+    ${TRANSACTION_FIELDS}
+  }
+}`;
 
 export class Transaction extends IterableModel<TransactionEntry> {
-  private listeners: SubscriptionListeners = {};
-
   /**
    * Fetches first 50 transactions which match the query
    *
@@ -85,53 +81,11 @@ export class Transaction extends IterableModel<TransactionEntry> {
     return new ResultPage(this, transactions, pageInfo);
   }
 
-  /**
-   * Add a listener to a GraphQL subscription topic
-   *
-   * @param type     the subscription topic to listen to
-   * @param handler  the handler to be called when new data is received
-   */
-  public addEventListener(type: SubscriptionType, handler: Function) {
-    if (!this.listeners[type] && SUBSCRIPTION_QUERIES[type]) {
-      this.client.subscribe(
-        SUBSCRIPTION_QUERIES[type],
-        type,
-        this.dispatchEvent.bind(this)
-      );
-      this.listeners[type] = [];
-    }
-    (this.listeners?.[type] ?? []).push(handler);
-  }
-
-  /**
-   * Remove a listener to a GraphQL subscription topic
-   *
-   * @param type     the subscription topic to remove a listener from
-   * @param handler  the handler to be removed
-   */
-  public removeEventListener(type: SubscriptionType, handler: Function) {
-    if (!this.listeners[type]) {
-      return;
-    }
-
-    this.listeners[type] = this.listeners[type].filter(
-      listener => listener !== handler
+  subscribe(handler: (event: SubscriptionEvent) => any): Unsubscribe {
+    return this.client.subscribe(
+      NEW_TRANSACTION_SUBSCRIPTION,
+      SubscriptionType.newTransaction,
+      handler
     );
-
-    if (this.listeners[type].length === 0) {
-      this.client.unsubscribe(type);
-      delete this.listeners[type];
-    }
-  }
-
-  /**
-   * Dispatch an event to all the listener of its type
-   *
-   * @param event  the subscription event to dispatch
-   */
-  private dispatchEvent(event: SubscriptionEvent) {
-    (this.listeners?.[event.type] ?? []).forEach(listener => {
-      listener(event);
-    });
   }
 }

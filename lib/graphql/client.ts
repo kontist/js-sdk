@@ -4,7 +4,7 @@ import { Variables } from "graphql-request/dist/src/types";
 import * as ws from "ws";
 
 import { Auth } from "../auth";
-import { RawQueryResponse } from "./types";
+import { RawQueryResponse, SubscriptionType, Unsubscribe } from "./types";
 import { serializeGraphQLError } from "../utils";
 import { GraphQLError, UserUnauthorizedError } from "../errors";
 import { GraphQLClientOpts } from "../types";
@@ -12,29 +12,27 @@ import { GraphQLClientOpts } from "../types";
 const WebSocket = typeof window === "undefined" ? ws : window.WebSocket;
 
 type Subscriptions = {
-  [key: string]: Function;
+  [key: number]: {
+    id: number;
+    query: string;
+    type: SubscriptionType;
+    handler: Function;
+    unsubscribe: Unsubscribe;
+  };
 };
 
 export class GraphQLClient {
   private auth: Auth;
   private client: GQLClient;
-  private subscriptionClient: SubscriptionClient;
+  private subscriptionEndpoint: string;
+  private subscriptionClient?: SubscriptionClient | null;
   private subscriptions: Subscriptions = {};
+  private subscriptionId: number = 0;
 
   constructor({ auth, endpoint, subscriptionEndpoint }: GraphQLClientOpts) {
     this.auth = auth;
     this.client = new GQLClient(endpoint);
-    this.subscriptionClient = new SubscriptionClient(
-      subscriptionEndpoint,
-      {
-        lazy: true,
-        reconnect: true,
-        connectionParams: () => ({
-          Authorization: `Bearer ${this.auth.tokenManager.token?.accessToken}`
-        })
-      },
-      WebSocket
-    );
+    this.subscriptionEndpoint = subscriptionEndpoint;
   }
 
   /**
@@ -62,9 +60,56 @@ export class GraphQLClient {
   };
 
   /**
-   * Subscribe to a topic and call the handler when new data is received
+   * Create a subscription client
    */
-  public subscribe = (query: string, topic: string, handler: Function) => {
+  private createSubscriptionClient = (): SubscriptionClient => {
+    if (!this.auth.tokenManager.token) {
+      throw new UserUnauthorizedError();
+    }
+
+    return new SubscriptionClient(
+      this.subscriptionEndpoint,
+      {
+        lazy: true,
+        connectionParams: () => ({
+          Authorization: `Bearer ${this.auth.tokenManager.token?.accessToken}`
+        })
+      },
+      WebSocket
+    );
+  };
+
+  /**
+   * Handle disconnection by refreshing access token and resubscribing
+   * all previously active subscriptions
+   */
+  private handleDisconnection = async (): Promise<void> => {
+    await this.auth.tokenManager.refresh();
+    Object.values(this.subscriptions).forEach(subscription => {
+      this.subscribe(
+        subscription.query,
+        subscription.type,
+        subscription.handler,
+        subscription.id
+      );
+    });
+  };
+
+  /**
+   * Subscribe to a topic and call the handler when new data or an error is received
+   */
+  public subscribe = (
+    query: string,
+    type: SubscriptionType,
+    handler: Function,
+    subscriptionId?: number
+  ): Unsubscribe => {
+    if (!this.subscriptionClient) {
+      this.subscriptionClient = this.createSubscriptionClient();
+
+      this.subscriptionClient.onDisconnected(this.handleDisconnection);
+    }
+
     const subscription = this.subscriptionClient.request({
       query
     });
@@ -72,22 +117,39 @@ export class GraphQLClient {
     const { unsubscribe } = subscription.subscribe({
       next(response) {
         handler({
-          type: topic,
-          data: response.data?.[topic]
+          data: response.data?.[type]
+        });
+      },
+      error(error) {
+        handler({
+          data: null,
+          error
         });
       }
     });
 
-    this.subscriptions[topic] = unsubscribe;
+    const id = subscriptionId || (this.subscriptionId += 1);
+    this.subscriptions[id] = {
+      id,
+      query,
+      type,
+      handler,
+      unsubscribe
+    };
+
+    return this.unsubscribe(id);
   };
 
   /**
    * Unsubscribe to a topic
    */
-  public unsubscribe = (topic: string) => {
-    if (this.subscriptions[topic]) {
-      this.subscriptions[topic]();
+  public unsubscribe = (subscriptionId: number): (() => void) => () => {
+    this.subscriptions[subscriptionId].unsubscribe();
+    delete this.subscriptions[subscriptionId];
+
+    if (Object.keys(this.subscriptions).length === 0) {
+      this.subscriptionClient?.close();
+      this.subscriptionClient = null;
     }
-    delete this.subscriptions[topic];
   };
 }
