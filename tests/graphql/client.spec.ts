@@ -59,7 +59,7 @@ describe("Error handling", () => {
     });
   });
 
-  describe("when an unexpected error was returned", () => {
+  describe("when an unexpected error is returned", () => {
     it("should throw a GraphQLError with proper message", async () => {
       const message = "Generic error message";
       const response = {
