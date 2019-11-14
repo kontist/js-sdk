@@ -14,12 +14,8 @@ export const authorizeSilently = (
 
     const cleanup = () => {
       window.removeEventListener("message", onMessageHandler);
-      if (iframe && iframe.parentNode) {
-        iframe.parentNode.removeChild(iframe);
-      }
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      iframe.remove();
+      clearTimeout(timeoutId);
     };
 
     const onMessageHandler = (event: MessageEvent) => {
@@ -29,12 +25,12 @@ export const authorizeSilently = (
 
       cleanup();
 
-      if (event.data && !event.data.error) {
+      if (event.data?.response) {
         const { code } = event.data.response;
         return resolve(code);
       } else {
         const error =
-          (event.data && event.data.error) ||
+          event.data?.error ??
           new RenewTokenError({
             message: "Invalid message received from server"
           });
