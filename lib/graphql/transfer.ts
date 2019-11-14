@@ -2,7 +2,8 @@ import {
   CreateTransferInput,
   Transfer as TransferEntry,
   BatchTransfer,
-  CreateConfirmationResult
+  TransferType,
+  ConfirmationRequestOrTransfer
 } from "./schema";
 import { Model } from "./model";
 import { FetchOptions } from "./types";
@@ -64,6 +65,52 @@ const CONFIRM_TRANSFERS = `mutation confirmTransfer(
   }
 }`;
 
+const CANCEL_TRANSFER = `mutation cancelTransfer($type: TransferType!, $id: String!) {
+  cancelTransfer(type: $type, id: $id) {
+    ... on ConfirmationRequest {
+      confirmationId
+    }
+
+    ... on Transfer {
+      id
+      recipient
+      iban
+      amount
+      status
+      executeAt
+      lastExecutionDate
+      purpose
+      e2eId
+      reoccurrence
+      nextOccurrence
+    }
+  }
+}`;
+
+const CONFIRM_CANCEL_TRANSFER = `mutation confirmCancelTransfer(
+  $type: TransferType!
+  $confirmationId: String!
+  $authorizationToken: String!
+) {
+  confirmCancelTransfer(
+    type: $type
+    confirmationId: $confirmationId
+    authorizationToken: $authorizationToken
+  ) {
+    id
+    recipient
+    iban
+    amount
+    status
+    executeAt
+    lastExecutionDate
+    purpose
+    e2eId
+    reoccurrence
+    nextOccurrence
+  }
+}`;
+
 export class Transfer extends Model<CreateTransferInput> {
   /**
    * Creates single wire transfer / timed order / standing order
@@ -86,7 +133,7 @@ export class Transfer extends Model<CreateTransferInput> {
   async confirmOne(
     confirmationId: string,
     authorizationToken: string
-  ): Promise<CreateConfirmationResult> {
+  ): Promise<TransferEntry> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       confirmationId,
       authorizationToken
@@ -121,6 +168,39 @@ export class Transfer extends Model<CreateTransferInput> {
       authorizationToken
     });
     return result.confirmTransfers;
+  }
+
+  /**
+   * Cancel transfer
+   *
+   * @param type      transfer type
+   * @param id        transfer id
+   * @returns         confirmation id used to confirm the cancellation or transfer if confirmation is not needed
+   */
+  async cancelTransfer(type: TransferType,id: string): Promise<ConfirmationRequestOrTransfer> {
+    const result = await this.client.rawQuery(CANCEL_TRANSFER, { type, id });
+    return result.cancelTransfer;
+  }
+
+  /**
+   * Confirm transfer cancellation
+   *
+   * @param type                transfer type
+   * @param confirmationId      confirmation id obtained as a result of `transfer.cancelTransfer` call
+   * @param authorizationToken  sms token
+   * @returns                   canceled transfer
+   */
+  async confirmCancelTransfer(
+    type: TransferType,
+    confirmationId: string,
+    authorizationToken: string
+  ): Promise<TransferEntry> {
+    const result = await this.client.rawQuery(CONFIRM_CANCEL_TRANSFER, {
+      type,
+      confirmationId,
+      authorizationToken
+    });
+    return result.confirmCancelTransfer;
   }
 
   async fetch(args?: FetchOptions): Promise<ResultPage<TransferEntry>> {
