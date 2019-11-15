@@ -27,6 +27,7 @@
     "@types/mocha": "^5.2.7",
     "@types/sinon": "^7.5.0",
     "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
     "jsdom": "^15.2.1",
     "mocha": "^6.2.1",
@@ -37,5 +38,8 @@
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
+  },
+  "bin": {
+    "kontist": "./cli/index.js"
   }
 }
