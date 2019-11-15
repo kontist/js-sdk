@@ -548,4 +548,16 @@ describe("getConnectionParams", () => {
       Authorization: `Bearer ${accessToken}`
     });
   });
+
+  describe("when access token is missing", () => {
+    before(() => {
+      client.auth.tokenManager._token = undefined;
+    })
+
+    it("should still return proper connection params", () => {
+      expect(client.graphQL.getConnectionParams()).to.deep.equal({
+        Authorization: "Bearer undefined"
+      });
+    })
+  })
 });
