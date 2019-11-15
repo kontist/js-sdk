@@ -9,8 +9,6 @@ import { serializeGraphQLError } from "../utils";
 import { GraphQLError, UserUnauthorizedError } from "../errors";
 import { GraphQLClientOpts } from "../types";
 
-const WebSocket = typeof window === "undefined" ? ws : window.WebSocket;
-
 type Subscriptions = {
   [key: number]: {
     id: number;
@@ -19,6 +17,10 @@ type Subscriptions = {
     handler: Function;
     unsubscribe: Unsubscribe;
   };
+};
+
+type ConnectionParams = {
+  Authorization: string;
 };
 
 export class GraphQLClient {
@@ -60,6 +62,13 @@ export class GraphQLClient {
   };
 
   /**
+   * Return subscription client connection params
+   */
+  private getConnectionParams = (): ConnectionParams => ({
+    Authorization: `Bearer ${this.auth.tokenManager.token?.accessToken}`
+  });
+
+  /**
    * Create a subscription client
    */
   private createSubscriptionClient = (): SubscriptionClient => {
@@ -67,13 +76,13 @@ export class GraphQLClient {
       throw new UserUnauthorizedError();
     }
 
+    const WebSocket = typeof window === "undefined" ? ws : window.WebSocket;
+
     return new SubscriptionClient(
       this.subscriptionEndpoint,
       {
         lazy: true,
-        connectionParams: () => ({
-          Authorization: `Bearer ${this.auth.tokenManager.token?.accessToken}`
-        })
+        connectionParams: this.getConnectionParams
       },
       WebSocket
     );

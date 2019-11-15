@@ -1,11 +1,13 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { GraphQLClient as GQLClient } from "graphql-request";
+import * as subscriptions from "subscriptions-transport-ws";
+import * as ws from "ws";
+
 import { SubscriptionType } from "../../lib/graphql/types";
-
-import { GraphQLError } from "../../lib/errors";
-
+import { GraphQLError, UserUnauthorizedError } from "../../lib/errors";
 import { createClient } from "../helpers";
+import { KONTIST_SUBSCRIPTION_API_BASE_URL } from "../../lib/constants";
 
 describe("rawQuery", () => {
   describe("Error handling", () => {
@@ -362,5 +364,101 @@ describe("handleDisconnection", () => {
     expect(secondType).to.equal(secondSubscription.type);
     expect(secondHandler).to.equal(secondSubscription.handler);
     expect(secondSubscriptionId).to.equal(secondSubscription.id);
+  });
+});
+
+describe("createSubscriptionClient", () => {
+  let client: any;
+  let subscriptionClientStub: any;
+  let fakeSubscriptionClient: any;
+
+  before(() => {
+    client = createClient();
+    fakeSubscriptionClient = {
+      fake: "client"
+    };
+    subscriptionClientStub = sinon
+      .stub(subscriptions, "SubscriptionClient")
+      .returns(fakeSubscriptionClient);
+  });
+
+  after(() => {
+    subscriptionClientStub.restore();
+  });
+
+  describe("when auth token is missing", () => {
+    it("should throw a UserUnauthorized error", () => {
+      let error;
+      try {
+        client.graphQL.createSubscriptionClient();
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).to.be.instanceof(UserUnauthorizedError);
+    });
+  });
+
+  describe("when auth token is present", () => {
+    before(() => {
+      client.auth.tokenManager.setToken("dummy-token");
+    });
+
+    it("should create a new SubscriptionClient and return it", () => {
+      const subscriptionClient = client.graphQL.createSubscriptionClient();
+      expect(subscriptionClientStub.callCount).to.equal(1);
+      const [endpoint, options, websocket] = subscriptionClientStub.getCall(
+        0
+      ).args;
+
+      expect(endpoint).to.equal(
+        `${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`
+      );
+      expect(options.lazy).to.equal(true);
+      expect(options.connectionParams).to.equal(
+        client.graphQL.getConnectionParams
+      );
+      expect(websocket).to.equal(ws);
+      expect(subscriptionClient).to.equal(fakeSubscriptionClient);
+    });
+
+    describe("when executing in a browser environment", () => {
+      before(() => {
+        (global as any).window = {
+          WebSocket: { fake: "websocket" }
+        };
+      });
+
+      after(() => {
+        (global as any).window = undefined;
+      });
+
+      it("should use the native browser WebSocket implementation", () => {
+        subscriptionClientStub.resetHistory();
+
+        client.graphQL.createSubscriptionClient();
+
+        expect(subscriptionClientStub.callCount).to.equal(1);
+        expect(subscriptionClientStub.getCall(0).args[2].fake).to.equal(
+          "websocket"
+        );
+      });
+    });
+  });
+});
+
+describe("getConnectionParams", () => {
+  let client: any;
+  const accessToken = "dummy-access-token-1234";
+
+  before(() => {
+    client = createClient();
+    client.auth.tokenManager.setToken(accessToken);
+  });
+
+  it("should return an object with proper Authorization property", () => {
+    expect(client.graphQL.getConnectionParams()).to.deep.equal({
+      Authorization: `Bearer ${accessToken}`
+    });
   });
 });
