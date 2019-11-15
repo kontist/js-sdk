@@ -80,11 +80,15 @@ export class GraphQLClient {
   };
 
   /**
-   * Handle disconnection by refreshing access token and resubscribing
-   * all previously active subscriptions
+   * Handle disconnection:
+   *
+   * 1. Refresh access token
+   * 2. Destroy existing subscription client
+   * 3. Resubscribe all previously active subscriptions
    */
   private handleDisconnection = async (): Promise<void> => {
     await this.auth.tokenManager.refresh();
+    this.subscriptionClient = null;
     Object.values(this.subscriptions).forEach(subscription => {
       this.subscribe(
         subscription.query,
