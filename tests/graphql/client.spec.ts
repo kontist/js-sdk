@@ -290,6 +290,93 @@ describe("subscribe", () => {
   });
 });
 
+describe("unsubscribe", () => {
+  let client: any;
+  let firstUnsubscribeStub: any;
+  let secondUnsubscribeStub: any;
+  let closeStub: any;
+
+  before(() => {
+    firstUnsubscribeStub = sinon.stub();
+    secondUnsubscribeStub = sinon.stub();
+    closeStub = sinon.stub();
+
+    client = createClient();
+
+    client.graphQL.subscriptionClient = { close: closeStub };
+    client.graphQL.subscriptions = {
+      1: {
+        unsubscribe: firstUnsubscribeStub
+      },
+      42: {
+        unsubscribe: secondUnsubscribeStub
+      }
+    };
+  });
+
+  describe("when some subscriptions remain after unsubscribing", () => {
+    before(() => {
+      client.graphQL.unsubscribe(1)();
+    });
+
+    it("should call unsubscribe on the corresponding subscription and remove it from state", () => {
+      expect(firstUnsubscribeStub.callCount).to.equal(1);
+      expect(Object.keys(client.graphQL.subscriptions)).to.deep.equal(["42"]);
+    });
+
+    it("should not close the subscription connection nor destroy the subscription client", () => {
+      expect(closeStub.callCount).to.equal(0);
+      expect(client.graphQL.subscriptionClient).to.not.be.a("null");
+    });
+  });
+
+  describe("when the subscriptionId does not exist", () => {
+    before(() => {
+      client.graphQL.unsubscribe(12344)();
+    });
+
+    it("should not remove any subscription", () => {
+      expect(Object.keys(client.graphQL.subscriptions)).to.deep.equal(["42"]);
+    });
+
+    it("should not close the subscription connection nor destroy the subscription client", () => {
+      expect(closeStub.callCount).to.equal(0);
+      expect(client.graphQL.subscriptionClient).to.not.be.a("null");
+    });
+  });
+
+  describe("when unsubscribing the last subscription", () => {
+    before(() => {
+      client.graphQL.unsubscribe(42)();
+    });
+
+    it("should call unsubscribe on the corresponding subscription and remove it from state", () => {
+      expect(secondUnsubscribeStub.callCount).to.equal(1);
+      expect(client.graphQL.subscriptions).to.deep.equal({});
+    });
+
+    it("should close the subscription connection and destroy the subscription client", () => {
+      expect(closeStub.callCount).to.equal(1);
+      expect(client.graphQL.subscriptionClient).to.be.a("null");
+    });
+  });
+
+  describe("when the subscription client does not exist and unsubscribing the last subscription", () => {
+    before(() => {
+      client.graphQL.subscriptionClient = undefined;
+      client.graphQL.subscriptions = {
+        42: {
+          unsubscribe: () => {}
+        }
+      };
+    })
+
+    it("should not throw any error", () => {
+      client.graphQL.unsubscribe(42)();
+    })
+  })
+});
+
 describe("handleDisconnection", () => {
   let client: any;
   let refreshTokenStub: any;

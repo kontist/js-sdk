@@ -157,7 +157,7 @@ export class GraphQLClient {
    * Unsubscribe to a topic
    */
   public unsubscribe = (subscriptionId: number): (() => void) => () => {
-    this.subscriptions[subscriptionId].unsubscribe();
+    this.subscriptions[subscriptionId]?.unsubscribe();
     delete this.subscriptions[subscriptionId];
 
     if (Object.keys(this.subscriptions).length === 0) {
