@@ -1,5 +1,4 @@
 import { Query, Mutation, Transaction } from "./schema";
-import { FormatedError } from "subscriptions-transport-ws/dist/client";
 
 export type FetchOptions = {
   first?: number;
@@ -13,12 +12,11 @@ export enum SubscriptionType {
 }
 
 export type SubscriptionEvent = {
-  data?: SubscriptionResponse;
+  data?: any;
   error?: Error;
-};
-
-export type SubscriptionResponse = {
-  newTransaction: Transaction;
+}
+export type TransactionSubscriptionEvent = SubscriptionEvent & {
+  data?: Transaction;
 };
 
 export type Unsubscribe = () => void;
