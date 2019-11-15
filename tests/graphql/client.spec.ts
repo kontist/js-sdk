@@ -248,7 +248,6 @@ describe("subscribe", () => {
     });
 
     it("should no longer call the unsubscribed handlers", () => {
-
       observableMock.triggerNext({ data: { some: "data" } });
 
       expect(firstSubscriptionHandlerStub.callCount).to.equal(2);
@@ -286,5 +285,82 @@ describe("subscribe", () => {
       expect(firstSubscriptionHandlerStub.callCount).to.equal(2);
       expect(secondSubscriptionHandlerStub.callCount).to.equal(4);
     });
-  })
+  });
+});
+
+describe("handleDisconnection", () => {
+  let client: any;
+  let refreshTokenStub: any;
+  let subscribeStub: any;
+  let firstSubscription: any;
+  let secondSubscription: any;
+
+  before(() => {
+    client = createClient();
+    refreshTokenStub = sinon.stub(client.auth.tokenManager, "refresh");
+    subscribeStub = sinon.stub(client.graphQL, "subscribe");
+
+    client.graphQL.subscriptionClient = "dummy-subscription-client";
+
+    firstSubscription = {
+      id: 1,
+      query: `query #1`,
+      type: SubscriptionType.newTransaction,
+      handler: () => {}
+    };
+    secondSubscription = {
+      id: 1,
+      query: `query #1`,
+      type: SubscriptionType.newTransaction,
+      handler: () => {}
+    };
+
+    client.graphQL.subscriptions = {
+      1: firstSubscription,
+      2: secondSubscription
+    };
+
+    client.graphQL.handleDisconnection();
+  });
+
+  after(() => {
+    refreshTokenStub.restore();
+    subscribeStub.restore();
+  });
+
+  it("should refresh auth token", () => {
+    expect(refreshTokenStub.callCount).to.equal(1);
+  });
+
+  it("should destroy the existing subscriptionClient", () => {
+    expect(client.graphQL.subscriptionClient).to.be.a("null");
+  });
+
+  it("should call subscribe for each existing subscription", () => {
+    expect(subscribeStub.callCount).to.equal(2);
+
+    const [
+      firstQuery,
+      firstType,
+      firstHandler,
+      firstSubscriptionId
+    ] = subscribeStub.getCall(0).args;
+
+    expect(firstQuery).to.equal(firstSubscription.query);
+    expect(firstType).to.equal(firstSubscription.type);
+    expect(firstHandler).to.equal(firstSubscription.handler);
+    expect(firstSubscriptionId).to.equal(firstSubscription.id);
+
+    const [
+      secondQuery,
+      secondType,
+      secondHandler,
+      secondSubscriptionId
+    ] = subscribeStub.getCall(1).args;
+
+    expect(secondQuery).to.equal(secondSubscription.query);
+    expect(secondType).to.equal(secondSubscription.type);
+    expect(secondHandler).to.equal(secondSubscription.handler);
+    expect(secondSubscriptionId).to.equal(secondSubscription.id);
+  });
 });
