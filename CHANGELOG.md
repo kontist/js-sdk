@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Introduce methods for transfers cancellation (`cancelTransfer` and `confirmCancelTransfer`)
+- Introduce basic CLI to fetch token with `npx kontist token` [#35](https://github.com/kontist/js-sdk/pull/35)
 
 ### Changed
 - Refactored `Auth` module with separate namespaces:
