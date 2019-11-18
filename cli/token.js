@@ -6,7 +6,7 @@ async function exec(args) {
     }
 
     // create client and login with password grant type
-    const { Client } = require("../dist/index");
+    const { Client } = require("../dist/lib/index");
     const client = new Client({
         baseUrl: process.env.KONTIST_BASE_URL || "https://api.kontist.com",
         clientId: process.env.KONTIST_CLIENT_ID,
