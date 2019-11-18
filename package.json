@@ -9,7 +9,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "tsc && npx webpack",
-    "test": "mocha --recursive 'dist/tests/**/*.spec.js'",
+    "test": "npm run build && mocha --recursive 'dist/tests/**/*.spec.js'",
     "cover": "nyc npm run test",
     "schema:generate": "graphql-codegen --config codegen.yml"
   },
