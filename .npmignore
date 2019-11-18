@@ -10,4 +10,5 @@ yarn-error.log*
 .DS_Store
 .vscode/
 !.vscode/launch.json
+dist/tests
 .env

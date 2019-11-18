@@ -28,18 +28,13 @@
     ],
     "exclude": [
         "coverage/**",
-        "node_modules/**",
-        "dist/**",
-        "tests/**",
+        "webpack.config.js",
         "**/*.d.ts",
-        "**/*.spec.ts",
-        "**/*.js"
+        "tests"
     ],
     "sourceMap": true,
     "reporter": [
         "html",
         "text-summary"
-    ],
-    "all": true,
-    "instrument": true
+    ]
 }
