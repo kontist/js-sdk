@@ -144,12 +144,15 @@ describe("Auth: TokenManager", () => {
     describe("when client is created with a verifier", () => {
       const origin = "http://some.url";
       const code = "some-random-code";
-      (global as any).window = {};
-      (global as any).document = {
-        location: {
-          origin
-        }
-      };
+
+      before(() => {
+        (global as any).window = {};
+        (global as any).document = {
+          location: {
+            origin
+          }
+        };
+      })
 
       it("should request a silent authorization and fetch a new token", async () => {
         const dummyToken = "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
@@ -195,6 +198,11 @@ describe("Auth: TokenManager", () => {
         fetchTokenStub.restore();
         silentAuthorizationStub.restore();
       });
+
+      after(() => {
+        (global as any).window = undefined;
+        (global as any).document = undefined;
+      })
     });
 
     describe("when client is created with a clientSecret", () => {

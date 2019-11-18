@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Introduce methods for transfers cancellation (`cancelTransfer` and `confirmCancelTransfer`)
+- Introduce basic CLI to fetch token with `npx kontist token` [#35](https://github.com/kontist/js-sdk/pull/35)
 
 ### Changed
 - Refactored `Auth` module with separate namespaces:

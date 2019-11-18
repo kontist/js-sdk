@@ -1,3 +1,8 @@
+// polyfills
+if (!Symbol.asyncIterator) {
+    (Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator");
+}
+
 import { Client } from "./client";
 import * as Constants from "./constants";
 import * as Schema from "./graphql/schema";
