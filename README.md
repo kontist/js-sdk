@@ -226,6 +226,25 @@ const result = await client.models.transfer.confirmMany(
 );
 ```
 
+An example to show how to fetch all user transfers of a given type
+
+```typescript
+let transfers = [];
+for await (const transfer of client.models.transfer.fetchAll({
+  type: Schema.TransferType.SepaTransfer
+})) {
+  transfers = transfers.concat(transfer);
+}
+```
+
+To fetch up to 50 latest transfers of a given type:
+
+```typescript
+const transfers = await client.models.transfer.fetch({
+  type: Schema.TransferType.TimedOrder
+});
+```
+
 ## MFA (Multi-Factor Authentication)
 
 Accessing Kontist banking APIs require Multi-Factor Authentication (MFA).
