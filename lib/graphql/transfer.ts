@@ -212,14 +212,30 @@ export class Transfer extends IterableModel<CreateTransferInput> {
     return result.confirmCancelTransfer;
   }
 
+  /**
+   * @override specify query parameter arguments for transfers
+   *
+   * @param args query parameters
+   */
   createAsyncIterator(args: TransferFetchOptions) {
     return super.createAsyncIterator(args);
   }
 
+  /**
+   * @override specify query parameter arguments for transfers
+   *
+   * @param args query parameters
+   */
   fetchAll(args: TransferFetchOptions) {
     return super.fetchAll(args);
   }
 
+  /**
+   * Fetches first 50 transfers of provided type which match the query
+   *
+   * @param args  query parameters
+   * @returns     result page
+   */
   async fetch(args: TransferFetchOptions): Promise<ResultPage<TransferEntry>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
 
