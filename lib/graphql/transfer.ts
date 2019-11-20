@@ -7,7 +7,7 @@ import {
   TransfersConnectionEdge,
   ConfirmationRequestOrTransfer
 } from "./schema";
-import { FetchOptions } from "./types";
+import { TransferFetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
 import { IterableModel } from "./iterableModel";
 
@@ -212,7 +212,15 @@ export class Transfer extends IterableModel<CreateTransferInput> {
     return result.confirmCancelTransfer;
   }
 
-  async fetch(args: FetchOptions): Promise<ResultPage<TransferEntry>> {
+  createAsyncIterator(args: TransferFetchOptions) {
+    return super.createAsyncIterator(args);
+  }
+
+  fetchAll(args: TransferFetchOptions) {
+    return super.fetchAll(args);
+  }
+
+  async fetch(args: TransferFetchOptions): Promise<ResultPage<TransferEntry>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
 
     const transfers = (result?.viewer?.mainAccount?.transfers?.edges ?? []).map(
