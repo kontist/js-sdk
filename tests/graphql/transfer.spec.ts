@@ -1,18 +1,19 @@
 import * as sinon from "sinon";
 import { expect } from "chai";
-import { Transfer } from "../../lib/graphql/transfer";
-import { TransferType } from "../../lib/graphql/schema";
+import { Transfer as TransferClass } from "../../lib/graphql/transfer";
+import { TransferType, Transfer } from "../../lib/graphql/schema";
+import { createTransfer } from "../helpers";
 
 describe("Transfer", () => {
   let graphqlClientStub: { rawQuery: sinon.SinonStub };
-  let transfer: Transfer;
+  let transferInstance: TransferClass;
   let result: any;
 
   before(() => {
     graphqlClientStub = {
       rawQuery: sinon.stub()
     };
-    transfer = new Transfer(<any>graphqlClientStub);
+    transferInstance = new TransferClass(<any>graphqlClientStub);
   });
 
   describe("cancelTransfer", () => {
@@ -27,7 +28,7 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         cancelTransfer: cancelTransferResult
       });
-      result = await transfer.cancelTransfer(type, id);
+      result = await transferInstance.cancelTransfer(type, id);
     });
 
     it("should send cancelTransfer GraphQL mutation", () => {
@@ -55,7 +56,11 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         confirmCancelTransfer: confirmCancelTransferResult
       });
-      result = await transfer.confirmCancelTransfer(type, confirmationId, authorizationToken);
+      result = await transferInstance.confirmCancelTransfer(
+        type,
+        confirmationId,
+        authorizationToken
+      );
     });
 
     it("should send confirmCancelTransfer GraphQL mutation", () => {
@@ -67,6 +72,75 @@ describe("Transfer", () => {
 
     it("should return confirmCancelTransfer result", () => {
       expect(result).to.eql(confirmCancelTransferResult);
+    });
+  });
+
+  describe("iterator", () => {
+    let firstTransfer: any;
+    let secondTransfer: any;
+
+    beforeEach(() => {
+      graphqlClientStub.rawQuery.reset();
+
+      firstTransfer = createTransfer();
+      secondTransfer = createTransfer();
+
+      const firstResponse: any = {
+        viewer: {
+          mainAccount: {
+            transfers: {
+              edges: [
+                {
+                  node: firstTransfer,
+                  cursor: "1234"
+                }
+              ],
+              pageInfo: {
+                startCursor: "111111",
+                endCursor: "22222",
+                hasNextPage: true,
+                hasPreviousPage: false
+              }
+            }
+          }
+        }
+      };
+
+      graphqlClientStub.rawQuery.onFirstCall().resolves(firstResponse);
+
+      const secondResponse: any = {
+        viewer: {
+          mainAccount: {
+            transfers: {
+              edges: [
+                {
+                  node: secondTransfer,
+                  cursor: "1234"
+                }
+              ],
+              pageInfo: {
+                startCursor: "111111",
+                endCursor: "22222",
+                hasNextPage: false,
+                hasPreviousPage: false
+              }
+            }
+          }
+        }
+      };
+
+      graphqlClientStub.rawQuery.onSecondCall().resolves(secondResponse);
+    });
+
+    it("can iterate on all user transfers using the fetchAll iterator", async () => {
+      let transfers: Array<Transfer> = [];
+      for await (const transfer of transferInstance.fetchAll({
+        type: TransferType.SepaTransfer
+      })) {
+        transfers = transfers.concat(transfer as Transfer);
+      }
+
+      expect(transfers).to.deep.equal([firstTransfer, secondTransfer]);
     });
   });
 });

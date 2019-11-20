@@ -1,14 +1,11 @@
-import { Query, Mutation } from "./schema";
+import { Query, Mutation, TransferType } from "./schema";
 
 export type FetchOptions = {
   first?: number;
   last?: number;
   before?: string | null;
   after?: string | null;
+  type?: TransferType;
 };
-
-export type TransferFetchOptions = {
-  type: string;
-} & FetchOptions;
 
 export type RawQueryResponse = Query & Mutation;

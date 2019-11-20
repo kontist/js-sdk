@@ -64,11 +64,11 @@ describe("Transaction", () => {
       };
 
       stub.onSecondCall().resolves(secondResponse as RawQueryResponse);
-    })
+    });
 
     afterEach(() => {
       stub.restore();
-    })
+    });
 
     it("can iterate on all user transactions using the root iterator", async () => {
       let transactions: Array<Transaction> = [];
