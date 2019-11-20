@@ -164,7 +164,7 @@ An example to show how to fetch all user transactions
 
 ```typescript
 let transactions = [];
-for await (const transaction of client.models.transaction) {
+for await (const transaction of client.models.transaction.fetchAll()) {
   transactions = transactions.concat(transaction);
 }
 ```

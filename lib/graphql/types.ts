@@ -7,4 +7,8 @@ export type FetchOptions = {
   after?: string | null;
 };
 
+export type TransferFetchOptions = {
+  type: string;
+} & FetchOptions;
+
 export type RawQueryResponse = Query & Mutation;
