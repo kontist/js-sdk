@@ -160,7 +160,7 @@ const result = await client.graphQL.rawQuery(query);
 
 #### Transactions
 
-An example to show how to fetch all user transactions
+An example to show how to fetch all user transactions:
 
 ```typescript
 let transactions = [];
@@ -226,7 +226,7 @@ const result = await client.models.transfer.confirmMany(
 );
 ```
 
-An example to show how to fetch all user transfers of a given type
+An example to show how to fetch all user transfers of a given type:
 
 ```typescript
 let transfers = [];
