@@ -1,4 +1,9 @@
-import { Query, Mutation, TransferType } from "./schema";
+import {
+  Query,
+  Mutation,
+  TransferType,
+  TransfersConnectionFilter
+} from "./schema";
 
 export type FetchOptions = {
   first?: number;
@@ -9,6 +14,7 @@ export type FetchOptions = {
 
 export type TransferFetchOptions = {
   type: TransferType;
+  where?: TransfersConnectionFilter;
 } & FetchOptions;
 
 export type RawQueryResponse = Query & Mutation;
