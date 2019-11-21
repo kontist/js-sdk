@@ -247,6 +247,6 @@ export class Transfer extends IterableModel<CreateTransferInput> {
       hasNextPage: false,
       hasPreviousPage: false
     };
-    return new ResultPage(this, transfers, pageInfo);
+    return new ResultPage(this, transfers, pageInfo, args);
   }
 }

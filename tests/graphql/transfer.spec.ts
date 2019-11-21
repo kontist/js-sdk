@@ -132,6 +132,19 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.onSecondCall().resolves(secondResponse);
     });
 
+    it("can fetch next page using the nextPage method", async () => {
+      const firstPage = await transferInstance.fetch({
+        first: 1,
+        type: TransferType.SepaTransfer
+      });
+
+      expect(typeof firstPage.nextPage).to.equal("function");
+      expect(firstPage.items).to.deep.equal([firstTransfer]);
+
+      const secondPage = firstPage.nextPage && (await firstPage.nextPage());
+      expect(secondPage?.items).to.deep.equal([secondTransfer]);
+    });
+
     it("can iterate on all user transfers using the fetchAll iterator", async () => {
       let transfers: Array<Transfer> = [];
       for await (const transfer of transferInstance.fetchAll({

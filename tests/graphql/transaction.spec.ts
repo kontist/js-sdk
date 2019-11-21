@@ -70,6 +70,18 @@ describe("Transaction", () => {
       stub.restore();
     });
 
+    it("can fetch next page using the nextPage method", async () => {
+      const firstPage = await client.models.transaction.fetch({
+        first: 1
+      });
+
+      expect(typeof firstPage.nextPage).to.equal("function");
+      expect(firstPage.items).to.deep.equal([firstTransaction]);
+
+      const secondPage = firstPage.nextPage && (await firstPage.nextPage());
+      expect(secondPage?.items).to.deep.equal([secondTransaction]);
+    });
+
     it("can iterate on all user transactions using the root iterator", async () => {
       let transactions: Array<Transaction> = [];
       for await (const transaction of client.models.transaction) {

@@ -58,6 +58,6 @@ export class Transaction extends IterableModel<TransactionEntry> {
     const transactions = (result?.viewer?.mainAccount?.transactions?.edges ?? []).map((edge: TransactionsConnectionEdge) => edge.node);
 
     const pageInfo = result?.viewer?.mainAccount?.transactions?.pageInfo ?? { hasNextPage: false, hasPreviousPage: false};
-    return new ResultPage(this, transactions, pageInfo);
+    return new ResultPage(this, transactions, pageInfo, args);
   }
 }
