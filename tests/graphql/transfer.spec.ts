@@ -78,6 +78,8 @@ describe("Transfer", () => {
   describe("iterator", () => {
     let firstTransfer: any;
     let secondTransfer: any;
+    let firstResponse: any;
+    let secondResponse: any;
 
     beforeEach(() => {
       graphqlClientStub.rawQuery.reset();
@@ -85,7 +87,7 @@ describe("Transfer", () => {
       firstTransfer = createTransfer();
       secondTransfer = createTransfer();
 
-      const firstResponse: any = {
+      firstResponse = {
         viewer: {
           mainAccount: {
             transfers: {
@@ -108,7 +110,7 @@ describe("Transfer", () => {
 
       graphqlClientStub.rawQuery.onFirstCall().resolves(firstResponse);
 
-      const secondResponse: any = {
+      secondResponse = {
         viewer: {
           mainAccount: {
             transfers: {
@@ -154,6 +156,28 @@ describe("Transfer", () => {
       }
 
       expect(transfers).to.deep.equal([firstTransfer, secondTransfer]);
+    });
+
+    describe("when iterating backwards", () => {
+      it("can fetch the previous page using the previousPage method", async () => {
+        firstResponse.viewer.mainAccount.transfers.pageInfo.hasNextPage = false;
+        secondResponse.viewer.mainAccount.transfers.pageInfo.hasPreviousPage = true;
+
+        graphqlClientStub.rawQuery.onFirstCall().resolves(secondResponse);
+        graphqlClientStub.rawQuery.onSecondCall().resolves(firstResponse);
+
+        const firstPage = await transferInstance.fetch({
+          last: 1,
+          type: TransferType.SepaTransfer
+        });
+
+        expect(typeof firstPage.previousPage).to.equal("function");
+        expect(firstPage.items).to.deep.equal([secondTransfer]);
+
+        const secondPage =
+          firstPage.previousPage && (await firstPage.previousPage());
+        expect(secondPage?.items).to.deep.equal([firstTransfer]);
+      });
     });
   });
 });

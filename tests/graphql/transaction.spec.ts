@@ -10,6 +10,8 @@ describe("Transaction", () => {
     let client: Client;
     let firstTransaction: any;
     let secondTransaction: any;
+    let firstResponse: any;
+    let secondResponse: any;
     let stub: any;
 
     beforeEach(() => {
@@ -19,7 +21,7 @@ describe("Transaction", () => {
       firstTransaction = createTransaction();
       secondTransaction = createTransaction();
 
-      const firstResponse: any = {
+      firstResponse = {
         viewer: {
           mainAccount: {
             transactions: {
@@ -42,7 +44,7 @@ describe("Transaction", () => {
 
       stub.onFirstCall().resolves(firstResponse);
 
-      const secondResponse: any = {
+      secondResponse = {
         viewer: {
           mainAccount: {
             transactions: {
@@ -98,6 +100,27 @@ describe("Transaction", () => {
       }
 
       expect(transactions).to.deep.equal([firstTransaction, secondTransaction]);
+    });
+
+    describe("when iterating backwards", () => {
+      it("can fetch the previous page using the previousPage method", async () => {
+        firstResponse.viewer.mainAccount.transactions.pageInfo.hasNextPage = false;
+        secondResponse.viewer.mainAccount.transactions.pageInfo.hasPreviousPage = true;
+
+        stub.onFirstCall().resolves(secondResponse);
+        stub.onSecondCall().resolves(firstResponse);
+
+        const firstPage = await client.models.transaction.fetch({
+          last: 1
+        });
+
+        expect(typeof firstPage.previousPage).to.equal("function");
+        expect(firstPage.items).to.deep.equal([secondTransaction]);
+
+        const secondPage =
+          firstPage.previousPage && (await firstPage.previousPage());
+        expect(secondPage?.items).to.deep.equal([firstTransaction]);
+      });
     });
   });
 });
