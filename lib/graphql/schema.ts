@@ -636,15 +636,15 @@ export type Transaction = {
 };
 
 export enum TransactionCategory {
-  Private = 'private',
-  Vat = 'vat',
-  Vat0 = 'vat0',
-  Vat7 = 'vat7',
-  Vat19 = 'vat19',
-  TaxPayment = 'taxPayment',
-  VatPayment = 'vatPayment',
-  TaxRefund = 'taxRefund',
-  VatRefund = 'vatRefund'
+  Private = 'PRIVATE',
+  Vat = 'VAT',
+  Vat_0 = 'VAT_0',
+  Vat_7 = 'VAT_7',
+  Vat_19 = 'VAT_19',
+  TaxPayment = 'TAX_PAYMENT',
+  VatPayment = 'VAT_PAYMENT',
+  TaxRefund = 'TAX_REFUND',
+  VatRefund = 'VAT_REFUND'
 }
 
 export type TransactionFee = {
