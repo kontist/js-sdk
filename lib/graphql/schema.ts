@@ -624,7 +624,7 @@ export type Transaction = {
   directDebitFees: Array<DirectDebitFee>,
   name?: Maybe<Scalars['String']>,
   paymentMethod: Scalars['String'],
-  category?: Maybe<Scalars['String']>,
+  category?: Maybe<TransactionCategory>,
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
   purpose?: Maybe<Scalars['String']>,
   documentNumber?: Maybe<Scalars['String']>,
@@ -634,6 +634,18 @@ export type Transaction = {
   foreignCurrency?: Maybe<Scalars['String']>,
   originalAmount?: Maybe<Scalars['Int']>,
 };
+
+export enum TransactionCategory {
+  Private = 'PRIVATE',
+  Vat = 'VAT',
+  Vat_0 = 'VAT_0',
+  Vat_7 = 'VAT_7',
+  Vat_19 = 'VAT_19',
+  TaxPayment = 'TAX_PAYMENT',
+  VatPayment = 'VAT_PAYMENT',
+  TaxRefund = 'TAX_REFUND',
+  VatRefund = 'VAT_REFUND'
+}
 
 export type TransactionFee = {
    __typename?: 'TransactionFee',
