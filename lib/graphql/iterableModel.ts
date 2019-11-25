@@ -35,10 +35,6 @@ export abstract class IterableModel<T> extends Model<T> {
     };
   }
 
-  [Symbol.asyncIterator]() {
-    return this.createAsyncIterator();
-  }
-
   fetchAll(args?: FetchOptions) {
     const asyncIterator = this.createAsyncIterator(args);
     return {

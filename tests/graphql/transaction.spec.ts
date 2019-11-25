@@ -84,15 +84,6 @@ describe("Transaction", () => {
       expect(secondPage?.items).to.deep.equal([secondTransaction]);
     });
 
-    it("can iterate on all user transactions using the root iterator", async () => {
-      let transactions: Array<Transaction> = [];
-      for await (const transaction of client.models.transaction) {
-        transactions = transactions.concat(transaction as Transaction);
-      }
-
-      expect(transactions).to.deep.equal([firstTransaction, secondTransaction]);
-    });
-
     it("can iterate on all user transactions using the fetchAll iterator", async () => {
       let transactions: Array<Transaction> = [];
       for await (const transaction of client.models.transaction.fetchAll()) {
