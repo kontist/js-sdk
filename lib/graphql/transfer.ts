@@ -1,7 +1,7 @@
 import {
   Query,
   CreateTransferInput,
-  Transfer as TransferEntry,
+  Transfer as TransferModel,
   BatchTransfer,
   TransferType,
   TransfersConnectionEdge,
@@ -117,7 +117,10 @@ const FETCH_TRANSFERS = `query fetchTransfers ($type: TransferType!, $first: Int
   }
 }`;
 
-export class Transfer extends IterableModel<CreateTransferInput> {
+export class Transfer extends IterableModel<
+  TransferModel,
+  TransferFetchOptions
+> {
   /**
    * Creates single wire transfer / timed order / standing order
    *
@@ -139,7 +142,7 @@ export class Transfer extends IterableModel<CreateTransferInput> {
   async confirmOne(
     confirmationId: string,
     authorizationToken: string
-  ): Promise<TransferEntry> {
+  ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       confirmationId,
       authorizationToken
@@ -203,7 +206,7 @@ export class Transfer extends IterableModel<CreateTransferInput> {
     type: TransferType,
     confirmationId: string,
     authorizationToken: string
-  ): Promise<TransferEntry> {
+  ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_CANCEL_TRANSFER, {
       type,
       confirmationId,
@@ -213,30 +216,14 @@ export class Transfer extends IterableModel<CreateTransferInput> {
   }
 
   /**
-   * @override specify query parameter arguments for transfers
-   *
-   * @param args query parameters
-   */
-  createAsyncIterator(args: TransferFetchOptions) {
-    return super.createAsyncIterator(args);
-  }
-
-  /**
-   * @override specify query parameter arguments for transfers
-   *
-   * @param args query parameters
-   */
-  fetchAll(args: TransferFetchOptions) {
-    return super.fetchAll(args);
-  }
-
-  /**
    * Fetches first 50 transfers of provided type which match the query
    *
    * @param args  query parameters
    * @returns     result page
    */
-  async fetch(args: TransferFetchOptions): Promise<ResultPage<TransferEntry>> {
+  async fetch(
+    args: TransferFetchOptions
+  ): Promise<ResultPage<TransferModel, TransferFetchOptions>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
 
     const transfers = (result?.viewer?.mainAccount?.transfers?.edges ?? []).map(

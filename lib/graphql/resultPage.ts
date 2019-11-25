@@ -2,28 +2,32 @@ import { PageInfo } from "./schema";
 import { IFetch } from "./interfaces";
 import { FetchOptions } from "./types";
 
-export class ResultPage<T> {
-  items: Array<T>;
+export class ResultPage<ModelType, FetchOptionsType = FetchOptions> {
+  items: Array<ModelType>;
   pageInfo: PageInfo;
-  nextPage?: () => Promise<ResultPage<T>>;
-  previousPage?: () => Promise<ResultPage<T>>;
+  nextPage?: () => Promise<ResultPage<ModelType, FetchOptionsType>>;
+  previousPage?: () => Promise<ResultPage<ModelType, FetchOptionsType>>;
 
   constructor(
-    model: IFetch<T>,
-    items: Array<T>,
+    model: IFetch<ModelType, FetchOptionsType>,
+    items: Array<ModelType>,
     pageInfo: PageInfo,
-    args: FetchOptions = {}
+    args?: FetchOptionsType
   ) {
     this.items = items;
     this.pageInfo = pageInfo;
 
     if (pageInfo.hasNextPage) {
-      this.nextPage = () => model.fetch({ ...args, after: pageInfo.endCursor });
+      this.nextPage = () =>
+        model.fetch({ ...args, after: pageInfo.endCursor } as FetchOptionsType);
     }
 
     if (pageInfo.hasPreviousPage) {
       this.previousPage = () =>
-        model.fetch({ ...args, before: pageInfo.startCursor });
+        model.fetch({
+          ...args,
+          before: pageInfo.startCursor
+        } as FetchOptionsType);
     }
   }
 }

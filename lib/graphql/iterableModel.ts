@@ -2,10 +2,13 @@ import { ResultPage } from "./resultPage";
 import { Model } from "./model";
 import { FetchOptions } from "./types";
 
-export abstract class IterableModel<T> extends Model<T> {
-  createAsyncIterator(args?: FetchOptions) {
+export abstract class IterableModel<
+  ModelType,
+  FetchOptionsType = FetchOptions
+> extends Model<ModelType, FetchOptionsType> {
+  createAsyncIterator(args?: FetchOptionsType) {
     const fetch = this.fetch.bind(this);
-    let lastResult!: ResultPage<T>;
+    let lastResult!: ResultPage<ModelType, FetchOptionsType>;
 
     return {
       next: async () => {
@@ -18,7 +21,7 @@ export abstract class IterableModel<T> extends Model<T> {
           lastResult = await fetch({
             ...args,
             after: lastResult.pageInfo.endCursor
-          });
+          } as FetchOptionsType);
         }
 
         // return the items as long as there are some
@@ -35,7 +38,7 @@ export abstract class IterableModel<T> extends Model<T> {
     };
   }
 
-  fetchAll(args?: FetchOptions) {
+  fetchAll(args?: FetchOptionsType) {
     const asyncIterator = this.createAsyncIterator(args);
     return {
       [Symbol.asyncIterator]() {
