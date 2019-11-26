@@ -86,7 +86,7 @@ describe("Transaction", () => {
 
     it("can iterate on all user transactions using the fetchAll iterator", async () => {
       let transactions: Array<Transaction> = [];
-      for await (const transaction of client.models.transaction.fetchAll()) {
+      for await (const transaction of client.models.transaction.fetchAll({})) {
         transactions = transactions.concat(transaction as Transaction);
       }
 

@@ -12,14 +12,14 @@ export class ResultPage<ModelType, FetchOptionsType = FetchOptions> {
     model: IFetch<ModelType, FetchOptionsType>,
     items: Array<ModelType>,
     pageInfo: PageInfo,
-    args?: FetchOptionsType
+    args: FetchOptionsType
   ) {
     this.items = items;
     this.pageInfo = pageInfo;
 
     if (pageInfo.hasNextPage) {
       this.nextPage = () =>
-        model.fetch({ ...args, after: pageInfo.endCursor } as FetchOptionsType);
+        model.fetch({ ...args, after: pageInfo.endCursor });
     }
 
     if (pageInfo.hasPreviousPage) {
@@ -27,7 +27,7 @@ export class ResultPage<ModelType, FetchOptionsType = FetchOptions> {
         model.fetch({
           ...args,
           before: pageInfo.startCursor
-        } as FetchOptionsType);
+        });
     }
   }
 }
