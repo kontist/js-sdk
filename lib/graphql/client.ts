@@ -19,10 +19,6 @@ type Subscriptions = {
   };
 };
 
-type ConnectionParams = {
-  Authorization: string;
-};
-
 export class GraphQLClient {
   private auth: Auth;
   private client: GQLClient;
