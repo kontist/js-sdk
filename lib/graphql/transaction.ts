@@ -81,7 +81,7 @@ export class Transaction extends IterableModel<TransactionEntry> {
   }
 
   subscribe(
-    onNext: (event: Transaction) => any,
+    onNext: (event: TransactionEntry) => any,
     onError?: (error: Error) => any
   ): Subscription {
     return this.client.subscribe({
