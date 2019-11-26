@@ -134,8 +134,8 @@ describe("subscribe", () => {
   const firstSubscriptionOnErrorStub = sinon.stub();
   const secondSubscriptionOnErrorStub = sinon.stub();
   let createSubscriptionClientStub: any;
-  let firstSubscriptionResult: any;
-  let secondSubscriptionResult: any;
+  let firstSubscriptionUnsubscriber: any;
+  let secondSubscriptionUnsubscriber: any;
 
   before(() => {
     createSubscriptionClientStub = sinon
@@ -149,12 +149,15 @@ describe("subscribe", () => {
 
   describe("when adding the first subscription", () => {
     before(() => {
-      firstSubscriptionResult = client.graphQL.subscribe({
+      const {
+        unsubscribe
+      } = client.graphQL.subscribe({
         query: subscriptionQuery,
         type: SubscriptionType.newTransaction,
         onNext: firstSubscriptionOnNextStub,
         onError: firstSubscriptionOnErrorStub
       });
+      firstSubscriptionUnsubscriber = unsubscribe;
     });
 
     it("should create a subscription client", () => {
@@ -183,12 +186,13 @@ describe("subscribe", () => {
     before(() => {
       createSubscriptionClientStub.resetHistory();
 
-      secondSubscriptionResult = client.graphQL.subscribe({
+      const { unsubscribe } = client.graphQL.subscribe({
         query: subscriptionQuery,
         type: SubscriptionType.newTransaction,
         onNext: secondSubscriptionOnNextStub,
         onError: secondSubscriptionOnErrorStub
       });
+      secondSubscriptionUnsubscriber = unsubscribe;
     });
 
     it("should NOT create a subscription client", () => {
@@ -248,7 +252,7 @@ describe("subscribe", () => {
 
   describe("when unsubscribing", () => {
     before(() => {
-      firstSubscriptionResult();
+      firstSubscriptionUnsubscriber();
     });
 
     it("should no longer call the unsubscribed handlers", () => {
@@ -276,7 +280,7 @@ describe("subscribe", () => {
     it("should close the websocket and remove the subscription client", () => {
       expect(subscriptionClientMock.close.callCount).to.equal(0);
 
-      secondSubscriptionResult();
+      secondSubscriptionUnsubscriber();
 
       expect(Object.keys(client.graphQL["subscriptions"]).length).to.equal(0);
 
@@ -295,7 +299,7 @@ describe("subscribe", () => {
   });
 });
 
-describe("unsubscribe", () => {
+describe("createUnsubscriber", () => {
   let client: any;
   let firstUnsubscribeStub: any;
   let secondUnsubscribeStub: any;
@@ -321,7 +325,7 @@ describe("unsubscribe", () => {
 
   describe("when some subscriptions remain after unsubscribing", () => {
     before(() => {
-      client.graphQL.unsubscribe(1)();
+      client.graphQL.createUnsubscriber(1)();
     });
 
     it("should call unsubscribe on the corresponding subscription and remove it from state", () => {
@@ -337,7 +341,7 @@ describe("unsubscribe", () => {
 
   describe("when the subscriptionId does not exist", () => {
     before(() => {
-      client.graphQL.unsubscribe(12344)();
+      client.graphQL.createUnsubscriber(12344)();
     });
 
     it("should not remove any subscription", () => {
@@ -352,7 +356,7 @@ describe("unsubscribe", () => {
 
   describe("when unsubscribing the last subscription", () => {
     before(() => {
-      client.graphQL.unsubscribe(42)();
+      client.graphQL.createUnsubscriber(42)();
     });
 
     it("should call unsubscribe on the corresponding subscription and remove it from state", () => {
@@ -377,7 +381,7 @@ describe("unsubscribe", () => {
     });
 
     it("should not throw any error", () => {
-      client.graphQL.unsubscribe(42)();
+      client.graphQL.createUnsubscriber(42)();
     });
   });
 });
@@ -438,7 +442,7 @@ describe("handleDisconnection", () => {
       type: firstType,
       onNext: firstHandler,
       subscriptionId: firstSubscriptionId
-     } = subscribeStub.getCall(0).args[0];
+    } = subscribeStub.getCall(0).args[0];
 
     expect(firstQuery).to.equal(firstSubscription.query);
     expect(firstType).to.equal(firstSubscription.type);
@@ -450,7 +454,7 @@ describe("handleDisconnection", () => {
       type: secondType,
       onNext: secondHandler,
       subscriptionId: secondSubscriptionId
-     } = subscribeStub.getCall(1).args[0];
+    } = subscribeStub.getCall(1).args[0];
 
     expect(secondQuery).to.equal(secondSubscription.query);
     expect(secondType).to.equal(secondSubscription.type);

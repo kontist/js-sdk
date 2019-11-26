@@ -4,7 +4,7 @@ import { Variables } from "graphql-request/dist/src/types";
 import * as ws from "ws";
 
 import { Auth } from "../auth";
-import { RawQueryResponse, SubscriptionType, Unsubscribe } from "./types";
+import { RawQueryResponse, SubscriptionType, Subscription } from "./types";
 import { serializeGraphQLError } from "../utils";
 import { GraphQLError, UserUnauthorizedError } from "../errors";
 import { GraphQLClientOpts } from "../types";
@@ -16,7 +16,7 @@ type Subscriptions = {
     type: SubscriptionType;
     onNext: Function;
     onError?: Function;
-    unsubscribe: Unsubscribe;
+    unsubscribe: () => void;
   };
 };
 
@@ -117,7 +117,7 @@ export class GraphQLClient {
     onNext: Function;
     onError?: Function;
     subscriptionId?: number;
-  }): Unsubscribe => {
+  }): Subscription => {
     if (!this.subscriptionClient) {
       this.subscriptionClient = this.createSubscriptionClient();
 
@@ -149,13 +149,15 @@ export class GraphQLClient {
       unsubscribe
     };
 
-    return this.unsubscribe(id);
+    return {
+      unsubscribe: this.createUnsubscriber(id)
+    };
   };
 
   /**
-   * Unsubscribe to a topic
+   * Create an unsubscribe function to be called by the subscriber
    */
-  public unsubscribe = (subscriptionId: number): (() => void) => () => {
+  private createUnsubscriber = (subscriptionId: number): (() => void) => () => {
     this.subscriptions[subscriptionId]?.unsubscribe();
     delete this.subscriptions[subscriptionId];
 

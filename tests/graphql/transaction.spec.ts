@@ -76,7 +76,7 @@ describe("Transaction", () => {
       const callback = () => {};
       const subscribeStub = sinon
         .stub(client.graphQL, "subscribe")
-        .returns(unsubscribe);
+        .returns({ unsubscribe });
 
       const result = client.models.transaction.subscribe(callback);
 
@@ -85,7 +85,7 @@ describe("Transaction", () => {
       expect(query).to.equal(NEW_TRANSACTION_SUBSCRIPTION);
       expect(type).to.equal(SubscriptionType.newTransaction);
       expect(onNext).to.equal(callback);
-      expect(result).to.equal(unsubscribe);
+      expect(result).to.deep.equal({ unsubscribe });
     });
   });
 });

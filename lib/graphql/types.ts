@@ -1,4 +1,4 @@
-import { Query, Mutation, Transaction } from "./schema";
+import { Query, Mutation } from "./schema";
 
 export type FetchOptions = {
   first?: number;
@@ -11,6 +11,8 @@ export enum SubscriptionType {
   newTransaction = "newTransaction"
 }
 
-export type Unsubscribe = () => void;
+export type Subscription = {
+  unsubscribe: () => void;
+};
 
 export type RawQueryResponse = Query & Mutation;

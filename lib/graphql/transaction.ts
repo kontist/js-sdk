@@ -7,7 +7,7 @@ import { IterableModel } from "./iterableModel";
 import {
   FetchOptions,
   SubscriptionType,
-  Unsubscribe
+  Subscription
 } from "./types";
 import { ResultPage } from "./resultPage";
 
@@ -83,7 +83,7 @@ export class Transaction extends IterableModel<TransactionEntry> {
   subscribe(
     onNext: (event: Transaction) => any,
     onError?: (error: Error) => any
-  ): Unsubscribe {
+  ): Subscription {
     return this.client.subscribe({
       query: NEW_TRANSACTION_SUBSCRIPTION,
       type: SubscriptionType.newTransaction,
