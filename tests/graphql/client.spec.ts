@@ -369,12 +369,12 @@ describe("unsubscribe", () => {
           unsubscribe: () => {}
         }
       };
-    })
+    });
 
     it("should not throw any error", () => {
       client.graphQL.unsubscribe(42)();
-    })
-  })
+    });
+  });
 });
 
 describe("handleDisconnection", () => {
@@ -502,9 +502,9 @@ describe("createSubscriptionClient", () => {
         `${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`
       );
       expect(options.lazy).to.equal(true);
-      expect(options.connectionParams).to.equal(
-        client.graphQL.getConnectionParams
-      );
+      expect(options.connectionParams).to.deep.equal({
+        Authorization: "Bearer dummy-token"
+      });
       expect(websocket).to.equal(ws);
       expect(subscriptionClient).to.equal(fakeSubscriptionClient);
     });
@@ -532,32 +532,4 @@ describe("createSubscriptionClient", () => {
       });
     });
   });
-});
-
-describe("getConnectionParams", () => {
-  let client: any;
-  const accessToken = "dummy-access-token-1234";
-
-  before(() => {
-    client = createClient();
-    client.auth.tokenManager.setToken(accessToken);
-  });
-
-  it("should return an object with proper Authorization property", () => {
-    expect(client.graphQL.getConnectionParams()).to.deep.equal({
-      Authorization: `Bearer ${accessToken}`
-    });
-  });
-
-  describe("when access token is missing", () => {
-    before(() => {
-      client.auth.tokenManager._token = undefined;
-    })
-
-    it("should still return proper connection params", () => {
-      expect(client.graphQL.getConnectionParams()).to.deep.equal({
-        Authorization: "Bearer undefined"
-      });
-    })
-  })
 });

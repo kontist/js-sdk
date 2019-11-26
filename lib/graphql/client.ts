@@ -62,13 +62,6 @@ export class GraphQLClient {
   };
 
   /**
-   * Return subscription client connection params
-   */
-  private getConnectionParams = (): ConnectionParams => ({
-    Authorization: `Bearer ${this.auth.tokenManager.token?.accessToken}`
-  });
-
-  /**
    * Create a subscription client
    */
   private createSubscriptionClient = (): SubscriptionClient => {
@@ -82,7 +75,9 @@ export class GraphQLClient {
       this.subscriptionEndpoint,
       {
         lazy: true,
-        connectionParams: this.getConnectionParams
+        connectionParams: {
+          Authorization: `Bearer ${this.auth.tokenManager.token.accessToken}`
+        }
       },
       WebSocket
     );
