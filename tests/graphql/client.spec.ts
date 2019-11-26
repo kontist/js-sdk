@@ -149,9 +149,7 @@ describe("subscribe", () => {
 
   describe("when adding the first subscription", () => {
     before(() => {
-      const {
-        unsubscribe
-      } = client.graphQL.subscribe({
+      const { unsubscribe } = client.graphQL.subscribe({
         query: subscriptionQuery,
         type: SubscriptionType.newTransaction,
         onNext: firstSubscriptionOnNextStub,
@@ -393,7 +391,7 @@ describe("handleDisconnection", () => {
   let firstSubscription: any;
   let secondSubscription: any;
 
-  before(() => {
+  before(async () => {
     client = createClient();
     refreshTokenStub = sinon.stub(client.auth.tokenManager, "refresh");
     subscribeStub = sinon.stub(client.graphQL, "subscribe");
@@ -404,13 +402,14 @@ describe("handleDisconnection", () => {
       id: 1,
       query: `query #1`,
       type: SubscriptionType.newTransaction,
-      handler: () => {}
+      onNext: () => {},
+      onError: sinon.stub()
     };
     secondSubscription = {
       id: 1,
       query: `query #1`,
       type: SubscriptionType.newTransaction,
-      handler: () => {}
+      onNext: () => {}
     };
 
     client.graphQL.subscriptions = {
@@ -418,7 +417,7 @@ describe("handleDisconnection", () => {
       2: secondSubscription
     };
 
-    client.graphQL.handleDisconnection();
+    await client.graphQL.handleDisconnection();
   });
 
   after(() => {
@@ -460,6 +459,23 @@ describe("handleDisconnection", () => {
     expect(secondType).to.equal(secondSubscription.type);
     expect(secondHandler).to.equal(secondSubscription.onNext);
     expect(secondSubscriptionId).to.equal(secondSubscription.id);
+  });
+
+  describe("when auth token refresh fails", () => {
+    before(async () => {
+      refreshTokenStub.throws(new Error("some error"));
+
+      await client.graphQL.handleDisconnection();
+    });
+
+    it("should call every subscribed onError handler", () => {
+      expect(firstSubscription.onError.callCount).to.equal(1);
+
+      const firstSubscriptionError = firstSubscription.onError.getCall(0)
+        .args[0];
+
+      expect(firstSubscriptionError.message).to.equal("some error");
+    });
   });
 });
 

@@ -88,7 +88,16 @@ export class GraphQLClient {
    * 3. Resubscribe all previously active subscriptions
    */
   private handleDisconnection = async (): Promise<void> => {
-    await this.auth.tokenManager.refresh();
+    try {
+      await this.auth.tokenManager.refresh();
+    } catch (error) {
+      Object.values(this.subscriptions).forEach(({ onError }) => {
+        if (typeof onError === "function") {
+          onError(error);
+        }
+      });
+    }
+
     this.subscriptionClient = null;
     Object.values(this.subscriptions).forEach(subscription => {
       const { query, type, onNext, onError, id } = subscription;
@@ -103,7 +112,7 @@ export class GraphQLClient {
   };
 
   /**
-   * Subscribe to a topic and call the handler when new data or an error is received
+   * Subscribe to a topic and call the respective handler when new data or an error is received
    */
   public subscribe = ({
     query,
