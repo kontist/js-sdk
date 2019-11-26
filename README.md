@@ -175,6 +175,32 @@ To fetch up to 50 latest transactions:
 const transactions = await client.models.transaction.fetch();
 ```
 
+To subscribe to new transactions:
+
+```typescript
+const onNext = transaction => {
+  // do something with the transaction
+}
+
+const onError = error => {
+  // do something with the error
+}
+
+client.models.transaction.subscribe(onNext, onError);
+```
+
+Whenever a new transaction is created, the `onNext` function will be called.
+Whenever an error occurs with the subscription, the `onError` function will be called.
+
+The `subscribe` method returns a `Subscription` object with an `unsubscribe` method to be called when you want to unsubscribe to new transactions:
+
+```typescript
+const { unsubscribe } = client.models.transaction.subscribe(handler);
+// ...
+unsubscribe();
+// after this point, handler will no longer be called when new transactions are received
+```
+
 #### Transfers
 
 To create and confirm a transfer / timed order / standing order:

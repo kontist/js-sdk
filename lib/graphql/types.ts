@@ -7,4 +7,12 @@ export type FetchOptions = {
   after?: string | null;
 };
 
+export enum SubscriptionType {
+  newTransaction = "newTransaction"
+}
+
+export type Subscription = {
+  unsubscribe: () => void;
+};
+
 export type RawQueryResponse = Query & Mutation;

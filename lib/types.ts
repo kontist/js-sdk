@@ -1,4 +1,5 @@
 import * as ClientOAuth2 from "client-oauth2";
+import { Auth } from "./auth";
 
 export enum HttpMethod {
   GET = "GET",
@@ -10,8 +11,15 @@ export enum HttpMethod {
   DELETE = "DELETE"
 }
 
+export type GraphQLClientOpts = {
+  endpoint: string;
+  subscriptionEndpoint: string;
+  auth: Auth;
+};
+
 export type ClientOpts = {
   baseUrl?: string;
+  baseSubscriptionUrl?: string;
   clientId: string;
   clientSecret?: string;
   oauthClient?: ClientOAuth2;

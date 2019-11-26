@@ -1,8 +1,9 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { RawQueryResponse } from "../../lib/graphql/types";
+import { RawQueryResponse, SubscriptionType } from "../../lib/graphql/types";
 import { Transaction } from "../../lib/graphql/schema";
 import { createClient, createTransaction } from "../helpers";
+import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
 
 describe("Transaction", () => {
   describe("iterator", () => {
@@ -65,6 +66,26 @@ describe("Transaction", () => {
       }
 
       expect(transactions).to.deep.equal([firstTransaction, secondTransaction]);
+    });
+  });
+
+  describe("subscribe", () => {
+    it("should call the corresponding graphQL client method to subscribe", () => {
+      const client = createClient();
+      const unsubscribe = () => {};
+      const callback = () => {};
+      const subscribeStub = sinon
+        .stub(client.graphQL, "subscribe")
+        .returns({ unsubscribe });
+
+      const result = client.models.transaction.subscribe(callback);
+
+      expect(subscribeStub.callCount).to.equal(1);
+      const { query, type, onNext } = subscribeStub.getCall(0).args[0];
+      expect(query).to.equal(NEW_TRANSACTION_SUBSCRIPTION);
+      expect(type).to.equal(SubscriptionType.newTransaction);
+      expect(onNext).to.equal(callback);
+      expect(result).to.deep.equal({ unsubscribe });
     });
   });
 });

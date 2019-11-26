@@ -18,7 +18,9 @@
     "client-oauth2": "^4.2.5",
     "graphql-request": "^1.8.2",
     "js-sha256": "^0.9.0",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "subscriptions-transport-ws": "^0.9.16",
+    "ws": "^7.2.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.8.3",
@@ -27,6 +29,7 @@
     "@types/jsdom": "^12.2.4",
     "@types/mocha": "^5.2.7",
     "@types/sinon": "^7.5.0",
+    "@types/ws": "^6.0.3",
     "chai": "^4.2.0",
     "graphql": "^14.5.8",
     "jsdom": "^15.2.1",

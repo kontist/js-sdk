@@ -10,14 +10,14 @@ describe("Client", () => {
         const redirectUri = "https://localhost:3000/auth/callback";
         const scopes = ["transactions"];
         const state = "25843739712322056";
-  
+
         const client = new Client({
           clientId,
           redirectUri,
           scopes,
           state
         });
-  
+
         expect(client).to.exist;
       });
       it("should be able to create a client with all parameters", () => {
@@ -45,6 +45,7 @@ describe("Client", () => {
         const client = new Client(
           opts,
           "http://localhost:3000/api/graphql",
+          "ws://localhost:3000/api/graphql",
           auth,
           graphQL,
           models,
