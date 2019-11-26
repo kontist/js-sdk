@@ -17,4 +17,12 @@ export type TransferFetchOptions = {
   where?: TransfersConnectionFilter;
 } & FetchOptions;
 
+export enum SubscriptionType {
+  newTransaction = "newTransaction"
+}
+
+export type Subscription = {
+  unsubscribe: () => void;
+};
+
 export type RawQueryResponse = Query & Mutation;

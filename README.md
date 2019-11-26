@@ -10,7 +10,7 @@ Add as dependency to your project:
 npm install kontist
 ```
 
-You will need a valid client id and setup your redirect uri for authentication. You may request your client id in the API Console on https://kontist.dev/console/.
+You will need a valid client id and setup your redirect uri for authentication. You may request your client id in the API Client Management on https://kontist.dev/client-management/.
 
 ## Usage (NodeJS / TypeScript)
 
@@ -173,6 +173,32 @@ To fetch up to 50 latest transactions:
 
 ```typescript
 const transactions = await client.models.transaction.fetch();
+```
+
+To subscribe to new transactions:
+
+```typescript
+const onNext = transaction => {
+  // do something with the transaction
+}
+
+const onError = error => {
+  // do something with the error
+}
+
+client.models.transaction.subscribe(onNext, onError);
+```
+
+Whenever a new transaction is created, the `onNext` function will be called.
+Whenever an error occurs with the subscription, the `onError` function will be called.
+
+The `subscribe` method returns a `Subscription` object with an `unsubscribe` method to be called when you want to unsubscribe to new transactions:
+
+```typescript
+const { unsubscribe } = client.models.transaction.subscribe(handler);
+// ...
+unsubscribe();
+// after this point, handler will no longer be called when new transactions are received
 ```
 
 #### Transfers
