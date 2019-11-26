@@ -81,10 +81,10 @@ describe("Transaction", () => {
       const result = client.models.transaction.subscribe(callback);
 
       expect(subscribeStub.callCount).to.equal(1);
-      const [query, type, handler] = subscribeStub.getCall(0).args;
+      const { query, type, onNext } = subscribeStub.getCall(0).args[0];
       expect(query).to.equal(NEW_TRANSACTION_SUBSCRIPTION);
       expect(type).to.equal(SubscriptionType.newTransaction);
-      expect(handler).to.equal(callback);
+      expect(onNext).to.equal(callback);
       expect(result).to.equal(unsubscribe);
     });
   });

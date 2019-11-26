@@ -14,7 +14,8 @@ type Subscriptions = {
     id: number;
     query: string;
     type: SubscriptionType;
-    handler: Function;
+    onNext: Function;
+    onError?: Function;
     unsubscribe: Unsubscribe;
   };
 };
@@ -90,24 +91,33 @@ export class GraphQLClient {
     await this.auth.tokenManager.refresh();
     this.subscriptionClient = null;
     Object.values(this.subscriptions).forEach(subscription => {
-      this.subscribe(
-        subscription.query,
-        subscription.type,
-        subscription.handler,
-        subscription.id
-      );
+      const { query, type, onNext, onError, id } = subscription;
+      this.subscribe({
+        query,
+        type,
+        onNext,
+        onError,
+        subscriptionId: id
+      });
     });
   };
 
   /**
    * Subscribe to a topic and call the handler when new data or an error is received
    */
-  public subscribe = (
-    query: string,
-    type: SubscriptionType,
-    handler: Function,
-    subscriptionId?: number
-  ): Unsubscribe => {
+  public subscribe = ({
+    query,
+    type,
+    onError,
+    onNext,
+    subscriptionId
+  }: {
+    query: string;
+    type: SubscriptionType;
+    onNext: Function;
+    onError?: Function;
+    subscriptionId?: number;
+  }): Unsubscribe => {
     if (!this.subscriptionClient) {
       this.subscriptionClient = this.createSubscriptionClient();
 
@@ -120,15 +130,12 @@ export class GraphQLClient {
 
     const { unsubscribe } = subscription.subscribe({
       next(response) {
-        handler({
-          data: response.data?.[type]
-        });
+        onNext(response.data?.[type]);
       },
       error(error) {
-        handler({
-          data: null,
-          error
-        });
+        if (typeof onError === "function") {
+          onError(error);
+        }
       }
     });
 
@@ -137,7 +144,8 @@ export class GraphQLClient {
       id,
       query,
       type,
-      handler,
+      onNext,
+      onError,
       unsubscribe
     };
 

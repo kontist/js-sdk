@@ -129,8 +129,10 @@ describe("subscribe", () => {
   };
   const subscriptionQuery = `subscription someSubscription {}`;
   const client = createClient();
-  const firstSubscriptionHandlerStub = sinon.stub();
-  const secondSubscriptionHandlerStub = sinon.stub();
+  const firstSubscriptionOnNextStub = sinon.stub();
+  const secondSubscriptionOnNextStub = sinon.stub();
+  const firstSubscriptionOnErrorStub = sinon.stub();
+  const secondSubscriptionOnErrorStub = sinon.stub();
   let createSubscriptionClientStub: any;
   let firstSubscriptionResult: any;
   let secondSubscriptionResult: any;
@@ -147,11 +149,12 @@ describe("subscribe", () => {
 
   describe("when adding the first subscription", () => {
     before(() => {
-      firstSubscriptionResult = client.graphQL.subscribe(
-        subscriptionQuery,
-        SubscriptionType.newTransaction,
-        firstSubscriptionHandlerStub
-      );
+      firstSubscriptionResult = client.graphQL.subscribe({
+        query: subscriptionQuery,
+        type: SubscriptionType.newTransaction,
+        onNext: firstSubscriptionOnNextStub,
+        onError: firstSubscriptionOnErrorStub
+      });
     });
 
     it("should create a subscription client", () => {
@@ -170,7 +173,8 @@ describe("subscribe", () => {
       expect(subscription.id).to.equal(1);
       expect(subscription.query).to.equal(subscriptionQuery);
       expect(subscription.type).to.equal(SubscriptionType.newTransaction);
-      expect(subscription.handler).to.equal(firstSubscriptionHandlerStub);
+      expect(subscription.onNext).to.equal(firstSubscriptionOnNextStub);
+      expect(subscription.onError).to.equal(firstSubscriptionOnErrorStub);
       expect(subscription.unsubscribe).to.be.a("function");
     });
   });
@@ -179,11 +183,12 @@ describe("subscribe", () => {
     before(() => {
       createSubscriptionClientStub.resetHistory();
 
-      secondSubscriptionResult = client.graphQL.subscribe(
-        subscriptionQuery,
-        SubscriptionType.newTransaction,
-        secondSubscriptionHandlerStub
-      );
+      secondSubscriptionResult = client.graphQL.subscribe({
+        query: subscriptionQuery,
+        type: SubscriptionType.newTransaction,
+        onNext: secondSubscriptionOnNextStub,
+        onError: secondSubscriptionOnErrorStub
+      });
     });
 
     it("should NOT create a subscription client", () => {
@@ -196,51 +201,48 @@ describe("subscribe", () => {
       expect(subscription.id).to.equal(2);
       expect(subscription.query).to.equal(subscriptionQuery);
       expect(subscription.type).to.equal(SubscriptionType.newTransaction);
-      expect(subscription.handler).to.equal(secondSubscriptionHandlerStub);
+      expect(subscription.onNext).to.equal(secondSubscriptionOnNextStub);
+      expect(subscription.onError).to.equal(secondSubscriptionOnErrorStub);
       expect(subscription.unsubscribe).to.be.a("function");
     });
   });
 
   describe("when receiving new data", () => {
-    it("should call the subscribed handlers", () => {
-      expect(firstSubscriptionHandlerStub.callCount).to.equal(0);
-      expect(secondSubscriptionHandlerStub.callCount).to.equal(0);
+    it("should call the subscribed onNext handlers", () => {
+      expect(firstSubscriptionOnNextStub.callCount).to.equal(0);
+      expect(secondSubscriptionOnNextStub.callCount).to.equal(0);
 
       const dummyData = {
         data: { [SubscriptionType.newTransaction]: "some-data" }
       };
       observableMock.triggerNext(dummyData);
 
-      expect(firstSubscriptionHandlerStub.callCount).to.equal(1);
-      const { data, error } = firstSubscriptionHandlerStub.getCall(0).args[0];
+      expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
+      const data = firstSubscriptionOnNextStub.getCall(0).args[0];
       expect(data).to.equal("some-data");
-      expect(error).to.be.an("undefined");
-      expect(secondSubscriptionHandlerStub.callCount).to.equal(1);
-      const {
-        data: secondHandlerData,
-        error: secondHandlerError
-      } = secondSubscriptionHandlerStub.getCall(0).args[0];
-      expect(secondHandlerData).to.equal("some-data");
-      expect(secondHandlerError).to.be.an("undefined");
+      expect(secondSubscriptionOnNextStub.callCount).to.equal(1);
+      const secondOnNextData = secondSubscriptionOnNextStub.getCall(0).args[0];
+      expect(secondOnNextData).to.equal("some-data");
+
+      expect(firstSubscriptionOnErrorStub.callCount).to.equal(0);
+      expect(secondSubscriptionOnErrorStub.callCount).to.equal(0);
     });
   });
 
   describe("when receiving an error", () => {
-    it("should call the subscribed handlers", () => {
+    it("should call the subscribed onError handlers", () => {
       const dummyError = new Error("Unauthorized");
       observableMock.triggerError(dummyError);
 
-      expect(firstSubscriptionHandlerStub.callCount).to.equal(2);
-      const { data, error } = firstSubscriptionHandlerStub.getCall(1).args[0];
-      expect(data).to.be.a("null");
+      expect(firstSubscriptionOnErrorStub.callCount).to.equal(1);
+      expect(secondSubscriptionOnErrorStub.callCount).to.equal(1);
+      const error = firstSubscriptionOnErrorStub.getCall(0).args[0];
       expect(error).to.equal(dummyError);
-      expect(secondSubscriptionHandlerStub.callCount).to.equal(2);
-      const {
-        data: secondHandlerData,
-        error: secondHandlerError
-      } = secondSubscriptionHandlerStub.getCall(1).args[0];
-      expect(secondHandlerData).to.be.a("null");
-      expect(secondHandlerError).to.equal(dummyError);
+      const secondError = secondSubscriptionOnErrorStub.getCall(0).args[0];
+      expect(secondError).to.equal(dummyError);
+
+      expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
+      expect(secondSubscriptionOnNextStub.callCount).to.equal(1);
     });
   });
 
@@ -252,13 +254,13 @@ describe("subscribe", () => {
     it("should no longer call the unsubscribed handlers", () => {
       observableMock.triggerNext({ data: { some: "data" } });
 
-      expect(firstSubscriptionHandlerStub.callCount).to.equal(2);
-      expect(secondSubscriptionHandlerStub.callCount).to.equal(3);
+      expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
+      expect(secondSubscriptionOnNextStub.callCount).to.equal(2);
 
       observableMock.triggerError(new Error());
 
-      expect(firstSubscriptionHandlerStub.callCount).to.equal(2);
-      expect(secondSubscriptionHandlerStub.callCount).to.equal(4);
+      expect(firstSubscriptionOnErrorStub.callCount).to.equal(1);
+      expect(secondSubscriptionOnErrorStub.callCount).to.equal(2);
     });
 
     it("should remove the corresponding subscription from its state", () => {
@@ -284,8 +286,11 @@ describe("subscribe", () => {
       observableMock.triggerNext({ data: { some: "data" } });
       observableMock.triggerError(new Error());
 
-      expect(firstSubscriptionHandlerStub.callCount).to.equal(2);
-      expect(secondSubscriptionHandlerStub.callCount).to.equal(4);
+      expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
+      expect(secondSubscriptionOnNextStub.callCount).to.equal(2);
+
+      expect(firstSubscriptionOnErrorStub.callCount).to.equal(1);
+      expect(secondSubscriptionOnErrorStub.callCount).to.equal(2);
     });
   });
 });
@@ -428,28 +433,28 @@ describe("handleDisconnection", () => {
   it("should call subscribe for each existing subscription", () => {
     expect(subscribeStub.callCount).to.equal(2);
 
-    const [
-      firstQuery,
-      firstType,
-      firstHandler,
-      firstSubscriptionId
-    ] = subscribeStub.getCall(0).args;
+    const {
+      query: firstQuery,
+      type: firstType,
+      onNext: firstHandler,
+      subscriptionId: firstSubscriptionId
+     } = subscribeStub.getCall(0).args[0];
 
     expect(firstQuery).to.equal(firstSubscription.query);
     expect(firstType).to.equal(firstSubscription.type);
-    expect(firstHandler).to.equal(firstSubscription.handler);
+    expect(firstHandler).to.equal(firstSubscription.onNext);
     expect(firstSubscriptionId).to.equal(firstSubscription.id);
 
-    const [
-      secondQuery,
-      secondType,
-      secondHandler,
-      secondSubscriptionId
-    ] = subscribeStub.getCall(1).args;
+    const {
+      query: secondQuery,
+      type: secondType,
+      onNext: secondHandler,
+      subscriptionId: secondSubscriptionId
+     } = subscribeStub.getCall(1).args[0];
 
     expect(secondQuery).to.equal(secondSubscription.query);
     expect(secondType).to.equal(secondSubscription.type);
-    expect(secondHandler).to.equal(secondSubscription.handler);
+    expect(secondHandler).to.equal(secondSubscription.onNext);
     expect(secondSubscriptionId).to.equal(secondSubscription.id);
   });
 });
