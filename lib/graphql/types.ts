@@ -1,4 +1,9 @@
-import { Query, Mutation } from "./schema";
+import {
+  Query,
+  Mutation,
+  TransferType,
+  TransfersConnectionFilter
+} from "./schema";
 
 export type FetchOptions = {
   first?: number;
@@ -6,6 +11,11 @@ export type FetchOptions = {
   before?: string | null;
   after?: string | null;
 };
+
+export type TransferFetchOptions = {
+  type: TransferType;
+  where?: TransfersConnectionFilter;
+} & FetchOptions;
 
 export enum SubscriptionType {
   newTransaction = "newTransaction"

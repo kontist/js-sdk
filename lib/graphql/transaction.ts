@@ -1,14 +1,10 @@
 import {
   Query,
   TransactionsConnectionEdge,
-  Transaction as TransactionEntry
+  Transaction as TransactionModel
 } from "./schema";
 import { IterableModel } from "./iterableModel";
-import {
-  FetchOptions,
-  SubscriptionType,
-  Subscription
-} from "./types";
+import { FetchOptions, SubscriptionType, Subscription } from "./types";
 import { ResultPage } from "./resultPage";
 
 const TRANSACTION_FIELDS = `
@@ -59,14 +55,14 @@ export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
   }
 }`;
 
-export class Transaction extends IterableModel<TransactionEntry> {
+export class Transaction extends IterableModel<TransactionModel> {
   /**
    * Fetches first 50 transactions which match the query
    *
    * @param args  query parameters
    * @returns     result page
    */
-  async fetch(args?: FetchOptions): Promise<ResultPage<TransactionEntry>> {
+  async fetch(args?: FetchOptions): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
 
     const transactions = (
@@ -77,11 +73,18 @@ export class Transaction extends IterableModel<TransactionEntry> {
       hasNextPage: false,
       hasPreviousPage: false
     };
-    return new ResultPage(this, transactions, pageInfo);
+    return new ResultPage(this, transactions, pageInfo, args);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  fetchAll(args?: FetchOptions) {
+    return super.fetchAll(args ?? {});
   }
 
   subscribe(
-    onNext: (event: TransactionEntry) => any,
+    onNext: (event: TransactionModel) => any,
     onError?: (error: Error) => any
   ): Subscription {
     return this.client.subscribe({

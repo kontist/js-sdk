@@ -160,11 +160,11 @@ const result = await client.graphQL.rawQuery(query);
 
 #### Transactions
 
-An example to show how to fetch all user transactions
+An example to show how to fetch all user transactions:
 
 ```typescript
 let transactions = [];
-for await (const transaction of client.models.transaction) {
+for await (const transaction of client.models.transaction.fetchAll()) {
   transactions = transactions.concat(transaction);
 }
 ```
@@ -250,6 +250,25 @@ const result = await client.models.transfer.confirmMany(
   confirmationId,
   smsToken
 );
+```
+
+An example to show how to fetch all user transfers of a given type:
+
+```typescript
+let transfers = [];
+for await (const transfer of client.models.transfer.fetchAll({
+  type: Schema.TransferType.SepaTransfer
+})) {
+  transfers = transfers.concat(transfer);
+}
+```
+
+To fetch up to 50 latest transfers of a given type:
+
+```typescript
+const transfers = await client.models.transfer.fetch({
+  type: Schema.TransferType.TimedOrder
+});
 ```
 
 ## MFA (Multi-Factor Authentication)

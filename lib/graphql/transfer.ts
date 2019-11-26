@@ -1,13 +1,29 @@
 import {
+  Query,
   CreateTransferInput,
-  Transfer as TransferEntry,
+  Transfer as TransferModel,
   BatchTransfer,
   TransferType,
+  TransfersConnectionEdge,
   ConfirmationRequestOrTransfer
 } from "./schema";
-import { Model } from "./model";
-import { FetchOptions } from "./types";
+import { TransferFetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
+import { IterableModel } from "./iterableModel";
+
+const TRANSFER_FIELDS = `
+  id
+  recipient
+  iban
+  amount
+  status
+  executeAt
+  lastExecutionDate
+  purpose
+  e2eId
+  reoccurrence
+  nextOccurrence
+`;
 
 const CREATE_TRANSFER = `mutation createTransfer($transfer: CreateTransferInput!) {
   createTransfer(transfer: $transfer) {
@@ -23,17 +39,7 @@ const CONFIRM_TRANSFER = `mutation confirmTransfer(
     confirmationId: $confirmationId
     authorizationToken: $authorizationToken
   ) {
-    id
-    recipient
-    iban
-    amount
-    status
-    executeAt
-    lastExecutionDate
-    purpose
-    e2eId
-    reoccurrence
-    nextOccurrence
+    ${TRANSFER_FIELDS}
   }
 }`;
 
@@ -72,17 +78,7 @@ const CANCEL_TRANSFER = `mutation cancelTransfer($type: TransferType!, $id: Stri
     }
 
     ... on Transfer {
-      id
-      recipient
-      iban
-      amount
-      status
-      executeAt
-      lastExecutionDate
-      purpose
-      e2eId
-      reoccurrence
-      nextOccurrence
+      ${TRANSFER_FIELDS}
     }
   }
 }`;
@@ -97,21 +93,34 @@ const CONFIRM_CANCEL_TRANSFER = `mutation confirmCancelTransfer(
     confirmationId: $confirmationId
     authorizationToken: $authorizationToken
   ) {
-    id
-    recipient
-    iban
-    amount
-    status
-    executeAt
-    lastExecutionDate
-    purpose
-    e2eId
-    reoccurrence
-    nextOccurrence
+    ${TRANSFER_FIELDS}
   }
 }`;
 
-export class Transfer extends Model<CreateTransferInput> {
+const FETCH_TRANSFERS = `query fetchTransfers ($type: TransferType!, $first: Int, $last: Int, $after: String, $before: String) {
+  viewer {
+    mainAccount {
+      transfers(type: $type, first: $first, last: $last, after: $after, before: $before) {
+        edges {
+          node {
+            ${TRANSFER_FIELDS}
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  }
+}`;
+
+export class Transfer extends IterableModel<
+  TransferModel,
+  TransferFetchOptions
+> {
   /**
    * Creates single wire transfer / timed order / standing order
    *
@@ -133,7 +142,7 @@ export class Transfer extends Model<CreateTransferInput> {
   async confirmOne(
     confirmationId: string,
     authorizationToken: string
-  ): Promise<TransferEntry> {
+  ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       confirmationId,
       authorizationToken
@@ -177,7 +186,10 @@ export class Transfer extends Model<CreateTransferInput> {
    * @param id        transfer id
    * @returns         confirmation id used to confirm the cancellation or transfer if confirmation is not needed
    */
-  async cancelTransfer(type: TransferType,id: string): Promise<ConfirmationRequestOrTransfer> {
+  async cancelTransfer(
+    type: TransferType,
+    id: string
+  ): Promise<ConfirmationRequestOrTransfer> {
     const result = await this.client.rawQuery(CANCEL_TRANSFER, { type, id });
     return result.cancelTransfer;
   }
@@ -194,7 +206,7 @@ export class Transfer extends Model<CreateTransferInput> {
     type: TransferType,
     confirmationId: string,
     authorizationToken: string
-  ): Promise<TransferEntry> {
+  ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_CANCEL_TRANSFER, {
       type,
       confirmationId,
@@ -203,7 +215,25 @@ export class Transfer extends Model<CreateTransferInput> {
     return result.confirmCancelTransfer;
   }
 
-  async fetch(args?: FetchOptions): Promise<ResultPage<TransferEntry>> {
-    throw new Error("not implemented yet");
+  /**
+   * Fetches first 50 transfers of provided type which match the query
+   *
+   * @param args  query parameters
+   * @returns     result page
+   */
+  async fetch(
+    args: TransferFetchOptions
+  ): Promise<ResultPage<TransferModel, TransferFetchOptions>> {
+    const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
+
+    const transfers = (result?.viewer?.mainAccount?.transfers?.edges ?? []).map(
+      (edge: TransfersConnectionEdge) => edge.node
+    );
+
+    const pageInfo = result?.viewer?.mainAccount?.transfers?.pageInfo ?? {
+      hasNextPage: false,
+      hasPreviousPage: false
+    };
+    return new ResultPage(this, transfers, pageInfo, args);
   }
 }
