@@ -195,10 +195,10 @@ Whenever an error occurs with the subscription, the `onError` function will be c
 The `subscribe` method returns a `Subscription` object with an `unsubscribe` method to be called when you want to unsubscribe to new transactions:
 
 ```typescript
-const { unsubscribe } = client.models.transaction.subscribe(handler);
+const { unsubscribe } = client.models.transaction.subscribe(onNext, onError);
 // ...
 unsubscribe();
-// after this point, handler will no longer be called when new transactions are received
+// after this point, onNext / onError will no longer be called when new transactions / errors are received
 ```
 
 #### Transfers
