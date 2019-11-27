@@ -6,13 +6,36 @@ import { Client } from "../../lib";
 import { createClient, createTransaction } from "../helpers";
 import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
 
+const generateResponse = ({
+  transactions,
+  pageInfo
+}: {
+  transactions: Array<Transaction>;
+  pageInfo: { hasNextPage: boolean; hasPreviousPage: boolean };
+}) => ({
+  viewer: {
+    mainAccount: {
+      transactions: {
+        edges: transactions.map(transaction => ({
+          node: transaction,
+          cursor: "1234"
+        })),
+        pageInfo: {
+          startCursor: "111111",
+          endCursor: "22222",
+          ...pageInfo
+        }
+      }
+    }
+  }
+});
+
 describe("Transaction", () => {
   describe("iterator", () => {
     let client: Client;
-    let firstTransaction: any;
-    let secondTransaction: any;
-    let firstResponse: any;
-    let secondResponse: any;
+    let firstTransaction: Transaction;
+    let secondTransaction: Transaction;
+    let thirdTransaction: Transaction;
     let stub: any;
 
     beforeEach(() => {
@@ -21,52 +44,21 @@ describe("Transaction", () => {
 
       firstTransaction = createTransaction();
       secondTransaction = createTransaction();
+      thirdTransaction = createTransaction();
 
-      firstResponse = {
-        viewer: {
-          mainAccount: {
-            transactions: {
-              edges: [
-                {
-                  node: firstTransaction,
-                  cursor: "1234"
-                }
-              ],
-              pageInfo: {
-                startCursor: "111111",
-                endCursor: "22222",
-                hasNextPage: true,
-                hasPreviousPage: false
-              }
-            }
-          }
-        }
-      };
+      stub.onFirstCall().resolves(
+        generateResponse({
+          transactions: [firstTransaction, secondTransaction],
+          pageInfo: { hasNextPage: true, hasPreviousPage: false }
+        })
+      );
 
-      stub.onFirstCall().resolves(firstResponse);
-
-      secondResponse = {
-        viewer: {
-          mainAccount: {
-            transactions: {
-              edges: [
-                {
-                  node: secondTransaction,
-                  cursor: "1234"
-                }
-              ],
-              pageInfo: {
-                startCursor: "111111",
-                endCursor: "22222",
-                hasNextPage: false,
-                hasPreviousPage: false
-              }
-            }
-          }
-        }
-      };
-
-      stub.onSecondCall().resolves(secondResponse as RawQueryResponse);
+      stub.onSecondCall().resolves(
+        generateResponse({
+          transactions: [thirdTransaction],
+          pageInfo: { hasNextPage: false, hasPreviousPage: false }
+        })
+      );
     });
 
     afterEach(() => {
@@ -75,14 +67,17 @@ describe("Transaction", () => {
 
     it("can fetch next page using the nextPage method", async () => {
       const firstPage = await client.models.transaction.fetch({
-        first: 1
+        first: 2
       });
 
       expect(typeof firstPage.nextPage).to.equal("function");
-      expect(firstPage.items).to.deep.equal([firstTransaction]);
+      expect(firstPage.items).to.deep.equal([
+        firstTransaction,
+        secondTransaction
+      ]);
 
       const secondPage = firstPage.nextPage && (await firstPage.nextPage());
-      expect(secondPage?.items).to.deep.equal([secondTransaction]);
+      expect(secondPage?.items).to.deep.equal([thirdTransaction]);
     });
 
     it("can iterate on all user transactions using the fetchAll iterator", async () => {
@@ -91,23 +86,38 @@ describe("Transaction", () => {
         transactions = transactions.concat(transaction as Transaction);
       }
 
-      expect(transactions).to.deep.equal([firstTransaction, secondTransaction]);
+      expect(transactions).to.deep.equal([
+        firstTransaction,
+        secondTransaction,
+        thirdTransaction
+      ]);
     });
 
     describe("when iterating backwards", () => {
       it("can fetch the previous page using the previousPage method", async () => {
-        firstResponse.viewer.mainAccount.transactions.pageInfo.hasNextPage = false;
-        secondResponse.viewer.mainAccount.transactions.pageInfo.hasPreviousPage = true;
-
-        stub.onFirstCall().resolves(secondResponse);
-        stub.onSecondCall().resolves(firstResponse);
+        stub
+          .onFirstCall()
+          .resolves(
+            generateResponse({
+              transactions: [secondTransaction, thirdTransaction],
+              pageInfo: { hasPreviousPage: true, hasNextPage: false }
+            })
+          );
+        stub
+          .onSecondCall()
+          .resolves(
+            generateResponse({
+              transactions: [firstTransaction],
+              pageInfo: { hasPreviousPage: false, hasNextPage: false }
+            })
+          );
 
         const firstPage = await client.models.transaction.fetch({
-          last: 1
+          last: 2
         });
 
         expect(typeof firstPage.previousPage).to.equal("function");
-        expect(firstPage.items).to.deep.equal([secondTransaction]);
+        expect(firstPage.items).to.deep.equal([secondTransaction, thirdTransaction]);
 
         const secondPage =
           firstPage.previousPage && (await firstPage.previousPage());
