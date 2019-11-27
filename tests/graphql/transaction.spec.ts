@@ -1,34 +1,14 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { RawQueryResponse, SubscriptionType } from "../../lib/graphql/types";
+import { SubscriptionType } from "../../lib/graphql/types";
 import { Transaction } from "../../lib/graphql/schema";
 import { Client } from "../../lib";
-import { createClient, createTransaction } from "../helpers";
+import {
+  createClient,
+  createTransaction,
+  generatePaginatedResponse
+} from "../helpers";
 import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
-
-const generateResponse = ({
-  transactions,
-  pageInfo
-}: {
-  transactions: Array<Transaction>;
-  pageInfo: { hasNextPage: boolean; hasPreviousPage: boolean };
-}) => ({
-  viewer: {
-    mainAccount: {
-      transactions: {
-        edges: transactions.map(transaction => ({
-          node: transaction,
-          cursor: "1234"
-        })),
-        pageInfo: {
-          startCursor: "111111",
-          endCursor: "22222",
-          ...pageInfo
-        }
-      }
-    }
-  }
-});
 
 describe("Transaction", () => {
   describe("iterator", () => {
@@ -47,15 +27,17 @@ describe("Transaction", () => {
       thirdTransaction = createTransaction();
 
       stub.onFirstCall().resolves(
-        generateResponse({
-          transactions: [firstTransaction, secondTransaction],
+        generatePaginatedResponse({
+          key: "transactions",
+          items: [firstTransaction, secondTransaction],
           pageInfo: { hasNextPage: true, hasPreviousPage: false }
         })
       );
 
       stub.onSecondCall().resolves(
-        generateResponse({
-          transactions: [thirdTransaction],
+        generatePaginatedResponse({
+          key: "transactions",
+          items: [thirdTransaction],
           pageInfo: { hasNextPage: false, hasPreviousPage: false }
         })
       );
@@ -95,29 +77,30 @@ describe("Transaction", () => {
 
     describe("when iterating backwards", () => {
       it("can fetch the previous page using the previousPage method", async () => {
-        stub
-          .onFirstCall()
-          .resolves(
-            generateResponse({
-              transactions: [secondTransaction, thirdTransaction],
-              pageInfo: { hasPreviousPage: true, hasNextPage: false }
-            })
-          );
-        stub
-          .onSecondCall()
-          .resolves(
-            generateResponse({
-              transactions: [firstTransaction],
-              pageInfo: { hasPreviousPage: false, hasNextPage: false }
-            })
-          );
+        stub.onFirstCall().resolves(
+          generatePaginatedResponse({
+            key: "transactions",
+            items: [secondTransaction, thirdTransaction],
+            pageInfo: { hasPreviousPage: true, hasNextPage: false }
+          })
+        );
+        stub.onSecondCall().resolves(
+          generatePaginatedResponse({
+            key: "transactions",
+            items: [firstTransaction],
+            pageInfo: { hasPreviousPage: false, hasNextPage: false }
+          })
+        );
 
         const firstPage = await client.models.transaction.fetch({
           last: 2
         });
 
         expect(typeof firstPage.previousPage).to.equal("function");
-        expect(firstPage.items).to.deep.equal([secondTransaction, thirdTransaction]);
+        expect(firstPage.items).to.deep.equal([
+          secondTransaction,
+          thirdTransaction
+        ]);
 
         const secondPage =
           firstPage.previousPage && (await firstPage.previousPage());

@@ -2,7 +2,7 @@ import * as sinon from "sinon";
 import { expect } from "chai";
 import { Transfer as TransferClass } from "../../lib/graphql/transfer";
 import { TransferType, Transfer } from "../../lib/graphql/schema";
-import { createTransfer } from "../helpers";
+import { createTransfer, generatePaginatedResponse } from "../helpers";
 
 describe("Transfer", () => {
   let graphqlClientStub: { rawQuery: sinon.SinonStub };
@@ -76,75 +76,51 @@ describe("Transfer", () => {
   });
 
   describe("iterator", () => {
-    let firstTransfer: any;
-    let secondTransfer: any;
-    let firstResponse: any;
-    let secondResponse: any;
+    let firstTransfer: Transfer;
+    let secondTransfer: Transfer;
+    let thirdTransfer: Transfer;
 
     beforeEach(() => {
       graphqlClientStub.rawQuery.reset();
 
       firstTransfer = createTransfer();
       secondTransfer = createTransfer();
+      thirdTransfer = createTransfer();
 
-      firstResponse = {
-        viewer: {
-          mainAccount: {
-            transfers: {
-              edges: [
-                {
-                  node: firstTransfer,
-                  cursor: "1234"
-                }
-              ],
-              pageInfo: {
-                startCursor: "111111",
-                endCursor: "22222",
-                hasNextPage: true,
-                hasPreviousPage: false
-              }
-            }
+      graphqlClientStub.rawQuery.onFirstCall().resolves(
+        generatePaginatedResponse({
+          key: "transfers",
+          items: [firstTransfer, secondTransfer],
+          pageInfo: {
+            hasNextPage: true,
+            hasPreviousPage: false
           }
-        }
-      };
+        })
+      );
 
-      graphqlClientStub.rawQuery.onFirstCall().resolves(firstResponse);
-
-      secondResponse = {
-        viewer: {
-          mainAccount: {
-            transfers: {
-              edges: [
-                {
-                  node: secondTransfer,
-                  cursor: "1234"
-                }
-              ],
-              pageInfo: {
-                startCursor: "111111",
-                endCursor: "22222",
-                hasNextPage: false,
-                hasPreviousPage: false
-              }
-            }
+      graphqlClientStub.rawQuery.onSecondCall().resolves(
+        generatePaginatedResponse({
+          key: "transfers",
+          items: [thirdTransfer],
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false
           }
-        }
-      };
-
-      graphqlClientStub.rawQuery.onSecondCall().resolves(secondResponse);
+        })
+      );
     });
 
     it("can fetch next page using the nextPage method", async () => {
       const firstPage = await transferInstance.fetch({
-        first: 1,
+        first: 2,
         type: TransferType.SepaTransfer
       });
 
       expect(typeof firstPage.nextPage).to.equal("function");
-      expect(firstPage.items).to.deep.equal([firstTransfer]);
+      expect(firstPage.items).to.deep.equal([firstTransfer, secondTransfer]);
 
       const secondPage = firstPage.nextPage && (await firstPage.nextPage());
-      expect(secondPage?.items).to.deep.equal([secondTransfer]);
+      expect(secondPage?.items).to.deep.equal([thirdTransfer]);
     });
 
     it("can iterate on all user transfers using the fetchAll iterator", async () => {
@@ -155,24 +131,40 @@ describe("Transfer", () => {
         transfers = transfers.concat(transfer as Transfer);
       }
 
-      expect(transfers).to.deep.equal([firstTransfer, secondTransfer]);
+      expect(transfers).to.deep.equal([firstTransfer, secondTransfer, thirdTransfer]);
     });
 
     describe("when iterating backwards", () => {
       it("can fetch the previous page using the previousPage method", async () => {
-        firstResponse.viewer.mainAccount.transfers.pageInfo.hasNextPage = false;
-        secondResponse.viewer.mainAccount.transfers.pageInfo.hasPreviousPage = true;
+        graphqlClientStub.rawQuery.onFirstCall().resolves(
+          generatePaginatedResponse({
+            key: "transfers",
+            items: [secondTransfer, thirdTransfer],
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: true
+            }
+          })
+        );
 
-        graphqlClientStub.rawQuery.onFirstCall().resolves(secondResponse);
-        graphqlClientStub.rawQuery.onSecondCall().resolves(firstResponse);
+        graphqlClientStub.rawQuery.onSecondCall().resolves(
+          generatePaginatedResponse({
+            key: "transfers",
+            items: [firstTransfer],
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false
+            }
+          })
+        );
 
         const firstPage = await transferInstance.fetch({
-          last: 1,
+          last: 2,
           type: TransferType.SepaTransfer
         });
 
         expect(typeof firstPage.previousPage).to.equal("function");
-        expect(firstPage.items).to.deep.equal([secondTransfer]);
+        expect(firstPage.items).to.deep.equal([secondTransfer, thirdTransfer]);
 
         const secondPage =
           firstPage.previousPage && (await firstPage.previousPage());

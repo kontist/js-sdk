@@ -51,3 +51,29 @@ export const createTransfer = (
     ...override
   };
 };
+
+export const generatePaginatedResponse = ({
+  key,
+  items,
+  pageInfo
+}: {
+  key: "transactions" | "transfers";
+  items: Array<Transaction | Transfer>;
+  pageInfo: { hasNextPage: boolean; hasPreviousPage: boolean };
+}) => ({
+  viewer: {
+    mainAccount: {
+      [key]: {
+        edges: items.map(item => ({
+          node: item,
+          cursor: "1234"
+        })),
+        pageInfo: {
+          startCursor: "111111",
+          endCursor: "22222",
+          ...pageInfo
+        }
+      }
+    }
+  }
+});
