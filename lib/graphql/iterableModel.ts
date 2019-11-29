@@ -28,7 +28,7 @@ export abstract class IterableModel<
         if (lastResult.items.length > 0) {
           return {
             done: false,
-            value: lastResult.items.pop()
+            value: lastResult.items.shift()
           };
         }
 
