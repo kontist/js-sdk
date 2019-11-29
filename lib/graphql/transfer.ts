@@ -97,25 +97,41 @@ const CONFIRM_CANCEL_TRANSFER = `mutation confirmCancelTransfer(
   }
 }`;
 
-const FETCH_TRANSFERS = `query fetchTransfers ($type: TransferType!, $first: Int, $last: Int, $after: String, $before: String) {
-  viewer {
-    mainAccount {
-      transfers(type: $type, first: $first, last: $last, after: $after, before: $before) {
-        edges {
-          node {
-            ${TRANSFER_FIELDS}
+const FETCH_TRANSFERS = `
+  query fetchTransfers (
+    $type: TransferType!,
+    $where: TransfersConnectionFilter,
+    $first: Int,
+    $last: Int,
+    $after: String,
+    $before: String
+  ) {
+    viewer {
+      mainAccount {
+      transfers(
+        type: $type,
+        where: $where,
+        first: $first,
+        last: $last,
+        after: $after,
+        before: $before
+      ) {
+          edges {
+            node {
+              ${TRANSFER_FIELDS}
+            }
           }
-        }
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
         }
       }
     }
   }
-}`;
+`;
 
 export class Transfer extends IterableModel<
   TransferModel,

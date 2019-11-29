@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Async iterators now return results in the correct order (latest transactions / transfers first by default)
+- Status filter for transfers is now working properly
 
 ## [0.22.0] - 2019-11-26
 ### Added
