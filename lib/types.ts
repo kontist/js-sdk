@@ -77,8 +77,9 @@ export type VerifyDeviceChallengeParams = {
   signature: string;
 };
 
-export type VerifyDeviceChallengeResult = {
+export type MfaResult = {
   token: string;
+  refresh_token?: string;
 };
 
 export type TimeoutID = ReturnType<typeof setTimeout>;
