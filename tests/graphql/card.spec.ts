@@ -4,7 +4,6 @@ import { CardType } from "../../lib/graphql/schema";
 
 import { Client } from "../../lib";
 import { Card } from "../../lib/graphql/card";
-import { KontistSDKError } from "../../lib/errors";
 
 const cardData = {
   id: "010e5dcfdd7949fea50a510e97157168",
@@ -66,23 +65,36 @@ describe("Card", () => {
   });
 
   describe("#fetch", () => {
-    it("should fail", async () => {
+    it("should call rawQuery and return all cards details", async () => {
       // arrange
-      const account = new Card(client.graphQL);
+      const cardsData = [
+        cardData,
+        { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" }
+      ];
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {
+            cards: [
+              cardData,
+              { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" }
+            ]
+          }
+        }
+      } as any);
 
       // act
-      let error;
-      try {
-        await account.fetch();
-      } catch (e) {
-        error = e;
-      }
+      const result = await card.fetch();
 
       // assert
-      expect(error).to.be.an.instanceOf(KontistSDKError);
-      expect(error.message).to.eq(
-        "Card model does not implement fetch, please use the `get` method instead."
-      );
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq({
+        items: cardsData,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false
+        }
+      });
     });
   });
 
@@ -121,49 +133,6 @@ describe("Card", () => {
         cardId: cardData.id,
         type: CardType.MastercardBusinessDebit
       });
-
-      // assert
-      sinon.assert.calledOnce(spyOnRawQuery);
-      expect(result).to.eq(null);
-    });
-  });
-
-  describe("#getAll", () => {
-    it("should call rawQuery and return an array of card details", async () => {
-      // arrange
-      const cardsData = [
-        cardData,
-        { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" }
-      ];
-      const card = new Card(client.graphQL);
-      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        viewer: {
-          mainAccount: {
-            cards: [
-              cardData,
-              { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" }
-            ]
-          }
-        }
-      } as any);
-
-      // act
-      const result = await card.getAll();
-
-      // assert
-      sinon.assert.calledOnce(spyOnRawQuery);
-      expect(result).to.deep.eq(cardsData);
-    });
-
-    it("should call rawQuery and return null for missing account", async () => {
-      // arrange
-      const card = new Card(client.graphQL);
-      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        viewer: {}
-      } as any);
-
-      // act
-      const result = await card.getAll();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
