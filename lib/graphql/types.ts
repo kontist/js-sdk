@@ -18,11 +18,15 @@ export type TransferFetchOptions = {
   where?: TransfersConnectionFilter;
 } & FetchOptions;
 
-export type CardOptions = {
+export type GetCardOptions = {
   id: String;
   type?: CardType;
 };
 
+export type ActivateCardOptions = {
+  id: string,
+  verificationToken: string
+}
 
 export enum SubscriptionType {
   newTransaction = "newTransaction"

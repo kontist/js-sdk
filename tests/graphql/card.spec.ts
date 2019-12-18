@@ -7,7 +7,7 @@ import { Card } from "../../lib/graphql/card";
 
 const cardData = {
   id: "010e5dcfdd7949fea50a510e97157168",
-  status: "ACTIVE",
+  status: "INACTIVE",
   type: "VISA_BUSINESS_DEBIT",
   holder: "JEAN DUPONT",
   formattedExpirationDate: "12/22",
@@ -114,6 +114,30 @@ describe("Card", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(null);
+    });
+  });
+
+  describe("#activate", () => {
+    it("should call rawQuery and return activated card", async () => {
+      // arrange
+      const activatedCardData = {
+        ...cardData,
+        status: "ACTIVE"
+      };
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        activateCard: activatedCardData
+      } as any);
+
+      // act
+      const result = await card.activate({
+        id: cardData.id,
+        verificationToken: "7AOXBQ"
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(activatedCardData);
     });
   });
 });
