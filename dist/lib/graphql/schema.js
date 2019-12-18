@@ -8,6 +8,24 @@ var BatchTransferStatus;
     BatchTransferStatus["Failed"] = "FAILED";
     BatchTransferStatus["Successful"] = "SUCCESSFUL";
 })(BatchTransferStatus = exports.BatchTransferStatus || (exports.BatchTransferStatus = {}));
+var CardStatus;
+(function (CardStatus) {
+    CardStatus["Processing"] = "PROCESSING";
+    CardStatus["Inactive"] = "INACTIVE";
+    CardStatus["Active"] = "ACTIVE";
+    CardStatus["Blocked"] = "BLOCKED";
+    CardStatus["BlockedBySolaris"] = "BLOCKED_BY_SOLARIS";
+    CardStatus["ActivationBlockedBySolaris"] = "ACTIVATION_BLOCKED_BY_SOLARIS";
+    CardStatus["Closed"] = "CLOSED";
+    CardStatus["ClosedBySolaris"] = "CLOSED_BY_SOLARIS";
+})(CardStatus = exports.CardStatus || (exports.CardStatus = {}));
+var CardType;
+(function (CardType) {
+    CardType["VirtualVisaBusinessDebit"] = "VIRTUAL_VISA_BUSINESS_DEBIT";
+    CardType["VisaBusinessDebit"] = "VISA_BUSINESS_DEBIT";
+    CardType["MastercardBusinessDebit"] = "MASTERCARD_BUSINESS_DEBIT";
+    CardType["VirtualMastercardBusinessDebit"] = "VIRTUAL_MASTERCARD_BUSINESS_DEBIT";
+})(CardType = exports.CardType || (exports.CardType = {}));
 var CompanyType;
 (function (CompanyType) {
     CompanyType["Selbstaendig"] = "SELBSTAENDIG";
@@ -392,6 +410,8 @@ var TransactionFeeType;
 })(TransactionFeeType = exports.TransactionFeeType || (exports.TransactionFeeType = {}));
 var TransactionProjectionType;
 (function (TransactionProjectionType) {
+    TransactionProjectionType["CreditPresentment"] = "CREDIT_PRESENTMENT";
+    TransactionProjectionType["CashManual"] = "CASH_MANUAL";
     TransactionProjectionType["Atm"] = "ATM";
     TransactionProjectionType["CancelManualLoad"] = "CANCEL_MANUAL_LOAD";
     TransactionProjectionType["CardUsage"] = "CARD_USAGE";

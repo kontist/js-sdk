@@ -9,15 +9,21 @@ export declare type Scalars = {
     /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
     DateTime: any;
 };
+/** The bank account of the current user */
 export declare type Account = {
     __typename?: 'Account';
     iban: Scalars['String'];
+    cardHolderRepresentation?: Maybe<Scalars['String']>;
     balance: Scalars['Int'];
+    cardHolderRepresentations: Array<Scalars['String']>;
     transfers: TransfersConnection;
     transaction?: Maybe<Transaction>;
     transactions: TransactionsConnection;
     transfer?: Maybe<Transfer>;
+    cards: Array<Card>;
+    card?: Maybe<Card>;
 };
+/** The bank account of the current user */
 export declare type AccountTransfersArgs = {
     where?: Maybe<TransfersConnectionFilter>;
     type: TransferType;
@@ -26,18 +32,25 @@ export declare type AccountTransfersArgs = {
     after?: Maybe<Scalars['String']>;
     before?: Maybe<Scalars['String']>;
 };
+/** The bank account of the current user */
 export declare type AccountTransactionArgs = {
     id: Scalars['ID'];
 };
+/** The bank account of the current user */
 export declare type AccountTransactionsArgs = {
     first?: Maybe<Scalars['Int']>;
     last?: Maybe<Scalars['Int']>;
     after?: Maybe<Scalars['String']>;
     before?: Maybe<Scalars['String']>;
 };
+/** The bank account of the current user */
 export declare type AccountTransferArgs = {
     id: Scalars['ID'];
     type: TransferType;
+};
+/** The bank account of the current user */
+export declare type AccountCardArgs = {
+    filter?: Maybe<CardFilter>;
 };
 export declare type BatchTransfer = {
     __typename?: 'BatchTransfer';
@@ -52,12 +65,75 @@ export declare enum BatchTransferStatus {
     Failed = "FAILED",
     Successful = "SUCCESSFUL"
 }
+export declare type Card = {
+    __typename?: 'Card';
+    id: Scalars['String'];
+    status: CardStatus;
+    type: CardType;
+    holder?: Maybe<Scalars['String']>;
+    formattedExpirationDate?: Maybe<Scalars['String']>;
+    maskedPan?: Maybe<Scalars['String']>;
+    settings: CardSettings;
+};
+export declare type CardFilter = {
+    id?: Maybe<Scalars['String']>;
+    type?: Maybe<CardType>;
+};
+export declare type CardLimit = {
+    __typename?: 'CardLimit';
+    maxAmountCents: Scalars['Float'];
+    maxTransactions: Scalars['Float'];
+};
+export declare type CardLimitInput = {
+    maxAmountCents: Scalars['Float'];
+    maxTransactions: Scalars['Float'];
+};
+export declare type CardLimits = {
+    __typename?: 'CardLimits';
+    daily: CardLimit;
+    monthly: CardLimit;
+};
+export declare type CardLimitsInput = {
+    daily: CardLimitInput;
+    monthly: CardLimitInput;
+};
+export declare type CardSettings = {
+    __typename?: 'CardSettings';
+    contactlessEnabled: Scalars['Boolean'];
+    cardPresentLimits?: Maybe<CardLimits>;
+    cardNotPresentLimits?: Maybe<CardLimits>;
+};
+export declare type CardSettingsInput = {
+    cardPresentLimits?: Maybe<CardLimitsInput>;
+    cardNotPresentLimits?: Maybe<CardLimitsInput>;
+    contactlessEnabled?: Maybe<Scalars['Boolean']>;
+};
+export declare enum CardStatus {
+    Processing = "PROCESSING",
+    Inactive = "INACTIVE",
+    Active = "ACTIVE",
+    Blocked = "BLOCKED",
+    BlockedBySolaris = "BLOCKED_BY_SOLARIS",
+    ActivationBlockedBySolaris = "ACTIVATION_BLOCKED_BY_SOLARIS",
+    Closed = "CLOSED",
+    ClosedBySolaris = "CLOSED_BY_SOLARIS"
+}
+export declare enum CardType {
+    VirtualVisaBusinessDebit = "VIRTUAL_VISA_BUSINESS_DEBIT",
+    VisaBusinessDebit = "VISA_BUSINESS_DEBIT",
+    MastercardBusinessDebit = "MASTERCARD_BUSINESS_DEBIT",
+    VirtualMastercardBusinessDebit = "VIRTUAL_MASTERCARD_BUSINESS_DEBIT"
+}
 export declare type Client = {
     __typename?: 'Client';
     id: Scalars['ID'];
+    /** The URL to redirect to after authentication */
     redirectUri?: Maybe<Scalars['String']>;
+    /** The name of the OAuth2 client displayed when users log in */
     name: Scalars['String'];
+    /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
     grantTypes?: Maybe<Array<GrantType>>;
+    /** The scopes the client has access to, limiting access to the corresponding parts of the API */
     scopes?: Maybe<Array<ScopeType>>;
 };
 export declare enum CompanyType {
@@ -81,46 +157,92 @@ export declare type ConfirmationRequest = {
     confirmationId: Scalars['String'];
 };
 export declare type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
+export declare type ConfirmationStatus = {
+    __typename?: 'ConfirmationStatus';
+    status: Scalars['String'];
+};
+export declare type ConfirmFraudResponse = {
+    __typename?: 'ConfirmFraudResponse';
+    id: Scalars['String'];
+    resolution: Scalars['String'];
+};
+/** The available fields to create an OAuth2 client */
 export declare type CreateClientInput = {
+    /** The name of the OAuth2 client displayed when users log in */
     name: Scalars['String'];
+    /** The OAuth2 client secret */
     secret?: Maybe<Scalars['String']>;
+    /** The URL to redirect to after authentication */
     redirectUri?: Maybe<Scalars['String']>;
+    /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
     grantTypes: Array<GrantType>;
+    /** The scopes the client has access to, limiting access to the corresponding parts of the API */
     scopes: Array<ScopeType>;
 };
+/** The available fields to create a SEPA Transfer */
 export declare type CreateSepaTransferInput = {
+    /** The name of the SEPA Transfer recipient */
     recipient: Scalars['String'];
+    /** The IBAN of the SEPA Transfer recipient */
     iban: Scalars['String'];
+    /** The amount of the SEPA Transfer in cents */
     amount: Scalars['Int'];
+    /** The purpose of the SEPA Transfer - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
+    /** The end to end ID of the SEPA Transfer */
     e2eId?: Maybe<Scalars['String']>;
 };
+/** The available fields to create a Standing Order */
 export declare type CreateStandingOrderInput = {
+    /** The name of the Standing Order payments recipient */
     recipient: Scalars['String'];
+    /** The IBAN of the Standing Order payments recipient */
     iban: Scalars['String'];
+    /** The amount of each Standing Order payment in cents */
     amount: Scalars['Int'];
+    /** The date at which the first payment will be executed */
     executeAt: Scalars['DateTime'];
+    /** The date at which the last payment will be executed */
     lastExecutionDate?: Maybe<Scalars['DateTime']>;
+    /** The purpose of the Standing Order - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
+    /** The end to end ID of the Standing Order */
     e2eId?: Maybe<Scalars['String']>;
+    /** The reoccurrence type of the Standing Order payments */
     reoccurrence: StandingOrderReoccurenceType;
 };
+/** The available fields to create a Timed Order */
 export declare type CreateTimedOrderInput = {
+    /** The name of the Timed Order recipient */
     recipient: Scalars['String'];
+    /** The IBAN of the Timed Order recipient */
     iban: Scalars['String'];
+    /** The amount of the Timed Order in cents */
     amount: Scalars['Int'];
+    /** The date at which the payment will be executed */
     executeAt: Scalars['DateTime'];
+    /** The purpose of the Timed Order - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
+    /** The end to end ID of the Timed Order */
     e2eId?: Maybe<Scalars['String']>;
 };
+/** The available fields to create a transfer */
 export declare type CreateTransferInput = {
+    /** The name of the transfer recipient */
     recipient: Scalars['String'];
+    /** The IBAN of the transfer recipient */
     iban: Scalars['String'];
+    /** The amount of the transfer in cents */
     amount: Scalars['Int'];
+    /** The date at which the payment will be executed for Timed Orders or Standing Orders */
     executeAt?: Maybe<Scalars['DateTime']>;
+    /** The date at which the last payment will be executed for Standing Orders */
     lastExecutionDate?: Maybe<Scalars['DateTime']>;
+    /** The purpose of the transfer - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
+    /** The end to end ID of the transfer */
     e2eId?: Maybe<Scalars['String']>;
+    /** The reoccurrence type of the payments for Standing Orders */
     reoccurrence?: Maybe<StandingOrderReoccurenceType>;
 };
 export declare type DirectDebitFee = {
@@ -164,15 +286,32 @@ export declare enum InvoiceStatus {
 }
 export declare type Mutation = {
     __typename?: 'Mutation';
+    /** Cancel an existing Timed Order or Standing Order */
     cancelTransfer: ConfirmationRequestOrTransfer;
+    /** Confirm a Standing Order cancelation */
     confirmCancelTransfer: Transfer;
+    /** Create an OAuth2 client */
     createClient: Client;
+    /** Update an OAuth2 client */
     updateClient: Client;
+    /** Delete an OAuth2 client */
     deleteClient: Client;
+    /** Create a transfer. The transfer's type will be determined based on the provided input */
     createTransfer: ConfirmationRequest;
+    /** Confirm a transfer creation */
     confirmTransfer: Transfer;
+    /** Create multiple transfers at once. Only regular SEPA Transfers are supported */
     createTransfers: ConfirmationRequest;
+    /** Confirm the transfers creation */
     confirmTransfers: BatchTransfer;
+    whitelistCard: WhitelistCardResponse;
+    confirmFraud: ConfirmFraudResponse;
+    createCard: Card;
+    activateCard: Card;
+    updateCardSettings: CardSettings;
+    changeCardStatus: Card;
+    changeCardPIN: ConfirmationRequest;
+    confirmChangeCardPIN: ConfirmationStatus;
 };
 export declare type MutationCancelTransferArgs = {
     id: Scalars['String'];
@@ -203,6 +342,37 @@ export declare type MutationCreateTransfersArgs = {
     transfers: Array<CreateSepaTransferInput>;
 };
 export declare type MutationConfirmTransfersArgs = {
+    authorizationToken: Scalars['String'];
+    confirmationId: Scalars['String'];
+};
+export declare type MutationWhitelistCardArgs = {
+    fraudCaseId: Scalars['String'];
+    id: Scalars['String'];
+};
+export declare type MutationConfirmFraudArgs = {
+    fraudCaseId: Scalars['String'];
+    id: Scalars['String'];
+};
+export declare type MutationCreateCardArgs = {
+    cardType: Scalars['String'];
+};
+export declare type MutationActivateCardArgs = {
+    verificationToken: Scalars['String'];
+    id: Scalars['String'];
+};
+export declare type MutationUpdateCardSettingsArgs = {
+    settings: CardSettingsInput;
+    id: Scalars['String'];
+};
+export declare type MutationChangeCardStatusArgs = {
+    action: Scalars['String'];
+    id: Scalars['String'];
+};
+export declare type MutationChangeCardPinArgs = {
+    pin: Scalars['String'];
+    id: Scalars['String'];
+};
+export declare type MutationConfirmChangeCardPinArgs = {
     authorizationToken: Scalars['String'];
     confirmationId: Scalars['String'];
 };
@@ -471,6 +641,7 @@ export declare enum PaymentFrequency {
 }
 export declare type Query = {
     __typename?: 'Query';
+    /** The current user information */
     viewer: User;
 };
 export declare enum ScopeType {
@@ -486,12 +657,18 @@ export declare enum ScopeType {
 }
 export declare type SepaTransfer = {
     __typename?: 'SepaTransfer';
+    /** The status of the SEPA Transfer */
     status: SepaTransferStatus;
+    /** The amount of the SEPA Transfer in cents */
     amount: Scalars['Int'];
+    /** The purpose of the SEPA Transfer - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
     id: Scalars['String'];
+    /** The name of the SEPA Transfer recipient */
     recipient: Scalars['String'];
+    /** The IBAN of the SEPA Transfer recipient */
     iban: Scalars['String'];
+    /** The end to end ID of the SEPA Transfer */
     e2eId?: Maybe<Scalars['String']>;
 };
 export declare enum SepaTransferStatus {
@@ -503,15 +680,25 @@ export declare enum SepaTransferStatus {
 export declare type StandingOrder = {
     __typename?: 'StandingOrder';
     id: Scalars['String'];
+    /** The status of the Standing Order */
     status: StandingOrderStatus;
+    /** The IBAN of the Standing Order payments recipient */
     iban: Scalars['String'];
+    /** The name of the Standing Order payments recipient */
     recipient: Scalars['String'];
+    /** The purpose of the Standing Order - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
+    /** The amount of each Standing Order payment in cents */
     amount: Scalars['Int'];
+    /** The date at which the first payment will be executed */
     executeAt: Scalars['DateTime'];
+    /** The date at which the last payment will be executed */
     lastExecutionDate?: Maybe<Scalars['DateTime']>;
+    /** The end to end ID of the Standing Order */
     e2eId?: Maybe<Scalars['String']>;
+    /** The reoccurrence type of the Standing Order payments */
     reoccurrence: StandingOrderReoccurenceType;
+    /** The date at which the next payment will be executed */
     nextOccurrence?: Maybe<Scalars['DateTime']>;
 };
 export declare enum StandingOrderReoccurenceType {
@@ -533,12 +720,19 @@ export declare type Subscription = {
 export declare type TimedOrder = {
     __typename?: 'TimedOrder';
     id: Scalars['ID'];
+    /** The date at which the payment will be executed */
     executeAt: Scalars['String'];
+    /** The status of the Timed Order */
     status: TimedOrderStatus;
+    /** The purpose of the Timed Order - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
+    /** The IBAN of the Timed Order recipient */
     iban: Scalars['String'];
+    /** The name of the Timed Order recipient */
     recipient: Scalars['String'];
+    /** The end to end ID of the Timed Order */
     e2eId?: Maybe<Scalars['String']>;
+    /** The amount of the Timed Order in cents */
     amount: Scalars['Int'];
 };
 export declare enum TimedOrderStatus {
@@ -553,18 +747,22 @@ export declare enum TimedOrderStatus {
 export declare type Transaction = {
     __typename?: 'Transaction';
     id: Scalars['ID'];
+    /** The amount of the transaction in cents */
     amount: Scalars['Int'];
     iban?: Maybe<Scalars['String']>;
     type: TransactionProjectionType;
+    /** The date at which the transaction was processed and the amount deducted from the user's account */
     valutaDate?: Maybe<Scalars['DateTime']>;
     e2eId?: Maybe<Scalars['String']>;
     mandateNumber?: Maybe<Scalars['String']>;
     fees: Array<TransactionFee>;
+    /** The date at which the transaction was booked (created) */
     bookingDate: Scalars['DateTime'];
     directDebitFees: Array<DirectDebitFee>;
     name?: Maybe<Scalars['String']>;
     paymentMethod: Scalars['String'];
     category?: Maybe<TransactionCategory>;
+    /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
     userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
     purpose?: Maybe<Scalars['String']>;
     documentNumber?: Maybe<Scalars['String']>;
@@ -607,6 +805,8 @@ export declare enum TransactionFeeType {
     CardReplacement = "CARD_REPLACEMENT"
 }
 export declare enum TransactionProjectionType {
+    CreditPresentment = "CREDIT_PRESENTMENT",
+    CashManual = "CASH_MANUAL",
     Atm = "ATM",
     CancelManualLoad = "CANCEL_MANUAL_LOAD",
     CardUsage = "CARD_USAGE",
@@ -648,15 +848,25 @@ export declare type TransactionsConnectionEdge = {
 export declare type Transfer = {
     __typename?: 'Transfer';
     id: Scalars['String'];
+    /** The name of the transfer recipient */
     recipient: Scalars['String'];
+    /** The IBAN of the transfer recipient */
     iban: Scalars['String'];
+    /** The amount of the transfer in cents */
     amount: Scalars['Int'];
+    /** The status of the transfer */
     status?: Maybe<TransferStatus>;
+    /** The date at which the payment will be executed for Timed Orders or Standing Orders */
     executeAt?: Maybe<Scalars['DateTime']>;
+    /** The date at which the last payment will be executed for Standing Orders */
     lastExecutionDate?: Maybe<Scalars['DateTime']>;
+    /** The purpose of the transfer - 140 max characters */
     purpose?: Maybe<Scalars['String']>;
+    /** The end to end ID of the transfer */
     e2eId?: Maybe<Scalars['String']>;
+    /** The reoccurrence type of the payments for Standing Orders */
     reoccurrence?: Maybe<StandingOrderReoccurenceType>;
+    /** The date at which the next payment will be executed for Standing Orders */
     nextOccurrence?: Maybe<Scalars['DateTime']>;
 };
 export declare type TransfersConnection = {
@@ -691,12 +901,19 @@ export declare enum TransferType {
     StandingOrder = "STANDING_ORDER",
     TimedOrder = "TIMED_ORDER"
 }
+/** The available fields to update an OAuth2 client */
 export declare type UpdateClientInput = {
+    /** The name of the OAuth2 client displayed when users log in */
     name?: Maybe<Scalars['String']>;
+    /** The OAuth2 client secret */
     secret?: Maybe<Scalars['String']>;
+    /** The URL to redirect to after authentication */
     redirectUri?: Maybe<Scalars['String']>;
+    /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
     grantTypes?: Maybe<Array<GrantType>>;
+    /** The scopes the client has access to, limiting access to the corresponding parts of the API */
     scopes?: Maybe<Array<ScopeType>>;
+    /** The id of the OAuth2 client to update */
     id: Scalars['String'];
 };
 export declare type User = {
@@ -709,7 +926,9 @@ export declare type User = {
     taxPaymentFrequency?: Maybe<PaymentFrequency>;
     taxRate?: Maybe<Scalars['Int']>;
     vatRate?: Maybe<Scalars['Int']>;
+    /** The user's IDNow identification status */
     identificationStatus?: Maybe<IdentificationStatus>;
+    /** The user's IDNow identification status */
     identificationLink?: Maybe<Scalars['String']>;
     gender?: Maybe<Gender>;
     firstName?: Maybe<Scalars['String']>;
@@ -722,20 +941,33 @@ export declare type User = {
     city?: Maybe<Scalars['String']>;
     mobileNumber?: Maybe<Scalars['String']>;
     untrustedPhoneNumber?: Maybe<Scalars['String']>;
+    /** Indicates whether the user pays taxes in the US */
     isUSPerson?: Maybe<Scalars['Boolean']>;
     companyType?: Maybe<CompanyType>;
     publicId: Scalars['ID'];
     language?: Maybe<Scalars['String']>;
     country?: Maybe<Scalars['String']>;
+    /** Business description provided by the user */
     businessPurpose?: Maybe<Scalars['String']>;
+    /** The economic sector of the user's business */
     economicSector?: Maybe<Scalars['String']>;
+    /** Business economic sector provided by the user */
     otherEconomicSector?: Maybe<Scalars['String']>;
     vatNumber?: Maybe<Scalars['String']>;
+    /** The user's referral code to use for promotional purposes */
     referralCode?: Maybe<Scalars['String']>;
+    /** The list of all OAuth2 clients for the current user */
     clients: Array<Client>;
+    /** The details of an existing OAuth2 client */
     client?: Maybe<Client>;
     mainAccount?: Maybe<Account>;
 };
 export declare type UserClientArgs = {
     id: Scalars['String'];
+};
+export declare type WhitelistCardResponse = {
+    __typename?: 'WhitelistCardResponse';
+    id: Scalars['String'];
+    resolution: Scalars['String'];
+    whitelisted_until: Scalars['String'];
 };

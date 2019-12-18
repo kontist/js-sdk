@@ -9,11 +9,13 @@ export declare class Client {
         transfer: import("./graphql/transfer").Transfer;
         account: import("./graphql/account").Account;
         user: import("./graphql/user").User;
+        card: import("./graphql/card").Card;
     };
     constructor(opts: ClientOpts, baseUrl?: string, baseSubscriptionUrl?: string, auth?: Auth, graphQL?: GraphQLClient, models?: {
         transaction: import("./graphql/transaction").Transaction;
         transfer: import("./graphql/transfer").Transfer;
         account: import("./graphql/account").Account;
         user: import("./graphql/user").User;
+        card: import("./graphql/card").Card;
     });
 }

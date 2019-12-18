@@ -27,7 +27,7 @@ describe("Client", function () {
                 clientId: clientId,
                 redirectUri: redirectUri,
                 scopes: scopes,
-                state: state,
+                state: state
             };
             var auth = {};
             var graphQL = {};
@@ -36,6 +36,7 @@ describe("Client", function () {
                 transfer: {},
                 account: {},
                 user: {},
+                card: {}
             };
             // act
             var client = new lib_1.Client(opts, "http://localhost:3000/api/graphql", "ws://localhost:3000/api/graphql", auth, graphQL, models);
