@@ -24,9 +24,19 @@ export type GetCardOptions = {
 };
 
 export type ActivateCardOptions = {
-  id: string,
-  verificationToken: string
-}
+  id: string;
+  verificationToken: string;
+};
+
+export type ChangeCardPINOptions = {
+  id: string;
+  pin: string;
+};
+
+export type ConfirmChangeCardPINOptions = {
+  confirmationId: string;
+  authorizationToken: string;
+};
 
 export enum SubscriptionType {
   newTransaction = "newTransaction"

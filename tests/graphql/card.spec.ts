@@ -20,6 +20,7 @@ const cardData = {
 describe("Card", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
+  const confirmationId = "71c7ecca-7763-4d9a-a54f-49924d7505f5";
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -138,6 +139,51 @@ describe("Card", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(activatedCardData);
+    });
+  });
+
+  describe("#changePIN", () => {
+    it("should call rawQuery and return confirmationId", async () => {
+      // arrange
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        changeCardPIN: {
+          confirmationId
+        }
+      } as any);
+
+      // act
+      const result = await card.changePIN({
+        id: cardData.id,
+        pin: "9164"
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(confirmationId);
+    });
+  });
+
+  describe("#confirmChangePIN", () => {
+    it("should call rawQuery and return status", async () => {
+      // arrange
+      const status = "COMPLETED";
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        confirmChangeCardPIN: {
+          status
+        }
+      } as any);
+
+      // act
+      const result = await card.confirmChangePIN({
+        authorizationToken: "090402",
+        confirmationId
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(status);
     });
   });
 });
