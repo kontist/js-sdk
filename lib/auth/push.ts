@@ -12,7 +12,6 @@ import {
 } from "../errors";
 import { TokenManager } from "./tokenManager";
 import { HttpRequest } from "../request";
-import { extractTokensFromMfaResponse } from "../utils";
 
 export const PUSH_CHALLENGE_PATH = "/api/user/mfa/challenges";
 
@@ -65,20 +64,15 @@ export class PushNotificationMFA {
     } else if (wasDenied) {
       return reject(new ChallengeDeniedError());
     } else if (wasVerified) {
-      const mfaResponse: MfaResult = await this.request.fetch(
+      const {
+        token: accessToken,
+        refresh_token: refreshToken
+      }: MfaResult = await this.request.fetch(
         `${PUSH_CHALLENGE_PATH}/${challenge.id}/token`,
         HttpMethod.POST
       );
 
-      const {
-        accessToken,
-        refreshToken
-      } = extractTokensFromMfaResponse(mfaResponse, this.tokenManager.token);
-
-      const token = this.tokenManager.setToken(
-        accessToken,
-        refreshToken
-      );
+      const token = this.tokenManager.setToken(accessToken, refreshToken);
       return resolve(token);
     }
 
