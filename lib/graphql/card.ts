@@ -7,34 +7,11 @@ const CARD_FIELDS = `
   id
   status
   type
-  canceledAt
-  expirationDate
-  orderedAt
   holder
   formattedExpirationDate
   maskedPan
   settings {
     contactlessEnabled
-    cardNotPresentLimits {
-      daily {
-        maxAmountCents
-        maxTransactions
-      }
-      monthly {
-        maxAmountCents
-        maxTransactions
-      }
-    }
-    cardPresentLimits {
-      daily {
-        maxAmountCents
-        maxTransactions
-      }
-      monthly {
-        maxAmountCents
-        maxTransactions
-      }
-    }
   }
 `;
 

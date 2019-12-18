@@ -9,34 +9,11 @@ const cardData = {
   id: "010e5dcfdd7949fea50a510e97157168",
   status: "ACTIVE",
   type: "VISA_BUSINESS_DEBIT",
-  canceledAt: null,
-  expirationDate: "2022-12-18T00:00:00.000Z",
-  orderedAt: "2019-12-18T08:23:52.898Z",
   holder: "JEAN DUPONT",
   formattedExpirationDate: "12/22",
   maskedPan: "6802********5119",
   settings: {
-    contactlessEnabled: true,
-    cardNotPresentLimits: {
-      daily: {
-        maxAmountCents: 150000,
-        maxTransactions: 25
-      },
-      monthly: {
-        maxAmountCents: 1000000,
-        maxTransactions: 775
-      }
-    },
-    cardPresentLimits: {
-      daily: {
-        maxAmountCents: 450000,
-        maxTransactions: 15
-      },
-      monthly: {
-        maxAmountCents: 2500000,
-        maxTransactions: 465
-      }
-    }
+    contactlessEnabled: true
   }
 };
 
