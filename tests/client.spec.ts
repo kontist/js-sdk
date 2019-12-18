@@ -5,54 +5,55 @@ import { GraphQLClient } from "../lib/graphql/client";
 
 describe("Client", () => {
   describe("#constructor", () => {
-      it("should be able to create a client with minimal parameters", () => {
-        const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
-        const redirectUri = "https://localhost:3000/auth/callback";
-        const scopes = ["transactions"];
-        const state = "25843739712322056";
+    it("should be able to create a client with minimal parameters", () => {
+      const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
+      const redirectUri = "https://localhost:3000/auth/callback";
+      const scopes = ["transactions"];
+      const state = "25843739712322056";
 
-        const client = new Client({
-          clientId,
-          redirectUri,
-          scopes,
-          state
-        });
-
-        expect(client).to.exist;
+      const client = new Client({
+        clientId,
+        redirectUri,
+        scopes,
+        state
       });
-      it("should be able to create a client with all parameters", () => {
-        // arrange
-        const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
-        const redirectUri = "https://localhost:3000/auth/callback";
-        const scopes = ["transactions"];
-        const state = "25843739712322056";
-        const opts = {
-          clientId,
-          redirectUri,
-          scopes,
-          state,
-        };
-        const auth = {} as Auth;
-        const graphQL = {} as GraphQLClient;
-        const models = {
-          transaction: {} as any,
-          transfer: {} as any,
-          account: {} as any,
-          user: {} as any,
-        };
 
-        // act
-        const client = new Client(
-          opts,
-          "http://localhost:3000/api/graphql",
-          "ws://localhost:3000/api/graphql",
-          auth,
-          graphQL,
-          models,
-        );
-
-        // assert
-        expect(client).to.exist;
-      });
+      expect(client).to.exist;
     });
+    it("should be able to create a client with all parameters", () => {
+      // arrange
+      const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
+      const redirectUri = "https://localhost:3000/auth/callback";
+      const scopes = ["transactions"];
+      const state = "25843739712322056";
+      const opts = {
+        clientId,
+        redirectUri,
+        scopes,
+        state
+      };
+      const auth = {} as Auth;
+      const graphQL = {} as GraphQLClient;
+      const models = {
+        transaction: {} as any,
+        transfer: {} as any,
+        account: {} as any,
+        user: {} as any,
+        card: {} as any
+      };
+
+      // act
+      const client = new Client(
+        opts,
+        "http://localhost:3000/api/graphql",
+        "ws://localhost:3000/api/graphql",
+        auth,
+        graphQL,
+        models
+      );
+
+      // assert
+      expect(client).to.exist;
+    });
+  });
 });
