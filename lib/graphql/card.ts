@@ -1,7 +1,7 @@
 import { Card as CardModel, Query } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { CardOptions } from "./types";
+import { GetCardOptions, ActivateCardOptions } from "./types";
 
 const CARD_FIELDS = `
   id
@@ -45,8 +45,20 @@ const GET_CARD = `
   }
 `;
 
+const ACTIVATE_CARD = `mutation activateCard(
+  $id: String!
+  $verificationToken: String!
+) {
+  activateCard(
+    id: $id
+    verificationToken: $verificationToken
+  ) {
+    ${CARD_FIELDS}
+  }
+}`;
+
 export class Card extends Model<CardModel> {
-    /**
+  /**
    * Fetches all cards belonging to the current user
    *
    * @returns     result page
@@ -71,8 +83,19 @@ export class Card extends Model<CardModel> {
    * @param args  query parameters
    * @returns     details of the card specified in query parameters
    */
-  async get(args: CardOptions): Promise<CardModel | null> {
+  async get(args: GetCardOptions): Promise<CardModel | null> {
     const result: Query = await this.client.rawQuery(GET_CARD, args);
     return result.viewer.mainAccount?.card ?? null;
+  }
+
+  /**
+   * Activates a card
+   *
+   * @param args  query parameters
+   * @returns     activated card
+   */
+  async activate(args: ActivateCardOptions): Promise<CardModel> {
+    const result = await this.client.rawQuery(ACTIVATE_CARD, args);
+    return result.activateCard;
   }
 }
