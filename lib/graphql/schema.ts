@@ -84,9 +84,6 @@ export type Card = {
   id: Scalars['String'],
   status: CardStatus,
   type: CardType,
-  canceledAt?: Maybe<Scalars['DateTime']>,
-  expirationDate?: Maybe<Scalars['DateTime']>,
-  orderedAt: Scalars['DateTime'],
   holder?: Maybe<Scalars['String']>,
   formattedExpirationDate?: Maybe<Scalars['String']>,
   maskedPan?: Maybe<Scalars['String']>,
@@ -94,7 +91,7 @@ export type Card = {
 };
 
 export type CardFilter = {
-  cardId?: Maybe<Scalars['String']>,
+  id?: Maybe<Scalars['String']>,
   type?: Maybe<CardType>,
 };
 
@@ -412,13 +409,13 @@ export type MutationConfirmTransfersArgs = {
 
 export type MutationWhitelistCardArgs = {
   fraudCaseId: Scalars['String'],
-  cardId: Scalars['String']
+  id: Scalars['String']
 };
 
 
 export type MutationConfirmFraudArgs = {
   fraudCaseId: Scalars['String'],
-  cardId: Scalars['String']
+  id: Scalars['String']
 };
 
 
@@ -429,25 +426,25 @@ export type MutationCreateCardArgs = {
 
 export type MutationActivateCardArgs = {
   verificationToken: Scalars['String'],
-  cardId: Scalars['String']
+  id: Scalars['String']
 };
 
 
 export type MutationUpdateCardSettingsArgs = {
   settings: CardSettingsInput,
-  cardId: Scalars['String']
+  id: Scalars['String']
 };
 
 
 export type MutationChangeCardStatusArgs = {
   action: Scalars['String'],
-  cardId: Scalars['String']
+  id: Scalars['String']
 };
 
 
 export type MutationChangeCardPinArgs = {
   pin: Scalars['String'],
-  cardId: Scalars['String']
+  id: Scalars['String']
 };
 
 
