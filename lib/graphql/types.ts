@@ -19,7 +19,7 @@ export type TransferFetchOptions = {
 } & FetchOptions;
 
 export type CardOptions = {
-  cardId: String;
+  id: String;
   type?: CardType;
 };
 

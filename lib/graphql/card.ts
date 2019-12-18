@@ -27,14 +27,14 @@ const GET_CARDS = `query {
 
 const GET_CARD = `
   query getCard (
-    $cardId: String,
+    $id: String,
     $type: CardType
   ) {
     viewer {
       mainAccount {
         card(
           filter: {
-            cardId: $cardId,
+            id: $id,
             type: $type
           }
         ) {

@@ -89,7 +89,7 @@ describe("Card", () => {
 
       // act
       const result = await card.get({
-        cardId: cardData.id,
+        id: cardData.id,
         type: CardType.VisaBusinessDebit
       });
 
@@ -107,7 +107,7 @@ describe("Card", () => {
 
       // act
       const result = await card.get({
-        cardId: cardData.id,
+        id: cardData.id,
         type: CardType.MastercardBusinessDebit
       });
 
