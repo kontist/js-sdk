@@ -119,6 +119,23 @@ describe("Card", () => {
     });
   });
 
+  describe("#create", () => {
+    it("should call rawQuery and return newly created card details", async () => {
+      // arrange
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        createCard: cardData
+      } as any);
+
+      // act
+      const result = await card.create(CardType.VisaBusinessDebit);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(cardData);
+    });
+  });
+
   describe("#activate", () => {
     it("should call rawQuery and return activated card", async () => {
       // arrange
@@ -190,7 +207,7 @@ describe("Card", () => {
   });
 
   describe("#changeStatus", () => {
-    it("should call rawQuery and return status", async () => {
+    it("should call rawQuery and return updated card details", async () => {
       // arrange
       const updatedCardData = {
         ...cardData,
