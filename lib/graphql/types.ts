@@ -24,6 +24,10 @@ export type GetCardOptions = {
   type?: CardType;
 };
 
+export type CreateCardOptions = {
+  cardType: string;
+};
+
 export type ActivateCardOptions = {
   id: string;
   verificationToken: string;

@@ -128,7 +128,9 @@ describe("Card", () => {
       } as any);
 
       // act
-      const result = await card.create(CardType.VisaBusinessDebit);
+      const result = await card.create({
+        cardType: CardType.VisaBusinessDebit
+      });
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);

@@ -6,7 +6,8 @@ import {
   ActivateCardOptions,
   ChangeCardPINOptions,
   ConfirmChangeCardPINOptions,
-  ChangeCardStatusOptions
+  ChangeCardStatusOptions,
+  CreateCardOptions
 } from "./types";
 
 const CARD_FIELDS = `
@@ -144,11 +145,11 @@ export class Card extends Model<CardModel> {
   /**
    * Creates a card
    *
-   * @param cardType   the type of card to create
-   * @returns          the newly created card details
+   * @param args   query parameters including cardType
+   * @returns      the newly created card details
    */
-  async create(cardType: CardType): Promise<CardModel> {
-    const result = await this.client.rawQuery(CREATE_CARD, { cardType });
+  async create(args: CreateCardOptions): Promise<CardModel> {
+    const result = await this.client.rawQuery(CREATE_CARD, args);
     return result.createCard;
   }
 
