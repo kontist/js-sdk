@@ -8,6 +8,12 @@ var BatchTransferStatus;
     BatchTransferStatus["Failed"] = "FAILED";
     BatchTransferStatus["Successful"] = "SUCCESSFUL";
 })(BatchTransferStatus = exports.BatchTransferStatus || (exports.BatchTransferStatus = {}));
+var CardAction;
+(function (CardAction) {
+    CardAction["Close"] = "CLOSE";
+    CardAction["Block"] = "BLOCK";
+    CardAction["Unblock"] = "UNBLOCK";
+})(CardAction = exports.CardAction || (exports.CardAction = {}));
 var CardStatus;
 (function (CardStatus) {
     CardStatus["Processing"] = "PROCESSING";

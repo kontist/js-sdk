@@ -70,11 +70,17 @@ export declare type Card = {
     id: Scalars['String'];
     status: CardStatus;
     type: CardType;
+    pinSet: Scalars['Boolean'];
     holder?: Maybe<Scalars['String']>;
     formattedExpirationDate?: Maybe<Scalars['String']>;
     maskedPan?: Maybe<Scalars['String']>;
     settings: CardSettings;
 };
+export declare enum CardAction {
+    Close = "CLOSE",
+    Block = "BLOCK",
+    Unblock = "UNBLOCK"
+}
 export declare type CardFilter = {
     id?: Maybe<Scalars['String']>;
     type?: Maybe<CardType>;
@@ -354,7 +360,7 @@ export declare type MutationConfirmFraudArgs = {
     id: Scalars['String'];
 };
 export declare type MutationCreateCardArgs = {
-    cardType: Scalars['String'];
+    cardType: CardType;
 };
 export declare type MutationActivateCardArgs = {
     verificationToken: Scalars['String'];
@@ -365,8 +371,8 @@ export declare type MutationUpdateCardSettingsArgs = {
     id: Scalars['String'];
 };
 export declare type MutationChangeCardStatusArgs = {
-    action: Scalars['String'];
     id: Scalars['String'];
+    action: CardAction;
 };
 export declare type MutationChangeCardPinArgs = {
     pin: Scalars['String'];
@@ -375,6 +381,7 @@ export declare type MutationChangeCardPinArgs = {
 export declare type MutationConfirmChangeCardPinArgs = {
     authorizationToken: Scalars['String'];
     confirmationId: Scalars['String'];
+    id: Scalars['String'];
 };
 export declare enum Nationality {
     De = "DE",

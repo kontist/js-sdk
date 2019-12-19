@@ -1,4 +1,4 @@
-import { Query, Mutation, TransferType, TransfersConnectionFilter, CardType } from "./schema";
+import { Query, Mutation, TransferType, TransfersConnectionFilter, CardType, CardAction } from "./schema";
 export declare type FetchOptions = {
     first?: number;
     last?: number;
@@ -22,8 +22,13 @@ export declare type ChangeCardPINOptions = {
     pin: string;
 };
 export declare type ConfirmChangeCardPINOptions = {
+    id: string;
     confirmationId: string;
     authorizationToken: string;
+};
+export declare type ChangeCardStatusOptions = {
+    id: string;
+    action: CardAction;
 };
 export declare enum SubscriptionType {
     newTransaction = "newTransaction"

@@ -54,11 +54,12 @@ var lib_1 = require("../../lib");
 var card_1 = require("../../lib/graphql/card");
 var cardData = {
     id: "010e5dcfdd7949fea50a510e97157168",
-    status: "INACTIVE",
-    type: "VISA_BUSINESS_DEBIT",
+    status: schema_1.CardStatus.Inactive,
+    type: schema_1.CardType.VisaBusinessDebit,
     holder: "JEAN DUPONT",
     formattedExpirationDate: "12/22",
     maskedPan: "6802********5119",
+    pinSet: false,
     settings: {
         contactlessEnabled: true
     }
@@ -181,7 +182,7 @@ describe("Card", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        activatedCardData = __assign(__assign({}, cardData), { status: "ACTIVE" });
+                        activatedCardData = __assign(__assign({}, cardData), { status: schema_1.CardStatus.Active });
                         card = new card_1.Card(client.graphQL);
                         spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
                             activateCard: activatedCardData
@@ -240,6 +241,7 @@ describe("Card", function () {
                             }
                         });
                         return [4 /*yield*/, card.confirmChangePIN({
+                                id: cardData.id,
                                 authorizationToken: "090402",
                                 confirmationId: confirmationId
                             })];
@@ -248,6 +250,31 @@ describe("Card", function () {
                         // assert
                         sinon.assert.calledOnce(spyOnRawQuery);
                         chai_1.expect(result).to.eq(status);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe("#changeStatus", function () {
+        it("should call rawQuery and return status", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var updatedCardData, card, spyOnRawQuery, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        updatedCardData = __assign(__assign({}, cardData), { status: schema_1.CardStatus.Blocked });
+                        card = new card_1.Card(client.graphQL);
+                        spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+                            changeCardStatus: updatedCardData
+                        });
+                        return [4 /*yield*/, card.changeStatus({
+                                id: cardData.id,
+                                action: schema_1.CardAction.Block
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        // assert
+                        sinon.assert.calledOnce(spyOnRawQuery);
+                        chai_1.expect(result).to.eq(updatedCardData);
                         return [2 /*return*/];
                 }
             });
