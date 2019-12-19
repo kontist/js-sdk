@@ -5,7 +5,8 @@ import {
   GetCardOptions,
   ActivateCardOptions,
   ChangeCardPINOptions,
-  ConfirmChangeCardPINOptions
+  ConfirmChangeCardPINOptions,
+  ChangeCardStatusOptions
 } from "./types";
 
 const CARD_FIELDS = `
@@ -86,6 +87,18 @@ const CONFIRM_CHANGE_CARD_PIN = `mutation confirmChangeCardPIN(
   }
 }`;
 
+const CHANGE_CARD_STATUS = `mutation changeCardStatus(
+  $id: String!
+  $action: CardAction!
+) {
+  changeCardStatus(
+    id: $id
+    action: $action
+  ) {
+    ${CARD_FIELDS}
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -120,7 +133,7 @@ export class Card extends Model<CardModel> {
   /**
    * Activates a card
    *
-   * @param args  query parameters including cardId and verificationToken
+   * @param args  query parameters including card id and verificationToken
    * @returns     activated card
    */
   async activate(args: ActivateCardOptions): Promise<CardModel> {
@@ -131,7 +144,7 @@ export class Card extends Model<CardModel> {
   /**
    * Initiates a change of PIN number for a given card
    *
-   * @param args   query parameters including cardId and PIN number
+   * @param args   query parameters including card id and PIN number
    * @returns      confirmation id used to confirm the PIN change
    */
   async changePIN(args: ChangeCardPINOptions): Promise<string> {
@@ -142,11 +155,22 @@ export class Card extends Model<CardModel> {
   /**
    * Confirms a requested PIN number change
    *
-   * @param args   query parameters including cardId and PIN number
+   * @param args   query parameters including card id and PIN number
    * @returns      PIN number change status
    */
   async confirmChangePIN(args: ConfirmChangeCardPINOptions) {
     const result = await this.client.rawQuery(CONFIRM_CHANGE_CARD_PIN, args);
     return result.confirmChangeCardPIN.status;
+  }
+
+  /**
+   * Change a card status
+   *
+   * @param args   query parameters including card id and action
+   * @returns      updated card
+   */
+  async changeStatus(args: ChangeCardStatusOptions) {
+    const result = await this.client.rawQuery(CHANGE_CARD_STATUS, args);
+    return result.changeCardStatus;
   }
 }

@@ -90,6 +90,12 @@ export type Card = {
   settings: CardSettings,
 };
 
+export enum CardAction {
+  Close = 'CLOSE',
+  Block = 'BLOCK',
+  Unblock = 'UNBLOCK'
+}
+
 export type CardFilter = {
   id?: Maybe<Scalars['String']>,
   type?: Maybe<CardType>,
@@ -420,7 +426,7 @@ export type MutationConfirmFraudArgs = {
 
 
 export type MutationCreateCardArgs = {
-  cardType: Scalars['String']
+  cardType: CardType
 };
 
 
@@ -437,8 +443,8 @@ export type MutationUpdateCardSettingsArgs = {
 
 
 export type MutationChangeCardStatusArgs = {
-  action: Scalars['String'],
-  id: Scalars['String']
+  id: Scalars['String'],
+  action: CardAction
 };
 
 

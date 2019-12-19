@@ -1,14 +1,14 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { CardType } from "../../lib/graphql/schema";
+import { CardType, CardAction, CardStatus } from "../../lib/graphql/schema";
 
 import { Client } from "../../lib";
 import { Card } from "../../lib/graphql/card";
 
 const cardData = {
   id: "010e5dcfdd7949fea50a510e97157168",
-  status: "INACTIVE",
-  type: "VISA_BUSINESS_DEBIT",
+  status: CardStatus.Inactive,
+  type: CardType.VisaBusinessDebit,
   holder: "JEAN DUPONT",
   formattedExpirationDate: "12/22",
   maskedPan: "6802********5119",
@@ -123,7 +123,7 @@ describe("Card", () => {
       // arrange
       const activatedCardData = {
         ...cardData,
-        status: "ACTIVE"
+        status: CardStatus.Active
       };
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
@@ -184,6 +184,30 @@ describe("Card", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(status);
+    });
+  });
+
+  describe("#changeStatus", () => {
+    it("should call rawQuery and return status", async () => {
+      // arrange
+      const updatedCardData = {
+        ...cardData,
+        status: CardStatus.Blocked
+      };
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        changeCardStatus: updatedCardData
+      } as any);
+
+      // act
+      const result = await card.changeStatus({
+        id: cardData.id,
+        action: CardAction.Block
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(updatedCardData);
     });
   });
 });
