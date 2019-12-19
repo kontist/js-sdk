@@ -77,10 +77,12 @@ const CHANGE_CARD_PIN = `mutation changeCardPIN(
 }`;
 
 const CONFIRM_CHANGE_CARD_PIN = `mutation confirmChangeCardPIN(
+  $id: String!
   $confirmationId: String!
   $authorizationToken: String!
 ) {
   confirmChangeCardPIN(
+    id: $id
     confirmationId: $confirmationId
     authorizationToken: $authorizationToken
   ) {
