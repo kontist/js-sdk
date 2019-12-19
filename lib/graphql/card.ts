@@ -16,6 +16,7 @@ const CARD_FIELDS = `
   holder
   formattedExpirationDate
   maskedPan
+  pinSet
   settings {
     contactlessEnabled
   }

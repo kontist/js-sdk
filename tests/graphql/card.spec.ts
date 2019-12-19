@@ -12,6 +12,7 @@ const cardData = {
   holder: "JEAN DUPONT",
   formattedExpirationDate: "12/22",
   maskedPan: "6802********5119",
+  pinSet: false,
   settings: {
     contactlessEnabled: true
   }
@@ -177,6 +178,7 @@ describe("Card", () => {
 
       // act
       const result = await card.confirmChangePIN({
+        id: cardData.id,
         authorizationToken: "090402",
         confirmationId
       });
