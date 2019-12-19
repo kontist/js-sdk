@@ -1,4 +1,4 @@
-import { Card as CardModel, Query, CardType } from "./schema";
+import { Card as CardModel, Query, CardType, CardSettings } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
 import {
@@ -7,7 +7,8 @@ import {
   ChangeCardPINOptions,
   ConfirmChangeCardPINOptions,
   ChangeCardStatusOptions,
-  CreateCardOptions
+  CreateCardOptions,
+  UpdateCardSettingsOptions
 } from "./types";
 
 const CARD_FIELDS = `
@@ -113,6 +114,41 @@ const CHANGE_CARD_STATUS = `mutation changeCardStatus(
   }
 }`;
 
+const CARD_LIMITS_FIELDS = `
+  daily {
+    maxAmountCents
+    maxTransactions
+  }
+  monthly {
+    maxAmountCents
+    maxTransactions
+  }
+`
+
+const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
+  $id: String!
+  $contactlessEnabled: Boolean
+  $cardPresentLimits: CardLimitsInput
+  $cardNotPresentLimits: CardLimitsInput
+) {
+  updateCardSettings(
+    settings: {
+      contactlessEnabled: $contactlessEnabled
+      cardPresentLimits: $cardPresentLimits
+      cardNotPresentLimits: $cardNotPresentLimits
+    }
+    id: $id
+  ) {
+    contactlessEnabled
+    cardNotPresentLimits {
+      ${CARD_LIMITS_FIELDS}
+    }
+    cardPresentLimits {
+      ${CARD_LIMITS_FIELDS}
+    }
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -197,5 +233,16 @@ export class Card extends Model<CardModel> {
   async changeStatus(args: ChangeCardStatusOptions): Promise<CardModel> {
     const result = await this.client.rawQuery(CHANGE_CARD_STATUS, args);
     return result.changeCardStatus;
+  }
+
+  /**
+   * Update settings for a card
+   *
+   * @param args   query parameters including card id, contactlessEnabled, cardPresentLimits and cardNotPresentLimits
+   * @returns      updated card settings
+   */
+  async updateSettings(args: UpdateCardSettingsOptions): Promise<CardSettings> {
+    const result = await this.client.rawQuery(UPDATE_CARD_SETTINGS, args);
+    return result.updateCardSettings;
   }
 }

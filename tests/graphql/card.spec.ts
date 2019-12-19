@@ -231,4 +231,47 @@ describe("Card", () => {
       expect(result).to.eq(updatedCardData);
     });
   });
+
+  describe("#updateSettings", () => {
+    it("should call rawQuery and return updated card details", async () => {
+      // arrange
+      const updatedCardSettings = {
+        contactlessEnabled: false,
+        cardNotPresentLimits: {
+          daily: {
+            maxAmountCents: 350000,
+            maxTransactions: 34
+          },
+          monthly: {
+            maxAmountCents: 2000000,
+            maxTransactions: 777
+          }
+        },
+        cardPresentLimits: {
+          daily: {
+            maxAmountCents: 440000,
+            maxTransactions: 14
+          },
+          monthly: {
+            maxAmountCents: 2600000,
+            maxTransactions: 468
+          }
+        }
+      };
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        updateCardSettings: updatedCardSettings
+      } as any);
+
+      // act
+      const result = await card.updateSettings({
+        id: cardData.id,
+        ...updatedCardSettings
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(updatedCardSettings);
+    });
+  });
 });
