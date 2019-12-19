@@ -25,7 +25,7 @@ export type GetCardOptions = {
 };
 
 export type CreateCardOptions = {
-  cardType: string;
+  type: string;
 };
 
 export type ActivateCardOptions = {

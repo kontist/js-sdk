@@ -427,7 +427,7 @@ export type MutationConfirmFraudArgs = {
 
 
 export type MutationCreateCardArgs = {
-  cardType: CardType
+  type: CardType
 };
 
 

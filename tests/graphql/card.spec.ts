@@ -129,7 +129,7 @@ describe("Card", () => {
 
       // act
       const result = await card.create({
-        cardType: CardType.VisaBusinessDebit
+        type: CardType.VisaBusinessDebit
       });
 
       // assert

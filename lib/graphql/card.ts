@@ -54,10 +54,10 @@ const GET_CARD = `
 `;
 
 const CREATE_CARD = `mutation createCard(
-  $cardType: CardType!
+  $type: CardType!
 ) {
   createCard(
-    cardType: $cardType
+    type: $type
   ) {
     ${CARD_FIELDS}
   }
