@@ -35,6 +35,7 @@ export type ChangeCardPINOptions = {
 };
 
 export type ConfirmChangeCardPINOptions = {
+  id: string;
   confirmationId: string;
   authorizationToken: string;
 };

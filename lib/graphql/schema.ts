@@ -84,6 +84,7 @@ export type Card = {
   id: Scalars['String'],
   status: CardStatus,
   type: CardType,
+  pinSet: Scalars['Boolean'],
   holder?: Maybe<Scalars['String']>,
   formattedExpirationDate?: Maybe<Scalars['String']>,
   maskedPan?: Maybe<Scalars['String']>,
@@ -456,7 +457,8 @@ export type MutationChangeCardPinArgs = {
 
 export type MutationConfirmChangeCardPinArgs = {
   authorizationToken: Scalars['String'],
-  confirmationId: Scalars['String']
+  confirmationId: Scalars['String'],
+  id: Scalars['String']
 };
 
 export enum Nationality {
