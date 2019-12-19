@@ -56,7 +56,7 @@ var GET_CARDS = "query {\n  viewer {\n    mainAccount {\n      cards {\n        
 var GET_CARD = "\n  query getCard (\n    $id: String,\n    $type: CardType\n  ) {\n    viewer {\n      mainAccount {\n        card(\n          filter: {\n            id: $id,\n            type: $type\n          }\n        ) {\n          " + CARD_FIELDS + "\n        }\n      }\n    }\n  }\n";
 var ACTIVATE_CARD = "mutation activateCard(\n  $id: String!\n  $verificationToken: String!\n) {\n  activateCard(\n    id: $id\n    verificationToken: $verificationToken\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
 var CHANGE_CARD_PIN = "mutation changeCardPIN(\n  $id: String!\n  $pin: String!\n) {\n  changeCardPIN(\n    id: $id\n    pin: $pin\n  ) {\n    confirmationId\n  }\n}";
-var CONFIRM_CHANGE_CARD_PIN = "mutation confirmChangeCardPIN(\n  $confirmationId: String!\n  $authorizationToken: String!\n) {\n  confirmChangeCardPIN(\n    confirmationId: $confirmationId\n    authorizationToken: $authorizationToken\n  ) {\n    status\n  }\n}";
+var CONFIRM_CHANGE_CARD_PIN = "mutation confirmChangeCardPIN(\n  $id: String!\n  $confirmationId: String!\n  $authorizationToken: String!\n) {\n  confirmChangeCardPIN(\n    id: $id\n    confirmationId: $confirmationId\n    authorizationToken: $authorizationToken\n  ) {\n    status\n  }\n}";
 var CHANGE_CARD_STATUS = "mutation changeCardStatus(\n  $id: String!\n  $action: CardAction!\n) {\n  changeCardStatus(\n    id: $id\n    action: $action\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
 var Card = /** @class */ (function (_super) {
     __extends(Card, _super);
