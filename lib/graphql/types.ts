@@ -3,7 +3,8 @@ import {
   Mutation,
   TransferType,
   TransfersConnectionFilter,
-  CardType
+  CardType,
+  CardAction
 } from "./schema";
 
 export type FetchOptions = {
@@ -36,6 +37,11 @@ export type ChangeCardPINOptions = {
 export type ConfirmChangeCardPINOptions = {
   confirmationId: string;
   authorizationToken: string;
+};
+
+export type ChangeCardStatusOptions = {
+  id: string;
+  action: CardAction;
 };
 
 export enum SubscriptionType {

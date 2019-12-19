@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { CardType } from "../../lib/graphql/schema";
+import { CardType, CardAction } from "../../lib/graphql/schema";
 
 import { Client } from "../../lib";
 import { Card } from "../../lib/graphql/card";
@@ -186,4 +186,28 @@ describe("Card", () => {
       expect(result).to.eq(status);
     });
   });
+
+  describe("#changeStatus", () => {
+    it("should call rawQuery and return status", async () => {
+      // arrange
+      const updatedCardData = {
+        ...cardData,
+        status: "BLOCKED"
+      }
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        changeCardStatus: updatedCardData
+      } as any);
+
+      // act
+      const result = await card.changeStatus({
+        id: cardData.id,
+        action: CardAction.Block
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(updatedCardData);
+    });
+  })
 });
