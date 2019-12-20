@@ -18,6 +18,29 @@ const cardData = {
   }
 };
 
+const cardLimitsData = {
+  cardNotPresentLimits: {
+    daily: {
+      maxAmountCents: 350000,
+      maxTransactions: 34
+    },
+    monthly: {
+      maxAmountCents: 2000000,
+      maxTransactions: 777
+    }
+  },
+  cardPresentLimits: {
+    daily: {
+      maxAmountCents: 440000,
+      maxTransactions: 14
+    },
+    monthly: {
+      maxAmountCents: 2600000,
+      maxTransactions: 468
+    }
+  }
+};
+
 describe("Card", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
@@ -98,6 +121,50 @@ describe("Card", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(cardData);
+    });
+
+    it("should call rawQuery and return null for missing account", async () => {
+      // arrange
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {}
+      } as any);
+
+      // act
+      const result = await card.get({
+        id: cardData.id,
+        type: CardType.MastercardBusinessDebit
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(null);
+    });
+  });
+
+  describe("#getLimits", () => {
+    it("should call rawQuery and return card details", async () => {
+      // arrange
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {
+            card: {
+              settings: cardLimitsData
+            }
+          }
+        }
+      } as any);
+
+      // act
+      const result = await card.getLimits({
+        id: cardData.id,
+        type: CardType.VisaBusinessDebit
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(cardLimitsData);
     });
 
     it("should call rawQuery and return null for missing account", async () => {
@@ -237,26 +304,7 @@ describe("Card", () => {
       // arrange
       const updatedCardSettings = {
         contactlessEnabled: false,
-        cardNotPresentLimits: {
-          daily: {
-            maxAmountCents: 350000,
-            maxTransactions: 34
-          },
-          monthly: {
-            maxAmountCents: 2000000,
-            maxTransactions: 777
-          }
-        },
-        cardPresentLimits: {
-          daily: {
-            maxAmountCents: 440000,
-            maxTransactions: 14
-          },
-          monthly: {
-            maxAmountCents: 2600000,
-            maxTransactions: 468
-          }
-        }
+        ...cardLimitsData
       };
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
