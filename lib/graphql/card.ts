@@ -1,4 +1,4 @@
-import { Card as CardModel, Query } from "./schema";
+import { Card as CardModel, Query, CardType } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
 import {
@@ -6,7 +6,8 @@ import {
   ActivateCardOptions,
   ChangeCardPINOptions,
   ConfirmChangeCardPINOptions,
-  ChangeCardStatusOptions
+  ChangeCardStatusOptions,
+  CreateCardOptions
 } from "./types";
 
 const CARD_FIELDS = `
@@ -51,6 +52,16 @@ const GET_CARD = `
     }
   }
 `;
+
+const CREATE_CARD = `mutation createCard(
+  $type: CardType!
+) {
+  createCard(
+    type: $type
+  ) {
+    ${CARD_FIELDS}
+  }
+}`;
 
 const ACTIVATE_CARD = `mutation activateCard(
   $id: String!
@@ -134,10 +145,21 @@ export class Card extends Model<CardModel> {
   }
 
   /**
+   * Creates a card
+   *
+   * @param args   query parameters including cardType
+   * @returns      the newly created card details
+   */
+  async create(args: CreateCardOptions): Promise<CardModel> {
+    const result = await this.client.rawQuery(CREATE_CARD, args);
+    return result.createCard;
+  }
+
+  /**
    * Activates a card
    *
    * @param args  query parameters including card id and verificationToken
-   * @returns     activated card
+   * @returns     activated card details
    */
   async activate(args: ActivateCardOptions): Promise<CardModel> {
     const result = await this.client.rawQuery(ACTIVATE_CARD, args);
@@ -161,7 +183,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and PIN number
    * @returns      PIN number change status
    */
-  async confirmChangePIN(args: ConfirmChangeCardPINOptions) {
+  async confirmChangePIN(args: ConfirmChangeCardPINOptions): Promise<string> {
     const result = await this.client.rawQuery(CONFIRM_CHANGE_CARD_PIN, args);
     return result.confirmChangeCardPIN.status;
   }
@@ -170,9 +192,9 @@ export class Card extends Model<CardModel> {
    * Change a card status
    *
    * @param args   query parameters including card id and action
-   * @returns      updated card
+   * @returns      updated card details
    */
-  async changeStatus(args: ChangeCardStatusOptions) {
+  async changeStatus(args: ChangeCardStatusOptions): Promise<CardModel> {
     const result = await this.client.rawQuery(CHANGE_CARD_STATUS, args);
     return result.changeCardStatus;
   }
