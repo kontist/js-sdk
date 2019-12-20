@@ -176,6 +176,29 @@ describe("Card", function () {
             });
         }); });
     });
+    describe("#create", function () {
+        it("should call rawQuery and return newly created card details", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var card, spyOnRawQuery, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        card = new card_1.Card(client.graphQL);
+                        spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+                            createCard: cardData
+                        });
+                        return [4 /*yield*/, card.create({
+                                type: schema_1.CardType.VisaBusinessDebit
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        // assert
+                        sinon.assert.calledOnce(spyOnRawQuery);
+                        chai_1.expect(result).to.deep.eq(cardData);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
     describe("#activate", function () {
         it("should call rawQuery and return activated card", function () { return __awaiter(void 0, void 0, void 0, function () {
             var activatedCardData, card, spyOnRawQuery, result;
@@ -256,7 +279,7 @@ describe("Card", function () {
         }); });
     });
     describe("#changeStatus", function () {
-        it("should call rawQuery and return status", function () { return __awaiter(void 0, void 0, void 0, function () {
+        it("should call rawQuery and return updated card details", function () { return __awaiter(void 0, void 0, void 0, function () {
             var updatedCardData, card, spyOnRawQuery, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -275,6 +298,50 @@ describe("Card", function () {
                         // assert
                         sinon.assert.calledOnce(spyOnRawQuery);
                         chai_1.expect(result).to.eq(updatedCardData);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe("#updateSettings", function () {
+        it("should call rawQuery and return updated card details", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var updatedCardSettings, card, spyOnRawQuery, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        updatedCardSettings = {
+                            contactlessEnabled: false,
+                            cardNotPresentLimits: {
+                                daily: {
+                                    maxAmountCents: 350000,
+                                    maxTransactions: 34
+                                },
+                                monthly: {
+                                    maxAmountCents: 2000000,
+                                    maxTransactions: 777
+                                }
+                            },
+                            cardPresentLimits: {
+                                daily: {
+                                    maxAmountCents: 440000,
+                                    maxTransactions: 14
+                                },
+                                monthly: {
+                                    maxAmountCents: 2600000,
+                                    maxTransactions: 468
+                                }
+                            }
+                        };
+                        card = new card_1.Card(client.graphQL);
+                        spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+                            updateCardSettings: updatedCardSettings
+                        });
+                        return [4 /*yield*/, card.updateSettings(__assign({ id: cardData.id }, updatedCardSettings))];
+                    case 1:
+                        result = _a.sent();
+                        // assert
+                        sinon.assert.calledOnce(spyOnRawQuery);
+                        chai_1.expect(result).to.eq(updatedCardSettings);
                         return [2 /*return*/];
                 }
             });

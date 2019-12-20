@@ -4,7 +4,8 @@ import {
   TransferType,
   TransfersConnectionFilter,
   CardType,
-  CardAction
+  CardAction,
+  CardLimitsInput
 } from "./schema";
 
 export type FetchOptions = {
@@ -47,6 +48,13 @@ export type ConfirmChangeCardPINOptions = {
 export type ChangeCardStatusOptions = {
   id: string;
   action: CardAction;
+};
+
+export type UpdateCardSettingsOptions = {
+  id: string;
+  contactlessEnabled?: boolean;
+  cardNotPresentLimits?: CardLimitsInput;
+  cardPresentLimits?: CardLimitsInput;
 };
 
 export enum SubscriptionType {
