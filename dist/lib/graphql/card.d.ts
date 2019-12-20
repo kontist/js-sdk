@@ -1,7 +1,7 @@
-import { Card as CardModel } from "./schema";
+import { Card as CardModel, CardSettings } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { GetCardOptions, ActivateCardOptions, ChangeCardPINOptions, ConfirmChangeCardPINOptions, ChangeCardStatusOptions } from "./types";
+import { GetCardOptions, ActivateCardOptions, ChangeCardPINOptions, ConfirmChangeCardPINOptions, ChangeCardStatusOptions, CreateCardOptions, UpdateCardSettingsOptions } from "./types";
 export declare class Card extends Model<CardModel> {
     /**
      * Fetches all cards belonging to the current user
@@ -17,10 +17,17 @@ export declare class Card extends Model<CardModel> {
      */
     get(args: GetCardOptions): Promise<CardModel | null>;
     /**
+     * Creates a card
+     *
+     * @param args   query parameters including cardType
+     * @returns      the newly created card details
+     */
+    create(args: CreateCardOptions): Promise<CardModel>;
+    /**
      * Activates a card
      *
      * @param args  query parameters including card id and verificationToken
-     * @returns     activated card
+     * @returns     activated card details
      */
     activate(args: ActivateCardOptions): Promise<CardModel>;
     /**
@@ -41,7 +48,14 @@ export declare class Card extends Model<CardModel> {
      * Change a card status
      *
      * @param args   query parameters including card id and action
-     * @returns      updated card
+     * @returns      updated card details
      */
     changeStatus(args: ChangeCardStatusOptions): Promise<CardModel>;
+    /**
+     * Update settings for a card
+     *
+     * @param args   query parameters including card id, contactlessEnabled, cardPresentLimits and cardNotPresentLimits
+     * @returns      updated card settings
+     */
+    updateSettings(args: UpdateCardSettingsOptions): Promise<CardSettings>;
 }

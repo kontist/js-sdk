@@ -54,10 +54,13 @@ var resultPage_1 = require("./resultPage");
 var CARD_FIELDS = "\n  id\n  status\n  type\n  holder\n  formattedExpirationDate\n  maskedPan\n  pinSet\n  settings {\n    contactlessEnabled\n  }\n";
 var GET_CARDS = "query {\n  viewer {\n    mainAccount {\n      cards {\n        " + CARD_FIELDS + "\n      }\n    }\n  }\n}";
 var GET_CARD = "\n  query getCard (\n    $id: String,\n    $type: CardType\n  ) {\n    viewer {\n      mainAccount {\n        card(\n          filter: {\n            id: $id,\n            type: $type\n          }\n        ) {\n          " + CARD_FIELDS + "\n        }\n      }\n    }\n  }\n";
+var CREATE_CARD = "mutation createCard(\n  $type: CardType!\n) {\n  createCard(\n    type: $type\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
 var ACTIVATE_CARD = "mutation activateCard(\n  $id: String!\n  $verificationToken: String!\n) {\n  activateCard(\n    id: $id\n    verificationToken: $verificationToken\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
 var CHANGE_CARD_PIN = "mutation changeCardPIN(\n  $id: String!\n  $pin: String!\n) {\n  changeCardPIN(\n    id: $id\n    pin: $pin\n  ) {\n    confirmationId\n  }\n}";
 var CONFIRM_CHANGE_CARD_PIN = "mutation confirmChangeCardPIN(\n  $id: String!\n  $confirmationId: String!\n  $authorizationToken: String!\n) {\n  confirmChangeCardPIN(\n    id: $id\n    confirmationId: $confirmationId\n    authorizationToken: $authorizationToken\n  ) {\n    status\n  }\n}";
 var CHANGE_CARD_STATUS = "mutation changeCardStatus(\n  $id: String!\n  $action: CardAction!\n) {\n  changeCardStatus(\n    id: $id\n    action: $action\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
+var CARD_LIMITS_FIELDS = "\n  daily {\n    maxAmountCents\n    maxTransactions\n  }\n  monthly {\n    maxAmountCents\n    maxTransactions\n  }\n";
+var UPDATE_CARD_SETTINGS = "mutation updateCardSettings(\n  $id: String!\n  $contactlessEnabled: Boolean\n  $cardPresentLimits: CardLimitsInput\n  $cardNotPresentLimits: CardLimitsInput\n) {\n  updateCardSettings(\n    settings: {\n      contactlessEnabled: $contactlessEnabled\n      cardPresentLimits: $cardPresentLimits\n      cardNotPresentLimits: $cardNotPresentLimits\n    }\n    id: $id\n  ) {\n    contactlessEnabled\n    cardNotPresentLimits {\n      " + CARD_LIMITS_FIELDS + "\n    }\n    cardPresentLimits {\n      " + CARD_LIMITS_FIELDS + "\n    }\n  }\n}";
 var Card = /** @class */ (function (_super) {
     __extends(Card, _super);
     function Card() {
@@ -108,10 +111,29 @@ var Card = /** @class */ (function (_super) {
         });
     };
     /**
+     * Creates a card
+     *
+     * @param args   query parameters including cardType
+     * @returns      the newly created card details
+     */
+    Card.prototype.create = function (args) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.rawQuery(CREATE_CARD, args)];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.createCard];
+                }
+            });
+        });
+    };
+    /**
      * Activates a card
      *
      * @param args  query parameters including card id and verificationToken
-     * @returns     activated card
+     * @returns     activated card details
      */
     Card.prototype.activate = function (args) {
         return __awaiter(this, void 0, void 0, function () {
@@ -168,7 +190,7 @@ var Card = /** @class */ (function (_super) {
      * Change a card status
      *
      * @param args   query parameters including card id and action
-     * @returns      updated card
+     * @returns      updated card details
      */
     Card.prototype.changeStatus = function (args) {
         return __awaiter(this, void 0, void 0, function () {
@@ -179,6 +201,25 @@ var Card = /** @class */ (function (_super) {
                     case 1:
                         result = _a.sent();
                         return [2 /*return*/, result.changeCardStatus];
+                }
+            });
+        });
+    };
+    /**
+     * Update settings for a card
+     *
+     * @param args   query parameters including card id, contactlessEnabled, cardPresentLimits and cardNotPresentLimits
+     * @returns      updated card settings
+     */
+    Card.prototype.updateSettings = function (args) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.rawQuery(UPDATE_CARD_SETTINGS, args)];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.updateCardSettings];
                 }
             });
         });

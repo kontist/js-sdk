@@ -360,7 +360,7 @@ export declare type MutationConfirmFraudArgs = {
     id: Scalars['String'];
 };
 export declare type MutationCreateCardArgs = {
-    cardType: CardType;
+    type: CardType;
 };
 export declare type MutationActivateCardArgs = {
     verificationToken: Scalars['String'];

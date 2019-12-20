@@ -1,4 +1,4 @@
-import { Query, Mutation, TransferType, TransfersConnectionFilter, CardType, CardAction } from "./schema";
+import { Query, Mutation, TransferType, TransfersConnectionFilter, CardType, CardAction, CardLimitsInput } from "./schema";
 export declare type FetchOptions = {
     first?: number;
     last?: number;
@@ -12,6 +12,9 @@ export declare type TransferFetchOptions = {
 export declare type GetCardOptions = {
     id: String;
     type?: CardType;
+};
+export declare type CreateCardOptions = {
+    type: string;
 };
 export declare type ActivateCardOptions = {
     id: string;
@@ -29,6 +32,12 @@ export declare type ConfirmChangeCardPINOptions = {
 export declare type ChangeCardStatusOptions = {
     id: string;
     action: CardAction;
+};
+export declare type UpdateCardSettingsOptions = {
+    id: string;
+    contactlessEnabled?: boolean;
+    cardNotPresentLimits?: CardLimitsInput;
+    cardPresentLimits?: CardLimitsInput;
 };
 export declare enum SubscriptionType {
     newTransaction = "newTransaction"
