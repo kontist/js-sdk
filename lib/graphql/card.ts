@@ -24,6 +24,17 @@ const CARD_FIELDS = `
   }
 `;
 
+const CARD_LIMITS_FIELDS = `
+  daily {
+    maxAmountCents
+    maxTransactions
+  }
+  monthly {
+    maxAmountCents
+    maxTransactions
+  }
+`;
+
 const GET_CARDS = `query {
   viewer {
     mainAccount {
@@ -48,6 +59,33 @@ const GET_CARD = `
           }
         ) {
           ${CARD_FIELDS}
+        }
+      }
+    }
+  }
+`;
+
+const GET_CARD_LIMITS = `
+  query getCardLimits (
+    $id: String,
+    $type: CardType
+  ) {
+    viewer {
+      mainAccount {
+        card(
+          filter: {
+            id: $id,
+            type: $type
+          }
+        ) {
+          settings {
+            cardPresentLimits {
+              ${CARD_LIMITS_FIELDS}
+            }
+            cardNotPresentLimits {
+              ${CARD_LIMITS_FIELDS}
+            }
+          }
         }
       }
     }
@@ -114,17 +152,6 @@ const CHANGE_CARD_STATUS = `mutation changeCardStatus(
   }
 }`;
 
-const CARD_LIMITS_FIELDS = `
-  daily {
-    maxAmountCents
-    maxTransactions
-  }
-  monthly {
-    maxAmountCents
-    maxTransactions
-  }
-`
-
 const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
   $id: String!
   $contactlessEnabled: Boolean
@@ -172,12 +199,23 @@ export class Card extends Model<CardModel> {
   /**
    * Returns details of a specific card belonging to the current user
    *
-   * @param args  query parameters
+   * @param args  query parameters including card id and / or type
    * @returns     details of the card specified in query parameters
    */
   async get(args: GetCardOptions): Promise<CardModel | null> {
     const result: Query = await this.client.rawQuery(GET_CARD, args);
     return result.viewer.mainAccount?.card ?? null;
+  }
+
+  /**
+   * Returns limits of a specific card belonging to the current user
+   *
+   * @param args  query parameters including card id and / or type
+   * @returns     limits of the card
+   */
+  async getLimits(args: GetCardOptions): Promise<CardSettings | null> {
+    const result: Query = await this.client.rawQuery(GET_CARD_LIMITS, args);
+    return result.viewer.mainAccount?.card?.settings ?? null;
   }
 
   /**

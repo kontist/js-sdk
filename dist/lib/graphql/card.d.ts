@@ -12,10 +12,17 @@ export declare class Card extends Model<CardModel> {
     /**
      * Returns details of a specific card belonging to the current user
      *
-     * @param args  query parameters
+     * @param args  query parameters including card id and / or type
      * @returns     details of the card specified in query parameters
      */
     get(args: GetCardOptions): Promise<CardModel | null>;
+    /**
+     * Returns limits of a specific card belonging to the current user
+     *
+     * @param args  query parameters including card id and / or type
+     * @returns     limits of the card
+     */
+    getLimits(args: GetCardOptions): Promise<CardSettings | null>;
     /**
      * Creates a card
      *

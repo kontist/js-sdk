@@ -64,6 +64,28 @@ var cardData = {
         contactlessEnabled: true
     }
 };
+var cardLimitsData = {
+    cardNotPresentLimits: {
+        daily: {
+            maxAmountCents: 350000,
+            maxTransactions: 34
+        },
+        monthly: {
+            maxAmountCents: 2000000,
+            maxTransactions: 777
+        }
+    },
+    cardPresentLimits: {
+        daily: {
+            maxAmountCents: 440000,
+            maxTransactions: 14
+        },
+        monthly: {
+            maxAmountCents: 2600000,
+            maxTransactions: 468
+        }
+    }
+};
 describe("Card", function () {
     var sandbox;
     var client;
@@ -149,6 +171,58 @@ describe("Card", function () {
                         // assert
                         sinon.assert.calledOnce(spyOnRawQuery);
                         chai_1.expect(result).to.deep.eq(cardData);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it("should call rawQuery and return null for missing account", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var card, spyOnRawQuery, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        card = new card_1.Card(client.graphQL);
+                        spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+                            viewer: {}
+                        });
+                        return [4 /*yield*/, card.get({
+                                id: cardData.id,
+                                type: schema_1.CardType.MastercardBusinessDebit
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        // assert
+                        sinon.assert.calledOnce(spyOnRawQuery);
+                        chai_1.expect(result).to.eq(null);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe("#getLimits", function () {
+        it("should call rawQuery and return card details", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var card, spyOnRawQuery, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        card = new card_1.Card(client.graphQL);
+                        spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+                            viewer: {
+                                mainAccount: {
+                                    card: {
+                                        settings: cardLimitsData
+                                    }
+                                }
+                            }
+                        });
+                        return [4 /*yield*/, card.getLimits({
+                                id: cardData.id,
+                                type: schema_1.CardType.VisaBusinessDebit
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        // assert
+                        sinon.assert.calledOnce(spyOnRawQuery);
+                        chai_1.expect(result).to.deep.eq(cardLimitsData);
                         return [2 /*return*/];
                 }
             });
@@ -309,29 +383,7 @@ describe("Card", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        updatedCardSettings = {
-                            contactlessEnabled: false,
-                            cardNotPresentLimits: {
-                                daily: {
-                                    maxAmountCents: 350000,
-                                    maxTransactions: 34
-                                },
-                                monthly: {
-                                    maxAmountCents: 2000000,
-                                    maxTransactions: 777
-                                }
-                            },
-                            cardPresentLimits: {
-                                daily: {
-                                    maxAmountCents: 440000,
-                                    maxTransactions: 14
-                                },
-                                monthly: {
-                                    maxAmountCents: 2600000,
-                                    maxTransactions: 468
-                                }
-                            }
-                        };
+                        updatedCardSettings = __assign({ contactlessEnabled: false }, cardLimitsData);
                         card = new card_1.Card(client.graphQL);
                         spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
                             updateCardSettings: updatedCardSettings

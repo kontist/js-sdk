@@ -52,14 +52,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var model_1 = require("./model");
 var resultPage_1 = require("./resultPage");
 var CARD_FIELDS = "\n  id\n  status\n  type\n  holder\n  formattedExpirationDate\n  maskedPan\n  pinSet\n  settings {\n    contactlessEnabled\n  }\n";
+var CARD_LIMITS_FIELDS = "\n  daily {\n    maxAmountCents\n    maxTransactions\n  }\n  monthly {\n    maxAmountCents\n    maxTransactions\n  }\n";
 var GET_CARDS = "query {\n  viewer {\n    mainAccount {\n      cards {\n        " + CARD_FIELDS + "\n      }\n    }\n  }\n}";
 var GET_CARD = "\n  query getCard (\n    $id: String,\n    $type: CardType\n  ) {\n    viewer {\n      mainAccount {\n        card(\n          filter: {\n            id: $id,\n            type: $type\n          }\n        ) {\n          " + CARD_FIELDS + "\n        }\n      }\n    }\n  }\n";
+var GET_CARD_LIMITS = "\n  query getCardLimits (\n    $id: String,\n    $type: CardType\n  ) {\n    viewer {\n      mainAccount {\n        card(\n          filter: {\n            id: $id,\n            type: $type\n          }\n        ) {\n          settings {\n            cardPresentLimits {\n              " + CARD_LIMITS_FIELDS + "\n            }\n            cardNotPresentLimits {\n              " + CARD_LIMITS_FIELDS + "\n            }\n          }\n        }\n      }\n    }\n  }\n";
 var CREATE_CARD = "mutation createCard(\n  $type: CardType!\n) {\n  createCard(\n    type: $type\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
 var ACTIVATE_CARD = "mutation activateCard(\n  $id: String!\n  $verificationToken: String!\n) {\n  activateCard(\n    id: $id\n    verificationToken: $verificationToken\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
 var CHANGE_CARD_PIN = "mutation changeCardPIN(\n  $id: String!\n  $pin: String!\n) {\n  changeCardPIN(\n    id: $id\n    pin: $pin\n  ) {\n    confirmationId\n  }\n}";
 var CONFIRM_CHANGE_CARD_PIN = "mutation confirmChangeCardPIN(\n  $id: String!\n  $confirmationId: String!\n  $authorizationToken: String!\n) {\n  confirmChangeCardPIN(\n    id: $id\n    confirmationId: $confirmationId\n    authorizationToken: $authorizationToken\n  ) {\n    status\n  }\n}";
 var CHANGE_CARD_STATUS = "mutation changeCardStatus(\n  $id: String!\n  $action: CardAction!\n) {\n  changeCardStatus(\n    id: $id\n    action: $action\n  ) {\n    " + CARD_FIELDS + "\n  }\n}";
-var CARD_LIMITS_FIELDS = "\n  daily {\n    maxAmountCents\n    maxTransactions\n  }\n  monthly {\n    maxAmountCents\n    maxTransactions\n  }\n";
 var UPDATE_CARD_SETTINGS = "mutation updateCardSettings(\n  $id: String!\n  $contactlessEnabled: Boolean\n  $cardPresentLimits: CardLimitsInput\n  $cardNotPresentLimits: CardLimitsInput\n) {\n  updateCardSettings(\n    settings: {\n      contactlessEnabled: $contactlessEnabled\n      cardPresentLimits: $cardPresentLimits\n      cardNotPresentLimits: $cardNotPresentLimits\n    }\n    id: $id\n  ) {\n    contactlessEnabled\n    cardNotPresentLimits {\n      " + CARD_LIMITS_FIELDS + "\n    }\n    cardPresentLimits {\n      " + CARD_LIMITS_FIELDS + "\n    }\n  }\n}";
 var Card = /** @class */ (function (_super) {
     __extends(Card, _super);
@@ -93,7 +94,7 @@ var Card = /** @class */ (function (_super) {
     /**
      * Returns details of a specific card belonging to the current user
      *
-     * @param args  query parameters
+     * @param args  query parameters including card id and / or type
      * @returns     details of the card specified in query parameters
      */
     Card.prototype.get = function (args) {
@@ -106,6 +107,26 @@ var Card = /** @class */ (function (_super) {
                     case 1:
                         result = _c.sent();
                         return [2 /*return*/, (_b = (_a = result.viewer.mainAccount) === null || _a === void 0 ? void 0 : _a.card, (_b !== null && _b !== void 0 ? _b : null))];
+                }
+            });
+        });
+    };
+    /**
+     * Returns limits of a specific card belonging to the current user
+     *
+     * @param args  query parameters including card id and / or type
+     * @returns     limits of the card
+     */
+    Card.prototype.getLimits = function (args) {
+        var _a, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0: return [4 /*yield*/, this.client.rawQuery(GET_CARD_LIMITS, args)];
+                    case 1:
+                        result = _d.sent();
+                        return [2 /*return*/, (_c = (_b = (_a = result.viewer.mainAccount) === null || _a === void 0 ? void 0 : _a.card) === null || _b === void 0 ? void 0 : _b.settings, (_c !== null && _c !== void 0 ? _c : null))];
                 }
             });
         });
