@@ -271,6 +271,24 @@ const transfers = await client.models.transfer.fetch({
 });
 ```
 
+#### Cards
+
+Several methods are available to create, manage and fetch cards.
+
+Here is an example of how to create a new card for a user:
+
+```typescript
+const card = await client.models.card.create({
+  type: CardType.VisaBusinessDebit
+});
+```
+
+And here is how you can retrieve the details of existing cards:
+
+```typescript
+const result = await client.models.card.fetch();
+```
+
 ## MFA (Multi-Factor Authentication)
 
 Accessing Kontist banking APIs require Multi-Factor Authentication (MFA).
