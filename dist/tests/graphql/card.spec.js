@@ -60,6 +60,7 @@ var cardData = {
     formattedExpirationDate: "12/22",
     maskedPan: "6802********5119",
     pinSet: false,
+    detailsUrl: "https://fake-server/cards/010e5dcfdd7949fea50a510e97157168/details",
     settings: {
         contactlessEnabled: true
     }
