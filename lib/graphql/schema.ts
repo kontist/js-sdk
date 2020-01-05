@@ -85,6 +85,7 @@ export type Card = {
   status: CardStatus,
   type: CardType,
   pinSet: Scalars['Boolean'],
+  detailsUrl?: Maybe<Scalars['String']>,
   holder?: Maybe<Scalars['String']>,
   formattedExpirationDate?: Maybe<Scalars['String']>,
   maskedPan?: Maybe<Scalars['String']>,
@@ -152,7 +153,8 @@ export enum CardType {
   VirtualVisaBusinessDebit = 'VIRTUAL_VISA_BUSINESS_DEBIT',
   VisaBusinessDebit = 'VISA_BUSINESS_DEBIT',
   MastercardBusinessDebit = 'MASTERCARD_BUSINESS_DEBIT',
-  VirtualMastercardBusinessDebit = 'VIRTUAL_MASTERCARD_BUSINESS_DEBIT'
+  VirtualMastercardBusinessDebit = 'VIRTUAL_MASTERCARD_BUSINESS_DEBIT',
+  VirtualVisaFreelanceDebit = 'VIRTUAL_VISA_FREELANCE_DEBIT'
 }
 
 export type Client = {

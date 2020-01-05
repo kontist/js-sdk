@@ -31,6 +31,7 @@ var CardType;
     CardType["VisaBusinessDebit"] = "VISA_BUSINESS_DEBIT";
     CardType["MastercardBusinessDebit"] = "MASTERCARD_BUSINESS_DEBIT";
     CardType["VirtualMastercardBusinessDebit"] = "VIRTUAL_MASTERCARD_BUSINESS_DEBIT";
+    CardType["VirtualVisaFreelanceDebit"] = "VIRTUAL_VISA_FREELANCE_DEBIT";
 })(CardType = exports.CardType || (exports.CardType = {}));
 var CompanyType;
 (function (CompanyType) {
