@@ -21,7 +21,9 @@ export const createClient = (opts = {}) => {
   });
 };
 
-export const createTransaction = (): Transaction => {
+export const createTransaction = (
+  override: Record<string, any> = {}
+): Transaction => {
   return {
     id: Math.random.toString(),
     amount: parseInt((Math.random() * 100).toString()),
@@ -29,7 +31,8 @@ export const createTransaction = (): Transaction => {
     type: TransactionProjectionType.Atm,
     fees: [],
     bookingDate: new Date(),
-    paymentMethod: "card"
+    paymentMethod: "card",
+    ...override
   };
 };
 
