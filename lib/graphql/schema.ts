@@ -201,6 +201,8 @@ export type Mutation = {
   confirmTransfer: Transfer,
   createTransfers: ConfirmationRequest,
   confirmTransfers: BatchTransfer,
+  /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
+  categorizeTransaction: Transaction,
 };
 
 
@@ -251,6 +253,13 @@ export type MutationCreateTransfersArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String']
+};
+
+
+export type MutationCategorizeTransactionArgs = {
+  id: Scalars['String'],
+  category?: Maybe<TransactionCategory>,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>
 };
 
 export enum Nationality {
