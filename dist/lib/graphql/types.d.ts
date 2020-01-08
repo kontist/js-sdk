@@ -10,7 +10,7 @@ export declare type TransferFetchOptions = {
     where?: TransfersConnectionFilter;
 } & FetchOptions;
 export declare type GetCardOptions = {
-    id: String;
+    id: string;
     type?: CardType;
 };
 export declare type CreateCardOptions = {
