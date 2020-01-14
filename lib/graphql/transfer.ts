@@ -5,7 +5,8 @@ import {
   BatchTransfer,
   TransferType,
   TransfersConnectionEdge,
-  ConfirmationRequestOrTransfer
+  ConfirmationRequestOrTransfer,
+  TransferSuggestion
 } from "./schema";
 import { TransferFetchOptions } from "./types";
 import { ResultPage } from "./resultPage";
@@ -98,7 +99,7 @@ const CONFIRM_CANCEL_TRANSFER = `mutation confirmCancelTransfer(
 }`;
 
 const FETCH_TRANSFERS = `
-  query fetchTransfers (
+  query fetchTransfers(
     $type: TransferType!,
     $where: TransfersConnectionFilter,
     $first: Int,
@@ -127,6 +128,19 @@ const FETCH_TRANSFERS = `
             startCursor
             endCursor
           }
+        }
+      }
+    }
+  }
+`;
+
+const GET_TRANSFER_SUGGESTIONS = `
+  query {
+    viewer {
+      mainAccount {
+        transferSuggestions {
+          iban
+          name
         }
       }
     }
@@ -251,5 +265,16 @@ export class Transfer extends IterableModel<
       hasPreviousPage: false
     };
     return new ResultPage(this, transfers, pageInfo, args);
+  }
+
+  /**
+   * Fetches a list of suggestions for wire transfer
+   * recipients based on existing user's transactions
+   *
+   * @returns array of TransferSuggestion
+   */
+  async suggestions(): Promise<Array<TransferSuggestion>> {
+    const result: Query = await this.client.rawQuery(GET_TRANSFER_SUGGESTIONS);
+    return result.viewer?.mainAccount?.transferSuggestions ?? [];
   }
 }

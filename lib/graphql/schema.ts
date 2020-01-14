@@ -18,6 +18,11 @@ export type Account = {
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
   transfer?: Maybe<Transfer>,
+  /** 
+ * A list of iban/name combinations based on existing user's transactions,
+   * provided to assist users when creating new transfers
+ **/
+  transferSuggestions?: Maybe<Array<TransferSuggestion>>,
 };
 
 
@@ -767,6 +772,12 @@ export enum TransferStatus {
   Executed = 'EXECUTED',
   Failed = 'FAILED'
 }
+
+export type TransferSuggestion = {
+   __typename?: 'TransferSuggestion',
+  iban: Scalars['String'],
+  name: Scalars['String'],
+};
 
 export enum TransferType {
   SepaTransfer = 'SEPA_TRANSFER',
