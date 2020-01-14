@@ -19,7 +19,6 @@ const CARD_FIELDS = `
   formattedExpirationDate
   maskedPan
   pinSet
-  detailsUrl
   settings {
     contactlessEnabled
   }

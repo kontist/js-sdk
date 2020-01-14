@@ -90,7 +90,6 @@ export type Card = {
   status: CardStatus,
   type: CardType,
   pinSet: Scalars['Boolean'],
-  isClosed?: Maybe<Scalars['String']>,
   holder?: Maybe<Scalars['String']>,
   formattedExpirationDate?: Maybe<Scalars['String']>,
   maskedPan?: Maybe<Scalars['String']>,
