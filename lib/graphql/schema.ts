@@ -21,6 +21,11 @@ export type Account = {
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
   transfer?: Maybe<Transfer>,
+  /** 
+ * A list of iban/name combinations based on existing user's transactions,
+   * provided to assist users when creating new transfers
+ **/
+  transferSuggestions?: Maybe<Array<TransferSuggestion>>,
   cards: Array<Card>,
   card?: Maybe<Card>,
 };
@@ -85,7 +90,7 @@ export type Card = {
   status: CardStatus,
   type: CardType,
   pinSet: Scalars['Boolean'],
-  detailsUrl?: Maybe<Scalars['String']>,
+  isClosed?: Maybe<Scalars['String']>,
   holder?: Maybe<Scalars['String']>,
   formattedExpirationDate?: Maybe<Scalars['String']>,
   maskedPan?: Maybe<Scalars['String']>,
@@ -363,6 +368,8 @@ export type Mutation = {
   changeCardStatus: Card,
   changeCardPIN: ConfirmationRequest,
   confirmChangeCardPIN: ConfirmationStatus,
+  /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
+  categorizeTransaction: Transaction,
 };
 
 
@@ -461,6 +468,13 @@ export type MutationConfirmChangeCardPinArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String'],
   id: Scalars['String']
+};
+
+
+export type MutationCategorizeTransactionArgs = {
+  id: Scalars['String'],
+  category?: Maybe<TransactionCategory>,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>
 };
 
 export enum Nationality {
@@ -1008,6 +1022,12 @@ export enum TransferStatus {
   Executed = 'EXECUTED',
   Failed = 'FAILED'
 }
+
+export type TransferSuggestion = {
+   __typename?: 'TransferSuggestion',
+  iban: Scalars['String'],
+  name: Scalars['String'],
+};
 
 export enum TransferType {
   SepaTransfer = 'SEPA_TRANSFER',

@@ -1,4 +1,10 @@
-import { PushChallenge, PushChallengeStatus, HttpMethod, TimeoutID } from "../types";
+import {
+  PushChallenge,
+  PushChallengeStatus,
+  HttpMethod,
+  TimeoutID,
+  MfaResult
+} from "../types";
 import {
   ChallengeExpiredError,
   ChallengeDeniedError,
@@ -58,12 +64,15 @@ export class PushNotificationMFA {
     } else if (wasDenied) {
       return reject(new ChallengeDeniedError());
     } else if (wasVerified) {
-      const { token: confirmedToken } = await this.request.fetch(
+      const {
+        token: accessToken,
+        refresh_token: refreshToken
+      }: MfaResult = await this.request.fetch(
         `${PUSH_CHALLENGE_PATH}/${challenge.id}/token`,
         HttpMethod.POST
       );
 
-      const token = this.tokenManager.setToken(confirmedToken);
+      const token = this.tokenManager.setToken(accessToken, refreshToken);
       return resolve(token);
     }
 

@@ -7,7 +7,7 @@ import {
   VerifyDeviceParams,
   DeviceChallenge,
   VerifyDeviceChallengeParams,
-  VerifyDeviceChallengeResult
+  MfaResult
 } from "../types";
 import { TokenManager } from "./tokenManager";
 import { HttpRequest } from "../request";
@@ -80,13 +80,14 @@ export class DeviceBinding {
     params: VerifyDeviceChallengeParams
   ): Promise<ClientOAuth2.Token> => {
     const {
-      token: accessToken
-    }: VerifyDeviceChallengeResult = await this.request.fetch(
+      token: accessToken,
+      refresh_token: refreshToken
+    }: MfaResult = await this.request.fetch(
       VERIFY_DEVICE_CHALLENGE_PATH(deviceId, challengeId),
       HttpMethod.POST,
       params
     );
-    const { refreshToken } = this.tokenManager.token || {};
+
     return this.tokenManager.setToken(accessToken, refreshToken);
   };
 }

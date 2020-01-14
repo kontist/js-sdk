@@ -131,7 +131,11 @@ describe("Transfer", () => {
         transfers = transfers.concat(transfer as Transfer);
       }
 
-      expect(transfers).to.deep.equal([firstTransfer, secondTransfer, thirdTransfer]);
+      expect(transfers).to.deep.equal([
+        firstTransfer,
+        secondTransfer,
+        thirdTransfer
+      ]);
     });
 
     describe("when iterating backwards", () => {
@@ -169,6 +173,48 @@ describe("Transfer", () => {
         const secondPage =
           firstPage.previousPage && (await firstPage.previousPage());
         expect(secondPage?.items).to.deep.equal([firstTransfer]);
+      });
+    });
+  });
+
+  describe("suggestions", () => {
+    const suggestions = [
+      { iban: "DE12345", name: "First customer" },
+      { iban: "DE54321", name: "Second customer" }
+    ];
+
+    describe("when user has an account", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({
+          viewer: { mainAccount: { transferSuggestions: suggestions } }
+        });
+        result = await transferInstance.suggestions();
+      });
+
+      it("should send transferSuggestions query", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        const [query] = graphqlClientStub.rawQuery.getCall(0).args;
+        expect(query).to.include("transferSuggestions");
+      });
+
+      it("should return transferSuggestions result", () => {
+        expect(result).to.eql(suggestions);
+      });
+    });
+
+    describe("when user doesn't have an account", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({
+          viewer: { mainAccount: null }
+        });
+        result = await transferInstance.suggestions();
+      });
+
+      it("should return an empty array", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result).to.eql([]);
       });
     });
   });

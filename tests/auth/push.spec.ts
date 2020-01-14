@@ -6,15 +6,25 @@ import { HttpMethod, PushChallengeStatus } from "../../lib/types";
 
 import { createClient } from "../helpers";
 
+type TokenResponse = {
+  confirmedAccessToken?: string;
+  confirmedRefreshToken?: string;
+};
+
 describe("Auth: PushNotificationMFA", () => {
   describe("#getConfirmedToken", () => {
-    const setup = (updatedChallenge: Object) => {
+    const setup = (
+      updatedChallenge: Object,
+      {
+        confirmedAccessToken = "cnf-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        confirmedRefreshToken
+      }: TokenResponse = {}
+    ) => {
       const challenge = {
         id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
         status: PushChallengeStatus.PENDING,
         expiresAt: moment().add(10, "minutes")
       };
-      const confirmedToken = "cnf-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
       const client = createClient();
 
@@ -39,25 +49,56 @@ describe("Auth: PushNotificationMFA", () => {
           HttpMethod.POST
         )
         .resolves({
-          token: confirmedToken
+          token: confirmedAccessToken,
+          ...(confirmedRefreshToken
+            ? { refresh_token: confirmedRefreshToken }
+            : {})
         });
 
-      return { requestStub, confirmedToken, client };
+      return { requestStub, confirmedAccessToken, client };
     };
 
     describe("when challenge is verified", () => {
       it("should set and return confirmed access token", async () => {
-        const { requestStub, confirmedToken, client } = setup({
+        const { requestStub, confirmedAccessToken, client } = setup({
           status: PushChallengeStatus.VERIFIED
         });
 
         const response: any = await client.auth.push.getConfirmedToken();
 
         expect(requestStub.callCount).to.equal(4);
-        expect(response.accessToken).to.equal(confirmedToken);
-        expect(client.auth.tokenManager.token && client.auth.tokenManager.token.accessToken).to.equal(
-          confirmedToken
+        expect(response.accessToken).to.equal(confirmedAccessToken);
+        expect(response.refreshToken).to.be.undefined;
+        expect(
+          client.auth.tokenManager.token &&
+            client.auth.tokenManager.token.accessToken
+        ).to.equal(confirmedAccessToken);
+
+        requestStub.restore();
+      });
+    });
+
+    describe("when challenge is verified and a refresh token is returned", () => {
+      it("should set and return confirmed access token", async () => {
+        const confirmedRefreshToken = "sample-confirmed-refresh-token";
+        const { requestStub, confirmedAccessToken, client } = setup(
+          {
+            status: PushChallengeStatus.VERIFIED
+          },
+          {
+            confirmedRefreshToken
+          }
         );
+
+        const response: any = await client.auth.push.getConfirmedToken();
+
+        expect(requestStub.callCount).to.equal(4);
+        expect(response.accessToken).to.equal(confirmedAccessToken);
+        expect(response.refreshToken).to.equal(confirmedRefreshToken);
+        expect(
+          client.auth.tokenManager.token &&
+            client.auth.tokenManager.token.accessToken
+        ).to.equal(confirmedAccessToken);
 
         requestStub.restore();
       });

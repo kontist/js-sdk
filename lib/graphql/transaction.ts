@@ -1,7 +1,8 @@
 import {
   Query,
   TransactionsConnectionEdge,
-  Transaction as TransactionModel
+  Transaction as TransactionModel,
+  MutationCategorizeTransactionArgs
 } from "./schema";
 import { IterableModel } from "./iterableModel";
 import { FetchOptions, SubscriptionType, Subscription } from "./types";
@@ -55,6 +56,20 @@ export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
   }
 }`;
 
+export const CATEGORIZE_TRANSACTION = `mutation categorizeTransaction(
+  $id: String!
+  $category: TransactionCategory,
+  $userSelectedBookingDate: DateTime
+) {
+  categorizeTransaction(
+    id: $id
+    category: $category
+    userSelectedBookingDate: $userSelectedBookingDate
+  ) {
+    ${TRANSACTION_FIELDS}
+  }
+}`;
+
 export class Transaction extends IterableModel<TransactionModel> {
   /**
    * Fetches first 50 transactions which match the query
@@ -93,5 +108,16 @@ export class Transaction extends IterableModel<TransactionModel> {
       onNext,
       onError
     });
+  }
+
+  /**
+   * Categorizes a transaction
+   *
+   * @param args   query parameters including category and userSelectedBookingDate
+   * @returns      the transaction with updated categorization data
+   */
+  async categorize(args: MutationCategorizeTransactionArgs) {
+    const result = await this.client.rawQuery(CATEGORIZE_TRANSACTION, args);
+    return result.categorizeTransaction;
   }
 }
