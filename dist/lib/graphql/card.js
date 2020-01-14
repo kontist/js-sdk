@@ -51,7 +51,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var model_1 = require("./model");
 var resultPage_1 = require("./resultPage");
-var CARD_FIELDS = "\n  id\n  status\n  type\n  holder\n  formattedExpirationDate\n  maskedPan\n  pinSet\n  detailsUrl\n  settings {\n    contactlessEnabled\n  }\n";
+var CARD_FIELDS = "\n  id\n  status\n  type\n  holder\n  formattedExpirationDate\n  maskedPan\n  pinSet\n  settings {\n    contactlessEnabled\n  }\n";
 var CARD_LIMITS_FIELDS = "\n  daily {\n    maxAmountCents\n    maxTransactions\n  }\n  monthly {\n    maxAmountCents\n    maxTransactions\n  }\n";
 var GET_CARDS = "query {\n  viewer {\n    mainAccount {\n      cards {\n        " + CARD_FIELDS + "\n      }\n    }\n  }\n}";
 var GET_CARD = "\n  query getCard (\n    $id: String,\n    $type: CardType\n  ) {\n    viewer {\n      mainAccount {\n        card(\n          filter: {\n            id: $id,\n            type: $type\n          }\n        ) {\n          " + CARD_FIELDS + "\n        }\n      }\n    }\n  }\n";
