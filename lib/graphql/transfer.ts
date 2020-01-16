@@ -1,6 +1,7 @@
 import {
   Query,
   CreateTransferInput,
+  UpdateTransferInput,
   Transfer as TransferModel,
   BatchTransfer,
   TransferType,
@@ -147,6 +148,12 @@ const GET_TRANSFER_SUGGESTIONS = `
   }
 `;
 
+const UPDATE_TRANSFER = `mutation updateTransfer($transfer: UpdateTransferInput!) {
+  updateTransfer(transfer: $transfer) {
+    confirmationId
+  }
+}`;
+
 export class Transfer extends IterableModel<
   TransferModel,
   TransferFetchOptions
@@ -243,6 +250,17 @@ export class Transfer extends IterableModel<
       authorizationToken
     });
     return result.confirmCancelTransfer;
+  }
+
+  /**
+   * Update a standing order
+   *
+   * @param transfer  transfer data including at least id and amount
+   * @returns         confirmation id used to confirm the update
+   */
+  async update(transfer: UpdateTransferInput): Promise<string> {
+    const result = await this.client.rawQuery(UPDATE_TRANSFER, { transfer });
+    return result.updateTransfer.confirmationId;
   }
 
   /**
