@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `card` model and associated methods (see: `lib/graphql/card.ts`)
 - Add a method to categorize transactions (`models.transaction.categorize`)
 - Add a method to fetch wire transfer suggestions (`models.transfer.suggestions`)
+- Add a method to update standing orders (`models.transfer.update`)
 
 ## [0.22.2] - 2019-11-26
 ### Fixed
