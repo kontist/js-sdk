@@ -1060,6 +1060,8 @@ export type UpdateClientInput = {
 export type UpdateTransferInput = {
   /** The ID of the Standing Order to update */
   id: Scalars['String'],
+  /** The type of transfer to update, currently only Standing Orders are supported */
+  type: TransferType,
   /** The amount of each Standing Order payment in cents */
   amount: Scalars['Int'],
   /** The date at which the last payment will be executed */

@@ -231,7 +231,8 @@ describe("Transfer", () => {
       purpose: "some money",
       e2eId: "some-e2e-id",
       reoccurrence: StandingOrderReoccurenceType.Annually,
-      lastExecutionDate: "2022-02-02"
+      lastExecutionDate: "2022-02-02",
+      type: TransferType.StandingOrder
     };
     const confirmationId = "standing-order:123456789";
 
