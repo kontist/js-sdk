@@ -8,29 +8,29 @@ import {
   TransferType,
 } from "./schema";
 
-export interface FetchOptions {
+export type FetchOptions = {
   first?: number;
   last?: number;
   before?: string | null;
   after?: string | null;
-}
+};
 
 export type TransferFetchOptions = {
   type: TransferType;
   where?: TransfersConnectionFilter;
 } & FetchOptions;
 
-export interface GetCardOptions {
+export type GetCardOptions = {
   id: string;
   type?: CardType;
-}
+};
 
 export enum SubscriptionType {
   newTransaction = "newTransaction",
 }
 
-export interface Subscription {
+export type Subscription = {
   unsubscribe: () => void;
-}
+};
 
 export type RawQueryResponse = Query & Mutation;
