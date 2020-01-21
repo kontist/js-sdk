@@ -324,7 +324,7 @@ describe("Card", () => {
   });
 
   describe("#replace", () => {
-    it("should call rawQuery and return newly created card details", async () => {
+    it("should call rawQuery and return updated card details", async () => {
       // arrange;
       const newCardData = {
         ...cardData,
@@ -337,6 +337,29 @@ describe("Card", () => {
 
       // act
       const result = await card.replace({
+        id: cardData.id
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(newCardData);
+    });
+  });
+
+  describe("#reorder", () => {
+    it("should call rawQuery and return newly created card details", async () => {
+      // arrange;
+      const newCardData = {
+        ...cardData,
+        status: CardStatus.Processing
+      };
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        reorderCard: newCardData
+      } as any);
+
+      // act
+      const result = await card.reorder({
         id: cardData.id
       });
 

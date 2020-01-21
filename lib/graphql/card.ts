@@ -1,4 +1,18 @@
-import { Card as CardModel, Query, CardSettings, MutationCreateCardArgs, MutationActivateCardArgs, MutationChangeCardPinArgs, MutationConfirmChangeCardPinArgs, MutationChangeCardStatusArgs, MutationUpdateCardSettingsArgs, MutationReplaceCardArgs } from "./schema";
+import {
+  Card as CardModel,
+  Query,
+  CardType,
+  CardSettings,
+  MutationCreateCardArgs,
+  MutationActivateCardArgs,
+  MutationChangeCardPinArgs,
+  MutationConfirmChangeCardPinArgs,
+  MutationChangeCardStatusArgs,
+  MutationUpdateCardSettingsArgs,
+  MutationReplaceCardArgs,
+  MutationReorderCardArgs
+} from "./schema";
+
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
 import {
@@ -180,6 +194,16 @@ const REPLACE_CARD = `mutation replaceCard(
   }
 }`;
 
+const REORDER_CARD = `mutation reorderCard(
+  $id: String!
+) {
+  reorderCard(
+    id: $id
+  ) {
+    ${CARD_FIELDS}
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -292,10 +316,21 @@ export class Card extends Model<CardModel> {
    * Replace a card
    *
    * @param args   query parameters including card id
-   * @returns      the newly created card details
+   * @returns      updated card details
    */
   async replace(args: MutationReplaceCardArgs): Promise<CardModel> {
     const result = await this.client.rawQuery(REPLACE_CARD, args);
     return result.replaceCard;
+  }
+
+  /**
+   * Reorder a card
+   *
+   * @param args   query parameters including card id
+   * @returns      the newly created card details
+   */
+  async reorder(args: MutationReorderCardArgs): Promise<CardModel> {
+    const result = await this.client.rawQuery(REORDER_CARD, args);
+    return result.reorderCard;
   }
 }
