@@ -1,4 +1,10 @@
-import { Card as CardModel, Query, CardType, CardSettings } from "./schema";
+import {
+  Card as CardModel,
+  Query,
+  CardType,
+  CardSettings,
+  MutationReplaceCardArgs
+} from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
 import {
@@ -8,8 +14,7 @@ import {
   ConfirmChangeCardPINOptions,
   ChangeCardStatusOptions,
   CreateCardOptions,
-  UpdateCardSettingsOptions,
-  ReplaceCardOptions
+  UpdateCardSettingsOptions
 } from "./types";
 
 const CARD_FIELDS = `
@@ -301,7 +306,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id
    * @returns      the newly created card details
    */
-  async replace(args: ReplaceCardOptions): Promise<CardModel> {
+  async replace(args: MutationReplaceCardArgs): Promise<CardModel> {
     const result = await this.client.rawQuery(REPLACE_CARD, args);
     return result.replaceCard;
   }
