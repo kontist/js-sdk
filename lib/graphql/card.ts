@@ -1,6 +1,11 @@
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { Card as CardModel, CardSettings, CardType, Query } from "./schema";
+import {
+  Card as CardModel,
+  CardSettings,
+  MutationReplaceCardArgs,
+  Query,
+} from "./schema";
 import {
   ActivateCardOptions,
   ChangeCardPINOptions,
@@ -176,6 +181,16 @@ const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
   }
 }`;
 
+const REPLACE_CARD = `mutation replaceCard(
+  $id: String!
+) {
+  replaceCard(
+    id: $id
+  ) {
+    ${CARD_FIELDS}
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -282,5 +297,16 @@ export class Card extends Model<CardModel> {
   public async updateSettings(args: UpdateCardSettingsOptions): Promise<CardSettings> {
     const result = await this.client.rawQuery(UPDATE_CARD_SETTINGS, args);
     return result.updateCardSettings;
+  }
+
+  /**
+   * Replace a card
+   *
+   * @param args   query parameters including card id
+   * @returns      the newly created card details
+   */
+  public async replace(args: MutationReplaceCardArgs): Promise<CardModel> {
+    const result = await this.client.rawQuery(REPLACE_CARD, args);
+    return result.replaceCard;
   }
 }
