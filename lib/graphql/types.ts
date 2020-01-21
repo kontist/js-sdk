@@ -65,4 +65,8 @@ export type Subscription = {
   unsubscribe: () => void;
 };
 
+export type ReplaceCardOptions = {
+  id: string;
+};
+
 export type RawQueryResponse = Query & Mutation;

@@ -8,7 +8,8 @@ import {
   ConfirmChangeCardPINOptions,
   ChangeCardStatusOptions,
   CreateCardOptions,
-  UpdateCardSettingsOptions
+  UpdateCardSettingsOptions,
+  ReplaceCardOptions
 } from "./types";
 
 const CARD_FIELDS = `
@@ -176,6 +177,16 @@ const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
   }
 }`;
 
+const REPLACE_CARD = `mutation replaceCard(
+  $id: String!
+) {
+  replaceCard(
+    id: $id
+  ) {
+    ${CARD_FIELDS}
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -282,5 +293,16 @@ export class Card extends Model<CardModel> {
   async updateSettings(args: UpdateCardSettingsOptions): Promise<CardSettings> {
     const result = await this.client.rawQuery(UPDATE_CARD_SETTINGS, args);
     return result.updateCardSettings;
+  }
+
+  /**
+   * Replace a card
+   *
+   * @param args   query parameters including card id
+   * @returns      the newly created card details
+   */
+  async replaceCard(args: ReplaceCardOptions): Promise<CardModel> {
+    const result = await this.client.rawQuery(REPLACE_CARD, args);
+    return result.replaceCard;
   }
 }

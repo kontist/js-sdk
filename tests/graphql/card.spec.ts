@@ -322,4 +322,27 @@ describe("Card", () => {
       expect(result).to.eq(updatedCardSettings);
     });
   });
+
+  describe("#replaceCard", () => {
+    it("should call rawQuery and return newly created card details", async () => {
+      // arrange;
+      const newCardData = {
+        ...cardData,
+        status: CardStatus.Processing
+      };
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        replaceCard: newCardData
+      } as any);
+
+      // act
+      const result = await card.replaceCard({
+        id: cardData.id
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(newCardData);
+    });
+  });
 });

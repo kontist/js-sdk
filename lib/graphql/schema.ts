@@ -367,6 +367,7 @@ export type Mutation = {
   changeCardStatus: Card,
   changeCardPIN: ConfirmationRequest,
   confirmChangeCardPIN: ConfirmationStatus,
+  replaceCard: Card,
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
   categorizeTransaction: Transaction,
 };
