@@ -1,14 +1,14 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { SubscriptionType } from "../../lib/graphql/types";
-import { Transaction, TransactionCategory } from "../../lib/graphql/schema";
 import { Client } from "../../lib";
+import { Transaction, TransactionCategory } from "../../lib/graphql/schema";
+import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
+import { SubscriptionType } from "../../lib/graphql/types";
 import {
   createClient,
   createTransaction,
-  generatePaginatedResponse
+  generatePaginatedResponse,
 } from "../helpers";
-import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
 
 describe("Transaction", () => {
   describe("iterator", () => {
@@ -30,16 +30,16 @@ describe("Transaction", () => {
         generatePaginatedResponse({
           key: "transactions",
           items: [firstTransaction, secondTransaction],
-          pageInfo: { hasNextPage: true, hasPreviousPage: false }
-        })
+          pageInfo: { hasNextPage: true, hasPreviousPage: false },
+        }),
       );
 
       stub.onSecondCall().resolves(
         generatePaginatedResponse({
           key: "transactions",
           items: [thirdTransaction],
-          pageInfo: { hasNextPage: false, hasPreviousPage: false }
-        })
+          pageInfo: { hasNextPage: false, hasPreviousPage: false },
+        }),
       );
     });
 
@@ -49,13 +49,13 @@ describe("Transaction", () => {
 
     it("can fetch next page using the nextPage method", async () => {
       const firstPage = await client.models.transaction.fetch({
-        first: 2
+        first: 2,
       });
 
       expect(typeof firstPage.nextPage).to.equal("function");
       expect(firstPage.items).to.deep.equal([
         firstTransaction,
-        secondTransaction
+        secondTransaction,
       ]);
 
       const secondPage = firstPage.nextPage && (await firstPage.nextPage());
@@ -63,7 +63,7 @@ describe("Transaction", () => {
     });
 
     it("can iterate on all user transactions using the fetchAll iterator", async () => {
-      let transactions: Array<Transaction> = [];
+      let transactions: Transaction[] = [];
       for await (const transaction of client.models.transaction.fetchAll()) {
         transactions = transactions.concat(transaction as Transaction);
       }
@@ -71,7 +71,7 @@ describe("Transaction", () => {
       expect(transactions).to.deep.equal([
         firstTransaction,
         secondTransaction,
-        thirdTransaction
+        thirdTransaction,
       ]);
     });
 
@@ -81,25 +81,25 @@ describe("Transaction", () => {
           generatePaginatedResponse({
             key: "transactions",
             items: [secondTransaction, thirdTransaction],
-            pageInfo: { hasPreviousPage: true, hasNextPage: false }
-          })
+            pageInfo: { hasPreviousPage: true, hasNextPage: false },
+          }),
         );
         stub.onSecondCall().resolves(
           generatePaginatedResponse({
             key: "transactions",
             items: [firstTransaction],
-            pageInfo: { hasPreviousPage: false, hasNextPage: false }
-          })
+            pageInfo: { hasPreviousPage: false, hasNextPage: false },
+          }),
         );
 
         const firstPage = await client.models.transaction.fetch({
-          last: 2
+          last: 2,
         });
 
         expect(typeof firstPage.previousPage).to.equal("function");
         expect(firstPage.items).to.deep.equal([
           secondTransaction,
-          thirdTransaction
+          thirdTransaction,
         ]);
 
         const secondPage =
@@ -146,17 +146,17 @@ describe("Transaction", () => {
       // arrange
       const transactionData = createTransaction({
         category: TransactionCategory.VatPayment,
-        userSelectedBookingDate: new Date().toISOString()
+        userSelectedBookingDate: new Date().toISOString(),
       });
       stub.resolves({
-        categorizeTransaction: transactionData
+        categorizeTransaction: transactionData,
       } as any);
 
       // act
       const result = await client.models.transaction.categorize({
         id: transactionData.id,
         category: TransactionCategory.VatPayment,
-        userSelectedBookingDate: new Date().toISOString()
+        userSelectedBookingDate: new Date().toISOString(),
       });
 
       // assert

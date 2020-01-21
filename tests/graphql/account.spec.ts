@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import * as sinon from "sinon";
 import "cross-fetch/polyfill";
+import * as sinon from "sinon";
 
 import { Client } from "../../lib";
-import { Account } from "../../lib/graphql/account";
 import { KontistSDKError } from "../../lib/errors";
+import { Account } from "../../lib/graphql/account";
 
 describe("Account", () => {
   let sandbox: sinon.SinonSandbox;
@@ -22,7 +22,7 @@ describe("Account", () => {
       clientId,
       redirectUri,
       scopes,
-      state
+      state,
     });
   });
 
@@ -57,10 +57,10 @@ describe("Account", () => {
         viewer: {
           mainAccount: {
             iban: "DE1234",
-            balance: 1234
-          }
-        }
-      } as any)
+            balance: 1234,
+          },
+        },
+      } as any);
 
       // act
       const result = await account.get();
@@ -75,8 +75,8 @@ describe("Account", () => {
       // arrange
       const account = new Account(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        viewer: {}
-      } as any)
+        viewer: {},
+      } as any);
 
       // act
       const result = await account.get();
@@ -85,5 +85,5 @@ describe("Account", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(null);
     });
-  })
+  });
 });

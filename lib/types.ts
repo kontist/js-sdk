@@ -8,7 +8,7 @@ export enum HttpMethod {
   PATCH = "PATCH",
   OPTIONS = "OPTIONS",
   HEAD = "HEAD",
-  DELETE = "DELETE"
+  DELETE = "DELETE",
 }
 
 export type GraphQLClientOpts = {
@@ -38,7 +38,7 @@ export type TokenManagerOpts = {
 export enum PushChallengeStatus {
   PENDING = "PENDING",
   VERIFIED = "VERIFIED",
-  DENIED = "DENIED"
+  DENIED = "DENIED",
 }
 
 export type PushChallenge = {

@@ -367,6 +367,8 @@ export type Mutation = {
   changeCardStatus: Card,
   changeCardPIN: ConfirmationRequest,
   confirmChangeCardPIN: ConfirmationStatus,
+  replaceCard: Card,
+  reorderCard: Card,
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
   categorizeTransaction: Transaction,
 };
@@ -466,6 +468,16 @@ export type MutationChangeCardPinArgs = {
 export type MutationConfirmChangeCardPinArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String'],
+  id: Scalars['String']
+};
+
+
+export type MutationReplaceCardArgs = {
+  id: Scalars['String']
+};
+
+
+export type MutationReorderCardArgs = {
   id: Scalars['String']
 };
 

@@ -1,26 +1,26 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { createClient } from "../helpers";
 import { Client } from "../../lib";
+import { createClient } from "../helpers";
 
 describe("Auth: DeviceBinding", () => {
   describe("#createDevice", () => {
     const createDeviceParams = {
       name: "iPhone XS",
       key:
-        "0402e86575939cd541f016b69b1bc6ee97736f7a6d32c0ad375695ffdc03acf21a3b54224fd164ad6f9cfdfb42b74f49f3d34a41f95d62e893be4977c7ec154f29"
+        "0402e86575939cd541f016b69b1bc6ee97736f7a6d32c0ad375695ffdc03acf21a3b54224fd164ad6f9cfdfb42b74f49f3d34a41f95d62e893be4977c7ec154f29",
     };
 
     const createDeviceResponse = {
       deviceId: "daecde61-18a4-4010-a0f7-a8b21c27996a",
-      challengeId: "daecde61-18a4-4010-a0f7-a8b21c27996a"
+      challengeId: "daecde61-18a4-4010-a0f7-a8b21c27996a",
     };
 
     it("should create device", async () => {
       const client = createClient();
       const requestStub = sinon
-        .stub(client.auth.device["request"], "fetch")
+        .stub((client.auth.device as any).request, "fetch")
         .resolves(createDeviceResponse);
       const result = await client.auth.device.createDevice(createDeviceParams);
 
@@ -28,7 +28,7 @@ describe("Auth: DeviceBinding", () => {
       expect(requestStub.getCall(0).args).to.eql([
         "/api/user/devices",
         "POST",
-        createDeviceParams
+        createDeviceParams,
       ]);
       expect(result).to.equal(createDeviceResponse);
 
@@ -41,24 +41,24 @@ describe("Auth: DeviceBinding", () => {
 
     const verifyDeviceParams = {
       challengeId: "daecde61-18a4-4010-a0f7-a8b21c27996a",
-      signature: "fake-signature"
+      signature: "fake-signature",
     };
 
     it("should verify device", async () => {
       const client = createClient();
       const requestStub = sinon
-        .stub(client.auth.device["request"], "fetch")
+        .stub((client.auth.device as any).request, "fetch")
         .resolves();
       const result = await client.auth.device.verifyDevice(
         deviceId,
-        verifyDeviceParams
+        verifyDeviceParams,
       );
 
       expect(requestStub.callCount).to.equal(1);
       expect(requestStub.getCall(0).args).to.eql([
         `/api/user/devices/${deviceId}/verify`,
         "POST",
-        verifyDeviceParams
+        verifyDeviceParams,
       ]);
       expect(result).to.equal(undefined);
 
@@ -71,20 +71,20 @@ describe("Auth: DeviceBinding", () => {
 
     const createDeviceChallengeResponse = {
       id: "83d1a026-dc80-48dc-bc15-4b672716050d",
-      stringToSign: "7b6ad39f-1593-4f4d-a84d-b539cc25a3cf"
+      stringToSign: "7b6ad39f-1593-4f4d-a84d-b539cc25a3cf",
     };
 
     it("should create device challenge", async () => {
       const client = createClient();
       const requestStub = sinon
-        .stub(client.auth.device["request"], "fetch")
+        .stub((client.auth.device as any).request, "fetch")
         .resolves(createDeviceChallengeResponse);
       const result = await client.auth.device.createDeviceChallenge(deviceId);
 
       expect(requestStub.callCount).to.equal(1);
       expect(requestStub.getCall(0).args).to.eql([
         `/api/user/devices/${deviceId}/challenges`,
-        "POST"
+        "POST",
       ]);
       expect(result).to.equal(createDeviceChallengeResponse);
 
@@ -100,18 +100,18 @@ describe("Auth: DeviceBinding", () => {
     const challengeId = "83d1a026-dc80-48dc-bc15-4b672716050d";
 
     const verifyDeviceChallengeParams = {
-      signature: "fake-signature"
+      signature: "fake-signature",
     };
 
     const verifyDeviceChallengeResponse = {
-      token: "fake-confirmed-token"
+      token: "fake-confirmed-token",
     };
 
     beforeEach(() => {
       client = createClient();
 
       requestStub = sinon
-        .stub(client.auth.device["request"], "fetch")
+        .stub((client.auth.device as any).request, "fetch")
         .resolves(verifyDeviceChallengeResponse);
     });
 
@@ -123,26 +123,26 @@ describe("Auth: DeviceBinding", () => {
       const result = await client.auth.device.verifyDeviceChallenge(
         deviceId,
         challengeId,
-        verifyDeviceChallengeParams
+        verifyDeviceChallengeParams,
       );
 
       expect(requestStub.callCount).to.equal(1);
       expect(requestStub.getCall(0).args).to.eql([
         `/api/user/devices/${deviceId}/challenges/${challengeId}/verify`,
         "POST",
-        verifyDeviceChallengeParams
+        verifyDeviceChallengeParams,
       ]);
       expect(result.accessToken).to.equal(verifyDeviceChallengeResponse.token);
       expect(
         client.auth.tokenManager.token &&
-          client.auth.tokenManager.token.accessToken
+          client.auth.tokenManager.token.accessToken,
       ).to.equal(verifyDeviceChallengeResponse.token);
     });
 
     describe("when a refresh token is present in the response", () => {
       const verifyDeviceChallengeResponseWithRefreshToken = {
         token: "fake-confirmed-token",
-        refresh_token: "fake-confirmed-refresh-token"
+        refresh_token: "fake-confirmed-refresh-token",
       };
 
       beforeEach(() => {
@@ -153,28 +153,28 @@ describe("Auth: DeviceBinding", () => {
         const result = await client.auth.device.verifyDeviceChallenge(
           deviceId,
           challengeId,
-          verifyDeviceChallengeParams
+          verifyDeviceChallengeParams,
         );
 
         expect(requestStub.callCount).to.equal(1);
         expect(requestStub.getCall(0).args).to.eql([
           `/api/user/devices/${deviceId}/challenges/${challengeId}/verify`,
           "POST",
-          verifyDeviceChallengeParams
+          verifyDeviceChallengeParams,
         ]);
         expect(result.accessToken).to.equal(
-          verifyDeviceChallengeResponseWithRefreshToken.token
+          verifyDeviceChallengeResponseWithRefreshToken.token,
         );
         expect(result.refreshToken).to.equal(
-          verifyDeviceChallengeResponseWithRefreshToken.refresh_token
+          verifyDeviceChallengeResponseWithRefreshToken.refresh_token,
         );
         expect(
           client.auth.tokenManager.token &&
-            client.auth.tokenManager.token.accessToken
+            client.auth.tokenManager.token.accessToken,
         ).to.equal(verifyDeviceChallengeResponseWithRefreshToken.token);
         expect(
           client.auth.tokenManager.token &&
-            client.auth.tokenManager.token.refreshToken
+            client.auth.tokenManager.token.refreshToken,
         ).to.equal(verifyDeviceChallengeResponseWithRefreshToken.refresh_token);
       });
     });

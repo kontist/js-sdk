@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import * as sinon from "sinon";
 import ClientOAuth2 = require("client-oauth2");
-import { Constants, Client } from "../../lib";
+import * as sinon from "sinon";
+import { Client, Constants } from "../../lib";
 import * as utils from "../../lib/utils";
 
-import { createClient, clientId, redirectUri } from "../helpers";
+import { clientId, createClient, redirectUri } from "../helpers";
 
 describe("Auth: TokenManager", () => {
   const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
@@ -33,7 +33,7 @@ describe("Auth: TokenManager", () => {
     const tokenResponseData = {
       access_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
       refresh_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ1",
-      token_type: "Bearer"
+      token_type: "Bearer",
     };
     let oauthClient: ClientOAuth2;
     let tokenData: ClientOAuth2.Token;
@@ -58,8 +58,8 @@ describe("Auth: TokenManager", () => {
         expect(url).to.equal(callbackUrl);
         expect(opts).to.deep.equal({
           body: {
-            code_verifier: verifier
-          }
+            code_verifier: verifier,
+          },
         });
       });
 
@@ -94,7 +94,7 @@ describe("Auth: TokenManager", () => {
 
     const tokenResponseData = {
       access_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-      token_type: "Bearer"
+      token_type: "Bearer",
     };
 
     let oauthClient: ClientOAuth2;
@@ -121,7 +121,7 @@ describe("Auth: TokenManager", () => {
     it("should return token data", async () => {
       const tokenData = await client.auth.tokenManager.fetchTokenFromCredentials({
         username,
-        password
+        password,
       });
 
       expect(tokenData.data).to.deep.equal(tokenResponseData);
@@ -131,7 +131,7 @@ describe("Auth: TokenManager", () => {
       await client.auth.tokenManager.fetchTokenFromCredentials({
         username,
         password,
-        scopes
+        scopes,
       });
 
       const stub = oauthClient.owner.getToken as sinon.SinonStub;
@@ -149,22 +149,22 @@ describe("Auth: TokenManager", () => {
         (global as any).window = {};
         (global as any).document = {
           location: {
-            origin
-          }
+            origin,
+          },
         };
-      })
+      });
 
       it("should request a silent authorization and fetch a new token", async () => {
         const dummyToken = "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
         const state = "some?state&with#uri=components";
         const client = createClient({
           verifier,
-          state
+          state,
         });
         const customTimeout = 20000;
         const tokenResponseData = {
           access_token: "dummy-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-          token_type: "Bearer"
+          token_type: "Bearer",
         };
         const oauthClient = new ClientOAuth2({});
         const fetchTokenStub = sinon
@@ -181,12 +181,12 @@ describe("Auth: TokenManager", () => {
 
         expect(fetchTokenStub.callCount).to.equal(1);
         expect(fetchTokenStub.getCall(0).args[0]).to.equal(
-          `${origin}?code=${code}&state=${encodeURIComponent(state)}`
+          `${origin}?code=${code}&state=${encodeURIComponent(state)}`,
         );
 
         expect(silentAuthorizationStub.callCount).to.equal(1);
         const [firstArg, secondArg, thirdArg] = silentAuthorizationStub.getCall(
-          0
+          0,
         ).args;
         expect(firstArg).to.include("prompt=none");
         expect(firstArg).to.include("response_mode=web_message");
@@ -202,7 +202,7 @@ describe("Auth: TokenManager", () => {
       after(() => {
         (global as any).window = undefined;
         (global as any).document = undefined;
-      })
+      });
     });
 
     describe("when client is created with a clientSecret", () => {
@@ -211,7 +211,7 @@ describe("Auth: TokenManager", () => {
 
         const client = createClient({
           oauthClient,
-          clientSecret
+          clientSecret,
         });
 
         const tokenResponseData = {
@@ -219,12 +219,12 @@ describe("Auth: TokenManager", () => {
             "dummy-access-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
           refresh_token:
             "dummy-refresh-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ1",
-          token_type: "Bearer"
+          token_type: "Bearer",
         };
 
         client.auth.tokenManager.setToken(
           tokenResponseData.access_token,
-          tokenResponseData.refresh_token
+          tokenResponseData.refresh_token,
         );
 
         const clientOAuth2TokenRefreshStub = sinon

@@ -1,10 +1,10 @@
-import {
-  TransactionProjectionType,
-  Transaction,
-  Transfer,
-  TransferStatus
-} from "../lib/graphql/schema";
 import { Client } from "../lib";
+import {
+  Transaction,
+  TransactionProjectionType,
+  Transfer,
+  TransferStatus,
+} from "../lib/graphql/schema";
 
 export const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
 export const redirectUri = "https://localhost:3000/auth/callback";
@@ -17,48 +17,48 @@ export const createClient = (opts = {}) => {
     redirectUri,
     scopes,
     state,
-    ...opts
+    ...opts,
   });
 };
 
 export const createTransaction = (
-  override: Record<string, any> = {}
+  override: Record<string, any> = {},
 ): Transaction => {
   return {
-    id: Math.random.toString(),
-    amount: parseInt((Math.random() * 100).toString()),
-    directDebitFees: [],
-    type: TransactionProjectionType.Atm,
-    fees: [],
+    amount: parseInt((Math.random() * 100).toString(), 10),
     bookingDate: new Date(),
+    directDebitFees: [],
+    fees: [],
+    id: Math.random.toString(),
     paymentMethod: "card",
-    ...override
+    type: TransactionProjectionType.Atm,
+    ...override,
   };
 };
 
 export const createTransfer = (
-  override: Record<string, any> = {}
+  override: Record<string, any> = {},
 ): Transfer => {
   return {
-    id: Math.random.toString(),
-    recipient: "John Doe",
-    iban: "DE32110101001000000029",
-    amount: parseInt((Math.random() * 100).toString()),
-    status: TransferStatus.Confirmed,
-    executeAt: null,
-    lastExecutionDate: null,
-    purpose: "some transfer purpose",
+    amount: parseInt((Math.random() * 100).toString(), 10),
     e2eId: "some-e2e-id",
-    reoccurrence: null,
+    executeAt: null,
+    iban: "DE32110101001000000029",
+    id: Math.random.toString(),
+    lastExecutionDate: null,
     nextOccurrence: null,
-    ...override
+    purpose: "some transfer purpose",
+    recipient: "John Doe",
+    reoccurrence: null,
+    status: TransferStatus.Confirmed,
+    ...override,
   };
 };
 
 export const generatePaginatedResponse = ({
   key,
   items,
-  pageInfo
+  pageInfo,
 }: {
   key: "transactions" | "transfers";
   items: Array<Transaction | Transfer>;
@@ -67,16 +67,16 @@ export const generatePaginatedResponse = ({
   viewer: {
     mainAccount: {
       [key]: {
-        edges: items.map(item => ({
+        edges: items.map((item) => ({
+          cursor: "1234",
           node: item,
-          cursor: "1234"
         })),
         pageInfo: {
-          startCursor: "111111",
           endCursor: "22222",
-          ...pageInfo
-        }
-      }
-    }
-  }
+          startCursor: "111111",
+          ...pageInfo,
+        },
+      },
+    },
+  },
 });

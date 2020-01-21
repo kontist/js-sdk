@@ -1,14 +1,23 @@
+import { btoa } from "abab";
 import * as ClientOAuth2 from "client-oauth2";
 import { sha256 } from "js-sha256";
-import { btoa } from "abab";
 
-import { TokenManagerOpts, GetAuthUriOpts } from "../types";
+import { RenewTokenError, UserUnauthorizedError } from "../errors";
+import { GetAuthUriOpts, TokenManagerOpts } from "../types";
 import { authorizeSilently } from "../utils";
-import { UserUnauthorizedError, RenewTokenError } from "../errors";
 
 const DEFAULT_TOKEN_REFRESH_TIMEOUT = 10000;
 
 export class TokenManager {
+
+  /**
+   * Returns current token used for API requests.
+   *
+   * @returns  token object which might contain token(s), scope(s), token type and expiration time
+   */
+  get token(): ClientOAuth2.Token | null {
+    return this._token;
+  }
   private oauth2Client: ClientOAuth2;
   private _token: ClientOAuth2.Token | null = null;
   private baseUrl: string;
@@ -34,14 +43,14 @@ export class TokenManager {
     const query: {
       [key: string]: string | string[];
     } = {
-      ...(opts.query || {})
+      ...(opts.query || {}),
     };
 
     if (this.verifier) {
       // Implemented according to https://tools.ietf.org/html/rfc7636#appendix-A
-      const challenge = 
+      const challenge =
         btoa(String.fromCharCode.apply(null, sha256.array(this.verifier)))!
-      
+
         .split("=")[0]
         .replace("+", "-")
         .replace("/", "_");
@@ -51,7 +60,7 @@ export class TokenManager {
     }
 
     return this.oauth2Client.code.getUri({ query });
-  };
+  }
 
   /**
    * This method must be called during the callback via `redirectUri`.
@@ -60,7 +69,7 @@ export class TokenManager {
    * @returns            token object which might contain token(s), scope(s), token type and expiration time
    */
   public fetchToken = async (
-    callbackUri: string
+    callbackUri: string,
   ): Promise<ClientOAuth2.Token> => {
     const options: {
       body?: {
@@ -70,7 +79,7 @@ export class TokenManager {
 
     if (this.verifier) {
       options.body = {
-        code_verifier: this.verifier
+        code_verifier: this.verifier,
       };
     }
 
@@ -79,7 +88,7 @@ export class TokenManager {
     this._token = token;
 
     return token;
-  };
+  }
 
   /**
    * Fetches token from owner credentials.
@@ -100,13 +109,13 @@ export class TokenManager {
     const token = await this.oauth2Client.owner.getToken(
       options.username,
       options.password,
-      getTokenOpts
+      getTokenOpts,
     );
 
     this._token = token;
 
     return token;
-  };
+  }
 
   /**
    * Refresh auth token silently for browser environments
@@ -115,50 +124,11 @@ export class TokenManager {
    * @param timeout  optional timeout for renewal in ms
    */
   public refresh = async (
-    timeout: number = DEFAULT_TOKEN_REFRESH_TIMEOUT
+    timeout: number = DEFAULT_TOKEN_REFRESH_TIMEOUT,
   ): Promise<ClientOAuth2.Token> =>
     this.verifier
       ? this.renewWithWebMessage(timeout)
-      : this.renewWithRefreshToken(timeout);
-
-  /**
-   * Renew auth token using refresh token
-   *
-   * @param timeout  timeout for renewal in ms
-   */
-  private renewWithRefreshToken = async (
-    timeout: number
-  ): Promise<ClientOAuth2.Token> => {
-    return new Promise(async (resolve, reject) => {
-      if (!this.token) {
-        throw new UserUnauthorizedError();
-      }
-
-      const timeoutId = setTimeout(() => {
-        reject(
-          new RenewTokenError({
-            message: "Server did not respond with a new auth token, aborting."
-          })
-        );
-      }, timeout);
-
-      let token;
-      try {
-        token = await this.token.refresh();
-      } catch (error) {
-        return reject(
-          new RenewTokenError({
-            message: error.message
-          })
-        );
-      }
-
-      clearTimeout(timeoutId);
-
-      this._token = token;
-      return resolve(token);
-    });
-  };
+      : this.renewWithRefreshToken(timeout)
 
   /**
    * Sets up  previously created token for all upcoming requests.
@@ -171,7 +141,7 @@ export class TokenManager {
   public setToken = (
     accessToken: string,
     refreshToken?: string,
-    tokenType?: string
+    tokenType?: string,
   ): ClientOAuth2.Token => {
     const data = {};
     let token;
@@ -181,7 +151,7 @@ export class TokenManager {
         accessToken,
         refreshToken,
         tokenType,
-        data
+        data,
       );
     } else if (refreshToken) {
       token = this.oauth2Client.createToken(accessToken, refreshToken, data);
@@ -192,7 +162,46 @@ export class TokenManager {
     this._token = token;
 
     return token;
-  };
+  }
+
+  /**
+   * Renew auth token using refresh token
+   *
+   * @param timeout  timeout for renewal in ms
+   */
+  private renewWithRefreshToken = async (
+    timeout: number,
+  ): Promise<ClientOAuth2.Token> => {
+    return new Promise(async (resolve, reject) => {
+      if (!this.token) {
+        throw new UserUnauthorizedError();
+      }
+
+      const timeoutId = setTimeout(() => {
+        reject(
+          new RenewTokenError({
+            message: "Server did not respond with a new auth token, aborting.",
+          }),
+        );
+      }, timeout);
+
+      let token;
+      try {
+        token = await this.token.refresh();
+      } catch (error) {
+        return reject(
+          new RenewTokenError({
+            message: error.message,
+          }),
+        );
+      }
+
+      clearTimeout(timeoutId);
+
+      this._token = token;
+      return resolve(token);
+    });
+  }
 
   /**
    * Renew auth token for browser environments using web_message response mode and prompt none
@@ -200,20 +209,20 @@ export class TokenManager {
    * @param timeout  timeout for renewal in ms
    */
   private renewWithWebMessage = async (
-    timeout: number
+    timeout: number,
   ): Promise<ClientOAuth2.Token> => {
     if (!document || !window) {
       throw new RenewTokenError({
         message:
-          "Web message token renewal is only available in browser environments"
+          "Web message token renewal is only available in browser environments",
       });
     }
 
     const iframeUri = await this.getAuthUri({
       query: {
         prompt: "none",
-        response_mode: "web_message"
-      }
+        response_mode: "web_message",
+      },
     });
 
     try {
@@ -226,17 +235,8 @@ export class TokenManager {
       return token;
     } catch (error) {
       throw new RenewTokenError({
-        message: error.message
+        message: error.message,
       });
     }
-  };
-
-  /**
-   * Returns current token used for API requests.
-   *
-   * @returns  token object which might contain token(s), scope(s), token type and expiration time
-   */
-  get token(): ClientOAuth2.Token | null {
-    return this._token;
   }
 }
