@@ -301,7 +301,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id
    * @returns      the newly created card details
    */
-  async replaceCard(args: ReplaceCardOptions): Promise<CardModel> {
+  async replace(args: ReplaceCardOptions): Promise<CardModel> {
     const result = await this.client.rawQuery(REPLACE_CARD, args);
     return result.replaceCard;
   }

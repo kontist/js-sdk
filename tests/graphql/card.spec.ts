@@ -323,7 +323,7 @@ describe("Card", () => {
     });
   });
 
-  describe("#replaceCard", () => {
+  describe("#replace", () => {
     it("should call rawQuery and return newly created card details", async () => {
       // arrange;
       const newCardData = {
@@ -336,7 +336,7 @@ describe("Card", () => {
       } as any);
 
       // act
-      const result = await card.replaceCard({
+      const result = await card.replace({
         id: cardData.id
       });
 
