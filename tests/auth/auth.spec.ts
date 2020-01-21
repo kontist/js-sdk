@@ -150,11 +150,12 @@ describe("Auth", () => {
       sandbox.stub(client.auth.tokenManager, "token").get(spyOnToken);
 
       // act
-      const _ = client.auth.token;
+      const token = client.auth.token;
 
       // assert
       sinon.assert.calledWith(spyOnShowDeprecationWarning, "token");
       sinon.assert.called(spyOnToken);
+      expect(token).to.be.undefined;
     });
   });
 

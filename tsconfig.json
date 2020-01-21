@@ -6,7 +6,8 @@
     "outDir": "dist",
     "sourceMap": true,
     "lib": ["es2015", "dom"],
-    "declaration": true
+    "declaration": true,
+    "noUnusedLocals": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
