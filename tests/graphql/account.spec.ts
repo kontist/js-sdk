@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import "cross-fetch/polyfill";
 import * as sinon from "sinon";
 
 import { Client } from "../../lib";
