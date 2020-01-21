@@ -3,9 +3,7 @@ import {
   Mutation,
   TransferType,
   TransfersConnectionFilter,
-  CardType,
-  CardAction,
-  CardLimitsInput
+  CardType
 } from "./schema";
 
 export type FetchOptions = {
