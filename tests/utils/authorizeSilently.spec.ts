@@ -1,8 +1,8 @@
-import * as sinon from "sinon";
-import { JSDOM } from "jsdom";
 import { expect } from "chai";
-import { authorizeSilently } from "../../lib/utils";
+import { JSDOM } from "jsdom";
+import * as sinon from "sinon";
 import { RenewTokenError } from "../../lib/errors";
+import { authorizeSilently } from "../../lib/utils";
 
 describe("authorizeSilently", () => {
   let addEventListenerSpy: any;
@@ -141,7 +141,7 @@ describe("authorizeSilently", () => {
         await authorizeSilently(
           "http://some.url",
           "http://some.wrong.origin",
-          200
+          200,
         );
       } catch (err) {
         error = err;
@@ -151,7 +151,7 @@ describe("authorizeSilently", () => {
     it("should throw a RenewTokenError", () => {
       expect(error).to.be.an.instanceof(RenewTokenError);
       expect(error.message).to.equal(
-        "Server did not respond with authorization code, aborting."
+        "Server did not respond with authorization code, aborting.",
       );
     });
 

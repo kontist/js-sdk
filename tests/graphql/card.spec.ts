@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { CardType, CardAction, CardStatus } from "../../lib/graphql/schema";
+import { CardAction, CardStatus, CardType } from "../../lib/graphql/schema";
 
 import { Client } from "../../lib";
 import { Card } from "../../lib/graphql/card";
@@ -14,31 +14,31 @@ const cardData = {
   maskedPan: "6802********5119",
   pinSet: false,
   settings: {
-    contactlessEnabled: true
-  }
+    contactlessEnabled: true,
+  },
 };
 
 const cardLimitsData = {
   cardNotPresentLimits: {
     daily: {
       maxAmountCents: 350000,
-      maxTransactions: 34
+      maxTransactions: 34,
     },
     monthly: {
       maxAmountCents: 2000000,
-      maxTransactions: 777
-    }
+      maxTransactions: 777,
+    },
   },
   cardPresentLimits: {
     daily: {
       maxAmountCents: 440000,
-      maxTransactions: 14
+      maxTransactions: 14,
     },
     monthly: {
       maxAmountCents: 2600000,
-      maxTransactions: 468
-    }
-  }
+      maxTransactions: 468,
+    },
+  },
 };
 
 describe("Card", () => {
@@ -58,7 +58,7 @@ describe("Card", () => {
       clientId,
       redirectUri,
       scopes,
-      state
+      state,
     });
   });
 
@@ -71,7 +71,7 @@ describe("Card", () => {
       // arrange
       const cardsData = [
         cardData,
-        { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" }
+        { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" },
       ];
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
@@ -79,10 +79,10 @@ describe("Card", () => {
           mainAccount: {
             cards: [
               cardData,
-              { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" }
-            ]
-          }
-        }
+              { ...cardData, id: "010e5dcfdd7949fea50a510e97157169" },
+            ],
+          },
+        },
       } as any);
 
       // act
@@ -94,8 +94,8 @@ describe("Card", () => {
         items: cardsData,
         pageInfo: {
           hasNextPage: false,
-          hasPreviousPage: false
-        }
+          hasPreviousPage: false,
+        },
       });
     });
   });
@@ -107,15 +107,15 @@ describe("Card", () => {
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           mainAccount: {
-            card: cardData
-          }
-        }
+            card: cardData,
+          },
+        },
       } as any);
 
       // act
       const result = await card.get({
         id: cardData.id,
-        type: CardType.VisaBusinessDebit
+        type: CardType.VisaBusinessDebit,
       });
 
       // assert
@@ -127,13 +127,13 @@ describe("Card", () => {
       // arrange
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        viewer: {}
+        viewer: {},
       } as any);
 
       // act
       const result = await card.get({
         id: cardData.id,
-        type: CardType.MastercardBusinessDebit
+        type: CardType.MastercardBusinessDebit,
       });
 
       // assert
@@ -150,16 +150,16 @@ describe("Card", () => {
         viewer: {
           mainAccount: {
             card: {
-              settings: cardLimitsData
-            }
-          }
-        }
+              settings: cardLimitsData,
+            },
+          },
+        },
       } as any);
 
       // act
       const result = await card.getLimits({
         id: cardData.id,
-        type: CardType.VisaBusinessDebit
+        type: CardType.VisaBusinessDebit,
       });
 
       // assert
@@ -171,13 +171,13 @@ describe("Card", () => {
       // arrange
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        viewer: {}
+        viewer: {},
       } as any);
 
       // act
       const result = await card.get({
         id: cardData.id,
-        type: CardType.MastercardBusinessDebit
+        type: CardType.MastercardBusinessDebit,
       });
 
       // assert
@@ -191,12 +191,12 @@ describe("Card", () => {
       // arrange
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        createCard: cardData
+        createCard: cardData,
       } as any);
 
       // act
       const result = await card.create({
-        type: CardType.VisaBusinessDebit
+        type: CardType.VisaBusinessDebit,
       });
 
       // assert
@@ -210,17 +210,17 @@ describe("Card", () => {
       // arrange
       const activatedCardData = {
         ...cardData,
-        status: CardStatus.Active
+        status: CardStatus.Active,
       };
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        activateCard: activatedCardData
+        activateCard: activatedCardData,
       } as any);
 
       // act
       const result = await card.activate({
         id: cardData.id,
-        verificationToken: "7AOXBQ"
+        verificationToken: "7AOXBQ",
       });
 
       // assert
@@ -235,14 +235,14 @@ describe("Card", () => {
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         changeCardPIN: {
-          confirmationId
-        }
+          confirmationId,
+        },
       } as any);
 
       // act
       const result = await card.changePIN({
         id: cardData.id,
-        pin: "9164"
+        pin: "9164",
       });
 
       // assert
@@ -258,15 +258,15 @@ describe("Card", () => {
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         confirmChangeCardPIN: {
-          status
-        }
+          status,
+        },
       } as any);
 
       // act
       const result = await card.confirmChangePIN({
         id: cardData.id,
         authorizationToken: "090402",
-        confirmationId
+        confirmationId,
       });
 
       // assert
@@ -280,17 +280,17 @@ describe("Card", () => {
       // arrange
       const updatedCardData = {
         ...cardData,
-        status: CardStatus.Blocked
+        status: CardStatus.Blocked,
       };
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        changeCardStatus: updatedCardData
+        changeCardStatus: updatedCardData,
       } as any);
 
       // act
       const result = await card.changeStatus({
         id: cardData.id,
-        action: CardAction.Block
+        action: CardAction.Block,
       });
 
       // assert
@@ -304,17 +304,17 @@ describe("Card", () => {
       // arrange
       const updatedCardSettings = {
         contactlessEnabled: false,
-        ...cardLimitsData
+        ...cardLimitsData,
       };
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        updateCardSettings: updatedCardSettings
+        updateCardSettings: updatedCardSettings,
       } as any);
 
       // act
       const result = await card.updateSettings({
         id: cardData.id,
-        ...updatedCardSettings
+        ...updatedCardSettings,
       });
 
       // assert

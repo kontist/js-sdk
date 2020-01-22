@@ -1,9 +1,9 @@
 import {
-  Query,
+  CardType,
   Mutation,
-  TransferType,
+  Query,
   TransfersConnectionFilter,
-  CardType
+  TransferType,
 } from "./schema";
 
 export type FetchOptions = {
@@ -24,7 +24,7 @@ export type GetCardOptions = {
 };
 
 export enum SubscriptionType {
-  newTransaction = "newTransaction"
+  newTransaction = "newTransaction",
 }
 
 export type Subscription = {
