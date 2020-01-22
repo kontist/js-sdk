@@ -1,7 +1,11 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { Transfer, TransferType } from "../../lib/graphql/schema";
 import { Transfer as TransferClass } from "../../lib/graphql/transfer";
+import {
+  TransferType,
+  Transfer,
+  StandingOrderReoccurenceType
+} from "../../lib/graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
 
 describe("Transfer", () => {
@@ -216,6 +220,40 @@ describe("Transfer", () => {
         expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
         expect(result).to.eql([]);
       });
+    });
+  });
+
+  describe("update", () => {
+    const updatePayload = {
+      id: "some-id",
+      amount: 2345,
+      purpose: "some money",
+      e2eId: "some-e2e-id",
+      reoccurrence: StandingOrderReoccurenceType.Annually,
+      lastExecutionDate: "2022-02-02",
+      type: TransferType.StandingOrder
+    };
+    const confirmationId = "standing-order:123456789";
+
+    before(async () => {
+      graphqlClientStub.rawQuery.reset();
+      graphqlClientStub.rawQuery.resolves({
+        updateTransfer: {
+          confirmationId
+        }
+      });
+      result = await transferInstance.update(updatePayload);
+    });
+
+    it("should send updateTransfer GraphQL mutation", () => {
+      expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+      const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
+      expect(query).to.include("updateTransfer");
+      expect(variables).to.eql({ transfer: updatePayload });
+    });
+
+    it("should return updateTransfer result", () => {
+      expect(result).to.eql(confirmationId);
     });
   });
 });

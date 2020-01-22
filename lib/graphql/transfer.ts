@@ -9,6 +9,7 @@ import {
   TransfersConnectionEdge,
   TransferSuggestion,
   TransferType,
+  UpdateTransferInput,
 } from "./schema";
 import { TransferFetchOptions } from "./types";
 
@@ -147,6 +148,12 @@ const GET_TRANSFER_SUGGESTIONS = `
   }
 `;
 
+const UPDATE_TRANSFER = `mutation updateTransfer($transfer: UpdateTransferInput!) {
+  updateTransfer(transfer: $transfer) {
+    confirmationId
+  }
+}`;
+
 export class Transfer extends IterableModel<
   TransferModel,
   TransferFetchOptions
@@ -243,6 +250,17 @@ export class Transfer extends IterableModel<
       type,
     });
     return result.confirmCancelTransfer;
+  }
+
+  /**
+   * Update a standing order
+   *
+   * @param transfer  transfer data including at least id and amount
+   * @returns         confirmation id used to confirm the update
+   */
+  public async update(transfer: UpdateTransferInput): Promise<string> {
+    const result = await this.client.rawQuery(UPDATE_TRANSFER, { transfer });
+    return result.updateTransfer.confirmationId;
   }
 
   /**

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add a method to replace a card (`models.card.replace`)
 - Add a method to reorder a card (`models.card.reorder`)
+- Add a method to update standing orders (`models.transfer.update`)
 
 ### Changed
 - *Breaking*: changed card types to use schema types (CreateCardOptions, ActivateCardOptions, ChangeCardPINOptions, ConfirmChangeCardPINOptions, ChangeCardStatusOptions, UpdateCardSettingsOptions).

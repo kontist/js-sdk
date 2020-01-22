@@ -353,6 +353,7 @@ export type Mutation = {
   deleteClient: Client,
   /** Create a transfer. The transfer's type will be determined based on the provided input */
   createTransfer: ConfirmationRequest,
+  updateTransfer: ConfirmationRequest,
   /** Confirm a transfer creation */
   confirmTransfer: Transfer,
   /** Create multiple transfers at once. Only regular SEPA Transfers are supported */
@@ -404,6 +405,11 @@ export type MutationDeleteClientArgs = {
 
 export type MutationCreateTransferArgs = {
   transfer: CreateTransferInput
+};
+
+
+export type MutationUpdateTransferArgs = {
+  transfer: UpdateTransferInput
 };
 
 
@@ -1060,6 +1066,24 @@ export type UpdateClientInput = {
   scopes?: Maybe<Array<ScopeType>>,
   /** The id of the OAuth2 client to update */
   id: Scalars['String'],
+};
+
+/** The available fields to update a Standing Order */
+export type UpdateTransferInput = {
+  /** The ID of the Standing Order to update */
+  id: Scalars['String'],
+  /** The type of transfer to update, currently only Standing Orders are supported */
+  type: TransferType,
+  /** The amount of each Standing Order payment in cents */
+  amount: Scalars['Int'],
+  /** The date at which the last payment will be executed */
+  lastExecutionDate?: Maybe<Scalars['DateTime']>,
+  /** The purpose of the Standing Order - 140 max characters, if not specified with the update, it will be set to null */
+  purpose?: Maybe<Scalars['String']>,
+  /** The end to end ID of the Standing Order, if not specified with the update, it will be set to null */
+  e2eId?: Maybe<Scalars['String']>,
+  /** The reoccurrence type of the payments for Standing Orders */
+  reoccurrence?: Maybe<StandingOrderReoccurenceType>,
 };
 
 export type User = {
