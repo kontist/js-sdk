@@ -3,9 +3,7 @@ import {
   Mutation,
   TransferType,
   TransfersConnectionFilter,
-  CardType,
-  CardAction,
-  CardLimitsInput
+  CardType
 } from "./schema";
 
 export type FetchOptions = {
@@ -23,38 +21,6 @@ export type TransferFetchOptions = {
 export type GetCardOptions = {
   id: string;
   type?: CardType;
-};
-
-export type CreateCardOptions = {
-  type: string;
-};
-
-export type ActivateCardOptions = {
-  id: string;
-  verificationToken: string;
-};
-
-export type ChangeCardPINOptions = {
-  id: string;
-  pin: string;
-};
-
-export type ConfirmChangeCardPINOptions = {
-  id: string;
-  confirmationId: string;
-  authorizationToken: string;
-};
-
-export type ChangeCardStatusOptions = {
-  id: string;
-  action: CardAction;
-};
-
-export type UpdateCardSettingsOptions = {
-  id: string;
-  contactlessEnabled?: boolean;
-  cardNotPresentLimits?: CardLimitsInput;
-  cardPresentLimits?: CardLimitsInput;
 };
 
 export enum SubscriptionType {
