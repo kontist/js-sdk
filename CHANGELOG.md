@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add a method to replace a card (`models.card.replace`)
+- Add a method to reorder a card (`models.card.reorder`)
+
 ### Changed
 - *Breaking*: changed card types to use schema types (CreateCardOptions, ActivateCardOptions, ChangeCardPINOptions, ConfirmChangeCardPINOptions, ChangeCardStatusOptions, UpdateCardSettingsOptions).
 
