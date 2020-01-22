@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add a method to replace a card (`models.card.replace`)
 - Add a method to reorder a card (`models.card.reorder`)
+- Add a method to update standing orders (`models.transfer.update`)
 
 ### Changed
 - *Breaking*: changed card types to use schema types (CreateCardOptions, ActivateCardOptions, ChangeCardPINOptions, ConfirmChangeCardPINOptions, ChangeCardStatusOptions, UpdateCardSettingsOptions).
@@ -17,7 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `card` model and associated methods (see: `lib/graphql/card.ts`)
 - Add a method to categorize transactions (`models.transaction.categorize`)
 - Add a method to fetch wire transfer suggestions (`models.transfer.suggestions`)
-- Add a method to update standing orders (`models.transfer.update`)
 
 ## [0.22.2] - 2019-11-26
 ### Fixed
