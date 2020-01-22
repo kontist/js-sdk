@@ -15,7 +15,7 @@ describe("Client", () => {
         clientId,
         redirectUri,
         scopes,
-        state
+        state,
       });
 
       expect(client).to.exist;
@@ -30,7 +30,7 @@ describe("Client", () => {
         clientId,
         redirectUri,
         scopes,
-        state
+        state,
       };
       const auth = {} as Auth;
       const graphQL = {} as GraphQLClient;
@@ -39,7 +39,7 @@ describe("Client", () => {
         transfer: {} as any,
         account: {} as any,
         user: {} as any,
-        card: {} as any
+        card: {} as any,
       };
 
       // act
@@ -49,7 +49,7 @@ describe("Client", () => {
         "ws://localhost:3000/api/graphql",
         auth,
         graphQL,
-        models
+        models,
       );
 
       // assert

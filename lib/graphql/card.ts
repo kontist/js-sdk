@@ -1,6 +1,17 @@
-import { Card as CardModel, Query, CardSettings, MutationCreateCardArgs, MutationActivateCardArgs, MutationChangeCardPinArgs, MutationConfirmChangeCardPinArgs, MutationChangeCardStatusArgs, MutationUpdateCardSettingsArgs, MutationReplaceCardArgs } from "./schema";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
+import {
+  Card as CardModel,
+  CardSettings,
+  MutationActivateCardArgs,
+  MutationChangeCardPinArgs,
+  MutationChangeCardStatusArgs,
+  MutationConfirmChangeCardPinArgs,
+  MutationCreateCardArgs,
+  MutationReplaceCardArgs,
+  MutationUpdateCardSettingsArgs,
+  Query,
+} from "./schema";
 import {
   GetCardOptions,
 } from "./types";
@@ -186,7 +197,7 @@ export class Card extends Model<CardModel> {
    *
    * @returns     result page
    */
-  async fetch(): Promise<ResultPage<CardModel>> {
+  public async fetch(): Promise<ResultPage<CardModel>> {
     const result: Query = await this.client.rawQuery(GET_CARDS);
 
     const cards = result.viewer.mainAccount?.cards ?? [];
@@ -194,7 +205,7 @@ export class Card extends Model<CardModel> {
     // cards resolver is not paginated
     const pageInfo = {
       hasNextPage: false,
-      hasPreviousPage: false
+      hasPreviousPage: false,
     };
 
     return new ResultPage(this, cards, pageInfo, {});
@@ -206,7 +217,7 @@ export class Card extends Model<CardModel> {
    * @param args  query parameters including card id and / or type
    * @returns     details of the card specified in query parameters
    */
-  async get(args: GetCardOptions): Promise<CardModel | null> {
+  public async get(args: GetCardOptions): Promise<CardModel | null> {
     const result: Query = await this.client.rawQuery(GET_CARD, args);
     return result.viewer.mainAccount?.card ?? null;
   }
@@ -217,7 +228,7 @@ export class Card extends Model<CardModel> {
    * @param args  query parameters including card id and / or type
    * @returns     limits of the card
    */
-  async getLimits(args: GetCardOptions): Promise<CardSettings | null> {
+  public async getLimits(args: GetCardOptions): Promise<CardSettings | null> {
     const result: Query = await this.client.rawQuery(GET_CARD_LIMITS, args);
     return result.viewer.mainAccount?.card?.settings ?? null;
   }
@@ -228,7 +239,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card type
    * @returns      the newly created card details
    */
-  async create(args: MutationCreateCardArgs): Promise<CardModel> {
+  public async create(args: MutationCreateCardArgs): Promise<CardModel> {
     const result = await this.client.rawQuery(CREATE_CARD, args);
     return result.createCard;
   }
@@ -239,7 +250,7 @@ export class Card extends Model<CardModel> {
    * @param args  query parameters including card id and verificationToken
    * @returns     activated card details
    */
-  async activate(args: MutationActivateCardArgs): Promise<CardModel> {
+  public async activate(args: MutationActivateCardArgs): Promise<CardModel> {
     const result = await this.client.rawQuery(ACTIVATE_CARD, args);
     return result.activateCard;
   }
@@ -250,7 +261,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and PIN number
    * @returns      confirmation id used to confirm the PIN change
    */
-  async changePIN(args: MutationChangeCardPinArgs): Promise<string> {
+  public async changePIN(args: MutationChangeCardPinArgs): Promise<string> {
     const result = await this.client.rawQuery(CHANGE_CARD_PIN, args);
     return result.changeCardPIN.confirmationId;
   }
@@ -261,7 +272,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and PIN number
    * @returns      PIN number change status
    */
-  async confirmChangePIN(args: MutationConfirmChangeCardPinArgs): Promise<string> {
+  public async confirmChangePIN(args: MutationConfirmChangeCardPinArgs): Promise<string> {
     const result = await this.client.rawQuery(CONFIRM_CHANGE_CARD_PIN, args);
     return result.confirmChangeCardPIN.status;
   }
@@ -272,7 +283,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and action
    * @returns      updated card details
    */
-  async changeStatus(args: MutationChangeCardStatusArgs): Promise<CardModel> {
+  public async changeStatus(args: MutationChangeCardStatusArgs): Promise<CardModel> {
     const result = await this.client.rawQuery(CHANGE_CARD_STATUS, args);
     return result.changeCardStatus;
   }
@@ -283,7 +294,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id, contactlessEnabled, cardPresentLimits and cardNotPresentLimits
    * @returns      updated card settings
    */
-  async updateSettings(args: MutationUpdateCardSettingsArgs["settings"] & Pick<MutationUpdateCardSettingsArgs, "id">): Promise<CardSettings> {
+  public async updateSettings(args: MutationUpdateCardSettingsArgs["settings"] & Pick<MutationUpdateCardSettingsArgs, "id">): Promise<CardSettings> {
     const result = await this.client.rawQuery(UPDATE_CARD_SETTINGS, args);
     return result.updateCardSettings;
   }
@@ -294,7 +305,7 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id
    * @returns      the newly created card details
    */
-  async replace(args: MutationReplaceCardArgs): Promise<CardModel> {
+  public async replace(args: MutationReplaceCardArgs): Promise<CardModel> {
     const result = await this.client.rawQuery(REPLACE_CARD, args);
     return result.replaceCard;
   }

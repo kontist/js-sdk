@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import "cross-fetch/polyfill";
 
 import { Client } from "../../lib";
 import { KontistSDKError } from "../../lib/errors";
@@ -22,7 +21,7 @@ describe("User", () => {
       clientId,
       redirectUri,
       scopes,
-      state
+      state,
     });
   });
 
@@ -54,7 +53,7 @@ describe("User", () => {
       // arrange
       const user = new User(client.graphQL);
       const viewer = { email: "test@kontist.com" };
-      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ viewer } as any)
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ viewer } as any);
 
       // act
       const result = await user.get();
