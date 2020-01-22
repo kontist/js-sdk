@@ -1,12 +1,12 @@
-import {
-  Query,
-  TransactionsConnectionEdge,
-  Transaction as TransactionModel,
-  MutationCategorizeTransactionArgs
-} from "./schema";
 import { IterableModel } from "./iterableModel";
-import { FetchOptions, SubscriptionType, Subscription } from "./types";
 import { ResultPage } from "./resultPage";
+import {
+  MutationCategorizeTransactionArgs,
+  Query,
+  Transaction as TransactionModel,
+  TransactionsConnectionEdge,
+} from "./schema";
+import { FetchOptions, Subscription, SubscriptionType } from "./types";
 
 const TRANSACTION_FIELDS = `
   id
@@ -77,7 +77,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args  query parameters
    * @returns     result page
    */
-  async fetch(args?: FetchOptions): Promise<ResultPage<TransactionModel>> {
+  public async fetch(args?: FetchOptions): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
 
     const transactions = (
@@ -86,7 +86,7 @@ export class Transaction extends IterableModel<TransactionModel> {
 
     const pageInfo = result?.viewer?.mainAccount?.transactions?.pageInfo ?? {
       hasNextPage: false,
-      hasPreviousPage: false
+      hasPreviousPage: false,
     };
     return new ResultPage(this, transactions, pageInfo, args);
   }
@@ -94,19 +94,19 @@ export class Transaction extends IterableModel<TransactionModel> {
   /**
    * @inheritdoc
    */
-  fetchAll(args?: FetchOptions) {
+  public fetchAll(args?: FetchOptions) {
     return super.fetchAll(args ?? {});
   }
 
-  subscribe(
+  public subscribe(
     onNext: (event: TransactionModel) => any,
-    onError?: (error: Error) => any
+    onError?: (error: Error) => any,
   ): Subscription {
     return this.client.subscribe({
+      onError,
+      onNext,
       query: NEW_TRANSACTION_SUBSCRIPTION,
       type: SubscriptionType.newTransaction,
-      onNext,
-      onError
     });
   }
 
@@ -116,7 +116,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args   query parameters including category and userSelectedBookingDate
    * @returns      the transaction with updated categorization data
    */
-  async categorize(args: MutationCategorizeTransactionArgs) {
+  public async categorize(args: MutationCategorizeTransactionArgs) {
     const result = await this.client.rawQuery(CATEGORIZE_TRANSACTION, args);
     return result.categorizeTransaction;
   }

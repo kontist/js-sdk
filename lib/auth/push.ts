@@ -1,17 +1,19 @@
+import { Token } from "client-oauth2";
 import {
+  ChallengeDeniedError,
+  ChallengeExpiredError,
+  KontistSDKError,
+  MFAConfirmationCanceledError,
+} from "../errors";
+import { HttpRequest } from "../request";
+import {
+  HttpMethod,
+  MfaResult,
   PushChallenge,
   PushChallengeStatus,
-  HttpMethod,
   TimeoutID,
-  MfaResult
 } from "../types";
-import {
-  ChallengeExpiredError,
-  ChallengeDeniedError,
-  MFAConfirmationCanceledError
-} from "../errors";
 import { TokenManager } from "./tokenManager";
-import { HttpRequest } from "../request";
 
 export const PUSH_CHALLENGE_PATH = "/api/user/mfa/challenges";
 
@@ -22,7 +24,7 @@ export class PushNotificationMFA {
   private request: HttpRequest;
   private challengePollInterval: number = CHALLENGE_POLL_INTERVAL;
   private challengePollTimeoutId?: TimeoutID;
-  private rejectConfirmation: Function | null = null;
+  private rejectConfirmation: ((err: KontistSDKError) => void) | null = null;
 
   /**
    * @param tokenManager  TokenManager instance
@@ -35,19 +37,43 @@ export class PushNotificationMFA {
   }
 
   /**
+   * Create an MFA challenge and request a confirmed access token when verified
+   */
+  public getConfirmedToken = async () => {
+    const challenge = await this.request.fetch(
+      PUSH_CHALLENGE_PATH,
+      HttpMethod.POST,
+    );
+
+    return new Promise((resolve, reject) =>
+      this.pollChallengeStatus(challenge, resolve, reject)(),
+    );
+  }
+
+  /**
+   * Clear pending MFA confirmation
+   */
+  public cancelConfirmation = () => {
+    clearTimeout(this.challengePollTimeoutId as TimeoutID);
+    if (typeof this.rejectConfirmation === "function") {
+      this.rejectConfirmation(new MFAConfirmationCanceledError());
+    }
+  }
+
+  /**
    * Called by `getConfirmedToken`. Calls itself periodically
    * until the challenge expires or its status is updated
    */
   private pollChallengeStatus = (
     pendingChallenge: PushChallenge,
-    resolve: Function,
-    reject: Function
+    resolve: (token: Token) => void,
+    reject: (err: Error) => void,
   ) => async () => {
     let challenge;
     try {
       challenge = await this.request.fetch(
         `${PUSH_CHALLENGE_PATH}/${pendingChallenge.id}`,
-        HttpMethod.GET
+        HttpMethod.GET,
       );
     } catch (error) {
       return reject(error);
@@ -66,10 +92,10 @@ export class PushNotificationMFA {
     } else if (wasVerified) {
       const {
         token: accessToken,
-        refresh_token: refreshToken
+        refresh_token: refreshToken,
       }: MfaResult = await this.request.fetch(
         `${PUSH_CHALLENGE_PATH}/${challenge.id}/token`,
-        HttpMethod.POST
+        HttpMethod.POST,
       );
 
       const token = this.tokenManager.setToken(accessToken, refreshToken);
@@ -79,31 +105,7 @@ export class PushNotificationMFA {
     this.rejectConfirmation = reject;
     this.challengePollTimeoutId = setTimeout(
       this.pollChallengeStatus(pendingChallenge, resolve, reject),
-      this.challengePollInterval
+      this.challengePollInterval,
     );
-  };
-
-  /**
-   * Create an MFA challenge and request a confirmed access token when verified
-   */
-  public getConfirmedToken = async () => {
-    const challenge = await this.request.fetch(
-      PUSH_CHALLENGE_PATH,
-      HttpMethod.POST
-    );
-
-    return new Promise((resolve, reject) =>
-      this.pollChallengeStatus(challenge, resolve, reject)()
-    );
-  };
-
-  /**
-   * Clear pending MFA confirmation
-   */
-  public cancelConfirmation = () => {
-    clearTimeout(this.challengePollTimeoutId as TimeoutID);
-    if (typeof this.rejectConfirmation === "function") {
-      this.rejectConfirmation(new MFAConfirmationCanceledError());
-    }
-  };
+  }
 }

@@ -1,14 +1,27 @@
 import * as ClientOAuth2 from "client-oauth2";
 
-import { TokenManager } from "./tokenManager";
-import { PushNotificationMFA } from "./push";
-import { DeviceBinding } from "./device";
 import { HttpRequest } from "../request";
+import { DeviceBinding } from "./device";
+import { PushNotificationMFA } from "./push";
+import { TokenManager } from "./tokenManager";
 
-import { ClientOpts, GetAuthUriOpts } from "../types";
 import { KontistSDKError } from "../errors";
+import { ClientOpts, GetAuthUriOpts } from "../types";
 
 export class Auth {
+
+  /**
+   * @deprecated This method will be removed in v1.0.0.
+   *             Use `auth.tokenManager.token` getter directly instead.
+   *
+   * Returns current token used for API requests.
+   *
+   * @returns  token object which might contain token(s), scope(s), token type and expiration time
+   */
+  get token(): ClientOAuth2.Token | null {
+    this.showDeprecationWarning("token");
+    return this.tokenManager.token;
+  }
   public tokenManager: TokenManager;
   public device: DeviceBinding;
   public push: PushNotificationMFA;
@@ -28,20 +41,20 @@ export class Auth {
       redirectUri,
       scopes,
       state,
-      verifier
+      verifier,
     } = opts;
 
     if (verifier && clientSecret) {
       throw new KontistSDKError({
         message:
-          "You can provide only one parameter from ['verifier', 'clientSecret']."
+          "You can provide only one parameter from ['verifier', 'clientSecret'].",
       });
     }
 
     if (verifier && (!state || !redirectUri)) {
       throw new KontistSDKError({
         message:
-          "If you are providing a 'verifier', you must also provide 'state' and 'redirectUri' options."
+          "If you are providing a 'verifier', you must also provide 'state' and 'redirectUri' options.",
       });
     }
 
@@ -54,13 +67,13 @@ export class Auth {
         clientSecret,
         redirectUri,
         scopes,
-        state
+        state,
       });
 
     this.tokenManager = new TokenManager(baseUrl, {
+      oauth2Client,
       state,
       verifier,
-      oauth2Client
     });
 
     const request = new HttpRequest(baseUrl, this.tokenManager);
@@ -68,13 +81,6 @@ export class Auth {
     this.device = new DeviceBinding(this.tokenManager, request);
     this.push = new PushNotificationMFA(this.tokenManager, request);
   }
-
-  private showDeprecationWarning = (methodName: string): void => {
-    if (process.env.NODE_ENV !== 'production') {
-      const message = `The 'auth.${methodName}' method is deprecated and will be removed in v1.0.0. Please consider using 'auth.tokenManager.${methodName}' instead.`;
-      console.warn(message);
-    }
-  };
 
   /**
    * @deprecated This method will be removed in v1.0.0.
@@ -85,7 +91,7 @@ export class Auth {
   public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
     this.showDeprecationWarning("getAuthUri");
     return this.tokenManager.getAuthUri(opts);
-  };
+  }
 
   /**
    * @deprecated This method will be removed in v1.0.0.
@@ -97,11 +103,11 @@ export class Auth {
    * @returns            token object which might contain token(s), scope(s), token type and expiration time
    */
   public fetchToken = async (
-    callbackUri: string
+    callbackUri: string,
   ): Promise<ClientOAuth2.Token> => {
     this.showDeprecationWarning("fetchToken");
     return this.tokenManager.fetchToken(callbackUri);
-  };
+  }
 
   /**
    * @deprecated This method will be removed in v1.0.0.
@@ -123,7 +129,7 @@ export class Auth {
   }): Promise<ClientOAuth2.Token> => {
     this.showDeprecationWarning("fetchTokenFromCredentials");
     return this.tokenManager.fetchTokenFromCredentials(opts);
-  };
+  }
 
   /**
    * @deprecated This method will be removed in v1.0.0.
@@ -137,7 +143,7 @@ export class Auth {
   public refresh = async (timeout?: number): Promise<ClientOAuth2.Token> => {
     this.showDeprecationWarning("refresh");
     return this.tokenManager.refresh(timeout);
-  };
+  }
 
   /**
    * @deprecated This method will be removed in v1.0.0.
@@ -153,22 +159,18 @@ export class Auth {
   public setToken = (
     accessToken: string,
     refreshToken?: string,
-    tokenType?: string
+    tokenType?: string,
   ): ClientOAuth2.Token => {
     this.showDeprecationWarning("setToken");
     return this.tokenManager.setToken(accessToken, refreshToken, tokenType);
-  };
+  }
 
-  /**
-   * @deprecated This method will be removed in v1.0.0.
-   *             Use `auth.tokenManager.token` getter directly instead.
-   *
-   * Returns current token used for API requests.
-   *
-   * @returns  token object which might contain token(s), scope(s), token type and expiration time
-   */
-  get token(): ClientOAuth2.Token | null {
-    this.showDeprecationWarning("token");
-    return this.tokenManager.token;
+  private showDeprecationWarning = (methodName: string): void => {
+    if (process.env.NODE_ENV !== "production") {
+      const message = `The 'auth.${methodName}' method is deprecated and will be removed in v1.0.0. ` +
+        `Please consider using 'auth.tokenManager.${methodName}' instead.`;
+      // tslint:disable-next-line:no-console
+      console.warn(message);
+    }
   }
 }

@@ -5,9 +5,9 @@ if (!Symbol.asyncIterator) {
 
 import { Client } from "./client";
 import * as Constants from "./constants";
-import * as Schema from "./graphql/schema";
-import * as Interfaces from "./graphql/interfaces";
-import * as Types from "./graphql/types";
 import * as Errors from "./errors";
+import * as Interfaces from "./graphql/interfaces";
+import * as Schema from "./graphql/schema";
+import * as Types from "./graphql/types";
 
 export { Client, Constants, Schema, Interfaces, Types, Errors };

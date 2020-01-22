@@ -1,13 +1,13 @@
 import { expect } from "chai";
-import * as sinon from "sinon";
 import { GraphQLClient as GQLClient } from "graphql-request";
+import * as sinon from "sinon";
 import * as subscriptions from "subscriptions-transport-ws";
 import * as ws from "ws";
 
-import { SubscriptionType } from "../../lib/graphql/types";
-import { GraphQLError, UserUnauthorizedError } from "../../lib/errors";
-import { createClient } from "../helpers";
 import { KONTIST_SUBSCRIPTION_API_BASE_URL } from "../../lib/constants";
+import { GraphQLError, UserUnauthorizedError } from "../../lib/errors";
+import { SubscriptionType } from "../../lib/graphql/types";
+import { createClient } from "../helpers";
 
 describe("rawQuery", () => {
   describe("Error handling", () => {
@@ -30,7 +30,7 @@ describe("rawQuery", () => {
 
       return {
         error,
-        stub
+        stub,
       };
     };
 
@@ -46,10 +46,10 @@ describe("rawQuery", () => {
               locations: [{ line: 1, column: 42 }],
               extensions: {
                 status,
-                type
-              }
-            }
-          ]
+                type,
+              },
+            },
+          ],
         };
 
         const { error, stub } = await setup(response);
@@ -70,9 +70,9 @@ describe("rawQuery", () => {
           errors: [
             {
               message,
-              locations: [{ line: 1, column: 42 }]
-            }
-          ]
+              locations: [{ line: 1, column: 42 }],
+            },
+          ],
         };
 
         const { error, stub } = await setup(response);
@@ -101,7 +101,7 @@ describe("subscribe", () => {
       this.errorHandlers.forEach((handler: any) => {
         handler(err);
       });
-    }
+    },
   };
 
   const subscribeStub = sinon
@@ -112,20 +112,20 @@ describe("subscribe", () => {
       return {
         unsubscribe: () => {
           observableMock.nextHandlers = observableMock.nextHandlers.filter(
-            (handler: any) => handler !== next
+            (handler: any) => handler !== next,
           );
           observableMock.errorHandlers = observableMock.errorHandlers.filter(
-            (handler: any) => handler !== error
+            (handler: any) => handler !== error,
           );
-        }
+        },
       };
     });
   const subscriptionClientMock = {
     onDisconnected: sinon.spy(),
     close: sinon.spy(),
     request: () => ({
-      subscribe: subscribeStub
-    })
+      subscribe: subscribeStub,
+    }),
   };
   const subscriptionQuery = `subscription someSubscription {}`;
   const client = createClient();
@@ -153,7 +153,7 @@ describe("subscribe", () => {
         query: subscriptionQuery,
         type: SubscriptionType.newTransaction,
         onNext: firstSubscriptionOnNextStub,
-        onError: firstSubscriptionOnErrorStub
+        onError: firstSubscriptionOnErrorStub,
       });
       firstSubscriptionUnsubscriber = unsubscribe;
     });
@@ -165,12 +165,12 @@ describe("subscribe", () => {
     it("should setup a disconnection handler", () => {
       expect(subscriptionClientMock.onDisconnected.callCount).to.equal(1);
       expect(subscriptionClientMock.onDisconnected.getCall(0).args[0]).to.equal(
-        client.graphQL["handleDisconnection"]
+        (client.graphQL as any).handleDisconnection,
       );
     });
 
     it("should add a subscription to its state", () => {
-      const subscription = client.graphQL["subscriptions"][1];
+      const subscription = (client.graphQL as any).subscriptions[1];
       expect(subscription.id).to.equal(1);
       expect(subscription.query).to.equal(subscriptionQuery);
       expect(subscription.type).to.equal(SubscriptionType.newTransaction);
@@ -188,7 +188,7 @@ describe("subscribe", () => {
         query: subscriptionQuery,
         type: SubscriptionType.newTransaction,
         onNext: secondSubscriptionOnNextStub,
-        onError: secondSubscriptionOnErrorStub
+        onError: secondSubscriptionOnErrorStub,
       });
       secondSubscriptionUnsubscriber = unsubscribe;
     });
@@ -198,8 +198,8 @@ describe("subscribe", () => {
     });
 
     it("should add a second subscription to its state", () => {
-      const subscription = client.graphQL["subscriptions"][2];
-      expect(Object.keys(client.graphQL["subscriptions"]).length).to.equal(2);
+      const subscription = (client.graphQL as any).subscriptions[2];
+      expect(Object.keys((client.graphQL as any).subscriptions).length).to.equal(2);
       expect(subscription.id).to.equal(2);
       expect(subscription.query).to.equal(subscriptionQuery);
       expect(subscription.type).to.equal(SubscriptionType.newTransaction);
@@ -215,7 +215,7 @@ describe("subscribe", () => {
       expect(secondSubscriptionOnNextStub.callCount).to.equal(0);
 
       const dummyData = {
-        data: { [SubscriptionType.newTransaction]: "some-data" }
+        data: { [SubscriptionType.newTransaction]: "some-data" },
       };
       observableMock.triggerNext(dummyData);
 
@@ -266,7 +266,7 @@ describe("subscribe", () => {
     });
 
     it("should remove the corresponding subscription from its state", () => {
-      const subscriptions = client.graphQL["subscriptions"];
+      const subscriptions = (client.graphQL as any).subscriptions;
       expect(Object.keys(subscriptions).length).to.equal(1);
 
       expect(subscriptions[1]).to.be.a("undefined");
@@ -280,10 +280,10 @@ describe("subscribe", () => {
 
       secondSubscriptionUnsubscriber();
 
-      expect(Object.keys(client.graphQL["subscriptions"]).length).to.equal(0);
+      expect(Object.keys((client.graphQL as any).subscriptions).length).to.equal(0);
 
       expect(subscriptionClientMock.close.callCount).to.equal(1);
-      expect(client.graphQL["subscriptionClient"]).to.be.a("null");
+      expect((client.graphQL as any).subscriptionClient).to.be.a("null");
 
       observableMock.triggerNext({ data: { some: "data" } });
       observableMock.triggerError(new Error());
@@ -313,11 +313,11 @@ describe("createUnsubscriber", () => {
     client.graphQL.subscriptionClient = { close: closeStub };
     client.graphQL.subscriptions = {
       1: {
-        unsubscribe: firstUnsubscribeStub
+        unsubscribe: firstUnsubscribeStub,
       },
       42: {
-        unsubscribe: secondUnsubscribeStub
-      }
+        unsubscribe: secondUnsubscribeStub,
+      },
     };
   });
 
@@ -373,8 +373,8 @@ describe("createUnsubscriber", () => {
       client.graphQL.subscriptionClient = undefined;
       client.graphQL.subscriptions = {
         42: {
-          unsubscribe: () => {}
-        }
+          unsubscribe: () => {},
+        },
       };
     });
 
@@ -403,18 +403,18 @@ describe("handleDisconnection", () => {
       query: `query #1`,
       type: SubscriptionType.newTransaction,
       onNext: () => {},
-      onError: sinon.stub()
+      onError: sinon.stub(),
     };
     secondSubscription = {
       id: 1,
       query: `query #1`,
       type: SubscriptionType.newTransaction,
-      onNext: () => {}
+      onNext: () => {},
     };
 
     client.graphQL.subscriptions = {
       1: firstSubscription,
-      2: secondSubscription
+      2: secondSubscription,
     };
 
     await client.graphQL.handleDisconnection();
@@ -440,7 +440,7 @@ describe("handleDisconnection", () => {
       query: firstQuery,
       type: firstType,
       onNext: firstHandler,
-      subscriptionId: firstSubscriptionId
+      subscriptionId: firstSubscriptionId,
     } = subscribeStub.getCall(0).args[0];
 
     expect(firstQuery).to.equal(firstSubscription.query);
@@ -452,7 +452,7 @@ describe("handleDisconnection", () => {
       query: secondQuery,
       type: secondType,
       onNext: secondHandler,
-      subscriptionId: secondSubscriptionId
+      subscriptionId: secondSubscriptionId,
     } = subscribeStub.getCall(1).args[0];
 
     expect(secondQuery).to.equal(secondSubscription.query);
@@ -487,7 +487,7 @@ describe("createSubscriptionClient", () => {
   before(() => {
     client = createClient();
     fakeSubscriptionClient = {
-      fake: "client"
+      fake: "client",
     };
     subscriptionClientStub = sinon
       .stub(subscriptions, "SubscriptionClient")
@@ -520,15 +520,15 @@ describe("createSubscriptionClient", () => {
       const subscriptionClient = client.graphQL.createSubscriptionClient();
       expect(subscriptionClientStub.callCount).to.equal(1);
       const [endpoint, options, websocket] = subscriptionClientStub.getCall(
-        0
+        0,
       ).args;
 
       expect(endpoint).to.equal(
-        `${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`
+        `${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`,
       );
       expect(options.lazy).to.equal(true);
       expect(options.connectionParams).to.deep.equal({
-        Authorization: "Bearer dummy-token"
+        Authorization: "Bearer dummy-token",
       });
       expect(websocket).to.equal(ws);
       expect(subscriptionClient).to.equal(fakeSubscriptionClient);
@@ -537,7 +537,7 @@ describe("createSubscriptionClient", () => {
     describe("when executing in a browser environment", () => {
       before(() => {
         (global as any).window = {
-          WebSocket: { fake: "websocket" }
+          WebSocket: { fake: "websocket" },
         };
       });
 
@@ -552,7 +552,7 @@ describe("createSubscriptionClient", () => {
 
         expect(subscriptionClientStub.callCount).to.equal(1);
         expect(subscriptionClientStub.getCall(0).args[2].fake).to.equal(
-          "websocket"
+          "websocket",
         );
       });
     });

@@ -4,7 +4,7 @@ import { TimeoutID } from "../types";
 export const authorizeSilently = (
   uri: string,
   origin: string,
-  timeout: number
+  timeout: number,
 ) => {
   return new Promise((resolve, reject) => {
     let timeoutId: TimeoutID;
@@ -32,7 +32,7 @@ export const authorizeSilently = (
         const error =
           event.data?.error ??
           new RenewTokenError({
-            message: "Invalid message received from server"
+            message: "Invalid message received from server",
           });
         return reject(error);
       }
@@ -45,8 +45,8 @@ export const authorizeSilently = (
       cleanup();
       return reject(
         new RenewTokenError({
-          message: "Server did not respond with authorization code, aborting."
-        })
+          message: "Server did not respond with authorization code, aborting.",
+        }),
       );
     }, timeout);
   });

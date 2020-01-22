@@ -1,17 +1,17 @@
+import { IterableModel } from "./iterableModel";
+import { ResultPage } from "./resultPage";
 import {
-  Query,
-  CreateTransferInput,
-  UpdateTransferInput,
-  Transfer as TransferModel,
   BatchTransfer,
-  TransferType,
-  TransfersConnectionEdge,
   ConfirmationRequestOrTransfer,
-  TransferSuggestion
+  CreateTransferInput,
+  Query,
+  Transfer as TransferModel,
+  TransfersConnectionEdge,
+  TransferSuggestion,
+  TransferType,
+  UpdateTransferInput,
 } from "./schema";
 import { TransferFetchOptions } from "./types";
-import { ResultPage } from "./resultPage";
-import { IterableModel } from "./iterableModel";
 
 const TRANSFER_FIELDS = `
   id
@@ -164,7 +164,7 @@ export class Transfer extends IterableModel<
    * @param transfer  transfer data including at least recipient, IBAN and amount
    * @returns         confirmation id used to confirm the transfer
    */
-  async createOne(transfer: CreateTransferInput): Promise<string> {
+  public async createOne(transfer: CreateTransferInput): Promise<string> {
     const result = await this.client.rawQuery(CREATE_TRANSFER, { transfer });
     return result.createTransfer.confirmationId;
   }
@@ -176,13 +176,13 @@ export class Transfer extends IterableModel<
    * @param authorizationToken  sms token
    * @returns                   confirmed wire transfer
    */
-  async confirmOne(
+  public async confirmOne(
     confirmationId: string,
-    authorizationToken: string
+    authorizationToken: string,
   ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
+      authorizationToken,
       confirmationId,
-      authorizationToken
     });
     return result.confirmTransfer;
   }
@@ -193,7 +193,7 @@ export class Transfer extends IterableModel<
    * @param transfers   array of transfers data including at least recipient, IBAN and amount
    * @returns           confirmation id used to confirm the transfer
    */
-  async createMany(transfers: Array<CreateTransferInput>): Promise<string> {
+  public async createMany(transfers: CreateTransferInput[]): Promise<string> {
     const result = await this.client.rawQuery(CREATE_TRANSFERS, { transfers });
     return result.createTransfers.confirmationId;
   }
@@ -205,13 +205,13 @@ export class Transfer extends IterableModel<
    * @param authorizationToken  sms token
    * @returns                   batch transfer result
    */
-  async confirmMany(
+  public async confirmMany(
     confirmationId: string,
-    authorizationToken: string
+    authorizationToken: string,
   ): Promise<BatchTransfer> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFERS, {
+      authorizationToken,
       confirmationId,
-      authorizationToken
     });
     return result.confirmTransfers;
   }
@@ -223,9 +223,9 @@ export class Transfer extends IterableModel<
    * @param id        transfer id
    * @returns         confirmation id used to confirm the cancellation or transfer if confirmation is not needed
    */
-  async cancelTransfer(
+  public async cancelTransfer(
     type: TransferType,
-    id: string
+    id: string,
   ): Promise<ConfirmationRequestOrTransfer> {
     const result = await this.client.rawQuery(CANCEL_TRANSFER, { type, id });
     return result.cancelTransfer;
@@ -239,15 +239,15 @@ export class Transfer extends IterableModel<
    * @param authorizationToken  sms token
    * @returns                   canceled transfer
    */
-  async confirmCancelTransfer(
+  public async confirmCancelTransfer(
     type: TransferType,
     confirmationId: string,
-    authorizationToken: string
+    authorizationToken: string,
   ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_CANCEL_TRANSFER, {
-      type,
+      authorizationToken,
       confirmationId,
-      authorizationToken
+      type,
     });
     return result.confirmCancelTransfer;
   }
@@ -258,7 +258,7 @@ export class Transfer extends IterableModel<
    * @param transfer  transfer data including at least id and amount
    * @returns         confirmation id used to confirm the update
    */
-  async update(transfer: UpdateTransferInput): Promise<string> {
+  public async update(transfer: UpdateTransferInput): Promise<string> {
     const result = await this.client.rawQuery(UPDATE_TRANSFER, { transfer });
     return result.updateTransfer.confirmationId;
   }
@@ -269,18 +269,18 @@ export class Transfer extends IterableModel<
    * @param args  query parameters
    * @returns     result page
    */
-  async fetch(
-    args: TransferFetchOptions
+  public async fetch(
+    args: TransferFetchOptions,
   ): Promise<ResultPage<TransferModel, TransferFetchOptions>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
 
     const transfers = (result?.viewer?.mainAccount?.transfers?.edges ?? []).map(
-      (edge: TransfersConnectionEdge) => edge.node
+      (edge: TransfersConnectionEdge) => edge.node,
     );
 
     const pageInfo = result?.viewer?.mainAccount?.transfers?.pageInfo ?? {
       hasNextPage: false,
-      hasPreviousPage: false
+      hasPreviousPage: false,
     };
     return new ResultPage(this, transfers, pageInfo, args);
   }
@@ -291,8 +291,8 @@ export class Transfer extends IterableModel<
    *
    * @returns array of TransferSuggestion
    */
-  async suggestions(): Promise<Array<TransferSuggestion>> {
+  public async suggestions(): Promise<TransferSuggestion[]> {
     const result: Query = await this.client.rawQuery(GET_TRANSFER_SUGGESTIONS);
-    return result.viewer?.mainAccount?.transferSuggestions ?? [];
+    return result.viewer?.mainAccount ?.transferSuggestions ?? [];
   }
 }

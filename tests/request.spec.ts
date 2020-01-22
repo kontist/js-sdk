@@ -1,11 +1,10 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import "cross-fetch/polyfill";
 
 import { TokenManager } from "../lib/auth/tokenManager";
+import { KontistSDKError, UserUnauthorizedError } from "../lib/errors";
 import { HttpRequest } from "../lib/request";
 import { HttpMethod } from "../lib/types";
-import { UserUnauthorizedError, KontistSDKError } from "../lib/errors";
 
 describe("HttpRequest", () => {
   let sandbox: sinon.SinonSandbox;
@@ -41,7 +40,7 @@ describe("HttpRequest", () => {
       // arrange
       const baseUrl = "http://localhost:3000";
       const tm = {
-        token: { accessToken: "eyMockToken" }
+        token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
       sandbox.stub(global as any, "fetch").resolves({
@@ -68,7 +67,7 @@ describe("HttpRequest", () => {
       // arrange
       const baseUrl = "http://localhost:3000";
       const tm = {
-        token: { accessToken: "eyMockToken" }
+        token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
       sandbox.stub(global as any, "fetch").resolves({
@@ -87,7 +86,7 @@ describe("HttpRequest", () => {
       // arrange
       const baseUrl = "http://localhost:3000";
       const tm = {
-        token: { accessToken: "eyMockToken" }
+        token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
       const stubOnFetch = sandbox.stub(global as any, "fetch").resolves({
@@ -102,11 +101,11 @@ describe("HttpRequest", () => {
       sinon.assert.calledWith(stubOnFetch, "http://localhost:3000/path", {
         method: "POST",
         headers: {
-          Accept: "application/json",
+          "Accept": "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer eyMockToken`
+          "Authorization": `Bearer eyMockToken`,
         },
-        body: '{"test":123}'
+        body: '{"test":123}',
       });
     });
 
@@ -114,12 +113,12 @@ describe("HttpRequest", () => {
       // arrange
       const baseUrl = "http://localhost:3000";
       const tm = {
-        token: { accessToken: "eyMockToken" }
+        token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
       sandbox.stub(global as any, "fetch").resolves({
         ok: true,
-        json: () => Promise.resolve({ test: 123 })
+        json: () => Promise.resolve({ test: 123 }),
       } as Response);
 
       // act

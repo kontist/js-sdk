@@ -1,24 +1,23 @@
 import { GraphQLClient as GQLClient } from "graphql-request";
 import { SubscriptionClient } from "subscriptions-transport-ws";
-import { Variables } from "graphql-request/dist/src/types";
 import * as ws from "ws";
 
 import { Auth } from "../auth";
-import { RawQueryResponse, SubscriptionType, Subscription } from "./types";
-import { serializeGraphQLError } from "../utils";
 import { GraphQLError, UserUnauthorizedError } from "../errors";
 import { GraphQLClientOpts } from "../types";
+import { serializeGraphQLError } from "../utils";
+import { RawQueryResponse, Subscription, SubscriptionType } from "./types";
 
-type Subscriptions = {
+interface Subscriptions {
   [key: number]: {
     id: number;
     query: string;
     type: SubscriptionType;
-    onNext: Function;
-    onError?: Function;
+    onNext: (result: any) => void;
+    onError?: (err: any) => void;
     unsubscribe: () => void;
   };
-};
+}
 
 export class GraphQLClient {
   private auth: Auth;
@@ -39,7 +38,9 @@ export class GraphQLClient {
    */
   public rawQuery = async (
     query: string,
-    variables?: Variables
+    variables?: {
+      [key: string]: any;
+    },
   ): Promise<RawQueryResponse> => {
     if (!this.auth.tokenManager.token) {
       throw new UserUnauthorizedError();
@@ -47,7 +48,7 @@ export class GraphQLClient {
 
     this.client.setHeader(
       "Authorization",
-      `Bearer ${this.auth.tokenManager.token.accessToken}`
+      `Bearer ${this.auth.tokenManager.token.accessToken}`,
     );
 
     try {
@@ -56,7 +57,59 @@ export class GraphQLClient {
     } catch (error) {
       throw new GraphQLError(serializeGraphQLError(error));
     }
-  };
+  }
+
+  /**
+   * Subscribe to a topic and call the respective handler when new data or an error is received
+   */
+  public subscribe = ({
+    query,
+    type,
+    onError,
+    onNext,
+    subscriptionId,
+  }: {
+    query: string;
+    type: SubscriptionType;
+    onNext: (result: any) => void;
+    onError?: (err: any) => void;
+    subscriptionId?: number;
+  }): Subscription => {
+    if (!this.subscriptionClient) {
+      this.subscriptionClient = this.createSubscriptionClient();
+
+      this.subscriptionClient.onDisconnected(this.handleDisconnection);
+    }
+
+    const subscription = this.subscriptionClient.request({
+      query,
+    });
+
+    const { unsubscribe } = subscription.subscribe({
+      next(response) {
+        onNext(response.data?.[type]);
+      },
+      error(error) {
+        if (typeof onError === "function") {
+          onError(error);
+        }
+      },
+    });
+
+    const id = subscriptionId || (this.subscriptionId += 1);
+    this.subscriptions[id] = {
+      id,
+      onError,
+      onNext,
+      query,
+      type,
+      unsubscribe,
+    };
+
+    return {
+      unsubscribe: this.createUnsubscriber(id),
+    };
+  }
 
   /**
    * Create a subscription client
@@ -66,19 +119,19 @@ export class GraphQLClient {
       throw new UserUnauthorizedError();
     }
 
-    const WebSocket = typeof window === "undefined" ? ws : window.WebSocket;
+    const webSocket = typeof window === "undefined" ? ws : window.WebSocket;
 
     return new SubscriptionClient(
       this.subscriptionEndpoint,
       {
-        lazy: true,
         connectionParams: {
-          Authorization: `Bearer ${this.auth.tokenManager.token.accessToken}`
-        }
+          Authorization: `Bearer ${this.auth.tokenManager.token.accessToken}`,
+        },
+        lazy: true,
       },
-      WebSocket
+      webSocket,
     );
-  };
+  }
 
   /**
    * Handle disconnection:
@@ -99,69 +152,17 @@ export class GraphQLClient {
     }
 
     this.subscriptionClient = null;
-    Object.values(this.subscriptions).forEach(subscription => {
+    Object.values(this.subscriptions).forEach((subscription) => {
       const { query, type, onNext, onError, id } = subscription;
       this.subscribe({
-        query,
-        type,
-        onNext,
         onError,
-        subscriptionId: id
+        onNext,
+        query,
+        subscriptionId: id,
+        type,
       });
     });
-  };
-
-  /**
-   * Subscribe to a topic and call the respective handler when new data or an error is received
-   */
-  public subscribe = ({
-    query,
-    type,
-    onError,
-    onNext,
-    subscriptionId
-  }: {
-    query: string;
-    type: SubscriptionType;
-    onNext: Function;
-    onError?: Function;
-    subscriptionId?: number;
-  }): Subscription => {
-    if (!this.subscriptionClient) {
-      this.subscriptionClient = this.createSubscriptionClient();
-
-      this.subscriptionClient.onDisconnected(this.handleDisconnection);
-    }
-
-    const subscription = this.subscriptionClient.request({
-      query
-    });
-
-    const { unsubscribe } = subscription.subscribe({
-      next(response) {
-        onNext(response.data?.[type]);
-      },
-      error(error) {
-        if (typeof onError === "function") {
-          onError(error);
-        }
-      }
-    });
-
-    const id = subscriptionId || (this.subscriptionId += 1);
-    this.subscriptions[id] = {
-      id,
-      query,
-      type,
-      onNext,
-      onError,
-      unsubscribe
-    };
-
-    return {
-      unsubscribe: this.createUnsubscriber(id)
-    };
-  };
+  }
 
   /**
    * Create an unsubscribe function to be called by the subscriber
@@ -174,5 +175,5 @@ export class GraphQLClient {
       this.subscriptionClient?.close();
       this.subscriptionClient = null;
     }
-  };
+  }
 }

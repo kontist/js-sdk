@@ -1,5 +1,5 @@
-import * as sinon from "sinon";
 import { expect } from "chai";
+import * as sinon from "sinon";
 import { Transfer as TransferClass } from "../../lib/graphql/transfer";
 import {
   TransferType,
@@ -15,22 +15,22 @@ describe("Transfer", () => {
 
   before(() => {
     graphqlClientStub = {
-      rawQuery: sinon.stub()
+      rawQuery: sinon.stub(),
     };
-    transferInstance = new TransferClass(<any>graphqlClientStub);
+    transferInstance = new TransferClass(graphqlClientStub as any);
   });
 
   describe("cancelTransfer", () => {
     const id = "id-stub";
     const type = TransferType.StandingOrder;
     const cancelTransferResult = {
-      __stub__: "cancelTransferResult"
+      __stub__: "cancelTransferResult",
     };
 
     before(async () => {
       graphqlClientStub.rawQuery.reset();
       graphqlClientStub.rawQuery.resolves({
-        cancelTransfer: cancelTransferResult
+        cancelTransfer: cancelTransferResult,
       });
       result = await transferInstance.cancelTransfer(type, id);
     });
@@ -52,18 +52,18 @@ describe("Transfer", () => {
     const confirmationId = "confirmation-id-stub";
     const authorizationToken = "authorization-token-stub";
     const confirmCancelTransferResult = {
-      __stub__: "confirmCancelTransferResult"
+      __stub__: "confirmCancelTransferResult",
     };
 
     before(async () => {
       graphqlClientStub.rawQuery.reset();
       graphqlClientStub.rawQuery.resolves({
-        confirmCancelTransfer: confirmCancelTransferResult
+        confirmCancelTransfer: confirmCancelTransferResult,
       });
       result = await transferInstance.confirmCancelTransfer(
         type,
         confirmationId,
-        authorizationToken
+        authorizationToken,
       );
     });
 
@@ -97,9 +97,9 @@ describe("Transfer", () => {
           items: [firstTransfer, secondTransfer],
           pageInfo: {
             hasNextPage: true,
-            hasPreviousPage: false
-          }
-        })
+            hasPreviousPage: false,
+          },
+        }),
       );
 
       graphqlClientStub.rawQuery.onSecondCall().resolves(
@@ -108,16 +108,16 @@ describe("Transfer", () => {
           items: [thirdTransfer],
           pageInfo: {
             hasNextPage: false,
-            hasPreviousPage: false
-          }
-        })
+            hasPreviousPage: false,
+          },
+        }),
       );
     });
 
     it("can fetch next page using the nextPage method", async () => {
       const firstPage = await transferInstance.fetch({
         first: 2,
-        type: TransferType.SepaTransfer
+        type: TransferType.SepaTransfer,
       });
 
       expect(typeof firstPage.nextPage).to.equal("function");
@@ -128,9 +128,9 @@ describe("Transfer", () => {
     });
 
     it("can iterate on all user transfers using the fetchAll iterator", async () => {
-      let transfers: Array<Transfer> = [];
+      let transfers: Transfer[] = [];
       for await (const transfer of transferInstance.fetchAll({
-        type: TransferType.SepaTransfer
+        type: TransferType.SepaTransfer,
       })) {
         transfers = transfers.concat(transfer as Transfer);
       }
@@ -138,7 +138,7 @@ describe("Transfer", () => {
       expect(transfers).to.deep.equal([
         firstTransfer,
         secondTransfer,
-        thirdTransfer
+        thirdTransfer,
       ]);
     });
 
@@ -150,9 +150,9 @@ describe("Transfer", () => {
             items: [secondTransfer, thirdTransfer],
             pageInfo: {
               hasNextPage: false,
-              hasPreviousPage: true
-            }
-          })
+              hasPreviousPage: true,
+            },
+          }),
         );
 
         graphqlClientStub.rawQuery.onSecondCall().resolves(
@@ -161,14 +161,14 @@ describe("Transfer", () => {
             items: [firstTransfer],
             pageInfo: {
               hasNextPage: false,
-              hasPreviousPage: false
-            }
-          })
+              hasPreviousPage: false,
+            },
+          }),
         );
 
         const firstPage = await transferInstance.fetch({
           last: 2,
-          type: TransferType.SepaTransfer
+          type: TransferType.SepaTransfer,
         });
 
         expect(typeof firstPage.previousPage).to.equal("function");
@@ -184,14 +184,14 @@ describe("Transfer", () => {
   describe("suggestions", () => {
     const suggestions = [
       { iban: "DE12345", name: "First customer" },
-      { iban: "DE54321", name: "Second customer" }
+      { iban: "DE54321", name: "Second customer" },
     ];
 
     describe("when user has an account", () => {
       before(async () => {
         graphqlClientStub.rawQuery.reset();
         graphqlClientStub.rawQuery.resolves({
-          viewer: { mainAccount: { transferSuggestions: suggestions } }
+          viewer: { mainAccount: { transferSuggestions: suggestions } },
         });
         result = await transferInstance.suggestions();
       });
@@ -211,7 +211,7 @@ describe("Transfer", () => {
       before(async () => {
         graphqlClientStub.rawQuery.reset();
         graphqlClientStub.rawQuery.resolves({
-          viewer: { mainAccount: null }
+          viewer: { mainAccount: null },
         });
         result = await transferInstance.suggestions();
       });
@@ -224,7 +224,6 @@ describe("Transfer", () => {
   });
 
   describe("update", () => {
-    const type = TransferType.StandingOrder;
     const updatePayload = {
       id: "some-id",
       amount: 2345,

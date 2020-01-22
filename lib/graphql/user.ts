@@ -1,7 +1,7 @@
-import { User as UserModel, Query } from "./schema";
+import { KontistSDKError } from "../errors";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { KontistSDKError } from "../errors";
+import { Query, User as UserModel } from "./schema";
 
 const GET_USER = `query {
   viewer {
@@ -39,7 +39,7 @@ const GET_USER = `query {
 }`;
 
 export class User extends Model<UserModel> {
-  async fetch(): Promise<ResultPage<UserModel>> {
+  public async fetch(): Promise<ResultPage<UserModel>> {
     throw new KontistSDKError({ message: "You are allowed only to fetch your details." });
   }
 
@@ -48,7 +48,7 @@ export class User extends Model<UserModel> {
    *
    * @returns current user details
    */
-  async get(): Promise<UserModel> {
+  public async get(): Promise<UserModel> {
     const result: Query = await this.client.rawQuery(GET_USER);
     return result.viewer;
   }

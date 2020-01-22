@@ -1,5 +1,3 @@
-import "cross-fetch/polyfill";
-
 import { TokenManager } from "./auth/tokenManager";
 import { KontistSDKError, UserUnauthorizedError } from "./errors";
 import { HttpMethod } from "./types";
@@ -23,7 +21,7 @@ export class HttpRequest {
   public fetch = async (
     path: string,
     method: HttpMethod,
-    body?: string | Object
+    body?: string | object,
   ) => {
     if (!this.tokenManager.token) {
       throw new UserUnauthorizedError();
@@ -32,19 +30,19 @@ export class HttpRequest {
     const requestUrl = new URL(path, this.baseUrl).href;
 
     const response = await fetch(requestUrl, {
-      method,
+      body: JSON.stringify(body),
       headers: {
-        Accept: "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${this.tokenManager.token.accessToken}`,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${this.tokenManager.token.accessToken}`
       },
-      body: JSON.stringify(body)
+      method,
     });
 
     if (!response.ok) {
       throw new KontistSDKError({
+        message: response.statusText,
         status: response.status,
-        message: response.statusText
       });
     }
 
@@ -53,5 +51,5 @@ export class HttpRequest {
     }
 
     return response.json();
-  };
+  }
 }

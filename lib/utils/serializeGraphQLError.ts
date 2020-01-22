@@ -1,6 +1,6 @@
 import { ErrorOpts } from "../errors";
 
-type GraphQLAPIError = {
+interface GraphQLAPIError {
   response?: {
     errors?: [
       {
@@ -12,7 +12,7 @@ type GraphQLAPIError = {
       }
     ];
   };
-};
+}
 
 export const serializeGraphQLError = (graphQLError: GraphQLAPIError): ErrorOpts => {
   const errorOptions: ErrorOpts = {};

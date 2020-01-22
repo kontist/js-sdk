@@ -1,12 +1,12 @@
-import { ResultPage } from "./resultPage";
 import { Model } from "./model";
+import { ResultPage } from "./resultPage";
 import { FetchOptions } from "./types";
 
 export abstract class IterableModel<
   ModelType,
   FetchOptionsType = FetchOptions
 > extends Model<ModelType, FetchOptionsType> {
-  createAsyncIterator(args: FetchOptionsType) {
+  public createAsyncIterator(args: FetchOptionsType) {
     const fetch = this.fetch.bind(this);
     let lastResult!: ResultPage<ModelType, FetchOptionsType>;
 
@@ -20,7 +20,7 @@ export abstract class IterableModel<
         if (lastResult.items.length === 0 && lastResult.pageInfo.hasNextPage) {
           lastResult = await fetch({
             ...args,
-            after: lastResult.pageInfo.endCursor
+            after: lastResult.pageInfo.endCursor,
           });
         }
 
@@ -28,22 +28,22 @@ export abstract class IterableModel<
         if (lastResult.items.length > 0) {
           return {
             done: false,
-            value: lastResult.items.shift()
+            value: lastResult.items.shift(),
           };
         }
 
         // no more data
         return { value: undefined, done: true };
-      }
+      },
     };
   }
 
-  fetchAll(args: FetchOptionsType) {
+  public fetchAll(args: FetchOptionsType) {
     const asyncIterator = this.createAsyncIterator(args);
     return {
       [Symbol.asyncIterator]() {
         return asyncIterator;
-      }
+      },
     };
   }
 }

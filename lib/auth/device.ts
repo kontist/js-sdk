@@ -1,16 +1,16 @@
 import * as ClientOAuth2 from "client-oauth2";
 
+import { HttpRequest } from "../request";
 import {
-  HttpMethod,
   CreateDeviceParams,
   CreateDeviceResult,
-  VerifyDeviceParams,
   DeviceChallenge,
+  HttpMethod,
+  MfaResult,
   VerifyDeviceChallengeParams,
-  MfaResult
+  VerifyDeviceParams,
 } from "../types";
 import { TokenManager } from "./tokenManager";
-import { HttpRequest } from "../request";
 
 export const CREATE_DEVICE_PATH = "/api/user/devices";
 export const VERIFY_DEVICE_PATH = (deviceId: string) =>
@@ -19,7 +19,7 @@ export const CREATE_DEVICE_CHALLENGE_PATH = (deviceId: string) =>
   `/api/user/devices/${deviceId}/challenges`;
 export const VERIFY_DEVICE_CHALLENGE_PATH = (
   deviceId: string,
-  challengeId: string
+  challengeId: string,
 ) => `/api/user/devices/${deviceId}/challenges/${challengeId}/verify`;
 
 export class DeviceBinding {
@@ -40,36 +40,36 @@ export class DeviceBinding {
    * Create a device and return its `deviceId` and `challengeId` for verification
    */
   public createDevice = (
-    params: CreateDeviceParams
+    params: CreateDeviceParams,
   ): Promise<CreateDeviceResult> => {
     return this.request.fetch(CREATE_DEVICE_PATH, HttpMethod.POST, params);
-  };
+  }
 
   /**
    * Verify the device by providing signed OTP received via SMS
    */
   public verifyDevice = (
     deviceId: string,
-    params: VerifyDeviceParams
+    params: VerifyDeviceParams,
   ): Promise<void> => {
     return this.request.fetch(
       VERIFY_DEVICE_PATH(deviceId),
       HttpMethod.POST,
-      params
+      params,
     );
-  };
+  }
 
   /**
    * Create a device challenge and return string to sign by private key
    */
   public createDeviceChallenge = (
-    deviceId: string
+    deviceId: string,
   ): Promise<DeviceChallenge> => {
     return this.request.fetch(
       CREATE_DEVICE_CHALLENGE_PATH(deviceId),
-      HttpMethod.POST
+      HttpMethod.POST,
     );
-  };
+  }
 
   /**
    * Verify the device challenge and update access token
@@ -77,17 +77,17 @@ export class DeviceBinding {
   public verifyDeviceChallenge = async (
     deviceId: string,
     challengeId: string,
-    params: VerifyDeviceChallengeParams
+    params: VerifyDeviceChallengeParams,
   ): Promise<ClientOAuth2.Token> => {
     const {
       token: accessToken,
-      refresh_token: refreshToken
+      refresh_token: refreshToken,
     }: MfaResult = await this.request.fetch(
       VERIFY_DEVICE_CHALLENGE_PATH(deviceId, challengeId),
       HttpMethod.POST,
-      params
+      params,
     );
 
     return this.tokenManager.setToken(accessToken, refreshToken);
-  };
+  }
 }
