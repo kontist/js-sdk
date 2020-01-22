@@ -263,7 +263,7 @@ export class Transfer extends IterableModel<
     const pageInfo = result?.viewer?.mainAccount?.transfers?.pageInfo ?? {
       hasNextPage: false,
       hasPreviousPage: false,
-    }      ;
+    };
     return new ResultPage(this, transfers, pageInfo, args);
   }
 

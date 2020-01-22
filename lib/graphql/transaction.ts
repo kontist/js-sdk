@@ -87,7 +87,7 @@ export class Transaction extends IterableModel<TransactionModel> {
     const pageInfo = result?.viewer?.mainAccount?.transactions?.pageInfo ?? {
       hasNextPage: false,
       hasPreviousPage: false,
-    }           ;
+    };
     return new ResultPage(this, transactions, pageInfo, args);
   }
 
