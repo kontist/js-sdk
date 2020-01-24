@@ -45,7 +45,7 @@ export class PushNotificationMFA {
       HttpMethod.POST,
     );
 
-    return new Promise((resolve, reject) =>
+    return new Promise<Token>((resolve, reject) =>
       this.pollChallengeStatus(challenge, resolve, reject)(),
     );
   }
