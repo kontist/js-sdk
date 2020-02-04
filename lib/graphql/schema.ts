@@ -21,7 +21,7 @@ export type Account = {
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
   transfer?: Maybe<Transfer>,
-  /** 
+  /**
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
  **/
@@ -443,7 +443,8 @@ export type MutationConfirmFraudArgs = {
 
 
 export type MutationCreateCardArgs = {
-  type: CardType
+  type: CardType,
+  cardHolderRepresentation?: Maybe<Scalars['String']>
 };
 
 
