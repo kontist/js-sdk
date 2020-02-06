@@ -100,10 +100,12 @@ const GET_CARD_LIMITS = `
 `;
 
 const CREATE_CARD = `mutation createCard(
-  $type: CardType!
+  $type: CardType!,
+  $cardHolderRepresentation: String
 ) {
   createCard(
-    type: $type
+    type: $type,
+    cardHolderRepresentation: $cardHolderRepresentation
   ) {
     ${CARD_FIELDS}
   }
