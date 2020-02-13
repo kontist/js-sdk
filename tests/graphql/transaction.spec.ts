@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { Client } from "../../lib";
-import { Transaction, TransactionCategory } from "../../lib/graphql/schema";
+import { Transaction, TransactionCategory, BaseOperator } from "../../lib/graphql/schema";
 import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
@@ -22,9 +22,15 @@ describe("Transaction", () => {
       client = createClient();
       stub = sinon.stub(client.graphQL, "rawQuery");
 
-      firstTransaction = createTransaction();
+      firstTransaction = createTransaction({
+        name: "Santa Claus",
+        amount: 900
+      });
       secondTransaction = createTransaction();
-      thirdTransaction = createTransaction();
+      thirdTransaction = createTransaction({
+        name: "Willy Wonka",
+        ammount: 1200
+      });
 
       stub.onFirstCall().resolves(
         generatePaginatedResponse({
@@ -74,6 +80,29 @@ describe("Transaction", () => {
         thirdTransaction,
       ]);
     });
+
+    it("can fetch filtered transactions", async () => {
+      stub.onFirstCall().resolves(
+        generatePaginatedResponse({
+          key: "transactions",
+          items: [firstTransaction, thirdTransaction],
+          pageInfo: { hasPreviousPage: false, hasNextPage: false },
+        }),
+      );
+
+      const results = await client.models.transaction.fetch({
+        filter: {
+          operator: BaseOperator.And,
+          amount_gt: 1000,
+          name_like:"SaNtA"
+        }
+      });
+
+      expect(results.items).to.deep.equal([
+        firstTransaction,
+        thirdTransaction,
+      ]);
+    })
 
     describe("when iterating backwards", () => {
       it("can fetch the previous page using the previousPage method", async () => {

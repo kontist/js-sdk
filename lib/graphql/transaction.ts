@@ -31,25 +31,27 @@ const TRANSACTION_FIELDS = `
   documentType
 `;
 
-const FETCH_TRANSACTIONS = `query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String) {
-  viewer {
-    mainAccount {
-      transactions(first: $first, last: $last, after: $after, before: $before) {
-        edges {
-          node {
-            ${TRANSACTION_FIELDS}
+const FETCH_TRANSACTIONS = `
+  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter) {
+    viewer {
+      mainAccount {
+        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter) {
+          edges {
+            node {
+              ${TRANSACTION_FIELDS}
+            }
           }
-        }
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
         }
       }
     }
   }
-}`;
+`;
 
 export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
   newTransaction {
