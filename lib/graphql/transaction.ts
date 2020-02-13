@@ -1,6 +1,7 @@
 import { IterableModel } from "./iterableModel";
 import { ResultPage } from "./resultPage";
 import {
+  AccountTransactionsArgs,
   MutationCategorizeTransactionArgs,
   Query,
   Transaction as TransactionModel,
@@ -77,7 +78,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args  query parameters
    * @returns     result page
    */
-  public async fetch(args?: FetchOptions): Promise<ResultPage<TransactionModel>> {
+  public async fetch(args?: AccountTransactionsArgs): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
 
     const transactions = (

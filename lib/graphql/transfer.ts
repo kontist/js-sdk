@@ -1,6 +1,7 @@
 import { IterableModel } from "./iterableModel";
 import { ResultPage } from "./resultPage";
 import {
+  AccountTransfersArgs,
   BatchTransfer,
   ConfirmationRequestOrTransfer,
   CreateTransferInput,
@@ -11,7 +12,6 @@ import {
   TransferType,
   UpdateTransferInput,
 } from "./schema";
-import { TransferFetchOptions } from "./types";
 
 const TRANSFER_FIELDS = `
   id
@@ -156,7 +156,7 @@ const UPDATE_TRANSFER = `mutation updateTransfer($transfer: UpdateTransferInput!
 
 export class Transfer extends IterableModel<
   TransferModel,
-  TransferFetchOptions
+  AccountTransfersArgs
 > {
   /**
    * Creates single wire transfer / timed order / standing order
@@ -270,8 +270,8 @@ export class Transfer extends IterableModel<
    * @returns     result page
    */
   public async fetch(
-    args: TransferFetchOptions,
-  ): Promise<ResultPage<TransferModel, TransferFetchOptions>> {
+    args: AccountTransfersArgs,
+  ): Promise<ResultPage<TransferModel, AccountTransfersArgs>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
 
     const transfers = (result?.viewer?.mainAccount?.transfers?.edges ?? []).map(
