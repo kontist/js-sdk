@@ -2,12 +2,16 @@ import { IterableModel } from "./iterableModel";
 import { ResultPage } from "./resultPage";
 import {
   AccountTransactionsArgs,
+  BaseOperator,
   MutationCategorizeTransactionArgs,
   Query,
   Transaction as TransactionModel,
+  TransactionFilter,
   TransactionsConnectionEdge,
 } from "./schema";
 import { FetchOptions, Subscription, SubscriptionType } from "./types";
+
+const MAX_SEARCH_QUERY_LENGTH = 200;
 
 const TRANSACTION_FIELDS = `
   id
@@ -95,6 +99,19 @@ export class Transaction extends IterableModel<TransactionModel> {
   }
 
   /**
+   * Fetches first 50 matching transactions for a given user input
+   * It will consider case insentsitive like matches for amount,
+   * iban, description, and name
+   *
+   * @param searchQuery  input query from user
+   * @returns
+   */
+  public async search(searchQuery: string): Promise<ResultPage<TransactionModel>> {
+    const filter = this.parseSearchQuery(searchQuery);
+    return this.fetch({ filter });
+  }
+
+  /**
    * @inheritdoc
    */
   public fetchAll(args?: FetchOptions) {
@@ -122,5 +139,29 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async categorize(args: MutationCategorizeTransactionArgs) {
     const result = await this.client.rawQuery(CATEGORIZE_TRANSACTION, args);
     return result.categorizeTransaction;
+  }
+
+  private parseSearchQuery(searchQuery: string): TransactionFilter {
+    const searchTerms = searchQuery.slice(0, MAX_SEARCH_QUERY_LENGTH).split(" ");
+
+    const filter: TransactionFilter = {
+      iban_likeAny: searchTerms,
+      name_likeAny: searchTerms,
+      operator: BaseOperator.Or,
+      purpose_likeAny: searchTerms,
+    };
+
+    const amountRegex = /^-?\d+([,.]\d{1,2})?$/;
+    const amountTerms = searchTerms
+      .filter((term) => amountRegex.test(term))
+      .reduce((terms: number[], term: string): number[] => {
+        const amountInCents = parseFloat(term.replace(",", ".")) * 100;
+        return [...terms, amountInCents, amountInCents * -1];
+      } , []);
+
+    if (amountTerms.length > 0) {
+      filter.amount_in = amountTerms;
+    }
+    return filter;
   }
 }

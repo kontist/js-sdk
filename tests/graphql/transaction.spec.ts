@@ -193,4 +193,87 @@ describe("Transaction", () => {
       expect(result).to.deep.eq(transactionData);
     });
   });
+
+  describe("#search", () => {
+    let client: Client;
+    let fetchStub: any;
+
+    before(() => {
+      client = createClient();
+      fetchStub = sinon.stub(client.models.transaction, "fetch").resolves();
+    });
+
+    after(() => {
+      fetchStub.restore();
+    });
+
+    afterEach(() => {
+      fetchStub.resetHistory();
+    })
+
+    describe("when user provides only text", () => {
+      it("should call fetch with properly formatted filter", async () => {
+        // arrange
+        const userQuery = "hello world";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            iban_likeAny: ["hello", "world"],
+            name_likeAny: ["hello", "world"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["hello", "world"],
+          }
+        });
+      });
+    });
+
+    describe("when user provides only numbers", () => {
+      it("should call fetch with properly formatted filter", async () => {
+        // arrange
+        const userQuery = "1234 -567 86.12 90,1";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            amount_in: [123400, -123400, -56700, 56700, 8612, -8612, 9010, -9010],
+            iban_likeAny: ["1234", "-567", "86.12", "90,1"],
+            name_likeAny: ["1234", "-567", "86.12", "90,1"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["1234", "-567", "86.12", "90,1"],
+          }
+        });
+      });
+    });
+
+    describe("when user provides a mix of numbers and text", () => {
+      it("should call fetch with properly formatted filter", async () => {
+        // arrange
+        const userQuery = "DE12345 -90,87 hello 5000";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            amount_in: [-9087, 9087, 500000, -500000],
+            iban_likeAny: ["DE12345", "-90,87", "hello", "5000"],
+            name_likeAny: ["DE12345", "-90,87", "hello", "5000"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["DE12345", "-90,87", "hello", "5000"],
+          }
+        });
+      });
+    });
+  });
 });
