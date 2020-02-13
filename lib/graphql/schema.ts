@@ -50,6 +50,7 @@ export type AccountTransactionArgs = {
 
 /** The bank account of the current user */
 export type AccountTransactionsArgs = {
+  filter?: Maybe<TransactionFilter>,
   first?: Maybe<Scalars['Int']>,
   last?: Maybe<Scalars['Int']>,
   after?: Maybe<Scalars['String']>,
@@ -68,6 +69,11 @@ export type AccountTransferArgs = {
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>
 };
+
+export enum BaseOperator {
+  Or = 'OR',
+  And = 'AND'
+}
 
 export type BatchTransfer = {
    __typename?: 'BatchTransfer',
@@ -839,6 +845,37 @@ export enum TransactionCategory {
   VatRefund = 'VAT_REFUND'
 }
 
+export type TransactionCondition = {
+  operator?: Maybe<BaseOperator>,
+  amount_lt?: Maybe<Scalars['Int']>,
+  amount_gt?: Maybe<Scalars['Int']>,
+  amount_gte?: Maybe<Scalars['Int']>,
+  amount_lte?: Maybe<Scalars['Int']>,
+  amount_eq?: Maybe<Scalars['Int']>,
+  amount_ne?: Maybe<Scalars['Int']>,
+  amount_in?: Maybe<Array<Scalars['Int']>>,
+  iban_eq?: Maybe<Scalars['String']>,
+  iban_ne?: Maybe<Scalars['String']>,
+  iban_like?: Maybe<Scalars['String']>,
+  iban_likeAny?: Maybe<Array<Scalars['String']>>,
+  iban_in?: Maybe<Array<Scalars['String']>>,
+  bookingDate_eq?: Maybe<Scalars['String']>,
+  bookingDate_ne?: Maybe<Scalars['String']>,
+  bookingDate_gt?: Maybe<Scalars['String']>,
+  bookingDate_lt?: Maybe<Scalars['String']>,
+  bookingDate_gte?: Maybe<Scalars['String']>,
+  bookingDate_lte?: Maybe<Scalars['String']>,
+  name_eq?: Maybe<Scalars['String']>,
+  name_ne?: Maybe<Scalars['String']>,
+  name_like?: Maybe<Scalars['String']>,
+  name_likeAny?: Maybe<Array<Scalars['String']>>,
+  name_in?: Maybe<Array<Scalars['String']>>,
+  purpose_eq?: Maybe<Scalars['String']>,
+  purpose_ne?: Maybe<Scalars['String']>,
+  purpose_like?: Maybe<Scalars['String']>,
+  purpose_likeAny?: Maybe<Array<Scalars['String']>>,
+};
+
 export type TransactionFee = {
    __typename?: 'TransactionFee',
   type: TransactionFeeType,
@@ -862,6 +899,38 @@ export enum TransactionFeeType {
   SecondReminderEmail = 'SECOND_REMINDER_EMAIL',
   CardReplacement = 'CARD_REPLACEMENT'
 }
+
+export type TransactionFilter = {
+  operator?: Maybe<BaseOperator>,
+  amount_lt?: Maybe<Scalars['Int']>,
+  amount_gt?: Maybe<Scalars['Int']>,
+  amount_gte?: Maybe<Scalars['Int']>,
+  amount_lte?: Maybe<Scalars['Int']>,
+  amount_eq?: Maybe<Scalars['Int']>,
+  amount_ne?: Maybe<Scalars['Int']>,
+  amount_in?: Maybe<Array<Scalars['Int']>>,
+  iban_eq?: Maybe<Scalars['String']>,
+  iban_ne?: Maybe<Scalars['String']>,
+  iban_like?: Maybe<Scalars['String']>,
+  iban_likeAny?: Maybe<Array<Scalars['String']>>,
+  iban_in?: Maybe<Array<Scalars['String']>>,
+  bookingDate_eq?: Maybe<Scalars['String']>,
+  bookingDate_ne?: Maybe<Scalars['String']>,
+  bookingDate_gt?: Maybe<Scalars['String']>,
+  bookingDate_lt?: Maybe<Scalars['String']>,
+  bookingDate_gte?: Maybe<Scalars['String']>,
+  bookingDate_lte?: Maybe<Scalars['String']>,
+  name_eq?: Maybe<Scalars['String']>,
+  name_ne?: Maybe<Scalars['String']>,
+  name_like?: Maybe<Scalars['String']>,
+  name_likeAny?: Maybe<Array<Scalars['String']>>,
+  name_in?: Maybe<Array<Scalars['String']>>,
+  purpose_eq?: Maybe<Scalars['String']>,
+  purpose_ne?: Maybe<Scalars['String']>,
+  purpose_like?: Maybe<Scalars['String']>,
+  purpose_likeAny?: Maybe<Array<Scalars['String']>>,
+  conditions?: Maybe<Array<TransactionCondition>>,
+};
 
 export enum TransactionProjectionType {
   CreditPresentment = 'CREDIT_PRESENTMENT',
