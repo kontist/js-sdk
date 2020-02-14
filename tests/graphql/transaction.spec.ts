@@ -275,5 +275,26 @@ describe("Transaction", () => {
         });
       });
     });
+
+    describe("when user provides terms which are not valid amount", () => {
+      it("should call fetch without including amount filter", async () => {
+        // arrange
+        const userQuery = "1.123 -234, .10";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            iban_likeAny: ["1.123", "-234,", ".10"],
+            name_likeAny: ["1.123", "-234,", ".10"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["1.123", "-234,", ".10"],
+          }
+        });
+      });
+    });
   });
 });
