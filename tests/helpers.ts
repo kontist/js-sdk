@@ -61,7 +61,7 @@ export const generatePaginatedResponse = ({
   pageInfo,
 }: {
   key: "transactions" | "transfers";
-  items: Array<Transaction | Transfer>;
+  items: (Transaction | Transfer)[];
   pageInfo: { hasNextPage: boolean; hasPreviousPage: boolean };
 }) => ({
   viewer: {
