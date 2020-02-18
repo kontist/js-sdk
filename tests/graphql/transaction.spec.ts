@@ -98,6 +98,16 @@ describe("Transaction", () => {
         }
       });
 
+      expect(stub.callCount).to.equal(1);
+      expect(stub.getCall(0).args[1]).to.deep.equal(
+        {
+          filter: {
+            operator: BaseOperator.And,
+            amount_gt: 1000,
+            name_like: "SaNtA"
+          }
+        }
+      );
       expect(results.items).to.deep.equal([
         firstTransaction,
         thirdTransaction,
