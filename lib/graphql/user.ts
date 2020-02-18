@@ -48,7 +48,7 @@ export class User extends Model<UserModel> {
    *
    * @returns current user details
    */
-  public async get(): Promise<UserModel> {
+  public async get(): Promise<UserModel | undefined | null> {
     const result: Query = await this.client.rawQuery(GET_USER);
     return result.viewer;
   }

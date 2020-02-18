@@ -214,7 +214,7 @@ export class Card extends Model<CardModel> {
   public async fetch(): Promise<ResultPage<CardModel>> {
     const result: Query = await this.client.rawQuery(GET_CARDS);
 
-    const cards = result.viewer.mainAccount?.cards ?? [];
+    const cards = result.viewer?.mainAccount?.cards ?? [];
 
     // cards resolver is not paginated
     const pageInfo = {
@@ -233,7 +233,7 @@ export class Card extends Model<CardModel> {
    */
   public async get(args: GetCardOptions): Promise<CardModel | null> {
     const result: Query = await this.client.rawQuery(GET_CARD, args);
-    return result.viewer.mainAccount?.card ?? null;
+    return result.viewer?.mainAccount?.card ?? null;
   }
 
   /**
@@ -244,7 +244,7 @@ export class Card extends Model<CardModel> {
    */
   public async getLimits(args: GetCardOptions): Promise<CardSettings | null> {
     const result: Query = await this.client.rawQuery(GET_CARD_LIMITS, args);
-    return result.viewer.mainAccount?.card?.settings ?? null;
+    return result.viewer?.mainAccount?.card?.settings ?? null;
   }
 
   /**
