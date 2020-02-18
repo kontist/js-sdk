@@ -155,7 +155,7 @@ export class Transaction extends IterableModel<TransactionModel> {
     const amountTerms = searchTerms
       .filter((term) => amountRegex.test(term))
       .reduce((terms: number[], term: string): number[] => {
-        const amountInCents = parseFloat(term.replace(",", ".")) * 100;
+        const amountInCents = Math.round(parseFloat(term.replace(",", ".")) * 100);
         return [...terms, amountInCents, amountInCents * -1];
       } , []);
 

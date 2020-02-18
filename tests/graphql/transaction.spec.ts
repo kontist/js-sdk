@@ -257,7 +257,7 @@ describe("Transaction", () => {
     describe("when user provides a mix of numbers and text", () => {
       it("should call fetch with properly formatted filter", async () => {
         // arrange
-        const userQuery = "DE12345 -90,87 hello 5000";
+        const userQuery = "DE12345 -90,87 hello 33.91";
 
         // act
         await client.models.transaction.search(userQuery);
@@ -266,11 +266,11 @@ describe("Transaction", () => {
         expect(fetchStub.callCount).to.eq(1);
         expect(fetchStub.getCall(0).args[0]).to.deep.eq({
           filter: {
-            amount_in: [-9087, 9087, 500000, -500000],
-            iban_likeAny: ["DE12345", "-90,87", "hello", "5000"],
-            name_likeAny: ["DE12345", "-90,87", "hello", "5000"],
+            amount_in: [-9087, 9087, 3391, -3391],
+            iban_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
+            name_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
             operator: BaseOperator.Or,
-            purpose_likeAny: ["DE12345", "-90,87", "hello", "5000"],
+            purpose_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
           }
         });
       });
