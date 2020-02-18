@@ -1,12 +1,15 @@
 import {
-  AccountTransactionsArgs,
-  AccountTransfersArgs,
   CardType,
   Mutation,
   Query,
 } from "./schema";
 
-export type FetchOptions = AccountTransactionsArgs | AccountTransfersArgs;
+export type FetchOptions = {
+  first?: number;
+  last?: number;
+  before?: string | null;
+  after?: string | null;
+};
 
 export type GetCardOptions = {
   id: string;
