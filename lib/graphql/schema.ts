@@ -21,7 +21,7 @@ export type Account = {
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
   transfer?: Maybe<Transfer>,
-  /**
+  /** 
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
  **/
@@ -237,42 +237,6 @@ export type CreateSepaTransferInput = {
   e2eId?: Maybe<Scalars['String']>,
 };
 
-/** The available fields to create a Standing Order */
-export type CreateStandingOrderInput = {
-  /** The name of the Standing Order payments recipient */
-  recipient: Scalars['String'],
-  /** The IBAN of the Standing Order payments recipient */
-  iban: Scalars['String'],
-  /** The amount of each Standing Order payment in cents */
-  amount: Scalars['Int'],
-  /** The date at which the first payment will be executed */
-  executeAt: Scalars['DateTime'],
-  /** The date at which the last payment will be executed */
-  lastExecutionDate?: Maybe<Scalars['DateTime']>,
-  /** The purpose of the Standing Order - 140 max characters */
-  purpose?: Maybe<Scalars['String']>,
-  /** The end to end ID of the Standing Order */
-  e2eId?: Maybe<Scalars['String']>,
-  /** The reoccurrence type of the Standing Order payments */
-  reoccurrence: StandingOrderReoccurenceType,
-};
-
-/** The available fields to create a Timed Order */
-export type CreateTimedOrderInput = {
-  /** The name of the Timed Order recipient */
-  recipient: Scalars['String'],
-  /** The IBAN of the Timed Order recipient */
-  iban: Scalars['String'],
-  /** The amount of the Timed Order in cents */
-  amount: Scalars['Int'],
-  /** The date at which the payment will be executed */
-  executeAt: Scalars['DateTime'],
-  /** The purpose of the Timed Order - 140 max characters */
-  purpose?: Maybe<Scalars['String']>,
-  /** The end to end ID of the Timed Order */
-  e2eId?: Maybe<Scalars['String']>,
-};
-
 /** The available fields to create a transfer */
 export type CreateTransferInput = {
   /** The name of the transfer recipient */
@@ -362,13 +326,21 @@ export type Mutation = {
   confirmTransfers: BatchTransfer,
   whitelistCard: WhitelistCardResponse,
   confirmFraud: ConfirmFraudResponse,
+  /** Create a new card */
   createCard: Card,
+  /** Activate a card */
   activateCard: Card,
+  /** Update settings (e.g. limits) */
   updateCardSettings: CardSettings,
+  /** Block or unblock or close a card */
   changeCardStatus: Card,
+  /** Set a new PIN, needs to be confirmed */
   changeCardPIN: ConfirmationRequest,
+  /** Confirm a PIN change request */
   confirmChangeCardPIN: ConfirmationStatus,
+  /** Call when customer's card is lost or stolen */
   replaceCard: Card,
+  /** Close and order new card. Call when customer's card is damaged */
   reorderCard: Card,
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
   categorizeTransaction: Transaction,
@@ -764,7 +736,8 @@ export enum PaymentFrequency {
 export type Query = {
    __typename?: 'Query',
   /** The current user information */
-  viewer: User,
+  viewer?: Maybe<User>,
+  status: SystemStatus,
 };
 
 export enum ScopeType {
@@ -803,31 +776,6 @@ export enum SepaTransferStatus {
   Booked = 'BOOKED'
 }
 
-export type StandingOrder = {
-   __typename?: 'StandingOrder',
-  id: Scalars['String'],
-  /** The status of the Standing Order */
-  status: StandingOrderStatus,
-  /** The IBAN of the Standing Order payments recipient */
-  iban: Scalars['String'],
-  /** The name of the Standing Order payments recipient */
-  recipient: Scalars['String'],
-  /** The purpose of the Standing Order - 140 max characters */
-  purpose?: Maybe<Scalars['String']>,
-  /** The amount of each Standing Order payment in cents */
-  amount: Scalars['Int'],
-  /** The date at which the first payment will be executed */
-  executeAt: Scalars['DateTime'],
-  /** The date at which the last payment will be executed */
-  lastExecutionDate?: Maybe<Scalars['DateTime']>,
-  /** The end to end ID of the Standing Order */
-  e2eId?: Maybe<Scalars['String']>,
-  /** The reoccurrence type of the Standing Order payments */
-  reoccurrence: StandingOrderReoccurenceType,
-  /** The date at which the next payment will be executed */
-  nextOccurrence?: Maybe<Scalars['DateTime']>,
-};
-
 export enum StandingOrderReoccurenceType {
   Monthly = 'MONTHLY',
   Quarterly = 'QUARTERLY',
@@ -835,11 +783,8 @@ export enum StandingOrderReoccurenceType {
   Annually = 'ANNUALLY'
 }
 
-export enum StandingOrderStatus {
-  Created = 'CREATED',
-  Active = 'ACTIVE',
-  Inactive = 'INACTIVE',
-  Canceled = 'CANCELED'
+export enum Status {
+  Error = 'ERROR'
 }
 
 export type Subscription = {
@@ -847,34 +792,11 @@ export type Subscription = {
   newTransaction: Transaction,
 };
 
-export type TimedOrder = {
-   __typename?: 'TimedOrder',
-  id: Scalars['ID'],
-  /** The date at which the payment will be executed */
-  executeAt: Scalars['String'],
-  /** The status of the Timed Order */
-  status: TimedOrderStatus,
-  /** The purpose of the Timed Order - 140 max characters */
-  purpose?: Maybe<Scalars['String']>,
-  /** The IBAN of the Timed Order recipient */
-  iban: Scalars['String'],
-  /** The name of the Timed Order recipient */
-  recipient: Scalars['String'],
-  /** The end to end ID of the Timed Order */
-  e2eId?: Maybe<Scalars['String']>,
-  /** The amount of the Timed Order in cents */
-  amount: Scalars['Int'],
+export type SystemStatus = {
+   __typename?: 'SystemStatus',
+  type?: Maybe<Status>,
+  message?: Maybe<Scalars['String']>,
 };
-
-export enum TimedOrderStatus {
-  Created = 'CREATED',
-  AuthorizationRequired = 'AUTHORIZATION_REQUIRED',
-  ConfirmationRequired = 'CONFIRMATION_REQUIRED',
-  Scheduled = 'SCHEDULED',
-  Executed = 'EXECUTED',
-  Canceled = 'CANCELED',
-  Failed = 'FAILED'
-}
 
 export type Transaction = {
    __typename?: 'Transaction',
@@ -1099,7 +1021,7 @@ export type User = {
   vatRate?: Maybe<Scalars['Int']>,
   /** The user's IDNow identification status */
   identificationStatus?: Maybe<IdentificationStatus>,
-  /** The user's IDNow identification status */
+  /** The link to use for IDNow identification */
   identificationLink?: Maybe<Scalars['String']>,
   gender?: Maybe<Gender>,
   firstName?: Maybe<Scalars['String']>,

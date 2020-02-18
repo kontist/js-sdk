@@ -24,6 +24,6 @@ export class Account extends Model<AccountModel> {
    */
   public async get(): Promise<AccountModel | null> {
     const result: Query = await this.client.rawQuery(GET_ACCOUNT);
-    return result.viewer.mainAccount || null;
+    return result.viewer?.mainAccount || null;
   }
 }
