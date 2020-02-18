@@ -99,8 +99,8 @@ export class Transaction extends IterableModel<TransactionModel> {
   }
 
   /**
-   * Fetches first 50 matching transactions for a given user input
-   * It will consider case insentsitive like matches for amount,
+   * Fetches up to first 50 matching transactions for a given user input
+   * It will consider case insensitive like matches for amount,
    * iban, description, and name
    *
    * @param searchQuery  input query from user
