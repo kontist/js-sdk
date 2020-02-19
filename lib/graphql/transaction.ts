@@ -1,12 +1,17 @@
 import { IterableModel } from "./iterableModel";
 import { ResultPage } from "./resultPage";
 import {
+  AccountTransactionsArgs,
+  BaseOperator,
   MutationCategorizeTransactionArgs,
   Query,
   Transaction as TransactionModel,
+  TransactionFilter,
   TransactionsConnectionEdge,
 } from "./schema";
 import { FetchOptions, Subscription, SubscriptionType } from "./types";
+
+const MAX_SEARCH_QUERY_LENGTH = 200;
 
 const TRANSACTION_FIELDS = `
   id
@@ -30,25 +35,27 @@ const TRANSACTION_FIELDS = `
   documentType
 `;
 
-const FETCH_TRANSACTIONS = `query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String) {
-  viewer {
-    mainAccount {
-      transactions(first: $first, last: $last, after: $after, before: $before) {
-        edges {
-          node {
-            ${TRANSACTION_FIELDS}
+const FETCH_TRANSACTIONS = `
+  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter) {
+    viewer {
+      mainAccount {
+        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter) {
+          edges {
+            node {
+              ${TRANSACTION_FIELDS}
+            }
           }
-        }
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
         }
       }
     }
   }
-}`;
+`;
 
 export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
   newTransaction {
@@ -77,7 +84,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args  query parameters
    * @returns     result page
    */
-  public async fetch(args?: FetchOptions): Promise<ResultPage<TransactionModel>> {
+  public async fetch(args?: AccountTransactionsArgs): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
 
     const transactions = (
@@ -89,6 +96,19 @@ export class Transaction extends IterableModel<TransactionModel> {
       hasPreviousPage: false,
     };
     return new ResultPage(this, transactions, pageInfo, args);
+  }
+
+  /**
+   * Fetches up to first 50 matching transactions for a given user input
+   * It will consider case insensitive like matches for amount,
+   * iban, description, and name
+   *
+   * @param searchQuery  input query from user
+   * @returns
+   */
+  public async search(searchQuery: string): Promise<ResultPage<TransactionModel>> {
+    const filter = this.parseSearchQuery(searchQuery);
+    return this.fetch({ filter });
   }
 
   /**
@@ -119,5 +139,29 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async categorize(args: MutationCategorizeTransactionArgs) {
     const result = await this.client.rawQuery(CATEGORIZE_TRANSACTION, args);
     return result.categorizeTransaction;
+  }
+
+  private parseSearchQuery(searchQuery: string): TransactionFilter {
+    const searchTerms = searchQuery.slice(0, MAX_SEARCH_QUERY_LENGTH).split(" ");
+
+    const filter: TransactionFilter = {
+      iban_likeAny: searchTerms,
+      name_likeAny: searchTerms,
+      operator: BaseOperator.Or,
+      purpose_likeAny: searchTerms,
+    };
+
+    const amountRegex = /^-?\d+([,.]\d{1,2})?$/;
+    const amountTerms = searchTerms
+      .filter((term) => amountRegex.test(term))
+      .reduce((terms: number[], term: string): number[] => {
+        const amountInCents = Math.round(parseFloat(term.replace(",", ".")) * 100);
+        return [...terms, amountInCents, amountInCents * -1];
+      } , []);
+
+    if (amountTerms.length > 0) {
+      filter.amount_in = amountTerms;
+    }
+    return filter;
   }
 }

@@ -2,8 +2,6 @@ import {
   CardType,
   Mutation,
   Query,
-  TransfersConnectionFilter,
-  TransferType,
 } from "./schema";
 
 export type FetchOptions = {
@@ -12,11 +10,6 @@ export type FetchOptions = {
   before?: string | null;
   after?: string | null;
 };
-
-export type TransferFetchOptions = {
-  type: TransferType;
-  where?: TransfersConnectionFilter;
-} & FetchOptions;
 
 export type GetCardOptions = {
   id: string;

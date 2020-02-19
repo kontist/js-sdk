@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { Client } from "../../lib";
-import { Transaction, TransactionCategory } from "../../lib/graphql/schema";
+import { Transaction, TransactionCategory, BaseOperator } from "../../lib/graphql/schema";
 import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
@@ -22,9 +22,15 @@ describe("Transaction", () => {
       client = createClient();
       stub = sinon.stub(client.graphQL, "rawQuery");
 
-      firstTransaction = createTransaction();
+      firstTransaction = createTransaction({
+        name: "Santa Claus",
+        amount: 900
+      });
       secondTransaction = createTransaction();
-      thirdTransaction = createTransaction();
+      thirdTransaction = createTransaction({
+        name: "Willy Wonka",
+        ammount: 1200
+      });
 
       stub.onFirstCall().resolves(
         generatePaginatedResponse({
@@ -74,6 +80,39 @@ describe("Transaction", () => {
         thirdTransaction,
       ]);
     });
+
+    it("can fetch filtered transactions", async () => {
+      stub.onFirstCall().resolves(
+        generatePaginatedResponse({
+          key: "transactions",
+          items: [firstTransaction, thirdTransaction],
+          pageInfo: { hasPreviousPage: false, hasNextPage: false },
+        }),
+      );
+
+      const results = await client.models.transaction.fetch({
+        filter: {
+          operator: BaseOperator.And,
+          amount_gt: 1000,
+          name_like:"SaNtA"
+        }
+      });
+
+      expect(stub.callCount).to.equal(1);
+      expect(stub.getCall(0).args[1]).to.deep.equal(
+        {
+          filter: {
+            operator: BaseOperator.And,
+            amount_gt: 1000,
+            name_like: "SaNtA"
+          }
+        }
+      );
+      expect(results.items).to.deep.equal([
+        firstTransaction,
+        thirdTransaction,
+      ]);
+    })
 
     describe("when iterating backwards", () => {
       it("can fetch the previous page using the previousPage method", async () => {
@@ -162,6 +201,110 @@ describe("Transaction", () => {
       // assert
       expect(stub.callCount).to.eq(1);
       expect(result).to.deep.eq(transactionData);
+    });
+  });
+
+  describe("#search", () => {
+    let client: Client;
+    let fetchStub: any;
+
+    before(() => {
+      client = createClient();
+      fetchStub = sinon.stub(client.models.transaction, "fetch").resolves();
+    });
+
+    after(() => {
+      fetchStub.restore();
+    });
+
+    afterEach(() => {
+      fetchStub.resetHistory();
+    })
+
+    describe("when user provides only text", () => {
+      it("should call fetch with properly formatted filter", async () => {
+        // arrange
+        const userQuery = "hello world";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            iban_likeAny: ["hello", "world"],
+            name_likeAny: ["hello", "world"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["hello", "world"],
+          }
+        });
+      });
+    });
+
+    describe("when user provides only numbers", () => {
+      it("should call fetch with properly formatted filter", async () => {
+        // arrange
+        const userQuery = "1234 -567 86.12 90,1";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            amount_in: [123400, -123400, -56700, 56700, 8612, -8612, 9010, -9010],
+            iban_likeAny: ["1234", "-567", "86.12", "90,1"],
+            name_likeAny: ["1234", "-567", "86.12", "90,1"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["1234", "-567", "86.12", "90,1"],
+          }
+        });
+      });
+    });
+
+    describe("when user provides a mix of numbers and text", () => {
+      it("should call fetch with properly formatted filter", async () => {
+        // arrange
+        const userQuery = "DE12345 -90,87 hello 33.91";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            amount_in: [-9087, 9087, 3391, -3391],
+            iban_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
+            name_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
+          }
+        });
+      });
+    });
+
+    describe("when user provides terms which are not valid amount", () => {
+      it("should call fetch without including amount filter", async () => {
+        // arrange
+        const userQuery = "1.123 -234, .10";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            iban_likeAny: ["1.123", "-234,", ".10"],
+            name_likeAny: ["1.123", "-234,", ".10"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["1.123", "-234,", ".10"],
+          }
+        });
+      });
     });
   });
 });
