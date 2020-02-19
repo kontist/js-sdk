@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.25.0] - 2020-02-19
+### Added
+- Add a filter argument to transaction fetch query
+- Add a method to search for transactions matching a user's input string
+
 ## [0.24.0] - 2020-01-22
 ### Added
 - Add a method to replace a card (`models.card.replace`)
