@@ -261,6 +261,10 @@ export type CreateTransferInput = {
   e2eId?: Maybe<Scalars['String']>,
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: Maybe<StandingOrderReoccurenceType>,
+  /** The user selected category for the SEPA Transfer */
+  category?: Maybe<TransactionCategory>,
+  /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
 
 
@@ -323,7 +327,7 @@ export type Mutation = {
   deleteClient: Client,
   /** Create a transfer. The transfer's type will be determined based on the provided input */
   createTransfer: ConfirmationRequest,
-  updateTransfer: ConfirmationRequest,
+  updateTransfer: ConfirmationRequestOrTransfer,
   /** Confirm a transfer creation */
   confirmTransfer: Transfer,
   /** Create multiple transfers at once. Only regular SEPA Transfers are supported */
@@ -999,6 +1003,10 @@ export type Transfer = {
   reoccurrence?: Maybe<StandingOrderReoccurenceType>,
   /** The date at which the next payment will be executed for Standing Orders */
   nextOccurrence?: Maybe<Scalars['DateTime']>,
+  /** The user selected category for the SEPA Transfer */
+  category?: Maybe<Scalars['String']>,
+  /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
 
 export type TransfersConnection = {
@@ -1060,14 +1068,14 @@ export type UpdateClientInput = {
   id: Scalars['String'],
 };
 
-/** The available fields to update a Standing Order */
+/** The available fields to update a transfer */
 export type UpdateTransferInput = {
-  /** The ID of the Standing Order to update */
+  /** The ID of the transfer to update */
   id: Scalars['String'],
   /** The type of transfer to update, currently only Standing Orders are supported */
-  type: TransferType,
-  /** The amount of each Standing Order payment in cents */
-  amount: Scalars['Int'],
+  type?: Maybe<TransferType>,
+  /** The amount of the Standing Order payment in cents */
+  amount?: Maybe<Scalars['Int']>,
   /** The date at which the last payment will be executed */
   lastExecutionDate?: Maybe<Scalars['DateTime']>,
   /** The purpose of the Standing Order - 140 max characters, if not specified with the update, it will be set to null */
@@ -1076,6 +1084,10 @@ export type UpdateTransferInput = {
   e2eId?: Maybe<Scalars['String']>,
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: Maybe<StandingOrderReoccurenceType>,
+  /** The user selected category for the SEPA Transfer */
+  category?: Maybe<TransactionCategory>,
+  /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
 
 export type User = {

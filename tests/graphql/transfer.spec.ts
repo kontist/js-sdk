@@ -4,7 +4,8 @@ import { Transfer as TransferClass } from "../../lib/graphql/transfer";
 import {
   TransferType,
   Transfer,
-  StandingOrderReoccurenceType
+  StandingOrderReoccurenceType,
+  TransactionCategory
 } from "../../lib/graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
 
@@ -223,7 +224,7 @@ describe("Transfer", () => {
     });
   });
 
-  describe("update", () => {
+  describe("update - Standing Order", () => {
     const updatePayload = {
       id: "some-id",
       amount: 2345,
@@ -253,7 +254,79 @@ describe("Transfer", () => {
     });
 
     it("should return updateTransfer result", () => {
-      expect(result).to.eql(confirmationId);
+      expect(result).to.eql({ confirmationId });
+    });
+  });
+
+  describe("update - SEPA Transfer", () => {
+    const category = TransactionCategory.TaxPayment;
+    const userSelectedBookingDate = new Date().toISOString();
+    const updatePayload = {
+      id: "some-id",
+      type: TransferType.SepaTransfer,
+      category,
+      userSelectedBookingDate
+    };
+
+    before(async () => {
+      graphqlClientStub.rawQuery.reset();
+      graphqlClientStub.rawQuery.resolves({
+        updateTransfer: {
+          category,
+          userSelectedBookingDate
+        }
+      });
+      result = await transferInstance.update(updatePayload);
+    });
+
+    it("should send updateTransfer GraphQL mutation", () => {
+      expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+      const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
+      expect(query).to.include("updateTransfer");
+      expect(variables).to.eql({ transfer: updatePayload });
+    });
+
+    it("should return updateTransfer result", () => {
+      expect(result).to.eql({
+        category,
+        userSelectedBookingDate
+      });
+    });
+  });
+
+  describe("update - Timed Order", () => {
+    const category = TransactionCategory.TaxPayment;
+    const userSelectedBookingDate = new Date().toISOString();
+    const updatePayload = {
+      id: "some-id",
+      type: TransferType.TimedOrder,
+      category,
+      userSelectedBookingDate
+    };
+
+    before(async () => {
+      graphqlClientStub.rawQuery.reset();
+      graphqlClientStub.rawQuery.resolves({
+        updateTransfer: {
+          category,
+          userSelectedBookingDate
+        }
+      });
+      result = await transferInstance.update(updatePayload);
+    });
+
+    it("should send updateTransfer GraphQL mutation", () => {
+      expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+      const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
+      expect(query).to.include("updateTransfer");
+      expect(variables).to.eql({ transfer: updatePayload });
+    });
+
+    it("should return updateTransfer result", () => {
+      expect(result).to.eql({
+        category,
+        userSelectedBookingDate
+      });
     });
   });
 });

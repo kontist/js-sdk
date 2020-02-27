@@ -150,7 +150,13 @@ const GET_TRANSFER_SUGGESTIONS = `
 
 const UPDATE_TRANSFER = `mutation updateTransfer($transfer: UpdateTransferInput!) {
   updateTransfer(transfer: $transfer) {
-    confirmationId
+    ... on ConfirmationRequest {
+      confirmationId
+    }
+
+    ... on Transfer {
+      ${TRANSFER_FIELDS}
+    }
   }
 }`;
 
@@ -256,11 +262,11 @@ export class Transfer extends IterableModel<
    * Update a standing order
    *
    * @param transfer  transfer data including at least id and amount
-   * @returns         confirmation id used to confirm the update
+   * @returns         confirmation id used to confirm the update of Standing order or Transfer for Sepa Transfer / Timed Order
    */
-  public async update(transfer: UpdateTransferInput): Promise<string> {
+  public async update(transfer: UpdateTransferInput): Promise<ConfirmationRequestOrTransfer> {
     const result = await this.client.rawQuery(UPDATE_TRANSFER, { transfer });
-    return result.updateTransfer.confirmationId;
+    return result.updateTransfer;
   }
 
   /**
