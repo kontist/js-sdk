@@ -261,7 +261,7 @@ export class Transfer extends IterableModel<
   /**
    * Update a standing order
    *
-   * @param transfer  transfer data including at least id and amount
+   * @param transfer  transfer data including at least id and type. For Timed Orders and Sepa Transfers, only category and userSelectedBooking date can be updated 
    * @returns         confirmation id used to confirm the update of Standing order or Transfer for Sepa Transfer / Timed Order
    */
   public async update(transfer: UpdateTransferInput): Promise<ConfirmationRequestOrTransfer> {
