@@ -1073,7 +1073,7 @@ export type UpdateTransferInput = {
   /** The ID of the transfer to update */
   id: Scalars['String'],
   /** The type of transfer to update, currently only Standing Orders are supported */
-  type?: Maybe<TransferType>,
+  type: TransferType,
   /** The amount of the Standing Order payment in cents */
   amount?: Maybe<Scalars['Int']>,
   /** The date at which the last payment will be executed */
