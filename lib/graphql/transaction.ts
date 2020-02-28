@@ -145,7 +145,6 @@ export class Transaction extends IterableModel<TransactionModel> {
     const searchTerms = searchQuery.slice(0, MAX_SEARCH_QUERY_LENGTH).split(" ");
 
     const filter: TransactionFilter = {
-      iban_likeAny: searchTerms,
       name_likeAny: searchTerms,
       operator: BaseOperator.Or,
       purpose_likeAny: searchTerms,
@@ -162,6 +161,14 @@ export class Transaction extends IterableModel<TransactionModel> {
     if (amountTerms.length > 0) {
       filter.amount_in = amountTerms;
     }
+
+    const ibanRegex = /^[A-Za-z]{2}\d{2,36}$/;
+    const ibanTerms = searchTerms.filter((term) => ibanRegex.test(term));
+
+    if (ibanTerms.length > 0) {
+      filter.iban_likeAny = ibanTerms;
+    }
+
     return filter;
   }
 }
