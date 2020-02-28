@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- *Breaking*: update transfer can now return confirmation request (Standing Order) or Transfer (Sepa Transfer, Timed Order)
+- create transfer mutation allows now to provide category and booking date for Sepa Transfer, Standing Order and Timed Order
+- update transfer mutation allows now to provide category and booking date for pending Sepa Transfer, Standing Order, and Timed Order. `category` and `userSelectedBookingDate` are the only editable fields for Timed Order and pending Sepa Transfer
+- amount is not required anymore for an update of Standing Order
 
 ## [0.25.0] - 2020-02-19
 ### Added
