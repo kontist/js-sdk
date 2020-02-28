@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - create transfer mutation allows now to provide category and booking date for Sepa Transfer, Standing Order and Timed Order
 - update transfer mutation allows now to provide category and booking date for pending Sepa Transfer, Standing Order, and Timed Order. `category` and `userSelectedBookingDate` are the only editable fields for Timed Order and pending Sepa Transfer
 - amount is not required anymore for an update of Standing Order
+- Transaction search method will now only look for IBAN matches when user provides terms comprised of 2 letters followed by 2+ numbers
 
 ## [0.25.0] - 2020-02-19
 ### Added
