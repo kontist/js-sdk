@@ -233,7 +233,6 @@ describe("Transaction", () => {
         expect(fetchStub.callCount).to.eq(1);
         expect(fetchStub.getCall(0).args[0]).to.deep.eq({
           filter: {
-            iban_likeAny: ["hello", "world"],
             name_likeAny: ["hello", "world"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["hello", "world"],
@@ -255,7 +254,6 @@ describe("Transaction", () => {
         expect(fetchStub.getCall(0).args[0]).to.deep.eq({
           filter: {
             amount_in: [123400, -123400, -56700, 56700, 8612, -8612, 9010, -9010],
-            iban_likeAny: ["1234", "-567", "86.12", "90,1"],
             name_likeAny: ["1234", "-567", "86.12", "90,1"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["1234", "-567", "86.12", "90,1"],
@@ -277,7 +275,7 @@ describe("Transaction", () => {
         expect(fetchStub.getCall(0).args[0]).to.deep.eq({
           filter: {
             amount_in: [-9087, 9087, 3391, -3391],
-            iban_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
+            iban_likeAny: ["DE12345"],
             name_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
@@ -298,10 +296,31 @@ describe("Transaction", () => {
         expect(fetchStub.callCount).to.eq(1);
         expect(fetchStub.getCall(0).args[0]).to.deep.eq({
           filter: {
-            iban_likeAny: ["1.123", "-234,", ".10"],
             name_likeAny: ["1.123", "-234,", ".10"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["1.123", "-234,", ".10"],
+          }
+        });
+      });
+    });
+
+    describe("when user provides terms which match IBAN format", () => {
+      it("should call fetch including iban filter", async () => {
+        // arrange
+        const userQuery = "DE4567 E123 1234 FR12";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            amount_in: [123400, -123400],
+            iban_likeAny: ["DE4567", "FR12"],
+            name_likeAny: ["DE4567", "E123", "1234", "FR12"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["DE4567", "E123", "1234", "FR12"],
           }
         });
       });
