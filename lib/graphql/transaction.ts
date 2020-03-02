@@ -12,6 +12,7 @@ import {
 import { FetchOptions, Subscription, SubscriptionType } from "./types";
 
 const MAX_SEARCH_QUERY_LENGTH = 200;
+const MAX_SEARCH_AMOUNT_IN_CENTS = 2000000000;
 
 const TRANSACTION_FIELDS = `
   id
@@ -154,9 +155,13 @@ export class Transaction extends IterableModel<TransactionModel> {
     const amountTerms = searchTerms
       .filter((term) => amountRegex.test(term))
       .reduce((terms: number[], term: string): number[] => {
-        const amountInCents = Math.round(parseFloat(term.replace(",", ".")) * 100);
-        return [...terms, amountInCents, amountInCents * -1];
-      } , []);
+        const amountInCents = Math.round(
+          parseFloat(term.replace(",", ".")) * 100
+        );
+        return amountInCents > MAX_SEARCH_AMOUNT_IN_CENTS
+          ? terms
+          : [...terms, amountInCents, amountInCents * -1];
+      }, []);
 
     if (amountTerms.length > 0) {
       filter.amount_in = amountTerms;
