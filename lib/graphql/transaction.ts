@@ -143,7 +143,10 @@ export class Transaction extends IterableModel<TransactionModel> {
   }
 
   private parseSearchQuery(searchQuery: string): TransactionFilter {
-    const searchTerms = searchQuery.slice(0, MAX_SEARCH_QUERY_LENGTH).split(" ");
+    const searchTerms = searchQuery
+      .slice(0, MAX_SEARCH_QUERY_LENGTH)
+      .split(" ")
+      .filter(term => term.length > 0);
 
     const filter: TransactionFilter = {
       name_likeAny: searchTerms,

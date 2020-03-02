@@ -346,5 +346,25 @@ describe("Transaction", () => {
         });
       });
     });
+
+    describe("when user provides several spaces back to back", () => {
+      it("should not include empty strings as filters", async () => {
+        // arrange
+        const userQuery = "  hello   world   ";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            name_likeAny: ["hello", "world"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["hello", "world"]
+          }
+        });
+      });
+    });
   });
 });
