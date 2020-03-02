@@ -325,5 +325,26 @@ describe("Transaction", () => {
         });
       });
     });
+
+    describe("when user provides number above 20 millions", () => {
+      it("should not include it as amount filter", async () => {
+        // arrange
+        const userQuery = "19999999 20000001 345678912";
+
+        // act
+        await client.models.transaction.search(userQuery);
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            amount_in: [1999999900, -1999999900],
+            name_likeAny: ["19999999", "20000001", "345678912"],
+            operator: BaseOperator.Or,
+            purpose_likeAny: ["19999999", "20000001", "345678912"]
+          }
+        });
+      });
+    });
   });
 });
