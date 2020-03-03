@@ -257,6 +257,28 @@ describe("Transaction", () => {
             name_likeAny: ["1234", "-567", "86.12", "90,1"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["1234", "-567", "86.12", "90,1"],
+            conditions: [
+              {
+                amount_gte: 123400,
+                amount_lt: 123500,
+                operator: BaseOperator.And
+              },
+              {
+                amount_gt: -123500,
+                amount_lte: -123400,
+                operator: BaseOperator.And
+              },
+              {
+                amount_gte: 56700,
+                amount_lt: 56800,
+                operator: BaseOperator.And
+              },
+              {
+                amount_gt: -56800,
+                amount_lte: -56700,
+                operator: BaseOperator.And
+              }
+            ]
           }
         });
       });
@@ -321,6 +343,18 @@ describe("Transaction", () => {
             name_likeAny: ["DE4567", "E123", "1234", "FR12"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["DE4567", "E123", "1234", "FR12"],
+            conditions: [
+              {
+                amount_gte: 123400,
+                amount_lt: 123500,
+                operator: BaseOperator.And
+              },
+              {
+                amount_gt: -123500,
+                amount_lte: -123400,
+                operator: BaseOperator.And
+              }
+            ]
           }
         });
       });
@@ -341,7 +375,19 @@ describe("Transaction", () => {
             amount_in: [1999999900, -1999999900],
             name_likeAny: ["19999999", "20000001", "345678912"],
             operator: BaseOperator.Or,
-            purpose_likeAny: ["19999999", "20000001", "345678912"]
+            purpose_likeAny: ["19999999", "20000001", "345678912"],
+            conditions: [
+              {
+                amount_gte: 1999999900,
+                amount_lt: 2000000000,
+                operator: BaseOperator.And
+              },
+              {
+                amount_gt: -2000000000,
+                amount_lte: -1999999900,
+                operator: BaseOperator.And
+              }
+            ]
           }
         });
       });
