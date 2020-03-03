@@ -14,13 +14,19 @@ import { FetchOptions, Subscription, SubscriptionType } from "./types";
 const MAX_SEARCH_QUERY_LENGTH = 200;
 const MAX_SEARCH_AMOUNT_IN_CENTS = 2000000000;
 
-type AmountBetweenFilter = {
-  operator: BaseOperator;
-  amount_gte?: number;
-  amount_lte?: number;
-  amount_lt?: number;
-  amount_gt?: number;
+type PositiveAmountFilter = {
+  amount_gte: number;
+  amount_lt: number;
 }
+
+type NegativeAmountFilter = {
+  amount_lte: number;
+  amount_gt: number;
+}
+
+type AmountBetweenFilter = {
+  operator: BaseOperator.And;
+} & PositiveAmountFilter | NegativeAmountFilter;
 
 type AmountSearchFilter = {
   amount_in: number[];
