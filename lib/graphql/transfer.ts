@@ -24,8 +24,8 @@ const TRANSFER_FIELDS = `
   purpose
   e2eId
   reoccurrence
-  nextOccurrence,
-  category,
+  nextOccurrence
+  category
   userSelectedBookingDate
 `;
 
