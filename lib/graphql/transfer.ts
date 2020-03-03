@@ -25,6 +25,8 @@ const TRANSFER_FIELDS = `
   e2eId
   reoccurrence
   nextOccurrence
+  category
+  userSelectedBookingDate
 `;
 
 const CREATE_TRANSFER = `mutation createTransfer($transfer: CreateTransferInput!) {
