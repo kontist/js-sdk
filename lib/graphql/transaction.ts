@@ -14,6 +14,25 @@ import { FetchOptions, Subscription, SubscriptionType } from "./types";
 const MAX_SEARCH_QUERY_LENGTH = 200;
 const MAX_SEARCH_AMOUNT_IN_CENTS = 2000000000;
 
+type PositiveAmountFilter = {
+  amount_gte: number;
+  amount_lt: number;
+}
+
+type NegativeAmountFilter = {
+  amount_lte: number;
+  amount_gt: number;
+}
+
+type AmountBetweenFilter = {
+  operator: BaseOperator.And;
+} & PositiveAmountFilter | NegativeAmountFilter;
+
+type AmountSearchFilter = {
+  amount_in: number[];
+  conditions: AmountBetweenFilter[];
+};
+
 const TRANSACTION_FIELDS = `
   id
   amount
@@ -142,6 +161,39 @@ export class Transaction extends IterableModel<TransactionModel> {
     return result.categorizeTransaction;
   }
 
+  private parseAmountSearchTerm(amountTerm: string): AmountSearchFilter {
+    const shouldMatchWildCents = !/[,.]/.test(amountTerm);
+    const amountInCents = Math.round(
+      parseFloat(amountTerm.replace(",", ".")) * 100
+    );
+
+    if (amountInCents > MAX_SEARCH_AMOUNT_IN_CENTS) {
+      return { amount_in: [], conditions: [] };
+    }
+
+    const invertedAmountInCents = amountInCents * -1;
+    const positiveAmountInCents = amountInCents > 0 ? amountInCents : invertedAmountInCents;
+    const negativeAmountInCents = amountInCents > 0 ? invertedAmountInCents : amountInCents;
+
+    return {
+      amount_in: [amountInCents, invertedAmountInCents],
+      conditions: shouldMatchWildCents
+        ? [
+            {
+              operator: BaseOperator.And,
+              amount_gte: positiveAmountInCents,
+              amount_lt: positiveAmountInCents + 100
+            },
+            {
+              operator: BaseOperator.And,
+              amount_gt: negativeAmountInCents - 100,
+              amount_lte: negativeAmountInCents
+            }
+          ]
+        : []
+    };
+  }
+
   private parseSearchQuery(searchQuery: string): TransactionFilter {
     const searchTerms = searchQuery
       .slice(0, MAX_SEARCH_QUERY_LENGTH)
@@ -151,27 +203,43 @@ export class Transaction extends IterableModel<TransactionModel> {
     const filter: TransactionFilter = {
       name_likeAny: searchTerms,
       operator: BaseOperator.Or,
-      purpose_likeAny: searchTerms,
+      purpose_likeAny: searchTerms
     };
 
     const amountRegex = /^-?\d+([,.]\d{1,2})?$/;
-    const amountTerms = searchTerms
-      .filter((term) => amountRegex.test(term))
-      .reduce((terms: number[], term: string): number[] => {
-        const amountInCents = Math.round(
-          parseFloat(term.replace(",", ".")) * 100
-        );
-        return amountInCents > MAX_SEARCH_AMOUNT_IN_CENTS
-          ? terms
-          : [...terms, amountInCents, amountInCents * -1];
-      }, []);
+    const amountFilter = searchTerms
+      .filter(term => amountRegex.test(term))
+      .reduce(
+        (
+          partialAmountFilter: AmountSearchFilter,
+          term: string
+        ): AmountSearchFilter => {
+          const parsedAmountSearchTerm = this.parseAmountSearchTerm(term);
 
-    if (amountTerms.length > 0) {
-      filter.amount_in = amountTerms;
+          return {
+            amount_in: [
+              ...partialAmountFilter.amount_in,
+              ...parsedAmountSearchTerm.amount_in
+            ],
+            conditions: [
+              ...partialAmountFilter.conditions,
+              ...parsedAmountSearchTerm.conditions
+            ]
+          };
+        },
+        { amount_in: [], conditions: [] }
+      );
+
+    if (amountFilter.amount_in.length > 0) {
+      filter.amount_in = amountFilter.amount_in;
+    }
+
+    if (amountFilter.conditions.length > 0) {
+      filter.conditions = amountFilter.conditions;
     }
 
     const ibanRegex = /^[A-Za-z]{2}\d{2,36}$/;
-    const ibanTerms = searchTerms.filter((term) => ibanRegex.test(term));
+    const ibanTerms = searchTerms.filter(term => ibanRegex.test(term));
 
     if (ibanTerms.length > 0) {
       filter.iban_likeAny = ibanTerms;
