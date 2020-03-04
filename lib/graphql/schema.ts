@@ -352,6 +352,8 @@ export type Mutation = {
   replaceCard: Card,
   /** Close and order new card. Call when customer's card is damaged */
   reorderCard: Card,
+  /** Set the card holder representation for the customer */
+  setCardHolderRepresentation: Scalars['String'],
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
   categorizeTransaction: Transaction,
 };
