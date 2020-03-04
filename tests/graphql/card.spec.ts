@@ -369,4 +369,23 @@ describe("Card", () => {
       expect(result).to.eq(newCardData);
     });
   });
+
+  describe("#setCardHolderRepresentation", () => {
+    it("should call rawQuery and return the new card holder representation", async () => {
+      // arrange;
+      const cardHolderRepresentation = "JOHN/LENNON";
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        setCardHolderRepresentation: cardHolderRepresentation
+      } as any);
+
+      // act
+      const result = await card.setCardHolderRepresentation(cardHolderRepresentation);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(spyOnRawQuery.getCall(0).args[1]).to.eql({ cardHolderRepresentation });
+      expect(result).to.eq(cardHolderRepresentation);
+    });
+  });
 });
