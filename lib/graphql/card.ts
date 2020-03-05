@@ -205,6 +205,15 @@ const REORDER_CARD = `mutation reorderCard(
   }
 }`;
 
+
+export const SET_CARD_HOLDER_REPRESENTATION = `mutation setCardHolderRepresentation(
+  $cardHolderRepresentation: String!
+) {
+  setCardHolderRepresentation(
+    cardHolderRepresentation: $cardHolderRepresentation
+  )
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -333,5 +342,20 @@ export class Card extends Model<CardModel> {
   public async reorder(args: MutationReorderCardArgs): Promise<CardModel> {
     const result = await this.client.rawQuery(REORDER_CARD, args);
     return result.reorderCard;
+  }
+
+  /**
+   * Updates a customer's card holder representation
+   *
+   * @param cardHolderRepresentation   the card holder representation to set
+   * @returns                          the updated card holder representation
+   */
+  public async setCardHolderRepresentation(
+    cardHolderRepresentation: string
+  ): Promise<string> {
+    const result = await this.client.rawQuery(SET_CARD_HOLDER_REPRESENTATION, {
+      cardHolderRepresentation
+    });
+    return result.setCardHolderRepresentation;
   }
 }
