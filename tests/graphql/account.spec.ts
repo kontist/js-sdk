@@ -57,6 +57,8 @@ describe("Account", () => {
           mainAccount: {
             iban: "DE1234",
             balance: 1234,
+            cardHolderRepresentation: null,
+            cardHolderRepresentations: ["STEPHEN/JAMES"]
           },
         },
       } as any);

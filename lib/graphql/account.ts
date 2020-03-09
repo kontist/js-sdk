@@ -8,6 +8,8 @@ const GET_ACCOUNT = `query {
     mainAccount {
       iban
       balance
+      cardHolderRepresentation
+      cardHolderRepresentations
     }
   }
 }`;
