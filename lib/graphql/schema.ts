@@ -1041,7 +1041,7 @@ export type Transfer = {
   /** The date at which the next payment will be executed for Standing Orders */
   nextOccurrence?: Maybe<Scalars['DateTime']>,
   /** The user selected category for the SEPA Transfer */
-  category?: Maybe<Scalars['String']>,
+  category?: Maybe<TransactionCategory>,
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
