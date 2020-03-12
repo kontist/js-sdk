@@ -21,6 +21,8 @@ export type Account = {
   transaction?: Maybe<Transaction>,
   transactions: TransactionsConnection,
   transfer?: Maybe<Transfer>,
+  /** Individual tax-related settings per year */
+  taxYearSettings: Array<TaxYearSetting>,
   /** 
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
@@ -272,6 +274,7 @@ export type DirectDebitFee = {
    __typename?: 'DirectDebitFee',
   id: Scalars['Int'],
   type: TransactionFeeType,
+  name: Scalars['String'],
   amount: Scalars['Int'],
   usedAt?: Maybe<Scalars['DateTime']>,
   invoiceStatus: InvoiceStatus,
@@ -325,6 +328,8 @@ export type Mutation = {
   updateClient: Client,
   /** Delete an OAuth2 client */
   deleteClient: Client,
+  /** Update individual tax-related settings per year */
+  updateTaxYearSettings: Array<TaxYearSetting>,
   /** Create a transfer. The transfer's type will be determined based on the provided input */
   createTransfer: ConfirmationRequest,
   updateTransfer: ConfirmationRequestOrTransfer,
@@ -384,6 +389,11 @@ export type MutationUpdateClientArgs = {
 
 export type MutationDeleteClientArgs = {
   id: Scalars['String']
+};
+
+
+export type MutationUpdateTaxYearSettingsArgs = {
+  taxYearSettings: Array<TaxYearSettingInput>
 };
 
 
@@ -470,6 +480,11 @@ export type MutationReplaceCardArgs = {
 
 export type MutationReorderCardArgs = {
   id: Scalars['String']
+};
+
+
+export type MutationSetCardHolderRepresentationArgs = {
+  cardHolderRepresentation: Scalars['String']
 };
 
 
@@ -782,7 +797,6 @@ export type SepaTransfer = {
 };
 
 export enum SepaTransferStatus {
-  Created = 'CREATED',
   Authorized = 'AUTHORIZED',
   Confirmed = 'CONFIRMED',
   Booked = 'BOOKED'
@@ -808,6 +822,25 @@ export type SystemStatus = {
    __typename?: 'SystemStatus',
   type?: Maybe<Status>,
   message?: Maybe<Scalars['String']>,
+};
+
+export type TaxYearSetting = {
+   __typename?: 'TaxYearSetting',
+  /** Tax year the individual settings apply to */
+  year: Scalars['Int'],
+  /** Tax rate that should be applied in the corresponding year */
+  taxRate?: Maybe<Scalars['Int']>,
+  /** Flag if the corresponding year should be excluded from the tax calculations completely */
+  excluded?: Maybe<Scalars['Boolean']>,
+};
+
+export type TaxYearSettingInput = {
+  /** Tax year the individual settings apply to */
+  year: Scalars['Int'],
+  /** Tax rate that should be applied in the corresponding year */
+  taxRate?: Maybe<Scalars['Int']>,
+  /** Flag if the corresponding year should be excluded from the tax calculations completely */
+  excluded?: Maybe<Scalars['Boolean']>,
 };
 
 export type Transaction = {
@@ -848,7 +881,9 @@ export enum TransactionCategory {
   TaxPayment = 'TAX_PAYMENT',
   VatPayment = 'VAT_PAYMENT',
   TaxRefund = 'TAX_REFUND',
-  VatRefund = 'VAT_REFUND'
+  VatRefund = 'VAT_REFUND',
+  VatSaving = 'VAT_SAVING',
+  TaxSaving = 'TAX_SAVING'
 }
 
 export type TransactionCondition = {
@@ -865,12 +900,12 @@ export type TransactionCondition = {
   iban_like?: Maybe<Scalars['String']>,
   iban_likeAny?: Maybe<Array<Scalars['String']>>,
   iban_in?: Maybe<Array<Scalars['String']>>,
-  bookingDate_eq?: Maybe<Scalars['String']>,
-  bookingDate_ne?: Maybe<Scalars['String']>,
-  bookingDate_gt?: Maybe<Scalars['String']>,
-  bookingDate_lt?: Maybe<Scalars['String']>,
-  bookingDate_gte?: Maybe<Scalars['String']>,
-  bookingDate_lte?: Maybe<Scalars['String']>,
+  bookingDate_eq?: Maybe<Scalars['DateTime']>,
+  bookingDate_ne?: Maybe<Scalars['DateTime']>,
+  bookingDate_gt?: Maybe<Scalars['DateTime']>,
+  bookingDate_lt?: Maybe<Scalars['DateTime']>,
+  bookingDate_gte?: Maybe<Scalars['DateTime']>,
+  bookingDate_lte?: Maybe<Scalars['DateTime']>,
   name_eq?: Maybe<Scalars['String']>,
   name_ne?: Maybe<Scalars['String']>,
   name_like?: Maybe<Scalars['String']>,
@@ -920,12 +955,12 @@ export type TransactionFilter = {
   iban_like?: Maybe<Scalars['String']>,
   iban_likeAny?: Maybe<Array<Scalars['String']>>,
   iban_in?: Maybe<Array<Scalars['String']>>,
-  bookingDate_eq?: Maybe<Scalars['String']>,
-  bookingDate_ne?: Maybe<Scalars['String']>,
-  bookingDate_gt?: Maybe<Scalars['String']>,
-  bookingDate_lt?: Maybe<Scalars['String']>,
-  bookingDate_gte?: Maybe<Scalars['String']>,
-  bookingDate_lte?: Maybe<Scalars['String']>,
+  bookingDate_eq?: Maybe<Scalars['DateTime']>,
+  bookingDate_ne?: Maybe<Scalars['DateTime']>,
+  bookingDate_gt?: Maybe<Scalars['DateTime']>,
+  bookingDate_lt?: Maybe<Scalars['DateTime']>,
+  bookingDate_gte?: Maybe<Scalars['DateTime']>,
+  bookingDate_lte?: Maybe<Scalars['DateTime']>,
   name_eq?: Maybe<Scalars['String']>,
   name_ne?: Maybe<Scalars['String']>,
   name_like?: Maybe<Scalars['String']>,
@@ -1028,10 +1063,10 @@ export type TransfersConnectionFilter = {
 };
 
 export enum TransferStatus {
-  Created = 'CREATED',
   Authorized = 'AUTHORIZED',
   Confirmed = 'CONFIRMED',
   Booked = 'BOOKED',
+  Created = 'CREATED',
   Active = 'ACTIVE',
   Inactive = 'INACTIVE',
   Canceled = 'CANCELED',
