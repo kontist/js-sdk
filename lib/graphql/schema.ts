@@ -900,6 +900,12 @@ export type TransactionCondition = {
   iban_like?: Maybe<Scalars['String']>,
   iban_likeAny?: Maybe<Array<Scalars['String']>>,
   iban_in?: Maybe<Array<Scalars['String']>>,
+  valutaDate_eq?: Maybe<Scalars['DateTime']>,
+  valutaDate_ne?: Maybe<Scalars['DateTime']>,
+  valutaDate_gt?: Maybe<Scalars['DateTime']>,
+  valutaDate_lt?: Maybe<Scalars['DateTime']>,
+  valutaDate_gte?: Maybe<Scalars['DateTime']>,
+  valutaDate_lte?: Maybe<Scalars['DateTime']>,
   bookingDate_eq?: Maybe<Scalars['DateTime']>,
   bookingDate_ne?: Maybe<Scalars['DateTime']>,
   bookingDate_gt?: Maybe<Scalars['DateTime']>,
@@ -955,6 +961,12 @@ export type TransactionFilter = {
   iban_like?: Maybe<Scalars['String']>,
   iban_likeAny?: Maybe<Array<Scalars['String']>>,
   iban_in?: Maybe<Array<Scalars['String']>>,
+  valutaDate_eq?: Maybe<Scalars['DateTime']>,
+  valutaDate_ne?: Maybe<Scalars['DateTime']>,
+  valutaDate_gt?: Maybe<Scalars['DateTime']>,
+  valutaDate_lt?: Maybe<Scalars['DateTime']>,
+  valutaDate_gte?: Maybe<Scalars['DateTime']>,
+  valutaDate_lte?: Maybe<Scalars['DateTime']>,
   bookingDate_eq?: Maybe<Scalars['DateTime']>,
   bookingDate_ne?: Maybe<Scalars['DateTime']>,
   bookingDate_gt?: Maybe<Scalars['DateTime']>,
@@ -1041,7 +1053,7 @@ export type Transfer = {
   /** The date at which the next payment will be executed for Standing Orders */
   nextOccurrence?: Maybe<Scalars['DateTime']>,
   /** The user selected category for the SEPA Transfer */
-  category?: Maybe<Scalars['String']>,
+  category?: Maybe<TransactionCategory>,
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
