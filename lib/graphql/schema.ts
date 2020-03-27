@@ -23,7 +23,7 @@ export type Account = {
   transfer?: Maybe<Transfer>,
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>,
-  /** 
+  /**
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
  **/
@@ -1014,7 +1014,9 @@ export enum TransactionProjectionType {
   Rebooking = 'REBOOKING',
   CancellationDirectDebit = 'CANCELLATION_DIRECT_DEBIT',
   CancellationSepaCreditTransferReturn = 'CANCELLATION_SEPA_CREDIT_TRANSFER_RETURN',
-  CardTransaction = 'CARD_TRANSACTION'
+  CardTransaction = 'CARD_TRANSACTION',
+  InterestAccrued = 'INTEREST_ACCRUED',
+  CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED'
 }
 
 export type TransactionsConnection = {
