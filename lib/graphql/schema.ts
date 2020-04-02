@@ -1059,8 +1059,7 @@ export type TransactionSplit = {
   id: Scalars['ID'],
   amount: Scalars['Int'],
   category: TransactionCategory,
-  userSelectedBookingDate: Scalars['DateTime'],
-  transactionId: Scalars['ID'],
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
 
 export type Transfer = {
