@@ -894,6 +894,7 @@ export type Transaction = {
   documentType?: Maybe<DocumentType>,
   foreignCurrency?: Maybe<Scalars['String']>,
   originalAmount?: Maybe<Scalars['Int']>,
+  splits?: Maybe<Array<TransactionSplit>>
 };
 
 export enum TransactionCategory {
@@ -954,6 +955,15 @@ export type TransactionFee = {
   unitAmount?: Maybe<Scalars['Int']>,
   usedAt?: Maybe<Scalars['DateTime']>,
 };
+
+export type TransactionSplit = {
+  __typename?: 'TransactionSplit',
+  id: Scalars['ID'],
+  transactionId:  Scalars['ID'],
+  amount: Scalars['Int'],
+  category?: Maybe<TransactionCategory>,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>
+}
 
 export enum TransactionFeeStatus {
   Created = 'CREATED',
