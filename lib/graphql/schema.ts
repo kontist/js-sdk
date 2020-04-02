@@ -23,7 +23,7 @@ export type Account = {
   transfer?: Maybe<Transfer>,
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>,
-  /**
+  /** 
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
  **/
@@ -879,6 +879,7 @@ export type Transaction = {
   e2eId?: Maybe<Scalars['String']>,
   mandateNumber?: Maybe<Scalars['String']>,
   fees: Array<TransactionFee>,
+  splits: Array<TransactionSplit>,
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'],
   directDebitFees: Array<DirectDebitFee>,
@@ -894,7 +895,6 @@ export type Transaction = {
   documentType?: Maybe<DocumentType>,
   foreignCurrency?: Maybe<Scalars['String']>,
   originalAmount?: Maybe<Scalars['Int']>,
-  splits?: Maybe<Array<TransactionSplit>>
 };
 
 export enum TransactionCategory {
@@ -955,15 +955,6 @@ export type TransactionFee = {
   unitAmount?: Maybe<Scalars['Int']>,
   usedAt?: Maybe<Scalars['DateTime']>,
 };
-
-export type TransactionSplit = {
-  __typename?: 'TransactionSplit',
-  id: Scalars['ID'],
-  transactionId:  Scalars['ID'],
-  amount: Scalars['Int'],
-  category: TransactionCategory,
-  userSelectedBookingDate: Scalars['DateTime']
-}
 
 export enum TransactionFeeStatus {
   Created = 'CREATED',
@@ -1048,9 +1039,7 @@ export enum TransactionProjectionType {
   Rebooking = 'REBOOKING',
   CancellationDirectDebit = 'CANCELLATION_DIRECT_DEBIT',
   CancellationSepaCreditTransferReturn = 'CANCELLATION_SEPA_CREDIT_TRANSFER_RETURN',
-  CardTransaction = 'CARD_TRANSACTION',
-  InterestAccrued = 'INTEREST_ACCRUED',
-  CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED'
+  CardTransaction = 'CARD_TRANSACTION'
 }
 
 export type TransactionsConnection = {
@@ -1063,6 +1052,15 @@ export type TransactionsConnectionEdge = {
    __typename?: 'TransactionsConnectionEdge',
   node: Transaction,
   cursor: Scalars['String'],
+};
+
+export type TransactionSplit = {
+   __typename?: 'TransactionSplit',
+  id: Scalars['ID'],
+  amount: Scalars['Int'],
+  category: TransactionCategory,
+  userSelectedBookingDate: Scalars['DateTime'],
+  transactionId: Scalars['ID'],
 };
 
 export type Transfer = {
