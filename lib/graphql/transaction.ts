@@ -53,6 +53,13 @@ const TRANSACTION_FIELDS = `
   documentPreviewUrl
   documentDownloadUrl
   documentType
+  splits {
+    id
+    transactionId
+    amount
+    category
+    userSelectedBookingDate
+  }
 `;
 
 const FETCH_TRANSACTIONS = `
