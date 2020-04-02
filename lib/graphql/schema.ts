@@ -961,8 +961,8 @@ export type TransactionSplit = {
   id: Scalars['ID'],
   transactionId:  Scalars['ID'],
   amount: Scalars['Int'],
-  category?: Maybe<TransactionCategory>,
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>
+  category: TransactionCategory,
+  userSelectedBookingDate: Scalars['DateTime']
 }
 
 export enum TransactionFeeStatus {
