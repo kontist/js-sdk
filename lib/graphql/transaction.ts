@@ -55,7 +55,6 @@ const TRANSACTION_FIELDS = `
   documentType
   splits {
     id
-    transactionId
     amount
     category
     userSelectedBookingDate
