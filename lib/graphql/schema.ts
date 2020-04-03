@@ -30,6 +30,8 @@ export type Account = {
   transferSuggestions?: Maybe<Array<TransferSuggestion>>,
   cards: Array<Card>,
   card?: Maybe<Card>,
+  /** Overdraft Application - only available for Kontist Application */
+  overdraft?: Maybe<Overdraft>,
 };
 
 
@@ -361,6 +363,8 @@ export type Mutation = {
   setCardHolderRepresentation: Scalars['String'],
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
   categorizeTransaction: Transaction,
+  /** Create Overdraft Application  - only available for Kontist Application */
+  requestOverdraft?: Maybe<Overdraft>,
 };
 
 
@@ -745,6 +749,25 @@ export enum Nationality {
   Zw = 'ZW'
 }
 
+export type Overdraft = {
+   __typename?: 'Overdraft',
+  id: Scalars['String'],
+  /** Overdraft status */
+  status: OverdraftApplicationStatus,
+  /** Available overdraft limit */
+  limit?: Maybe<Scalars['Int']>,
+};
+
+export enum OverdraftApplicationStatus {
+  Created = 'CREATED',
+  InitialScoringPending = 'INITIAL_SCORING_PENDING',
+  AccountSnapshotPending = 'ACCOUNT_SNAPSHOT_PENDING',
+  AccountSnapshotVerificationPending = 'ACCOUNT_SNAPSHOT_VERIFICATION_PENDING',
+  Offered = 'OFFERED',
+  Rejected = 'REJECTED',
+  OverdraftCreated = 'OVERDRAFT_CREATED'
+}
+
 export type PageInfo = {
    __typename?: 'PageInfo',
   startCursor?: Maybe<Scalars['String']>,
@@ -776,7 +799,8 @@ export enum ScopeType {
   Subscriptions = 'SUBSCRIPTIONS',
   Statements = 'STATEMENTS',
   Admin = 'ADMIN',
-  Clients = 'CLIENTS'
+  Clients = 'CLIENTS',
+  Overdraft = 'OVERDRAFT'
 }
 
 export type SepaTransfer = {
