@@ -30,7 +30,7 @@ describe("Subscription", () => {
     sandbox.restore();
   });
 
-  describe("#updateSubscriptionPlan", () => {
+  describe("#updatePlan", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
       const updateSubscriptionPlanData: UpdateSubscriptionPlanResult = {
@@ -46,7 +46,7 @@ describe("Subscription", () => {
       } as any);
 
       // act
-      const result = await subscription.updateSubscriptionPlan({
+      const result = await subscription.updatePlan({
         newPlan: PurchaseType.Premium,
       });
 

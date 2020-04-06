@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Add `subscription` model with a method to update subscription plan (`subscription.updateSubscriptionPlan`)
+- Add `subscription` model with a method to update subscription plan (`subscription.updatePlan`)
 
 ## [0.25.8] - 2020-03-10
 ### Changed

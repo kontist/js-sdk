@@ -4,7 +4,7 @@ import {
   UpdateSubscriptionPlanResult,
 } from "./schema";
 
-const UPDATE_SUBSCRIPTION_PLAN = `mutation updateSubscriptionPlan(
+const UPDATE_PLAN = `mutation updatePlan(
   $newPlan: PurchaseType!
 ) {
   updateSubscriptionPlan(newPlan: $newPlan) {
@@ -25,10 +25,10 @@ export class Subscription {
    * @param args  query parameters including new plan name
    * @returns     result of update
    */
-  public async updateSubscriptionPlan(
+  public async updatePlan(
     args: MutationUpdateSubscriptionPlanArgs
   ): Promise<UpdateSubscriptionPlanResult> {
-    const result = await this.client.rawQuery(UPDATE_SUBSCRIPTION_PLAN, args);
+    const result = await this.client.rawQuery(UPDATE_PLAN, args);
     return result.updateSubscriptionPlan;
   }
 }
