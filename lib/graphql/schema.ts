@@ -23,7 +23,7 @@ export type Account = {
   transfer?: Maybe<Transfer>,
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>,
-  /** 
+  /**
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
  **/
@@ -894,8 +894,6 @@ export type Transaction = {
   e2eId?: Maybe<Scalars['String']>,
   mandateNumber?: Maybe<Scalars['String']>,
   fees: Array<TransactionFee>,
-  /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
-  splits: Array<TransactionSplit>,
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'],
   directDebitFees: Array<DirectDebitFee>,
@@ -1070,14 +1068,6 @@ export type TransactionsConnectionEdge = {
    __typename?: 'TransactionsConnectionEdge',
   node: Transaction,
   cursor: Scalars['String'],
-};
-
-export type TransactionSplit = {
-   __typename?: 'TransactionSplit',
-  id: Scalars['ID'],
-  amount: Scalars['Int'],
-  category: TransactionCategory,
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
 
 export type Transfer = {

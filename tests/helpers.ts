@@ -29,7 +29,6 @@ export const createTransaction = (
     bookingDate: new Date(),
     directDebitFees: [],
     fees: [],
-    splits: [],
     id: Math.random.toString(),
     paymentMethod: "card",
     type: TransactionProjectionType.Atm,
