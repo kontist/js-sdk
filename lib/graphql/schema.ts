@@ -23,7 +23,7 @@ export type Account = {
   transfer?: Maybe<Transfer>,
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>,
-  /**
+  /** 
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
  **/
@@ -341,6 +341,8 @@ export type Mutation = {
   createTransfers: ConfirmationRequest,
   /** Confirm the transfers creation */
   confirmTransfers: BatchTransfer,
+  /** Update user's subscription plan */
+  updateSubscriptionPlan: UpdateSubscriptionPlanResult,
   whitelistCard: WhitelistCardResponse,
   confirmFraud: ConfirmFraudResponse,
   /** Create a new card */
@@ -425,6 +427,11 @@ export type MutationCreateTransfersArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String']
+};
+
+
+export type MutationUpdateSubscriptionPlanArgs = {
+  newPlan: PurchaseType
 };
 
 
@@ -783,6 +790,14 @@ export enum PaymentFrequency {
   None = 'NONE'
 }
 
+export enum PurchaseType {
+  BasicInitial = 'BASIC_INITIAL',
+  Basic = 'BASIC',
+  Premium = 'PREMIUM',
+  Card = 'CARD',
+  Lexoffice = 'LEXOFFICE'
+}
+
 export type Query = {
    __typename?: 'Query',
   /** The current user information */
@@ -879,6 +894,8 @@ export type Transaction = {
   e2eId?: Maybe<Scalars['String']>,
   mandateNumber?: Maybe<Scalars['String']>,
   fees: Array<TransactionFee>,
+  /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
+  splits: Array<TransactionSplit>,
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'],
   directDebitFees: Array<DirectDebitFee>,
@@ -1055,6 +1072,14 @@ export type TransactionsConnectionEdge = {
   cursor: Scalars['String'],
 };
 
+export type TransactionSplit = {
+   __typename?: 'TransactionSplit',
+  id: Scalars['ID'],
+  amount: Scalars['Int'],
+  category: TransactionCategory,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
+};
+
 export type Transfer = {
    __typename?: 'Transfer',
   id: Scalars['String'],
@@ -1141,6 +1166,15 @@ export type UpdateClientInput = {
   scopes?: Maybe<Array<ScopeType>>,
   /** The id of the OAuth2 client to update */
   id: Scalars['String'],
+};
+
+export type UpdateSubscriptionPlanResult = {
+   __typename?: 'UpdateSubscriptionPlanResult',
+  newPlan: Scalars['String'],
+  previousPlans: Array<PurchaseType>,
+  hasOrderedPhysicalCard: Scalars['Boolean'],
+  updateActiveAt: Scalars['String'],
+  hasCanceledDowngrade: Scalars['Boolean'],
 };
 
 /** The available fields to update a transfer */
