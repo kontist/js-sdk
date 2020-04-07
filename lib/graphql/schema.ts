@@ -341,6 +341,8 @@ export type Mutation = {
   createTransfers: ConfirmationRequest,
   /** Confirm the transfers creation */
   confirmTransfers: BatchTransfer,
+  /** Update user's subscription plan */
+  updateSubscriptionPlan: UpdateSubscriptionPlanResult,
   whitelistCard: WhitelistCardResponse,
   confirmFraud: ConfirmFraudResponse,
   /** Create a new card */
@@ -425,6 +427,11 @@ export type MutationCreateTransfersArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'],
   confirmationId: Scalars['String']
+};
+
+
+export type MutationUpdateSubscriptionPlanArgs = {
+  newPlan: PurchaseType
 };
 
 
@@ -781,6 +788,14 @@ export enum PaymentFrequency {
   Quarterly = 'QUARTERLY',
   Yearly = 'YEARLY',
   None = 'NONE'
+}
+
+export enum PurchaseType {
+  BasicInitial = 'BASIC_INITIAL',
+  Basic = 'BASIC',
+  Premium = 'PREMIUM',
+  Card = 'CARD',
+  Lexoffice = 'LEXOFFICE'
 }
 
 export type Query = {
@@ -1141,6 +1156,15 @@ export type UpdateClientInput = {
   scopes?: Maybe<Array<ScopeType>>,
   /** The id of the OAuth2 client to update */
   id: Scalars['String'],
+};
+
+export type UpdateSubscriptionPlanResult = {
+   __typename?: 'UpdateSubscriptionPlanResult',
+  newPlan: Scalars['String'],
+  previousPlans: Array<PurchaseType>,
+  hasOrderedPhysicalCard: Scalars['Boolean'],
+  updateActiveAt: Scalars['String'],
+  hasCanceledDowngrade: Scalars['Boolean'],
 };
 
 /** The available fields to update a transfer */
