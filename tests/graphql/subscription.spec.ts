@@ -5,7 +5,6 @@ import { Client } from "../../lib";
 import { Subscription } from "../../lib/graphql/subscription";
 import { PurchaseType, UpdateSubscriptionPlanResult } from "../../lib/graphql/schema";
 
-
 describe("Subscription", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
