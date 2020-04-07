@@ -10,7 +10,7 @@ describe("Subscription", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     sandbox = sinon.createSandbox();
 
     const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
