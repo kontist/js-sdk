@@ -40,6 +40,7 @@ describe("Client", () => {
         account: {} as any,
         user: {} as any,
         card: {} as any,
+        subscription: {} as any,
       };
 
       // act
@@ -49,7 +50,7 @@ describe("Client", () => {
         "ws://localhost:3000/api/graphql",
         auth,
         graphQL,
-        models,
+        models
       );
 
       // assert

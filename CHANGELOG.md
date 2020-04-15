@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.0] - 2020-04-07
+### Added
+- Add `subscription` model with a method to update subscription plan (`subscription.updatePlan`)
+
 ## [0.25.8] - 2020-03-10
 ### Changed
 - extended account query to return cardHolderRepresentation and cardHolderRepresentations fields
