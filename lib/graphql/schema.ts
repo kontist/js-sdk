@@ -23,7 +23,7 @@ export type Account = {
   transfer?: Maybe<Transfer>,
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>,
-  /**
+  /** 
  * A list of iban/name combinations based on existing user's transactions,
    * provided to assist users when creating new transfers
  **/
@@ -73,6 +73,10 @@ export type AccountTransferArgs = {
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>
 };
+
+export enum BannerName {
+  Overdraft = 'OVERDRAFT'
+}
 
 export enum BaseOperator {
   Or = 'OR',
@@ -247,6 +251,12 @@ export type CreateSepaTransferInput = {
   e2eId?: Maybe<Scalars['String']>,
 };
 
+export type CreateTransactionSplitsInput = {
+  amount: Scalars['Int'],
+  category: TransactionCategory,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
+};
+
 /** The available fields to create a transfer */
 export type CreateTransferInput = {
   /** The name of the transfer recipient */
@@ -367,6 +377,13 @@ export type Mutation = {
   categorizeTransaction: Transaction,
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>,
+  /** Create transaction splits */
+  createTransactionSplits: Transaction,
+  /** Update transaction splits */
+  updateTransactionSplits: Transaction,
+  /** Delete transaction splits */
+  deleteTransactionSplits: Transaction,
+  dismissBanner: MutationResult,
 };
 
 
@@ -503,6 +520,33 @@ export type MutationCategorizeTransactionArgs = {
   id: Scalars['String'],
   category?: Maybe<TransactionCategory>,
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>
+};
+
+
+export type MutationCreateTransactionSplitsArgs = {
+  splits: Array<CreateTransactionSplitsInput>,
+  transactionId: Scalars['ID']
+};
+
+
+export type MutationUpdateTransactionSplitsArgs = {
+  splits: Array<UpdateTransactionSplitsInput>,
+  transactionId: Scalars['ID']
+};
+
+
+export type MutationDeleteTransactionSplitsArgs = {
+  transactionId: Scalars['ID']
+};
+
+
+export type MutationDismissBannerArgs = {
+  name: BannerName
+};
+
+export type MutationResult = {
+   __typename?: 'MutationResult',
+  success: Scalars['Boolean'],
 };
 
 export enum Nationality {
@@ -894,6 +938,8 @@ export type Transaction = {
   e2eId?: Maybe<Scalars['String']>,
   mandateNumber?: Maybe<Scalars['String']>,
   fees: Array<TransactionFee>,
+  /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
+  splits: Array<TransactionSplit>,
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'],
   directDebitFees: Array<DirectDebitFee>,
@@ -1070,6 +1116,14 @@ export type TransactionsConnectionEdge = {
   cursor: Scalars['String'],
 };
 
+export type TransactionSplit = {
+   __typename?: 'TransactionSplit',
+  id: Scalars['ID'],
+  amount: Scalars['Int'],
+  category: TransactionCategory,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
+};
+
 export type Transfer = {
    __typename?: 'Transfer',
   id: Scalars['String'],
@@ -1165,6 +1219,13 @@ export type UpdateSubscriptionPlanResult = {
   hasOrderedPhysicalCard: Scalars['Boolean'],
   updateActiveAt: Scalars['String'],
   hasCanceledDowngrade: Scalars['Boolean'],
+};
+
+export type UpdateTransactionSplitsInput = {
+  id: Scalars['Int'],
+  amount: Scalars['Int'],
+  category: TransactionCategory,
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>,
 };
 
 /** The available fields to update a transfer */

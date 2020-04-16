@@ -32,6 +32,7 @@ export const createTransaction = (
     id: Math.random.toString(),
     paymentMethod: "card",
     type: TransactionProjectionType.Atm,
+    splits: [],
     ...override,
   };
 };
