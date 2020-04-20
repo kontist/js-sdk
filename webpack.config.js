@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './dist/lib/index.js',
@@ -10,4 +11,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     library: 'Kontist'
   },
+  plugins: [
+    new CopyPlugin([
+      { from: './lib/graphql/schema.flow.js', to: './lib/graphql/schema.flow.js'}
+    ])
+  ]
 };

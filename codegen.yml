@@ -4,4 +4,8 @@ documents: null
 generates:
   lib/graphql/schema.ts:
     plugins:
-      - "typescript"
+      - typescript
+  lib/graphql/schema.flow.js:
+    plugins:
+      - flow
+
