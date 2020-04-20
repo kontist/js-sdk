@@ -34,6 +34,7 @@
     "@types/sinon": "^7.5.2",
     "@types/ws": "^7.2.3",
     "chai": "^4.2.0",
+    "copy-webpack-plugin": "^5.1.1",
     "jsdom": "^16.2.1",
     "mocha": "^7.1.1",
     "moment": "^2.24.0",
