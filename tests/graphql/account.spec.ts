@@ -5,6 +5,20 @@ import { Client } from "../../lib";
 import { KontistSDKError } from "../../lib/errors";
 import { Account } from "../../lib/graphql/account";
 
+const accountStatsData = {
+  accountBalance: 1378096,
+  main: 1189817,
+  yours: 1184262,
+  unknown: 5555,
+  vatAmount: -188279,
+  vatTotal: 188279,
+  vatMissing: 0,
+  taxCurrentYearAmount: 0,
+  taxPastYearAmount: null,
+  taxTotal: 0,
+  taxMissing: 0,
+}
+
 describe("Account", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
@@ -81,6 +95,41 @@ describe("Account", () => {
 
       // act
       const result = await account.get();
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(null);
+    });
+  });
+  describe("#getAccountStats", () => {
+    it("should call rawQuery and return correct accountStats", async () => {
+      // arrange
+      const account = new Account(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {
+            accountStats: accountStatsData,
+          },
+        },
+      } as any);
+
+      // act
+      const result = await account.getAccountStats();
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(accountStatsData);
+    });
+
+    it("should call rawQuery and return null for missing account", async () => {
+      // arrange
+      const account =  new Account(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      // act
+      const result = await account.getAccountStats();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
