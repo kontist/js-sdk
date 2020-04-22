@@ -21,6 +21,7 @@ export type Account = {
   transaction?: Maybe<Transaction>;
   transactions: TransactionsConnection;
   transfer?: Maybe<Transfer>;
+  /** Different information about account balances, e.g. taxes, VAT, ... */
   accountStats?: Maybe<AccountStats>;
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>;
@@ -77,16 +78,27 @@ export type AccountCardArgs = {
 
 export type AccountStats = {
    __typename?: 'AccountStats';
+  /** The amount that is currently available on the bank account */
   accountBalance: Scalars['Int'];
-  main: Scalars['Int'];
+  /** The amount that can be spend after VAT and taxes calculation */
   yours: Scalars['Int'];
+  /** The amount that is not categorized */
   unknown: Scalars['Int'];
-  vatAmount: Scalars['Int'];
+  /** The amount that can be spend plus the amount from uknown */
+  main: Scalars['Int'];
+  /** The amount of VAT that is owed (current + last years) */
   vatTotal: Scalars['Int'];
+  /** The amount of VAT that is owed in the current year */
+  vatAmount: Scalars['Int'];
+  /** The difference between vatTotal and accountBalance, if vatTotal > accountBalance */
   vatMissing: Scalars['Int'];
-  taxCurrentYearAmount: Scalars['Int'];
-  taxPastYearAmount?: Maybe<Scalars['Int']>;
+  /** The amount of tax that is owed (Current + last years) */
   taxTotal: Scalars['Int'];
+  /** The amount of tax that is owed in the current year */
+  taxCurrentYearAmount: Scalars['Int'];
+  /** The amount of tax that was owed last year */
+  taxPastYearAmount?: Maybe<Scalars['Int']>;
+  /** The difference between taxTotal and accountBalance, if taxTotal > accountbalance */
   taxMissing: Scalars['Int'];
 };
 
