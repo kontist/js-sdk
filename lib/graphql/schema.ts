@@ -21,6 +21,7 @@ export type Account = {
   transaction?: Maybe<Transaction>;
   transactions: TransactionsConnection;
   transfer?: Maybe<Transfer>;
+  accountStats?: Maybe<AccountStats>;
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>;
   /**
@@ -32,11 +33,6 @@ export type Account = {
   card?: Maybe<Card>;
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
-  /** 
-   * Different statistics to the users account balance
-   *  e.g. yours, unknow, vatTotal, taxMissing ... 
-   */
-  accountStats: AccountStats;
 };
 
 
@@ -77,6 +73,21 @@ export type AccountTransferArgs = {
 /** The bank account of the current user */
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>;
+};
+
+export type AccountStats = {
+   __typename?: 'AccountStats';
+  accountBalance: Scalars['Int'];
+  main: Scalars['Int'];
+  yours: Scalars['Int'];
+  unknown: Scalars['Int'];
+  vatAmount: Scalars['Int'];
+  vatTotal: Scalars['Int'];
+  vatMissing: Scalars['Int'];
+  taxCurrentYearAmount: Scalars['Int'];
+  taxPastYearAmount?: Maybe<Scalars['Int']>;
+  taxTotal: Scalars['Int'];
+  taxMissing: Scalars['Int'];
 };
 
 export enum BannerName {
@@ -1313,19 +1324,3 @@ export type WhitelistCardResponse = {
   resolution: Scalars['String'];
   whitelisted_until: Scalars['String'];
 };
-
-export type AccountStats = {
-  // TODO comment what those fields actually mean
-  __typename?: 'AccountStats';
-  accountBalance: Scalars['Int'];
-  main: Scalars['Int'];
-  yours: Scalars['Int'];
-  unknown: Scalars['Int'];
-  vatAmount: Scalars['Int'];
-  vatTotal: Scalars['Int'];
-  vatMissing: Scalars['Int'];
-  taxCurrentYearAmount: Scalars['Int'];
-  taxPastYearAmount?: Maybe<Scalars['Int']>;
-  taxTotal: Scalars['Int'];
-  taxMissing: Scalars['Int'];
-}
