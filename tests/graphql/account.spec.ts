@@ -102,13 +102,13 @@ describe("Account", () => {
     });
   });
   describe("#getStats", () => {
-    it("should call rawQuery and return correct accountStats", async () => {
+    it("should call rawQuery and return correct stats", async () => {
       // arrange
       const account = new Account(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           mainAccount: {
-            accountStats: accountStatsData,
+            stats: accountStatsData,
           },
         },
       } as any);

@@ -16,7 +16,7 @@ const GET_ACCOUNT = `query {
 const GET_ACCOUNT_STATS = `query {
   viewer {
     mainAccount {
-      accountStats {
+      stats {
         accountBalance
         main
         yours
