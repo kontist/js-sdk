@@ -22,7 +22,7 @@ export type Account = {
   transactions: TransactionsConnection;
   transfer?: Maybe<Transfer>;
   /** Different information about account balances, e.g. taxes, VAT, ... */
-  accountStats?: Maybe<AccountStats>;
+  stats: AccountStats;
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>;
   /**
@@ -80,11 +80,11 @@ export type AccountStats = {
    __typename?: 'AccountStats';
   /** The amount that is currently available on the bank account */
   accountBalance: Scalars['Int'];
-  /** The amount that can be spend after VAT and taxes calculation */
+  /** The amount that can be spent after VAT and taxes calculation */
   yours: Scalars['Int'];
   /** The amount that is not categorized */
   unknown: Scalars['Int'];
-  /** The amount that can be spend plus the amount from uknown */
+  /** The amount that can be spent plus the amount from uknown */
   main: Scalars['Int'];
   /** The amount of VAT that is owed (current + last years) */
   vatTotal: Scalars['Int'];
@@ -92,7 +92,7 @@ export type AccountStats = {
   vatAmount: Scalars['Int'];
   /** The difference between vatTotal and accountBalance, if vatTotal > accountBalance */
   vatMissing: Scalars['Int'];
-  /** The amount of tax that is owed (Current + last years) */
+  /** The amount of tax that is owed (current + last years) */
   taxTotal: Scalars['Int'];
   /** The amount of tax that is owed in the current year */
   taxCurrentYearAmount: Scalars['Int'];

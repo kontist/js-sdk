@@ -18,10 +18,10 @@ const GET_ACCOUNT_STATS = `query {
     mainAccount {
       accountStats {
         accountBalance
-				main
-				yours
-				unknown
-      	vatAmount
+        main
+        yours
+        unknown
+        vatAmount
         vatTotal
         vatMissing
         taxCurrentYearAmount
@@ -51,12 +51,12 @@ export class Account extends Model<AccountModel> {
   }
 
   /**
-   * Different statistics to the users account balance e.g. yours, unknow, vatTotal, taxMissing ...
+   * Different statistics to the users account balance e.g. yours, unknown, vatTotal, taxMissing ...
    *
    * @returns current user account statistics
    */
   public async getStats(): Promise<AccountStats | null> {
     const result: Query = await this.client.rawQuery(GET_ACCOUNT_STATS);
-    return result.viewer?.mainAccount?.accountStats ?? null;
+    return result.viewer?.mainAccount?.stats ?? null;
   }
 }
