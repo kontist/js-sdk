@@ -332,7 +332,7 @@ export type Mutation = {
    __typename?: 'Mutation';
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
-  /** Confirm a Standing Order cancelation */
+  /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
   /** Create an OAuth2 client */
   createClient: Client;
