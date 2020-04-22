@@ -101,7 +101,7 @@ describe("Account", () => {
       expect(result).to.eq(null);
     });
   });
-  describe("#getAccountStats", () => {
+  describe("#getStats", () => {
     it("should call rawQuery and return correct accountStats", async () => {
       // arrange
       const account = new Account(client.graphQL);
@@ -114,7 +114,7 @@ describe("Account", () => {
       } as any);
 
       // act
-      const result = await account.getAccountStats();
+      const result = await account.getStats();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
@@ -129,7 +129,7 @@ describe("Account", () => {
       } as any);
 
       // act
-      const result = await account.getAccountStats();
+      const result = await account.getStats();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);

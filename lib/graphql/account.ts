@@ -55,7 +55,7 @@ export class Account extends Model<AccountModel> {
    *
    * @returns current user account statistics
    */
-  public async getAccountStats(): Promise<AccountStats | null> {
+  public async getStats(): Promise<AccountStats | null> {
     const result: Query = await this.client.rawQuery(GET_ACCOUNT_STATS);
     return result.viewer?.mainAccount?.accountStats ?? null;
   }
