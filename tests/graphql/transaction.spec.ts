@@ -2,7 +2,12 @@ import { expect } from "chai";
 import * as sinon from "sinon";
 import { Client } from "../../lib";
 import { Transaction, TransactionCategory, BaseOperator } from "../../lib/graphql/schema";
-import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
+import {
+  NEW_TRANSACTION_SUBSCRIPTION,
+  CREATE_SPLIT_TRANSACTION,
+  DELETE_SPLIT_TRANSACTION,
+  UPDATE_SPLIT_TRANSACTION
+} from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
   createClient,
@@ -200,6 +205,146 @@ describe("Transaction", () => {
 
       // assert
       expect(stub.callCount).to.eq(1);
+      expect(result).to.deep.eq(transactionData);
+    });
+  });
+
+  describe("#createSplit", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return transaction data", async () => {
+      // arrange
+      const splitData = [
+        {
+          id: 1,
+          amount: -500,
+          category: TransactionCategory.Vat_7
+        },
+        {
+          id: 2,
+          amount: -500,
+          category: TransactionCategory.Vat_19
+        },
+      ];
+      const transactionData = createTransaction({
+        amount: -1000,
+        category: TransactionCategory.Private,
+        userSelectedBookingDate: new Date().toISOString(),
+        splits: splitData
+      });
+      stub.resolves({
+        createTransactionSplits: transactionData,
+      } as any);
+
+      // act
+      const result = await client.models.transaction.createSplit({
+        transactionId: transactionData.id,
+        splits: splitData
+      });
+
+      // assert
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(CREATE_SPLIT_TRANSACTION);
+      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionData.id, splits: splitData});
+      expect(result).to.deep.eq(transactionData);
+    });
+  });
+
+  describe("#deleteSplit", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return transaction data", async () => {
+      // arrange
+      const transactionData = createTransaction({
+        amount: -1000,
+        category: TransactionCategory.Private,
+        userSelectedBookingDate: new Date().toISOString(),
+        splits: []
+      });
+      stub.resolves({
+        deleteTransactionSplits: transactionData,
+      } as any);
+
+      // act
+      const result = await client.models.transaction.deleteSplit({
+        transactionId: transactionData.id
+      });
+
+      // assert
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(DELETE_SPLIT_TRANSACTION);
+      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionData.id});
+      expect(result).to.deep.eq(transactionData);
+    });
+  });
+
+  describe("#updateSplit", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return transaction data", async () => {
+      // arrange
+      const splitData = [
+        {
+          id: 1,
+          amount: -500,
+          category: TransactionCategory.Vat_7
+        },
+        {
+          id: 2,
+          amount: -500,
+          category: TransactionCategory.Vat_19
+        },
+      ];
+      const transactionData = createTransaction({
+        amount: -1000,
+        category: TransactionCategory.Private,
+        userSelectedBookingDate: new Date().toISOString(),
+        splits: splitData
+      });
+      stub.resolves({
+        updateTransactionSplits: transactionData,
+      } as any);
+
+      // act
+      const result = await client.models.transaction.updateSplit({
+        transactionId: transactionData.id,
+        splits: splitData
+      });
+
+      // assert
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(UPDATE_SPLIT_TRANSACTION);
+      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionData.id, splits: splitData});
       expect(result).to.deep.eq(transactionData);
     });
   });
