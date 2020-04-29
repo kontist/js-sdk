@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- *Breaking*: renamed `StandingOrderReoccurenceType` to `StandingOrderReoccurrenceType`
+
 ## [0.27.0] - 2020-04-20
 ### Added
 - Add flow type definitions in `lib/graphql/schema.flow.js`
