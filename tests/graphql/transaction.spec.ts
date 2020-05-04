@@ -34,7 +34,7 @@ describe("Transaction", () => {
       secondTransaction = createTransaction();
       thirdTransaction = createTransaction({
         name: "Willy Wonka",
-        ammount: 1200
+        amount: 1200
       });
 
       stub.onFirstCall().resolves(

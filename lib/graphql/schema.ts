@@ -21,6 +21,8 @@ export type Account = {
   transaction?: Maybe<Transaction>;
   transactions: TransactionsConnection;
   transfer?: Maybe<Transfer>;
+  /** Different information about account balances, e.g. taxes, VAT, ... */
+  stats: AccountStats;
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>;
   /**
@@ -72,6 +74,32 @@ export type AccountTransferArgs = {
 /** The bank account of the current user */
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>;
+};
+
+export type AccountStats = {
+   __typename?: 'AccountStats';
+  /** The amount that is currently available on the bank account */
+  accountBalance: Scalars['Int'];
+  /** The amount that can be spent after VAT and taxes calculation */
+  yours: Scalars['Int'];
+  /** The amount that is not categorized */
+  unknown: Scalars['Int'];
+  /** The amount that can be spent plus the amount from uknown */
+  main: Scalars['Int'];
+  /** The amount of VAT that is owed (current + last years) */
+  vatTotal: Scalars['Int'];
+  /** The amount of VAT that is owed in the current year */
+  vatAmount: Scalars['Int'];
+  /** The difference between vatTotal and accountBalance, if vatTotal > accountBalance */
+  vatMissing: Scalars['Int'];
+  /** The amount of tax that is owed (current + last years) */
+  taxTotal: Scalars['Int'];
+  /** The amount of tax that is owed in the current year */
+  taxCurrentYearAmount: Scalars['Int'];
+  /** The amount of tax that was owed last year */
+  taxPastYearAmount?: Maybe<Scalars['Int']>;
+  /** The difference between taxTotal and accountBalance, if taxTotal > accountbalance */
+  taxMissing: Scalars['Int'];
 };
 
 export enum BannerName {
@@ -274,7 +302,7 @@ export type CreateTransferInput = {
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurenceType>;
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
@@ -332,7 +360,7 @@ export type Mutation = {
    __typename?: 'Mutation';
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
-  /** Confirm a Standing Order cancelation */
+  /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
   /** Create an OAuth2 client */
   createClient: Client;
@@ -885,7 +913,7 @@ export enum SepaTransferStatus {
   Booked = 'BOOKED'
 }
 
-export enum StandingOrderReoccurenceType {
+export enum StandingOrderReoccurrenceType {
   Monthly = 'MONTHLY',
   Quarterly = 'QUARTERLY',
   EverySixMonths = 'EVERY_SIX_MONTHS',
@@ -1144,7 +1172,7 @@ export type Transfer = {
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurenceType>;
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
   /** The date at which the next payment will be executed for Standing Orders */
   nextOccurrence?: Maybe<Scalars['DateTime']>;
   /** The user selected category for the SEPA Transfer */
@@ -1243,7 +1271,7 @@ export type UpdateTransferInput = {
   /** The end to end ID of the Standing Order, if not specified with the update, it will be set to null */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurenceType>;
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
