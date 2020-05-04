@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Add method to fetch account stats (`models.account.getStats`)
+
 ## [0.27.0] - 2020-04-20
 ### Added
 - Add flow type definitions in `lib/graphql/schema.flow.js`
