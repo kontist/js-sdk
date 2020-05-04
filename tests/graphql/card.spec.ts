@@ -16,6 +16,7 @@ const cardData = {
   settings: {
     contactlessEnabled: true,
   },
+  googlePayTokens: []
 };
 
 const cardLimitsData = {
@@ -386,6 +387,68 @@ describe("Card", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(spyOnRawQuery.getCall(0).args[1]).to.eql({ cardHolderRepresentation });
       expect(result).to.eq(cardHolderRepresentation);
+    });
+  });
+
+  describe("#addGooglePayCardToken", () => {
+    it("should call rawQuery and return the Google Pay card token", async () => {
+      // arrange;
+      const walletId = "Rwt3tJek_k1JxivcwbPHjKDk";
+      const tokenRefId = "DNITHE382012542083412345";
+      const args = {
+        walletId,
+        tokenRefId,
+        id: cardData.id,
+      };
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        addGooglePayCardToken: {
+          walletId,
+          tokenRefId,
+        },
+      } as any);
+
+      // act
+      const result = await card.addGooglePayCardToken(args);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(spyOnRawQuery.getCall(0).args[1]).to.eql(args);
+      expect(result).to.eql({
+        walletId,
+        tokenRefId,
+      });
+    });
+  });
+
+  describe("#deleteGooglePayCardToken", () => {
+    it("should call rawQuery and return the Google Pay card token", async () => {
+      // arrange;
+      const walletId = "Rwt3tJek_k1JxivcwbPHjKDk";
+      const tokenRefId = "DNITHE382012542083412345";
+      const args = {
+        walletId,
+        tokenRefId,
+        id: cardData.id,
+      };
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        deleteGooglePayCardToken: {
+          walletId,
+          tokenRefId,
+        },
+      } as any);
+
+      // act
+      const result = await card.deleteGooglePayCardToken(args);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(spyOnRawQuery.getCall(0).args[1]).to.eql(args);
+      expect(result).to.eql({
+        walletId,
+        tokenRefId,
+      });
     });
   });
 });
