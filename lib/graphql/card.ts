@@ -10,6 +10,9 @@ import {
   MutationReplaceCardArgs,
   MutationUpdateCardSettingsArgs,
   Query,
+  GooglePayCardToken,
+  MutationAddGooglePayCardTokenArgs,
+  MutationDeleteGooglePayCardTokenArgs,
 } from "./schema";
 
 import { Model } from "./model";
@@ -214,6 +217,36 @@ export const SET_CARD_HOLDER_REPRESENTATION = `mutation setCardHolderRepresentat
   )
 }`;
 
+export const ADD_GOOGLE_PAY_CARD_TOKEN = `mutation(
+  $id: String!,
+  $walletId: String!
+  $tokenRefId: String!
+) {
+  addGooglePayCardToken(
+    id: $id,
+    walletId: $walletId,
+    tokenRefId: $tokenRefId
+  ) {
+    walletId
+    tokenRefId
+  }
+}`;
+
+export const DELETE_GOOGLE_PAY_CARD_TOKEN = `mutation(
+  $id: String!,
+  $walletId: String!
+  $tokenRefId: String!
+) {
+  deleteGooglePayCardToken(
+    id: $id,
+    walletId: $walletId,
+    tokenRefId: $tokenRefId
+  ) {
+    walletId
+    tokenRefId
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -357,5 +390,27 @@ export class Card extends Model<CardModel> {
       cardHolderRepresentation
     });
     return result.setCardHolderRepresentation;
+  }
+
+  /**
+   * Adds Google Pay card token reference id for given wallet id
+   *
+   * @param args   query parameters including card id, Google Pay card token ref id and active wallet id
+   * @returns      combination of Google Pay card token ref id and active wallet id
+   */
+  public async addGooglePayCardToken(args: MutationAddGooglePayCardTokenArgs): Promise<GooglePayCardToken> {
+    const result = await this.client.rawQuery(ADD_GOOGLE_PAY_CARD_TOKEN, args);
+    return result.addGooglePayCardToken;
+  }
+
+  /**
+   * Removes Google Pay card token reference id for given wallet id
+   *
+   * @param args   query parameters including card id, Google Pay card token ref id and active wallet id
+   * @returns      combination of removed Google Pay card token ref id and active wallet id
+   */
+  public async deleteGooglePayCardToken(args: MutationDeleteGooglePayCardTokenArgs): Promise<GooglePayCardToken> {
+    const result = await this.client.rawQuery(DELETE_GOOGLE_PAY_CARD_TOKEN, args);
+    return result.deleteGooglePayCardToken;
   }
 }
