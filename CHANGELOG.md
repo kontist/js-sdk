@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.1] - 2020-05-04
+
+### Changed
+- Update vulnerable dependencies (`yargs`, `yargs-parser`)
+
 ## [0.28.0] - 2020-05-04
 
 ### Added
