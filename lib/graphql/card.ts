@@ -32,6 +32,10 @@ const CARD_FIELDS = `
   settings {
     contactlessEnabled
   }
+  googlePayTokens {
+    walletId
+    tokenRefId
+  }
 `;
 
 const CARD_LIMITS_FIELDS = `

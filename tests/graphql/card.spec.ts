@@ -16,6 +16,7 @@ const cardData = {
   settings: {
     contactlessEnabled: true,
   },
+  googlePayTokens: []
 };
 
 const cardLimitsData = {
