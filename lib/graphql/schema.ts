@@ -136,6 +136,7 @@ export type Card = {
   formattedExpirationDate?: Maybe<Scalars['String']>;
   maskedPan?: Maybe<Scalars['String']>;
   settings: CardSettings;
+  googlePayTokens: Array<GooglePayCardToken>;
 };
 
 export enum CardAction {
@@ -330,6 +331,12 @@ export enum Gender {
   Female = 'FEMALE'
 }
 
+export type GooglePayCardToken = {
+   __typename?: 'GooglePayCardToken';
+  walletId: Scalars['String'];
+  tokenRefId: Scalars['String'];
+};
+
 export enum GrantType {
   Password = 'PASSWORD',
   AuthorizationCode = 'AUTHORIZATION_CODE',
@@ -387,6 +394,10 @@ export type Mutation = {
   createCard: Card;
   /** Activate a card */
   activateCard: Card;
+  /** Adds Google Pay card token reference id for given wallet id */
+  addGooglePayCardToken: GooglePayCardToken;
+  /** Deletes Google Pay card token reference id for given wallet id */
+  deleteGooglePayCardToken: GooglePayCardToken;
   /** Update settings (e.g. limits) */
   updateCardSettings: CardSettings;
   /** Block or unblock or close a card */
@@ -500,6 +511,20 @@ export type MutationCreateCardArgs = {
 
 export type MutationActivateCardArgs = {
   verificationToken: Scalars['String'];
+  id: Scalars['String'];
+};
+
+
+export type MutationAddGooglePayCardTokenArgs = {
+  tokenRefId: Scalars['String'];
+  walletId: Scalars['String'];
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteGooglePayCardTokenArgs = {
+  tokenRefId: Scalars['String'];
+  walletId: Scalars['String'];
   id: Scalars['String'];
 };
 
