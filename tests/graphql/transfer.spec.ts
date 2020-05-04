@@ -4,7 +4,7 @@ import { Transfer as TransferClass } from "../../lib/graphql/transfer";
 import {
   TransferType,
   Transfer,
-  StandingOrderReoccurenceType,
+  StandingOrderReoccurrenceType,
   TransactionCategory
 } from "../../lib/graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
@@ -230,7 +230,7 @@ describe("Transfer", () => {
       amount: 2345,
       purpose: "some money",
       e2eId: "some-e2e-id",
-      reoccurrence: StandingOrderReoccurenceType.Annually,
+      reoccurrence: StandingOrderReoccurrenceType.Annually,
       lastExecutionDate: "2022-02-02",
       type: TransferType.StandingOrder
     };

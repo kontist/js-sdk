@@ -302,7 +302,7 @@ export type CreateTransferInput = {
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurenceType>;
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
@@ -360,7 +360,7 @@ export type Mutation = {
    __typename?: 'Mutation';
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
-  /** Confirm a Standing Order cancelation */
+  /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
   /** Create an OAuth2 client */
   createClient: Client;
@@ -913,7 +913,7 @@ export enum SepaTransferStatus {
   Booked = 'BOOKED'
 }
 
-export enum StandingOrderReoccurenceType {
+export enum StandingOrderReoccurrenceType {
   Monthly = 'MONTHLY',
   Quarterly = 'QUARTERLY',
   EverySixMonths = 'EVERY_SIX_MONTHS',
@@ -1172,7 +1172,7 @@ export type Transfer = {
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurenceType>;
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
   /** The date at which the next payment will be executed for Standing Orders */
   nextOccurrence?: Maybe<Scalars['DateTime']>;
   /** The user selected category for the SEPA Transfer */
@@ -1271,7 +1271,7 @@ export type UpdateTransferInput = {
   /** The end to end ID of the Standing Order, if not specified with the update, it will be set to null */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurenceType>;
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */

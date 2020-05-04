@@ -96,7 +96,7 @@ export class TokenManager {
    *
    * @param options     Username, password, and an optional set of scopes
    *                    When given a set of scopes, they override the default list of
-   *                    scopes of `this` intance
+   *                    scopes of `this` instance
    *
    * @returns           token object which might contain token(s), scope(s), token type and expiration time
    */
