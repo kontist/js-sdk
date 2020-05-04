@@ -4,6 +4,9 @@ import {
   AccountTransactionsArgs,
   BaseOperator,
   MutationCategorizeTransactionArgs,
+  MutationCreateTransactionSplitsArgs,
+  MutationDeleteTransactionSplitsArgs,
+  MutationUpdateTransactionSplitsArgs,
   Query,
   Transaction as TransactionModel,
   TransactionFilter,
@@ -103,6 +106,40 @@ export const CATEGORIZE_TRANSACTION = `mutation categorizeTransaction(
   }
 }`;
 
+export const CREATE_SPLIT_TRANSACTION = `mutation createTransactionSplits(
+  $transactionId: ID!
+  $splits: [CreateTransactionSplitsInput!]!
+) {
+  createTransactionSplits(
+    transactionId: $transactionId
+    splits: $splits
+  ) {
+    ${TRANSACTION_FIELDS}
+  }
+}`;
+
+export const DELETE_SPLIT_TRANSACTION = `mutation deleteTransactionSplits(
+  $transactionId: ID!
+) {
+  deleteTransactionSplits(
+    transactionId: $transactionId
+  ) {
+    ${TRANSACTION_FIELDS}
+  }
+}`;
+
+export const UPDATE_SPLIT_TRANSACTION = `mutation updateTransactionSplits(
+  $transactionId: ID!
+  $splits: [UpdateTransactionSplitsInput!]!
+) {
+  updateTransactionSplits(
+    transactionId: $transactionId
+    splits: $splits
+  ) {
+    ${TRANSACTION_FIELDS}
+  }
+}`;
+
 export class Transaction extends IterableModel<TransactionModel> {
   /**
    * Fetches first 50 transactions which match the query
@@ -165,6 +202,39 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async categorize(args: MutationCategorizeTransactionArgs) {
     const result = await this.client.rawQuery(CATEGORIZE_TRANSACTION, args);
     return result.categorizeTransaction;
+  }
+
+  /**
+   * Creates transaction splits
+   *
+   * @param args   transaction ID and split data
+   * @returns      the transaction with created split data
+   */
+  public async createSplit(args: MutationCreateTransactionSplitsArgs) {
+    const result = await this.client.rawQuery(CREATE_SPLIT_TRANSACTION, args);
+    return result.createTransactionSplits;
+  }
+
+  /**
+   * Removes transaction splits
+   *
+   * @param args   transaction ID
+   * @returns      the transaction with emptied split data
+   */
+  public async deleteSplit(args: MutationDeleteTransactionSplitsArgs) {
+    const result = await this.client.rawQuery(DELETE_SPLIT_TRANSACTION, args);
+    return result.deleteTransactionSplits;
+  }
+
+  /**
+   * Updates transaction splits
+   *
+   * @param args   transaction ID and split data including the splits' IDs
+   * @returns      the transaction with updated split data
+   */
+  public async updateSplit(args: MutationUpdateTransactionSplitsArgs) {
+    const result = await this.client.rawQuery(UPDATE_SPLIT_TRANSACTION, args);
+    return result.updateTransactionSplits;
   }
 
   private parseAmountSearchTerm(amountTerm: string): AmountSearchFilter {

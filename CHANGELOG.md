@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Add helpers to split transactions (`models.transaction.createSplit`, `models.transaction.deleteSplit`, `models.transaction.updateSplit`)
 - *Breaking*: renamed `StandingOrderReoccurenceType` to `StandingOrderReoccurrenceType`
 - Add method to fetch account stats (`models.account.getStats`)
 

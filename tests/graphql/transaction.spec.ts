@@ -2,7 +2,12 @@ import { expect } from "chai";
 import * as sinon from "sinon";
 import { Client } from "../../lib";
 import { Transaction, TransactionCategory, BaseOperator } from "../../lib/graphql/schema";
-import { NEW_TRANSACTION_SUBSCRIPTION } from "../../lib/graphql/transaction";
+import {
+  NEW_TRANSACTION_SUBSCRIPTION,
+  CREATE_SPLIT_TRANSACTION,
+  DELETE_SPLIT_TRANSACTION,
+  UPDATE_SPLIT_TRANSACTION
+} from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
   createClient,
@@ -201,6 +206,195 @@ describe("Transaction", () => {
       // assert
       expect(stub.callCount).to.eq(1);
       expect(result).to.deep.eq(transactionData);
+    });
+  });
+
+  describe("#createSplit", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return transaction data including split data", async () => {
+      // arrange: split a TAX_PAYMENT transaction into TAX_PAYMENT and VAT_PAYMENT parts
+      const transactionDataBefore = createTransaction({
+        amount: -1000,
+        category: TransactionCategory.TaxPayment,
+        userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+        splits: []
+      });
+      const splitData = [
+        {
+          id: 1,
+          amount: -500,
+          category: TransactionCategory.TaxPayment,
+          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+        },
+        {
+          id: 2,
+          amount: -500,
+          category: TransactionCategory.VatPayment,
+          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+        },
+      ];
+      const transactionDataAfter = createTransaction({
+        amount: -1000,
+        category: null,
+        userSelectedBookingDate: null,
+        splits: splitData
+      });
+      stub.resolves({
+        createTransactionSplits: transactionDataAfter,
+      } as any);
+
+      // act: update transaction with prepared split data
+      const result = await client.models.transaction.createSplit({
+        transactionId: transactionDataBefore.id,
+        splits: splitData
+      });
+
+      // assert: check for valid rawQuery number of calls and proper arguments + expected result
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(CREATE_SPLIT_TRANSACTION);
+      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionDataBefore.id, splits: splitData});
+      expect(result).to.deep.eq(transactionDataAfter);
+    });
+  });
+
+  describe("#deleteSplit", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return transaction data with empty split", async () => {
+      // arrange: remove splits from a transactions that was split into TAX_PAYMENT and VAT_PAYMENT parts
+      const transactionDataBefore = createTransaction({
+        amount: -1000,
+        category: null,
+        userSelectedBookingDate: null,
+        splits: [
+          {
+            id: 1,
+            amount: -500,
+            category: TransactionCategory.TaxPayment,
+            userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+          },
+          {
+            id: 2,
+            amount: -500,
+            category: TransactionCategory.VatPayment,
+            userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+          },
+        ]
+      });
+      const transactionDataAfter = createTransaction({
+        amount: -1000,
+        category: null,
+        userSelectedBookingDate: null,
+        splits: []
+      });
+      stub.resolves({
+        deleteTransactionSplits: transactionDataAfter,
+      } as any);
+
+      // act: remove splits from parent transaction
+      const result = await client.models.transaction.deleteSplit({
+        transactionId: transactionDataBefore.id
+      });
+
+      // assert: check for valid rawQuery number of calls and proper arguments + expected result
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(DELETE_SPLIT_TRANSACTION);
+      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionDataBefore.id});
+      expect(result).to.deep.eq(transactionDataAfter);
+    });
+  });
+
+  describe("#updateSplit", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return transaction data", async () => {
+      // arrange: modify splits from TAX_PAYMENT and VAT_PAYMENT to PRIVATE and VAT_19
+      const splitDataBefore = [
+        {
+          id: 1,
+          amount: -500,
+          category: TransactionCategory.TaxPayment,
+          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+        },
+        {
+          id: 2,
+          amount: -500,
+          category: TransactionCategory.VatPayment,
+          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+        },
+      ];
+      const transactionDataBefore = createTransaction({
+        amount: -1000,
+        category: null,
+        userSelectedBookingDate: null,
+        splits: splitDataBefore
+      });
+      const splitDataAfter = [
+        {
+          id: 1,
+          amount: -500,
+          category: TransactionCategory.Private,
+          userSelectedBookingDate: null
+        },
+        {
+          id: 2,
+          amount: -500,
+          category: TransactionCategory.Vat_19,
+          userSelectedBookingDate: null
+        },
+      ];
+      const transactionDataAfter = createTransaction({
+        amount: -1000,
+        category: null,
+        userSelectedBookingDate: null,
+        splits: splitDataAfter
+      });
+      stub.resolves({
+        updateTransactionSplits: transactionDataAfter,
+      } as any);
+
+      // act: update transaction splits with new split data
+      const result = await client.models.transaction.updateSplit({
+        transactionId: transactionDataBefore.id,
+        splits: splitDataAfter
+      });
+
+      // assert: check for valid rawQuery number of calls and proper arguments + expected result
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(UPDATE_SPLIT_TRANSACTION);
+      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionDataBefore.id, splits: splitDataAfter});
+      expect(result).to.deep.eq(transactionDataAfter);
     });
   });
 
