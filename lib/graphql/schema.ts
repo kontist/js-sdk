@@ -936,6 +936,8 @@ export type Overdraft = {
   status: OverdraftApplicationStatus;
   /** Available overdraft limit */
   limit?: Maybe<Scalars['Int']>;
+  /** Overdraft request date */
+  requestedAt: Scalars['DateTime'];
 };
 
 export enum OverdraftApplicationStatus {

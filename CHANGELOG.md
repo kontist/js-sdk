@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Extended Overdraft with requestedAt field
 
 ## [0.28.2] - 2020-05-05
 
