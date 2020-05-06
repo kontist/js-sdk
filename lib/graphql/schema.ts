@@ -16,6 +16,7 @@ export type Account = {
   iban: Scalars['String'];
   cardHolderRepresentation?: Maybe<Scalars['String']>;
   balance: Scalars['Int'];
+  canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
   transfers: TransfersConnection;
   transaction?: Maybe<Transaction>;
@@ -34,6 +35,11 @@ export type Account = {
   card?: Maybe<Card>;
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
+  /**
+   * Wirecard details
+   * @deprecated This data will be removed in an upcoming release. Do not use it for any new features.
+   */
+  wirecard: WirecardDetails;
 };
 
 
@@ -76,6 +82,15 @@ export type AccountCardArgs = {
   filter?: Maybe<CardFilter>;
 };
 
+export enum AccountState {
+  Free = 'FREE',
+  Trial = 'TRIAL',
+  Premium = 'PREMIUM',
+  Blocked = 'BLOCKED',
+  FreeOld = 'FREE_OLD',
+  PremiumOld = 'PREMIUM_OLD'
+}
+
 export type AccountStats = {
    __typename?: 'AccountStats';
   /** The amount that is currently available on the bank account */
@@ -102,8 +117,23 @@ export type AccountStats = {
   taxMissing: Scalars['Int'];
 };
 
+export type AvailableStatements = {
+   __typename?: 'AvailableStatements';
+  year: Scalars['Int'];
+  months: Array<Scalars['Int']>;
+};
+
+export type Banner = {
+   __typename?: 'Banner';
+  name: BannerName;
+  dismissedAt?: Maybe<Scalars['DateTime']>;
+  isVisible: Scalars['Boolean'];
+};
+
 export enum BannerName {
-  Overdraft = 'OVERDRAFT'
+  Overdraft = 'OVERDRAFT',
+  Bookkeeping = 'BOOKKEEPING',
+  FriendReferral = 'FRIEND_REFERRAL'
 }
 
 export enum BaseOperator {
@@ -171,6 +201,15 @@ export type CardLimitsInput = {
   daily: CardLimitInput;
   monthly: CardLimitInput;
 };
+
+export enum CardMigrationStatus {
+  Required = 'REQUIRED',
+  Requested = 'REQUESTED',
+  RequestedAndLocked = 'REQUESTED_AND_LOCKED',
+  RequestedAndClosed = 'REQUESTED_AND_CLOSED',
+  Completed = 'COMPLETED',
+  NotRequired = 'NOT_REQUIRED'
+}
 
 export type CardSettings = {
    __typename?: 'CardSettings';
@@ -303,7 +342,7 @@ export type CreateTransferInput = {
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>;
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
@@ -344,6 +383,21 @@ export enum GrantType {
   ClientCredentials = 'CLIENT_CREDENTIALS'
 }
 
+export type Icon = {
+   __typename?: 'Icon';
+  uri: Scalars['String'];
+};
+
+export type IdentificationDetails = {
+   __typename?: 'IdentificationDetails';
+  /** The link to use for IDNow identification */
+  link?: Maybe<Scalars['String']>;
+  /** The user's IDNow identification status */
+  status?: Maybe<IdentificationStatus>;
+  /** The number of identifications attempted by the user */
+  attempts: Scalars['Int'];
+};
+
 export enum IdentificationStatus {
   Pending = 'PENDING',
   PendingSuccessful = 'PENDING_SUCCESSFUL',
@@ -356,12 +410,25 @@ export enum IdentificationStatus {
   Canceled = 'CANCELED'
 }
 
+export enum IntegrationType {
+  Lexoffice = 'LEXOFFICE',
+  Debitoor = 'DEBITOOR',
+  Fastbill = 'FASTBILL'
+}
+
 export enum InvoiceStatus {
   Open = 'OPEN',
   Closed = 'CLOSED',
   Rejected = 'REJECTED',
   Pending = 'PENDING'
 }
+
+export type Money = {
+   __typename?: 'Money';
+  amount: Scalars['Int'];
+  fullAmount?: Maybe<Scalars['Int']>;
+  discountPercentage?: Maybe<Scalars['Int']>;
+};
 
 export type Mutation = {
    __typename?: 'Mutation';
@@ -386,8 +453,6 @@ export type Mutation = {
   createTransfers: ConfirmationRequest;
   /** Confirm the transfers creation */
   confirmTransfers: BatchTransfer;
-  /** Update user's subscription plan */
-  updateSubscriptionPlan: UpdateSubscriptionPlanResult;
   whitelistCard: WhitelistCardResponse;
   confirmFraud: ConfirmFraudResponse;
   /** Create a new card */
@@ -416,12 +481,18 @@ export type Mutation = {
   categorizeTransaction: Transaction;
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
+  /** Activate Overdraft Application  - only available for Kontist Application */
+  activateOverdraft?: Maybe<Overdraft>;
   /** Create transaction splits */
   createTransactionSplits: Transaction;
   /** Update transaction splits */
   updateTransactionSplits: Transaction;
   /** Delete transaction splits */
   deleteTransactionSplits: Transaction;
+  /** Subscribe user to a plan */
+  subscribeToPlan: UserSubscription;
+  /** Update user's subscription plan */
+  updateSubscriptionPlan: UpdateSubscriptionPlanResult;
   dismissBanner: MutationResult;
 };
 
@@ -483,11 +554,6 @@ export type MutationCreateTransfersArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
-};
-
-
-export type MutationUpdateSubscriptionPlanArgs = {
-  newPlan: PurchaseType;
 };
 
 
@@ -590,6 +656,16 @@ export type MutationUpdateTransactionSplitsArgs = {
 
 export type MutationDeleteTransactionSplitsArgs = {
   transactionId: Scalars['ID'];
+};
+
+
+export type MutationSubscribeToPlanArgs = {
+  type: PurchaseType;
+};
+
+
+export type MutationUpdateSubscriptionPlanArgs = {
+  newPlan: PurchaseType;
 };
 
 
@@ -887,6 +963,11 @@ export enum PaymentFrequency {
   None = 'NONE'
 }
 
+export enum PurchaseState {
+  Processed = 'PROCESSED',
+  Pending = 'PENDING'
+}
+
 export enum PurchaseType {
   BasicInitial = 'BASIC_INITIAL',
   Basic = 'BASIC',
@@ -902,6 +983,14 @@ export type Query = {
   status: SystemStatus;
 };
 
+export type ReferralDetails = {
+   __typename?: 'ReferralDetails';
+  code?: Maybe<Scalars['String']>;
+  link?: Maybe<Scalars['String']>;
+  /** Amount in euros granted to user and his referee */
+  bonusAmount: Scalars['Int'];
+};
+
 export enum ScopeType {
   Offline = 'OFFLINE',
   Accounts = 'ACCOUNTS',
@@ -912,7 +1001,8 @@ export enum ScopeType {
   Statements = 'STATEMENTS',
   Admin = 'ADMIN',
   Clients = 'CLIENTS',
-  Overdraft = 'OVERDRAFT'
+  Overdraft = 'OVERDRAFT',
+  Banners = 'BANNERS'
 }
 
 export type SepaTransfer = {
@@ -954,11 +1044,40 @@ export type Subscription = {
   newTransaction: Transaction;
 };
 
+export type SubscriptionFeature = {
+   __typename?: 'SubscriptionFeature';
+  title: Scalars['String'];
+  icon?: Maybe<Icon>;
+};
+
+export type SubscriptionFeatureGroup = {
+   __typename?: 'SubscriptionFeatureGroup';
+  title?: Maybe<Scalars['String']>;
+  icon?: Maybe<Icon>;
+  features: Array<SubscriptionFeature>;
+};
+
+export type SubscriptionPlan = {
+   __typename?: 'SubscriptionPlan';
+  type: PurchaseType;
+  subtitle?: Maybe<Scalars['String']>;
+  fee: Money;
+  title: Scalars['String'];
+  description: Scalars['String'];
+  button: Scalars['String'];
+  featuresToggleLabel?: Maybe<Scalars['String']>;
+  featureGroups: Array<SubscriptionFeatureGroup>;
+};
+
 export type SystemStatus = {
    __typename?: 'SystemStatus';
   type?: Maybe<Status>;
   message?: Maybe<Scalars['String']>;
 };
+
+export enum TaxPaymentFrequency {
+  Quarterly = 'QUARTERLY'
+}
 
 export type TaxYearSetting = {
    __typename?: 'TaxYearSetting';
@@ -1197,7 +1316,7 @@ export type Transfer = {
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>;
   /** The date at which the next payment will be executed for Standing Orders */
   nextOccurrence?: Maybe<Scalars['DateTime']>;
   /** The user selected category for the SEPA Transfer */
@@ -1296,7 +1415,7 @@ export type UpdateTransferInput = {
   /** The end to end ID of the Standing Order, if not specified with the update, it will be set to null */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
-  reoccurrence?: Maybe<StandingOrderReoccurrenceType>,
+  reoccurrence?: Maybe<StandingOrderReoccurrenceType>;
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
@@ -1306,16 +1425,29 @@ export type UpdateTransferInput = {
 export type User = {
    __typename?: 'User';
   email: Scalars['String'];
+  /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
+  /** @deprecated This field will be removed in an upcoming release */
   vatCutoffLine?: Maybe<Scalars['DateTime']>;
+  /** @deprecated This field will be removed in an upcoming release */
   taxCutoffLine?: Maybe<Scalars['DateTime']>;
+  /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatPaymentFrequency" */
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
-  taxPaymentFrequency?: Maybe<PaymentFrequency>;
+  /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxPaymentFrequency" */
+  taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
+  /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxRate" */
   taxRate?: Maybe<Scalars['Int']>;
+  /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatRate" */
   vatRate?: Maybe<Scalars['Int']>;
-  /** The user's IDNow identification status */
+  /**
+   * The user's IDNow identification status
+   * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.identification.status"
+   */
   identificationStatus?: Maybe<IdentificationStatus>;
-  /** The link to use for IDNow identification */
+  /**
+   * The link to use for IDNow identification
+   * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.identification.link"
+   */
   identificationLink?: Maybe<Scalars['String']>;
   gender?: Maybe<Gender>;
   firstName?: Maybe<Scalars['String']>;
@@ -1340,14 +1472,39 @@ export type User = {
   economicSector?: Maybe<Scalars['String']>;
   /** Business economic sector provided by the user */
   otherEconomicSector?: Maybe<Scalars['String']>;
+  /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatNumber" */
   vatNumber?: Maybe<Scalars['String']>;
-  /** The user's referral code to use for promotional purposes */
+  /**
+   * The user's referral code to use for promotional purposes
+   * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.referral.code"
+   */
   referralCode?: Maybe<Scalars['String']>;
+  /** The current state of user's Kontist account based on his subscription plan */
+  accountState?: Maybe<AccountState>;
+  businessTradingName?: Maybe<Scalars['String']>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
   client?: Maybe<Client>;
   mainAccount?: Maybe<Account>;
+  /** The plans a user has subscribed to */
+  subscriptions: Array<UserSubscription>;
+  /** The state of banners in Kontist App for the user */
+  banners?: Maybe<Array<Banner>>;
+  /** Bookkeeping partners information for user */
+  integrations: Array<UserIntegration>;
+  /** Information about the plans a user can subscribe to */
+  availablePlans: Array<SubscriptionPlan>;
+  /** Tax details for user */
+  taxDetails: UserTaxDetails;
+  /** Active user features */
+  features: Array<Scalars['String']>;
+  /** Referral details for user */
+  referral: ReferralDetails;
+  /** IDNow identification details for user */
+  identification: IdentificationDetails;
+  /** User metadata. These fields are likely to get frequently updated or changed. */
+  metadata: UserMetadata;
 };
 
 
@@ -1355,9 +1512,80 @@ export type UserClientArgs = {
   id: Scalars['String'];
 };
 
+
+export type UserMetadataArgs = {
+  os?: Maybe<UserOs>;
+};
+
+export type UserIntegration = {
+   __typename?: 'UserIntegration';
+  type: IntegrationType;
+  hasAccount: Scalars['Boolean'];
+  isConnected: Scalars['Boolean'];
+};
+
+export type UserMetadata = {
+   __typename?: 'UserMetadata';
+  currentTermsAccepted: Scalars['Boolean'];
+  acceptedTermsVersion?: Maybe<Scalars['String']>;
+  /** List of months user can request a bank statement for */
+  availableStatements?: Maybe<Array<AvailableStatements>>;
+  /** Is user's Kontist account closed */
+  isAccountClosed: Scalars['Boolean'];
+  /** User status for VISA card migration */
+  cardMigrationStatus: CardMigrationStatus;
+  currentTermsVersion: Scalars['String'];
+  intercomDigest?: Maybe<Scalars['String']>;
+  directDebitMandateAccepted: Scalars['Boolean'];
+  marketingConsentAccepted: Scalars['Boolean'];
+  phoneNumberVerificationRequired: Scalars['Boolean'];
+  signupCompleted: Scalars['Boolean'];
+};
+
+export enum UserOs {
+  Ios = 'IOS',
+  Android = 'ANDROID'
+}
+
+export type UserSubscription = {
+   __typename?: 'UserSubscription';
+  /** The type of the plans a user has subscribed to */
+  type: PurchaseType;
+  /** The state of the subscription */
+  state: PurchaseState;
+};
+
+export type UserTaxDetails = {
+   __typename?: 'UserTaxDetails';
+  adjustAdvancePayments: Scalars['Boolean'];
+  lastTaxPaymentDate?: Maybe<Scalars['DateTime']>;
+  lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
+  vatPaymentFrequency?: Maybe<PaymentFrequency>;
+  /** @deprecated This field will be removed in an upcoming release, do not rely on it for any new code */
+  taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
+  taxRate?: Maybe<Scalars['Int']>;
+  vatRate?: Maybe<Scalars['Int']>;
+  vatNumber?: Maybe<Scalars['String']>;
+  needsToProvideTaxIdentification: Scalars['Boolean'];
+};
+
 export type WhitelistCardResponse = {
    __typename?: 'WhitelistCardResponse';
   id: Scalars['String'];
   resolution: Scalars['String'];
   whitelisted_until: Scalars['String'];
+};
+
+export enum WirecardCardStatus {
+  NotOrdered = 'NOT_ORDERED',
+  Ordered = 'ORDERED',
+  Issued = 'ISSUED'
+}
+
+export type WirecardDetails = {
+   __typename?: 'WirecardDetails';
+  cardStatus: WirecardCardStatus;
+  directDebitMandateAccepted: Scalars['Boolean'];
+  hasAccount: Scalars['Boolean'];
+  plasticCardOrderedAt?: Maybe<Scalars['DateTime']>;
 };
