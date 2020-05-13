@@ -483,6 +483,11 @@ export type Mutation = {
   requestOverdraft?: Maybe<Overdraft>;
   /** Activate Overdraft Application  - only available for Kontist Application */
   activateOverdraft?: Maybe<Overdraft>;
+  /**
+   * Updates overdraft application timestamps for rejected and offered overdraft
+   * screens - only available for Kontist Application
+   */
+  updateOverdraft?: Maybe<Overdraft>;
   /** Create transaction splits */
   createTransactionSplits: Transaction;
   /** Update transaction splits */
@@ -642,6 +647,12 @@ export type MutationCategorizeTransactionArgs = {
 };
 
 
+export type MutationUpdateOverdraftArgs = {
+  offeredScreenShown?: Maybe<Scalars['Boolean']>;
+  rejectionScreenShown?: Maybe<Scalars['Boolean']>;
+};
+
+
 export type MutationCreateTransactionSplitsArgs = {
   splits: Array<CreateTransactionSplitsInput>;
   transactionId: Scalars['ID'];
@@ -660,6 +671,7 @@ export type MutationDeleteTransactionSplitsArgs = {
 
 
 export type MutationSubscribeToPlanArgs = {
+  couponCode?: Maybe<Scalars['String']>;
   type: PurchaseType;
 };
 
@@ -938,6 +950,10 @@ export type Overdraft = {
   limit?: Maybe<Scalars['Int']>;
   /** Overdraft request date */
   requestedAt: Scalars['DateTime'];
+  /** Indicates if offered screen for overdraft was shown */
+  offeredScreenShown: Scalars['Boolean'];
+  /** Indicates if rejection screen for overdraft was shown */
+  rejectionScreenShown: Scalars['Boolean'];
 };
 
 export enum OverdraftApplicationStatus {
@@ -1292,7 +1308,7 @@ export type TransactionsConnectionEdge = {
 
 export type TransactionSplit = {
    __typename?: 'TransactionSplit';
-  id: Scalars['ID'];
+  id: Scalars['Int'];
   amount: Scalars['Int'];
   category: TransactionCategory;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -1512,6 +1528,11 @@ export type User = {
 
 export type UserClientArgs = {
   id: Scalars['String'];
+};
+
+
+export type UserAvailablePlansArgs = {
+  couponCode?: Maybe<Scalars['String']>;
 };
 
 
