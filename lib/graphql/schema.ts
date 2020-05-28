@@ -499,6 +499,8 @@ export type Mutation = {
   /** Update user's subscription plan */
   updateSubscriptionPlan: UpdateSubscriptionPlanResult;
   dismissBanner: MutationResult;
+  /** Update the push-notifications a user should receive */
+  updateUserNotifications: Array<Notification>;
 };
 
 
@@ -683,6 +685,12 @@ export type MutationUpdateSubscriptionPlanArgs = {
 
 export type MutationDismissBannerArgs = {
   name: BannerName;
+};
+
+
+export type MutationUpdateUserNotificationsArgs = {
+  active: Scalars['Boolean'];
+  type: NotificationType;
 };
 
 export type MutationResult = {
@@ -941,6 +949,21 @@ export enum Nationality {
   Zw = 'ZW'
 }
 
+export type Notification = {
+   __typename?: 'Notification';
+  type: NotificationType;
+  active: Scalars['Boolean'];
+};
+
+export enum NotificationType {
+  Transactions = 'TRANSACTIONS',
+  Statements = 'STATEMENTS',
+  ProductInfo = 'PRODUCT_INFO',
+  Tax = 'TAX',
+  ReceiptScanning = 'RECEIPT_SCANNING',
+  All = 'ALL'
+}
+
 export type Overdraft = {
    __typename?: 'Overdraft';
   id: Scalars['String'];
@@ -1127,6 +1150,8 @@ export type Transaction = {
   valutaDate?: Maybe<Scalars['DateTime']>;
   e2eId?: Maybe<Scalars['String']>;
   mandateNumber?: Maybe<Scalars['String']>;
+  merchantCountryCode?: Maybe<Scalars['String']>;
+  merchantCategoryCode?: Maybe<Scalars['String']>;
   fees: Array<TransactionFee>;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
@@ -1523,6 +1548,8 @@ export type User = {
   identification: IdentificationDetails;
   /** User metadata. These fields are likely to get frequently updated or changed. */
   metadata: UserMetadata;
+  /** All push-notification types and their state */
+  notifications: Array<Notification>;
 };
 
 
@@ -1588,6 +1615,7 @@ export type UserTaxDetails = {
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
   taxRate?: Maybe<Scalars['Int']>;
   vatRate?: Maybe<Scalars['Int']>;
+  taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
 };
