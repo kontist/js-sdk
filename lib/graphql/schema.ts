@@ -12,7 +12,7 @@ export type Scalars = {
 
 /** The bank account of the current user */
 export type Account = {
-   __typename?: 'Account';
+  __typename?: 'Account';
   iban: Scalars['String'];
   cardHolderRepresentation?: Maybe<Scalars['String']>;
   balance: Scalars['Int'];
@@ -92,7 +92,7 @@ export enum AccountState {
 }
 
 export type AccountStats = {
-   __typename?: 'AccountStats';
+  __typename?: 'AccountStats';
   /** The amount that is currently available on the bank account */
   accountBalance: Scalars['Int'];
   /** The amount that can be spent after VAT and taxes calculation */
@@ -118,13 +118,13 @@ export type AccountStats = {
 };
 
 export type AvailableStatements = {
-   __typename?: 'AvailableStatements';
+  __typename?: 'AvailableStatements';
   year: Scalars['Int'];
   months: Array<Scalars['Int']>;
 };
 
 export type Banner = {
-   __typename?: 'Banner';
+  __typename?: 'Banner';
   name: BannerName;
   dismissedAt?: Maybe<Scalars['DateTime']>;
   isVisible: Scalars['Boolean'];
@@ -142,7 +142,7 @@ export enum BaseOperator {
 }
 
 export type BatchTransfer = {
-   __typename?: 'BatchTransfer';
+  __typename?: 'BatchTransfer';
   id: Scalars['String'];
   status: BatchTransferStatus;
   transfers: Array<SepaTransfer>;
@@ -157,7 +157,7 @@ export enum BatchTransferStatus {
 }
 
 export type Card = {
-   __typename?: 'Card';
+  __typename?: 'Card';
   id: Scalars['String'];
   status: CardStatus;
   type: CardType;
@@ -181,7 +181,7 @@ export type CardFilter = {
 };
 
 export type CardLimit = {
-   __typename?: 'CardLimit';
+  __typename?: 'CardLimit';
   maxAmountCents: Scalars['Float'];
   maxTransactions: Scalars['Float'];
 };
@@ -192,7 +192,7 @@ export type CardLimitInput = {
 };
 
 export type CardLimits = {
-   __typename?: 'CardLimits';
+  __typename?: 'CardLimits';
   daily: CardLimit;
   monthly: CardLimit;
 };
@@ -212,7 +212,7 @@ export enum CardMigrationStatus {
 }
 
 export type CardSettings = {
-   __typename?: 'CardSettings';
+  __typename?: 'CardSettings';
   contactlessEnabled: Scalars['Boolean'];
   cardPresentLimits?: Maybe<CardLimits>;
   cardNotPresentLimits?: Maybe<CardLimits>;
@@ -244,7 +244,7 @@ export enum CardType {
 }
 
 export type Client = {
-   __typename?: 'Client';
+  __typename?: 'Client';
   id: Scalars['ID'];
   /** The URL to redirect to after authentication */
   redirectUri?: Maybe<Scalars['String']>;
@@ -274,19 +274,19 @@ export enum CompanyType {
 }
 
 export type ConfirmationRequest = {
-   __typename?: 'ConfirmationRequest';
+  __typename?: 'ConfirmationRequest';
   confirmationId: Scalars['String'];
 };
 
 export type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
 
 export type ConfirmationStatus = {
-   __typename?: 'ConfirmationStatus';
+  __typename?: 'ConfirmationStatus';
   status: Scalars['String'];
 };
 
 export type ConfirmFraudResponse = {
-   __typename?: 'ConfirmFraudResponse';
+  __typename?: 'ConfirmFraudResponse';
   id: Scalars['String'];
   resolution: Scalars['String'];
 };
@@ -351,7 +351,7 @@ export type CreateTransferInput = {
 
 
 export type DirectDebitFee = {
-   __typename?: 'DirectDebitFee';
+  __typename?: 'DirectDebitFee';
   id: Scalars['Int'];
   type: TransactionFeeType;
   name: Scalars['String'];
@@ -371,7 +371,7 @@ export enum Gender {
 }
 
 export type GooglePayCardToken = {
-   __typename?: 'GooglePayCardToken';
+  __typename?: 'GooglePayCardToken';
   walletId: Scalars['String'];
   tokenRefId: Scalars['String'];
 };
@@ -384,12 +384,12 @@ export enum GrantType {
 }
 
 export type Icon = {
-   __typename?: 'Icon';
+  __typename?: 'Icon';
   uri: Scalars['String'];
 };
 
 export type IdentificationDetails = {
-   __typename?: 'IdentificationDetails';
+  __typename?: 'IdentificationDetails';
   /** The link to use for IDNow identification */
   link?: Maybe<Scalars['String']>;
   /** The user's IDNow identification status */
@@ -424,14 +424,14 @@ export enum InvoiceStatus {
 }
 
 export type Money = {
-   __typename?: 'Money';
+  __typename?: 'Money';
   amount: Scalars['Int'];
   fullAmount?: Maybe<Scalars['Int']>;
   discountPercentage?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
-   __typename?: 'Mutation';
+  __typename?: 'Mutation';
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
   /** Confirm a Standing Order cancellation */
@@ -694,7 +694,7 @@ export type MutationUpdateUserNotificationsArgs = {
 };
 
 export type MutationResult = {
-   __typename?: 'MutationResult';
+  __typename?: 'MutationResult';
   success: Scalars['Boolean'];
 };
 
@@ -950,7 +950,7 @@ export enum Nationality {
 }
 
 export type Notification = {
-   __typename?: 'Notification';
+  __typename?: 'Notification';
   type: NotificationType;
   active: Scalars['Boolean'];
 };
@@ -965,7 +965,7 @@ export enum NotificationType {
 }
 
 export type Overdraft = {
-   __typename?: 'Overdraft';
+  __typename?: 'Overdraft';
   id: Scalars['String'];
   /** Overdraft status */
   status: OverdraftApplicationStatus;
@@ -990,7 +990,7 @@ export enum OverdraftApplicationStatus {
 }
 
 export type PageInfo = {
-   __typename?: 'PageInfo';
+  __typename?: 'PageInfo';
   startCursor?: Maybe<Scalars['String']>;
   endCursor?: Maybe<Scalars['String']>;
   hasNextPage: Scalars['Boolean'];
@@ -1018,14 +1018,14 @@ export enum PurchaseType {
 }
 
 export type Query = {
-   __typename?: 'Query';
+  __typename?: 'Query';
   /** The current user information */
   viewer?: Maybe<User>;
   status: SystemStatus;
 };
 
 export type ReferralDetails = {
-   __typename?: 'ReferralDetails';
+  __typename?: 'ReferralDetails';
   code?: Maybe<Scalars['String']>;
   link?: Maybe<Scalars['String']>;
   /** Amount in euros granted to user and his referee */
@@ -1047,7 +1047,7 @@ export enum ScopeType {
 }
 
 export type SepaTransfer = {
-   __typename?: 'SepaTransfer';
+  __typename?: 'SepaTransfer';
   /** The status of the SEPA Transfer */
   status: SepaTransferStatus;
   /** The amount of the SEPA Transfer in cents */
@@ -1081,25 +1081,25 @@ export enum Status {
 }
 
 export type Subscription = {
-   __typename?: 'Subscription';
+  __typename?: 'Subscription';
   newTransaction: Transaction;
 };
 
 export type SubscriptionFeature = {
-   __typename?: 'SubscriptionFeature';
+  __typename?: 'SubscriptionFeature';
   title: Scalars['String'];
   icon?: Maybe<Icon>;
 };
 
 export type SubscriptionFeatureGroup = {
-   __typename?: 'SubscriptionFeatureGroup';
+  __typename?: 'SubscriptionFeatureGroup';
   title?: Maybe<Scalars['String']>;
   icon?: Maybe<Icon>;
   features: Array<SubscriptionFeature>;
 };
 
 export type SubscriptionPlan = {
-   __typename?: 'SubscriptionPlan';
+  __typename?: 'SubscriptionPlan';
   type: PurchaseType;
   subtitle?: Maybe<Scalars['String']>;
   fee: Money;
@@ -1111,7 +1111,7 @@ export type SubscriptionPlan = {
 };
 
 export type SystemStatus = {
-   __typename?: 'SystemStatus';
+  __typename?: 'SystemStatus';
   type?: Maybe<Status>;
   message?: Maybe<Scalars['String']>;
 };
@@ -1121,7 +1121,7 @@ export enum TaxPaymentFrequency {
 }
 
 export type TaxYearSetting = {
-   __typename?: 'TaxYearSetting';
+  __typename?: 'TaxYearSetting';
   /** Tax year the individual settings apply to */
   year: Scalars['Int'];
   /** Tax rate that should be applied in the corresponding year */
@@ -1140,7 +1140,7 @@ export type TaxYearSettingInput = {
 };
 
 export type Transaction = {
-   __typename?: 'Transaction';
+  __typename?: 'Transaction';
   id: Scalars['ID'];
   /** The amount of the transaction in cents */
   amount: Scalars['Int'];
@@ -1224,7 +1224,7 @@ export type TransactionCondition = {
 };
 
 export type TransactionFee = {
-   __typename?: 'TransactionFee';
+  __typename?: 'TransactionFee';
   type: TransactionFeeType;
   status: TransactionFeeStatus;
   unitAmount?: Maybe<Scalars['Int']>;
@@ -1320,19 +1320,19 @@ export enum TransactionProjectionType {
 }
 
 export type TransactionsConnection = {
-   __typename?: 'TransactionsConnection';
+  __typename?: 'TransactionsConnection';
   edges: Array<TransactionsConnectionEdge>;
   pageInfo: PageInfo;
 };
 
 export type TransactionsConnectionEdge = {
-   __typename?: 'TransactionsConnectionEdge';
+  __typename?: 'TransactionsConnectionEdge';
   node: Transaction;
   cursor: Scalars['String'];
 };
 
 export type TransactionSplit = {
-   __typename?: 'TransactionSplit';
+  __typename?: 'TransactionSplit';
   id: Scalars['Int'];
   amount: Scalars['Int'];
   category: TransactionCategory;
@@ -1340,7 +1340,7 @@ export type TransactionSplit = {
 };
 
 export type Transfer = {
-   __typename?: 'Transfer';
+  __typename?: 'Transfer';
   id: Scalars['String'];
   /** The name of the transfer recipient */
   recipient: Scalars['String'];
@@ -1369,13 +1369,13 @@ export type Transfer = {
 };
 
 export type TransfersConnection = {
-   __typename?: 'TransfersConnection';
+  __typename?: 'TransfersConnection';
   edges: Array<TransfersConnectionEdge>;
   pageInfo: PageInfo;
 };
 
 export type TransfersConnectionEdge = {
-   __typename?: 'TransfersConnectionEdge';
+  __typename?: 'TransfersConnectionEdge';
   node: Transfer;
   cursor: Scalars['String'];
 };
@@ -1400,7 +1400,7 @@ export enum TransferStatus {
 }
 
 export type TransferSuggestion = {
-   __typename?: 'TransferSuggestion';
+  __typename?: 'TransferSuggestion';
   iban: Scalars['String'];
   name: Scalars['String'];
 };
@@ -1428,7 +1428,7 @@ export type UpdateClientInput = {
 };
 
 export type UpdateSubscriptionPlanResult = {
-   __typename?: 'UpdateSubscriptionPlanResult';
+  __typename?: 'UpdateSubscriptionPlanResult';
   newPlan: Scalars['String'];
   previousPlans: Array<PurchaseType>;
   hasOrderedPhysicalCard: Scalars['Boolean'];
@@ -1466,14 +1466,12 @@ export type UpdateTransferInput = {
 };
 
 export type User = {
-   __typename?: 'User';
+  __typename?: 'User';
   email: Scalars['String'];
   /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
   /** @deprecated This field will be removed in an upcoming release */
   vatCutoffLine?: Maybe<Scalars['DateTime']>;
-  /** @deprecated This field will be removed in an upcoming release */
-  taxCutoffLine?: Maybe<Scalars['DateTime']>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatPaymentFrequency" */
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxPaymentFrequency" */
@@ -1568,14 +1566,14 @@ export type UserMetadataArgs = {
 };
 
 export type UserIntegration = {
-   __typename?: 'UserIntegration';
+  __typename?: 'UserIntegration';
   type: IntegrationType;
   hasAccount: Scalars['Boolean'];
   isConnected: Scalars['Boolean'];
 };
 
 export type UserMetadata = {
-   __typename?: 'UserMetadata';
+  __typename?: 'UserMetadata';
   currentTermsAccepted: Scalars['Boolean'];
   acceptedTermsVersion?: Maybe<Scalars['String']>;
   /** List of months user can request a bank statement for */
@@ -1598,7 +1596,7 @@ export enum UserOs {
 }
 
 export type UserSubscription = {
-   __typename?: 'UserSubscription';
+  __typename?: 'UserSubscription';
   /** The type of the plans a user has subscribed to */
   type: PurchaseType;
   /** The state of the subscription */
@@ -1606,7 +1604,7 @@ export type UserSubscription = {
 };
 
 export type UserTaxDetails = {
-   __typename?: 'UserTaxDetails';
+  __typename?: 'UserTaxDetails';
   adjustAdvancePayments: Scalars['Boolean'];
   lastTaxPaymentDate?: Maybe<Scalars['DateTime']>;
   lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
@@ -1621,7 +1619,7 @@ export type UserTaxDetails = {
 };
 
 export type WhitelistCardResponse = {
-   __typename?: 'WhitelistCardResponse';
+  __typename?: 'WhitelistCardResponse';
   id: Scalars['String'];
   resolution: Scalars['String'];
   whitelisted_until: Scalars['String'];
@@ -1634,7 +1632,7 @@ export enum WirecardCardStatus {
 }
 
 export type WirecardDetails = {
-   __typename?: 'WirecardDetails';
+  __typename?: 'WirecardDetails';
   cardStatus: WirecardCardStatus;
   directDebitMandateAccepted: Scalars['Boolean'];
   hasAccount: Scalars['Boolean'];
