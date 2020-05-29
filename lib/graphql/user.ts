@@ -27,7 +27,6 @@ const GET_USER = `query {
     publicId
     referralCode
     street
-    taxCutoffLine
     taxPaymentFrequency
     taxRate
     untrustedPhoneNumber
