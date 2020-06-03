@@ -4,6 +4,7 @@ import {
   AccountTransactionsArgs,
   BaseOperator,
   MutationCategorizeTransactionArgs,
+  MutationUpdateTransactionArgs,
   MutationCreateTransactionSplitsArgs,
   MutationDeleteTransactionSplitsArgs,
   MutationUpdateTransactionSplitsArgs,
@@ -51,6 +52,7 @@ const TRANSACTION_FIELDS = `
   paymentMethod
   category
   userSelectedBookingDate
+  personalNote
   purpose
   documentNumber
   documentPreviewUrl
@@ -101,6 +103,22 @@ export const CATEGORIZE_TRANSACTION = `mutation categorizeTransaction(
     id: $id
     category: $category
     userSelectedBookingDate: $userSelectedBookingDate
+  ) {
+    ${TRANSACTION_FIELDS}
+  }
+}`;
+
+export const UPDATE_TRANSACTION = `mutation updateTransaction(
+  $id: String!
+  $category: TransactionCategory,
+  $userSelectedBookingDate: DateTime,
+  $personalNote: String,
+) {
+  updateTransaction(
+    id: $id
+    category: $category
+    userSelectedBookingDate: $userSelectedBookingDate
+    personalNote: $personalNote
   ) {
     ${TRANSACTION_FIELDS}
   }
@@ -202,6 +220,17 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async categorize(args: MutationCategorizeTransactionArgs) {
     const result = await this.client.rawQuery(CATEGORIZE_TRANSACTION, args);
     return result.categorizeTransaction;
+  }
+
+  /**
+   * Updates a transaction
+   *
+   * @param args   query parameters including category, userSelectedBookingDate and personalNote
+   * @returns      the transaction with updated categorization data and updated personalNote
+   */
+  public async updateMeta(args: MutationUpdateTransactionArgs) {
+    const result = await this.client.rawQuery(UPDATE_TRANSACTION, args);
+    return result.updateTransaction;
   }
 
   /**
