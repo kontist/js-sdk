@@ -495,7 +495,11 @@ export type Mutation = {
   reorderCard: Card;
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
-  /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
+  /**
+   * Categorize a transaction with an optional custom booking date for VAT or Tax categories
+   * @deprecated This method will be removed in an upcoming release,
+   *             we should now use 'updateTransaction' method instead.
+   */
   categorizeTransaction: Transaction;
   /** Update a transaction with a category (with an optional custom booking date for VAT or Tax categories) and/or a personal note */
   updateTransaction: Transaction;
@@ -667,7 +671,10 @@ export type MutationSetCardHolderRepresentationArgs = {
   cardHolderRepresentation: Scalars['String'];
 };
 
-
+/**
+ * @deprecated This mutation will be removed in an upcoming release,
+ *             we should now use 'MutationUpdateTransactionArgs' instead.
+ */
 export type MutationCategorizeTransactionArgs = {
   id: Scalars['String'];
   category?: Maybe<TransactionCategory>;
