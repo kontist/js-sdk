@@ -117,6 +117,12 @@ export type AccountStats = {
   taxMissing: Scalars['Int'];
 };
 
+export type AttributionData = {
+  /** Platform used for signup */
+  platform?: Maybe<Platform>;
+  trackingId?: Maybe<Scalars['String']>;
+};
+
 export type AvailableStatements = {
   __typename?: 'AvailableStatements';
   year: Scalars['Int'];
@@ -315,6 +321,8 @@ export type CreateSepaTransferInput = {
   amount: Scalars['Int'];
   /** The purpose of the SEPA Transfer - 140 max characters */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the SEPA Transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the SEPA Transfer */
   e2eId?: Maybe<Scalars['String']>;
 };
@@ -339,6 +347,8 @@ export type CreateTransferInput = {
   lastExecutionDate?: Maybe<Scalars['DateTime']>;
   /** The purpose of the transfer - 140 max characters */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
@@ -349,6 +359,14 @@ export type CreateTransferInput = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type CreateUserInput = {
+  /** User's email. This will be used as their username. */
+  email: Scalars['String'];
+  password: Scalars['String'];
+  language?: Maybe<Scalars['String']>;
+  attribution?: Maybe<AttributionData>;
+  marketingConsentAccepted?: Maybe<Scalars['Boolean']>;
+};
 
 export type DirectDebitFee = {
   __typename?: 'DirectDebitFee';
@@ -479,6 +497,8 @@ export type Mutation = {
   setCardHolderRepresentation: Scalars['String'];
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
   categorizeTransaction: Transaction;
+  /** Update a transaction with a category (with an optional custom booking date for VAT or Tax categories) and/or a personal note */
+  updateTransaction: Transaction;
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
   /** Activate Overdraft Application  - only available for Kontist Application */
@@ -499,6 +519,12 @@ export type Mutation = {
   /** Update user's subscription plan */
   updateSubscriptionPlan: UpdateSubscriptionPlanResult;
   dismissBanner: MutationResult;
+  /** Connect user to a bookkeeping partner */
+  connectIntegration: MutationResult;
+  /** Update user signup information */
+  updateUserSignupInformation: MutationResult;
+  /** Create a new user */
+  createUser: PublicMutationResult;
   /** Update the push-notifications a user should receive */
   updateUserNotifications: Array<Notification>;
 };
@@ -648,6 +674,13 @@ export type MutationCategorizeTransactionArgs = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type MutationUpdateTransactionArgs = {
+  id: Scalars['String'];
+  category?: Maybe<TransactionCategory>;
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  personalNote?: Maybe<Scalars['String']>;
+};
+
 
 export type MutationUpdateOverdraftArgs = {
   offeredScreenShown?: Maybe<Scalars['Boolean']>;
@@ -685,6 +718,22 @@ export type MutationUpdateSubscriptionPlanArgs = {
 
 export type MutationDismissBannerArgs = {
   name: BannerName;
+};
+
+
+export type MutationConnectIntegrationArgs = {
+  type: IntegrationType;
+  authorizationData: Scalars['String'];
+};
+
+
+export type MutationUpdateUserSignupInformationArgs = {
+  payload: UserUpdateInput;
+};
+
+
+export type MutationCreateUserArgs = {
+  payload: CreateUserInput;
 };
 
 
@@ -1004,6 +1053,17 @@ export enum PaymentFrequency {
   None = 'NONE'
 }
 
+export enum Platform {
+  Ios = 'IOS',
+  Android = 'ANDROID',
+  Web = 'WEB'
+}
+
+export type PublicMutationResult = {
+  __typename?: 'PublicMutationResult';
+  success: Scalars['Boolean'];
+};
+
 export enum PurchaseState {
   Processed = 'PROCESSED',
   Pending = 'PENDING'
@@ -1028,7 +1088,7 @@ export type ReferralDetails = {
   __typename?: 'ReferralDetails';
   code?: Maybe<Scalars['String']>;
   link?: Maybe<Scalars['String']>;
-  /** Amount in euros granted to user and his referee */
+  /** Amount in euros granted to user and their referee */
   bonusAmount: Scalars['Int'];
 };
 
@@ -1163,6 +1223,7 @@ export type Transaction = {
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  personalNote?: Maybe<Scalars['String']>;
   purpose?: Maybe<Scalars['String']>;
   documentNumber?: Maybe<Scalars['String']>;
   documentPreviewUrl?: Maybe<Scalars['String']>;
@@ -1356,6 +1417,8 @@ export type Transfer = {
   lastExecutionDate?: Maybe<Scalars['DateTime']>;
   /** The purpose of the transfer - 140 max characters */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
@@ -1455,6 +1518,8 @@ export type UpdateTransferInput = {
   lastExecutionDate?: Maybe<Scalars['DateTime']>;
   /** The purpose of the Standing Order - 140 max characters, if not specified with the update, it will be set to null */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the Standing Order, if not specified with the update, it will be set to null */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
@@ -1562,7 +1627,7 @@ export type UserAvailablePlansArgs = {
 
 
 export type UserMetadataArgs = {
-  os?: Maybe<UserOs>;
+  platform?: Maybe<Platform>;
 };
 
 export type UserIntegration = {
@@ -1590,11 +1655,6 @@ export type UserMetadata = {
   signupCompleted: Scalars['Boolean'];
 };
 
-export enum UserOs {
-  Ios = 'IOS',
-  Android = 'ANDROID'
-}
-
 export type UserSubscription = {
   __typename?: 'UserSubscription';
   /** The type of the plans a user has subscribed to */
@@ -1609,13 +1669,52 @@ export type UserTaxDetails = {
   lastTaxPaymentDate?: Maybe<Scalars['DateTime']>;
   lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
-  /** @deprecated This field will be removed in an upcoming release, do not rely on it for any new code */
+  /** @deprecated This field will be removed in an upcoming release. Do not rely on it for any new features */
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
   taxRate?: Maybe<Scalars['Int']>;
   vatRate?: Maybe<Scalars['Int']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
+};
+
+export type UserUpdateInput = {
+  birthDate?: Maybe<Scalars['DateTime']>;
+  city?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  country?: Maybe<Nationality>;
+  nationality?: Maybe<Nationality>;
+  postCode?: Maybe<Scalars['String']>;
+  street?: Maybe<Scalars['String']>;
+  birthPlace?: Maybe<Scalars['String']>;
+  /** Sets a mobile number for the user to be verified later */
+  untrustedPhoneNumber?: Maybe<Scalars['String']>;
+  vatPaymentFrequency?: Maybe<PaymentFrequency>;
+  vatNumber?: Maybe<Scalars['String']>;
+  vatRate?: Maybe<Scalars['Int']>;
+  language?: Maybe<Scalars['String']>;
+  /** Indicates whether the user pays taxes in the US */
+  isUSPerson?: Maybe<Scalars['Boolean']>;
+  /** The version of terms user has accepted */
+  acceptedTermsVersion?: Maybe<Scalars['String']>;
+  businessPurpose?: Maybe<Scalars['String']>;
+  economicSector?: Maybe<Scalars['String']>;
+  otherEconomicSector?: Maybe<Scalars['String']>;
+  businessTradingName?: Maybe<Scalars['String']>;
+  adjustAdvancePayments?: Maybe<Scalars['Boolean']>;
+  companyType?: Maybe<CompanyType>;
+  /** Indicates user has accepted Kontist direct debit mandate */
+  directDebitMandateAccepted?: Maybe<Scalars['Boolean']>;
+  /** Indicates user has confirmed he is opening their account in their name, for the use of their business */
+  ownEconomicInterestConfirmed?: Maybe<Scalars['Boolean']>;
+  /** Indicates user has confirmed he is acting as a business and not a consumer */
+  nonConsumerConfirmed?: Maybe<Scalars['Boolean']>;
+  /** Indicates user has accepted to receive Kontist marketing communication */
+  marketingConsentAccepted?: Maybe<Scalars['Boolean']>;
+  /** Indicates user has accepted Wirecard direct debit mandate */
+  wirecardDirectDebitMandateAccepted?: Maybe<Scalars['Boolean']>;
+  wirecardCardType?: Maybe<Scalars['String']>;
 };
 
 export type WhitelistCardResponse = {
