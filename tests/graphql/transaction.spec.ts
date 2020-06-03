@@ -173,7 +173,7 @@ describe("Transaction", () => {
     });
   });
 
-  describe("#categorize", () => {
+  describe("#update", () => {
     let client: Client;
     let stub: any;
 
@@ -191,16 +191,18 @@ describe("Transaction", () => {
       const transactionData = createTransaction({
         category: TransactionCategory.VatPayment,
         userSelectedBookingDate: new Date().toISOString(),
+        personalNote: "Business lunch"
       });
       stub.resolves({
-        categorizeTransaction: transactionData,
+        updateTransaction: transactionData,
       } as any);
 
       // act
-      const result = await client.models.transaction.categorize({
+      const result = await client.models.transaction.updateMeta({
         id: transactionData.id,
         category: TransactionCategory.VatPayment,
         userSelectedBookingDate: new Date().toISOString(),
+        personalNote: transactionData.personalNote
       });
 
       // assert
