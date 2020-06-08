@@ -1150,6 +1150,7 @@ export type Transaction = {
   valutaDate?: Maybe<Scalars['DateTime']>;
   e2eId?: Maybe<Scalars['String']>;
   mandateNumber?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
   merchantCountryCode?: Maybe<Scalars['String']>;
   merchantCategoryCode?: Maybe<Scalars['String']>;
   fees: Array<TransactionFee>;
