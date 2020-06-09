@@ -228,7 +228,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args   query parameters including category, userSelectedBookingDate and personalNote
    * @returns      the transaction with updated categorization data and updated personalNote
    */
-  public async updateMeta(args: MutationUpdateTransactionArgs) {
+  public async update(args: MutationUpdateTransactionArgs) {
     const result = await this.client.rawQuery(UPDATE_TRANSACTION, args);
     return result.updateTransaction;
   }

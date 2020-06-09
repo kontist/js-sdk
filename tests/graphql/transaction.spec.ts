@@ -198,7 +198,7 @@ describe("Transaction", () => {
       } as any);
 
       // act
-      const result = await client.models.transaction.updateMeta({
+      const result = await client.models.transaction.update({
         id: transactionData.id,
         category: TransactionCategory.VatPayment,
         userSelectedBookingDate: new Date().toISOString(),
