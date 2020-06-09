@@ -173,6 +173,42 @@ describe("Transaction", () => {
     });
   });
 
+  describe("#categorize", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery and return updated transaction details", async () => {
+      // arrange
+      const transactionData = createTransaction({
+        category: TransactionCategory.VatPayment,
+        userSelectedBookingDate: new Date().toISOString(),
+      });
+      stub.resolves({
+        categorizeTransaction: transactionData,
+      } as any);
+
+      // act
+      const result = await client.models.transaction.categorize({
+        id: transactionData.id,
+        category: TransactionCategory.VatPayment,
+        userSelectedBookingDate: new Date().toISOString(),
+      });
+
+      // assert
+      expect(stub.callCount).to.eq(1);
+      expect(result).to.deep.eq(transactionData);
+    });
+  });
+
   describe("#update", () => {
     let client: Client;
     let stub: any;
