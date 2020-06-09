@@ -25,7 +25,7 @@ const GET_ACCOUNT_STATS = `query {
         vatTotal
         vatMissing
         taxCurrentYearAmount
-        taxPastYearAmount
+        taxPastYearsAmount
         taxTotal
         taxMissing
       }

@@ -58,6 +58,7 @@ const TRANSACTION_FIELDS = `
   documentPreviewUrl
   documentDownloadUrl
   documentType
+  createdAt
   splits {
     id
     amount
