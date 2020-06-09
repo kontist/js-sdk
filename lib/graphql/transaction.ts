@@ -213,6 +213,8 @@ export class Transaction extends IterableModel<TransactionModel> {
 
   /**
    * Categorizes a transaction
+   * @deprecated   This method will be removed in an upcoming release.
+   *               Use `transaction.update` method instead.
    *
    * @param args   query parameters including category and userSelectedBookingDate
    * @returns      the transaction with updated categorization data
