@@ -104,6 +104,8 @@ export const CATEGORIZE_TRANSACTION = `mutation categorizeTransaction(
     userSelectedBookingDate: $userSelectedBookingDate
   ) {
     ${TRANSACTION_FIELDS}
+    predictedCategory
+    predictedUserSelectedBookingDate
   }
 }`;
 

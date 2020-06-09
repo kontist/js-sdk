@@ -187,25 +187,38 @@ describe("Transaction", () => {
     });
 
     it("should call rawQuery and return updated transaction details", async () => {
+      const initialDate = new Date(0).toISOString();
+      const categorizationDate = new Date().toISOString();
+      const newCategory = TransactionCategory.TaxPayment;
       // arrange
       const transactionData = createTransaction({
         category: TransactionCategory.VatPayment,
-        userSelectedBookingDate: new Date().toISOString(),
+        userSelectedBookingDate: initialDate,
+        predictedCategory: TransactionCategory.VatPayment,
+        predictedUserSelectedBookingDate: initialDate,
       });
       stub.resolves({
-        categorizeTransaction: transactionData,
+        categorizeTransaction: {
+          ...transactionData,
+          category: newCategory,
+          userSelectedBookingDate: categorizationDate,
+        },
       } as any);
 
       // act
       const result = await client.models.transaction.categorize({
         id: transactionData.id,
-        category: TransactionCategory.VatPayment,
-        userSelectedBookingDate: new Date().toISOString(),
+        category: newCategory,
+        userSelectedBookingDate: categorizationDate,
       });
 
       // assert
       expect(stub.callCount).to.eq(1);
-      expect(result).to.deep.eq(transactionData);
+      expect(result).to.deep.eq({
+        ...transactionData,
+        category: newCategory,
+        userSelectedBookingDate: categorizationDate,
+      });
     });
   });
 
