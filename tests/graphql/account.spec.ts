@@ -14,7 +14,7 @@ const accountStatsData = {
   vatTotal: 188279,
   vatMissing: 0,
   taxCurrentYearAmount: 0,
-  taxPastYearAmount: null,
+  taxPastYearsAmount: null,
   taxTotal: 0,
   taxMissing: 0,
 }
