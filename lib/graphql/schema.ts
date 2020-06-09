@@ -1213,6 +1213,9 @@ export type Transaction = {
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  predictedCategory?: Maybe<TransactionCategory>;
+  /** Date predicted for tax/vat payment/refund predicted category */
+  predictedUserSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   purpose?: Maybe<Scalars['String']>;
   documentNumber?: Maybe<Scalars['String']>;
   documentPreviewUrl?: Maybe<Scalars['String']>;
@@ -1416,6 +1419,10 @@ export type Transfer = {
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  /** Predicted category for the SEPA Transfer */
+  predictedCategory?: Maybe<TransactionCategory>;
+  /** Date predicted for tax/vat payment/refund predicted category */
+  predictedUserSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type TransfersConnection = {
