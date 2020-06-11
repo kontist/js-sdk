@@ -139,7 +139,8 @@ export type Banner = {
 export enum BannerName {
   Overdraft = 'OVERDRAFT',
   Bookkeeping = 'BOOKKEEPING',
-  FriendReferral = 'FRIEND_REFERRAL'
+  FriendReferral = 'FRIEND_REFERRAL',
+  PrimaryWebapp = 'PRIMARY_WEBAPP'
 }
 
 export enum BaseOperator {
@@ -497,12 +498,12 @@ export type Mutation = {
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
   /**
-   * Categorize a transaction with an optional custom booking date for VAT or Tax categories
-   * @deprecated This method will be removed in an upcoming release,
-   *             we should now use 'updateTransaction' method instead.
+   * DEPRECATED use `updateTransaction()` instead - Categorize a transaction with
+   * an optional custom booking date for VAT or Tax categories
+   * @deprecated This mutation will be removed in an upcoming release, please use `updateTransaction` mutation instead
    */
   categorizeTransaction: Transaction;
-  /** Update a transaction with a category (with an optional custom booking date for VAT or Tax categories) and/or a personal note */
+  /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
@@ -672,15 +673,13 @@ export type MutationSetCardHolderRepresentationArgs = {
   cardHolderRepresentation: Scalars['String'];
 };
 
-/**
- * @deprecated This mutation will be removed in an upcoming release,
- *             we should now use 'MutationUpdateTransactionArgs' instead.
- */
+
 export type MutationCategorizeTransactionArgs = {
   id: Scalars['String'];
   category?: Maybe<TransactionCategory>;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
+
 
 export type MutationUpdateTransactionArgs = {
   id: Scalars['String'];
@@ -1234,6 +1233,9 @@ export type Transaction = {
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   personalNote?: Maybe<Scalars['String']>;
+  predictedCategory?: Maybe<TransactionCategory>;
+  /** Date predicted for tax/vat payment/refund predicted category */
+  predictedUserSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   purpose?: Maybe<Scalars['String']>;
   documentNumber?: Maybe<Scalars['String']>;
   documentPreviewUrl?: Maybe<Scalars['String']>;
@@ -1605,7 +1607,7 @@ export type User = {
   mainAccount?: Maybe<Account>;
   /** The plans a user has subscribed to */
   subscriptions: Array<UserSubscription>;
-  /** The state of banners in Kontist App for the user */
+  /** The state of banners in mobile or web app for the user */
   banners?: Maybe<Array<Banner>>;
   /** Bookkeeping partners information for user */
   integrations: Array<UserIntegration>;
@@ -1628,6 +1630,11 @@ export type User = {
 
 export type UserClientArgs = {
   id: Scalars['String'];
+};
+
+
+export type UserBannersArgs = {
+  isWebapp?: Maybe<Scalars['Boolean']>;
 };
 
 
