@@ -27,6 +27,7 @@ const TRANSFER_FIELDS = `
   nextOccurrence
   category
   userSelectedBookingDate
+  personalNote
 `;
 
 const CREATE_TRANSFER = `mutation createTransfer($transfer: CreateTransferInput!) {

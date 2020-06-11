@@ -261,11 +261,13 @@ describe("Transfer", () => {
   describe("update - SEPA Transfer", () => {
     const category = TransactionCategory.TaxPayment;
     const userSelectedBookingDate = new Date().toISOString();
+    const personalNote = "business travel"
     const updatePayload = {
       id: "some-id",
       type: TransferType.SepaTransfer,
       category,
-      userSelectedBookingDate
+      userSelectedBookingDate,
+      personalNote,
     };
 
     before(async () => {
@@ -273,7 +275,8 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         updateTransfer: {
           category,
-          userSelectedBookingDate
+          userSelectedBookingDate,
+          personalNote,
         }
       });
       result = await transferInstance.update(updatePayload);
@@ -289,7 +292,8 @@ describe("Transfer", () => {
     it("should return updateTransfer result", () => {
       expect(result).to.eql({
         category,
-        userSelectedBookingDate
+        userSelectedBookingDate,
+        personalNote
       });
     });
   });
@@ -297,11 +301,13 @@ describe("Transfer", () => {
   describe("update - Timed Order", () => {
     const category = TransactionCategory.TaxPayment;
     const userSelectedBookingDate = new Date().toISOString();
+    const personalNote = "best French restaurant in Berlin"
     const updatePayload = {
       id: "some-id",
       type: TransferType.TimedOrder,
       category,
-      userSelectedBookingDate
+      userSelectedBookingDate,
+      personalNote,
     };
 
     before(async () => {
@@ -309,7 +315,8 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         updateTransfer: {
           category,
-          userSelectedBookingDate
+          userSelectedBookingDate,
+          personalNote
         }
       });
       result = await transferInstance.update(updatePayload);
@@ -325,7 +332,8 @@ describe("Transfer", () => {
     it("should return updateTransfer result", () => {
       expect(result).to.eql({
         category,
-        userSelectedBookingDate
+        userSelectedBookingDate,
+        personalNote
       });
     });
   });

@@ -209,6 +209,44 @@ describe("Transaction", () => {
     });
   });
 
+  describe("#update", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery and return updated transaction details", async () => {
+      // arrange
+      const transactionData = createTransaction({
+        category: TransactionCategory.VatPayment,
+        userSelectedBookingDate: new Date().toISOString(),
+        personalNote: "Business lunch"
+      });
+      stub.resolves({
+        updateTransaction: transactionData,
+      } as any);
+
+      // act
+      const result = await client.models.transaction.update({
+        id: transactionData.id,
+        category: TransactionCategory.VatPayment,
+        userSelectedBookingDate: new Date().toISOString(),
+        personalNote: transactionData.personalNote
+      });
+
+      // assert
+      expect(stub.callCount).to.eq(1);
+      expect(result).to.deep.eq(transactionData);
+    });
+  });
+
   describe("#createSplit", () => {
     let client: Client;
     let stub: any;

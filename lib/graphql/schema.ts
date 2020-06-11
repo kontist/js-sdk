@@ -321,6 +321,8 @@ export type CreateSepaTransferInput = {
   amount: Scalars['Int'];
   /** The purpose of the SEPA Transfer - 140 max characters */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the SEPA Transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the SEPA Transfer */
   e2eId?: Maybe<Scalars['String']>;
 };
@@ -345,6 +347,8 @@ export type CreateTransferInput = {
   lastExecutionDate?: Maybe<Scalars['DateTime']>;
   /** The purpose of the transfer - 140 max characters */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
@@ -492,8 +496,14 @@ export type Mutation = {
   reorderCard: Card;
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
-  /** Categorize a transaction with an optional custom booking date for VAT or Tax categories */
+  /**
+   * Categorize a transaction with an optional custom booking date for VAT or Tax categories
+   * @deprecated This method will be removed in an upcoming release,
+   *             we should now use 'updateTransaction' method instead.
+   */
   categorizeTransaction: Transaction;
+  /** Update a transaction with a category (with an optional custom booking date for VAT or Tax categories) and/or a personal note */
+  updateTransaction: Transaction;
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
   /** Activate Overdraft Application  - only available for Kontist Application */
@@ -662,11 +672,21 @@ export type MutationSetCardHolderRepresentationArgs = {
   cardHolderRepresentation: Scalars['String'];
 };
 
-
+/**
+ * @deprecated This mutation will be removed in an upcoming release,
+ *             we should now use 'MutationUpdateTransactionArgs' instead.
+ */
 export type MutationCategorizeTransactionArgs = {
   id: Scalars['String'];
   category?: Maybe<TransactionCategory>;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type MutationUpdateTransactionArgs = {
+  id: Scalars['String'];
+  category?: Maybe<TransactionCategory>;
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  personalNote?: Maybe<Scalars['String']>;
 };
 
 
@@ -1213,6 +1233,7 @@ export type Transaction = {
   category?: Maybe<TransactionCategory>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  personalNote?: Maybe<Scalars['String']>;
   purpose?: Maybe<Scalars['String']>;
   documentNumber?: Maybe<Scalars['String']>;
   documentPreviewUrl?: Maybe<Scalars['String']>;
@@ -1406,6 +1427,8 @@ export type Transfer = {
   lastExecutionDate?: Maybe<Scalars['DateTime']>;
   /** The purpose of the transfer - 140 max characters */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the transfer */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
@@ -1505,6 +1528,8 @@ export type UpdateTransferInput = {
   lastExecutionDate?: Maybe<Scalars['DateTime']>;
   /** The purpose of the Standing Order - 140 max characters, if not specified with the update, it will be set to null */
   purpose?: Maybe<Scalars['String']>;
+  /** The personal note of the transfer - 140 max characters */
+  personalNote?: Maybe<Scalars['String']>;
   /** The end to end ID of the Standing Order, if not specified with the update, it will be set to null */
   e2eId?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
