@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.1] - 2020-06-11
+
+### Added
+- Added a new `personalNote` field on transactions and transfers - this field allows users to annotate their transactions with text that will only be available to them
+- Added a new `update` method on `transaction` model, which allows to update category, userSelectedBookingDate and personalNote for a given transaction
+
+### Changed
+- `categorize` method of `transaction` model is now deprecated in favor of `update`
+
+## [0.28.7] - 2020-06-09
+
+### Added
+- Added `createdAt` field to transactions
+
+### Changed
+- *Breaking*: renamed `taxPastYearAmount` field to `taxPastYearsAmount` for `getStats` method of `account` model
+
+## [0.28.6] - 2020-05-29
+
+### Changed
+- *Breaking*: removed `taxCutoffLine` field from `user` model `get` method
+
 ## [0.28.3] - 2020-05-06
 
 ### Changed
