@@ -1602,6 +1602,8 @@ export type User = {
   /** The current state of user's Kontist account based on his subscription plan */
   accountState?: Maybe<AccountState>;
   businessTradingName?: Maybe<Scalars['String']>;
+  /** Coupon code assigned to the user that can be redeemed during subscription update */
+  couponCodeOffer?: Maybe<Scalars['String']>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
