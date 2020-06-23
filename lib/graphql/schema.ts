@@ -380,6 +380,13 @@ export type DirectDebitFee = {
   invoiceStatus: InvoiceStatus;
 };
 
+export type Discount = {
+  __typename?: 'Discount';
+  amount: Scalars['Float'];
+  subtitle?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
 export enum DocumentType {
   Voucher = 'VOUCHER',
   Invoice = 'INVOICE'
@@ -1629,6 +1636,8 @@ export type User = {
   metadata: UserMetadata;
   /** All push-notification types and their state */
   notifications: Array<Notification>;
+  /** Premium subscription discount for user */
+  premiumSubscriptionDiscount: Discount;
 };
 
 
