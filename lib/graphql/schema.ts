@@ -1674,6 +1674,7 @@ export type UserMetadata = {
   marketingConsentAccepted: Scalars['Boolean'];
   phoneNumberVerificationRequired: Scalars['Boolean'];
   signupCompleted: Scalars['Boolean'];
+  categorizationScreenShown?: Maybe<Scalars['Boolean']>;
 };
 
 export type UserSubscription = {
@@ -1736,6 +1737,7 @@ export type UserUpdateInput = {
   /** Indicates user has accepted Wirecard direct debit mandate */
   wirecardDirectDebitMandateAccepted?: Maybe<Scalars['Boolean']>;
   wirecardCardType?: Maybe<Scalars['String']>;
+  categorizationScreenShown?: Maybe<Scalars['Boolean']>;
 };
 
 export type WhitelistCardResponse = {
