@@ -470,7 +470,6 @@ describe("Transaction", () => {
         createTransactionAsset: expectedResult,
       } as any);
 
-      // act: update transaction with prepared split data
       const result = await client.models.transaction.createTransactionAsset({
         transactionId: transaction.id,
         name: "test",
@@ -511,7 +510,6 @@ describe("Transaction", () => {
         finaliseTransactionAssetUpload: asset,
       } as any);
 
-      // act: update transaction with prepared split data
       const result = await client.models.transaction.finaliseTransactionAssetUpload({
         assetId: asset.id
       });
@@ -545,7 +543,6 @@ describe("Transaction", () => {
         deleteTransactionAsset: { success: true },
       } as any);
 
-      // act: update transaction with prepared split data
       const result = await client.models.transaction.deleteTransactionAsset({ assetId });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
