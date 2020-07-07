@@ -6,7 +6,11 @@ import {
   NEW_TRANSACTION_SUBSCRIPTION,
   CREATE_SPLIT_TRANSACTION,
   DELETE_SPLIT_TRANSACTION,
-  UPDATE_SPLIT_TRANSACTION
+  UPDATE_SPLIT_TRANSACTION,
+
+  CREATE_TRANSACTION_ASSET,
+  FINALISE_TRANSACTION_ASSET,
+  DELETE_TRANSACTION_ASSET
 } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
@@ -433,6 +437,122 @@ describe("Transaction", () => {
       expect(stub.args[0][0]).to.eq(UPDATE_SPLIT_TRANSACTION);
       expect(stub.args[0][1]).to.deep.eq({transactionId: transactionDataBefore.id, splits: splitDataAfter});
       expect(result).to.deep.eq(transactionDataAfter);
+    });
+  });
+
+  describe("#createTransactionAsset", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return upload parameters", async () => {
+      const transaction = createTransaction({
+        amount: -1000,
+        category: TransactionCategory.TaxPayment,
+        userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+      });
+
+      const expectedResult = {
+        assetId: "000000000000-0000-0000-0000-00000000",
+        url: "https://httpbin.org/post",
+        formData: [{ key: "key", value: "value" }],
+      };
+
+      stub.resolves({
+        createTransactionAsset: expectedResult,
+      } as any);
+
+      // act: update transaction with prepared split data
+      const result = await client.models.transaction.createTransactionAsset({
+        transactionId: transaction.id,
+        name: "test",
+        filetype: "jpg",
+      });
+
+      // assert: check for valid rawQuery number of calls and proper arguments + expected result
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(CREATE_TRANSACTION_ASSET);
+      expect(stub.args[0][1]).to.deep.eq({ transactionId: transaction.id, name: "test", filetype: "jpg" });
+      expect(result).to.deep.eq(expectedResult);
+    });
+  });
+
+  describe("#finaliseTransactionAssetUpload", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return the asset", async () => {
+      const asset = {
+        id: "000000000000-0000-0000-0000-00000000",
+        name: "test",
+        filetype: "jpg",
+        thumbnail: "...",
+        fullsize: "...",
+      };
+
+      stub.resolves({
+        finaliseTransactionAssetUpload: asset,
+      } as any);
+
+      // act: update transaction with prepared split data
+      const result = await client.models.transaction.finaliseTransactionAssetUpload({
+        assetId: asset.id
+      });
+
+      // assert: check for valid rawQuery number of calls and proper arguments + expected result
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(FINALISE_TRANSACTION_ASSET,
+        DELETE_TRANSACTION_ASSET);
+      expect(stub.args[0][1]).to.deep.eq({ assetId: asset.id });
+      expect(result).to.deep.eq(asset);
+    });
+  });
+
+  describe("#deleteTransactionAsset", () => {
+    let client: Client;
+    let stub: any;
+
+    before(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    after(() => {
+      stub.restore();
+    });
+
+    it("should call rawQuery once using proper arguments and return a MutationResult", async () => {
+      const assetId = "000000000000-0000-0000-0000-00000000";
+
+      stub.resolves({
+        deleteTransactionAsset: { success: true },
+      } as any);
+
+      // act: update transaction with prepared split data
+      const result = await client.models.transaction.deleteTransactionAsset({ assetId });
+
+      // assert: check for valid rawQuery number of calls and proper arguments + expected result
+      expect(stub.callCount).to.eq(1);
+      expect(stub.args[0][0]).to.eq(DELETE_TRANSACTION_ASSET);
+      expect(stub.args[0][1]).to.deep.eq({ assetId });
+      expect(result).to.deep.eq({ success: true });
     });
   });
 

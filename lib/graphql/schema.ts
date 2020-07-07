@@ -527,6 +527,12 @@ export type Mutation = {
   updateTransactionSplits: Transaction;
   /** Delete transaction splits */
   deleteTransactionSplits: Transaction;
+  /** Create transaction asset */
+  createTransactionAsset: CreateTransactionAssetMutationResult;
+  /** Create transaction asset */
+  finaliseTransactionAssetUpload: TransactionAsset;
+  /** Create transaction asset */
+  deleteTransactionAsset: MutationResult;
   /** Subscribe user to a plan */
   subscribeToPlan: UserSubscription;
   /** Update user's subscription plan */
@@ -718,6 +724,25 @@ export type MutationDeleteTransactionSplitsArgs = {
   transactionId: Scalars['ID'];
 };
 
+export type MutationCreateTransactionAssetArgs = {
+  transactionId: Scalars['ID'];
+  name: Scalars['String'];
+  filetype: Scalars['String'];
+};
+
+export type CreateTransactionAssetMutationResult = {
+  assetId: Scalars['ID'];
+  url: Scalars['String'];
+  formData: { key: Scalars['String'], value: Scalars['String'] }[];
+};
+
+export type MutationFinaliseTransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
+
+export type MutationDeleteTransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
 
 export type MutationSubscribeToPlanArgs = {
   couponCode?: Maybe<Scalars['String']>;
@@ -1251,6 +1276,16 @@ export type Transaction = {
   documentType?: Maybe<DocumentType>;
   foreignCurrency?: Maybe<Scalars['String']>;
   originalAmount?: Maybe<Scalars['Int']>;
+  assets: Array<TransactionAsset>;
+};
+
+export type TransactionAsset = {
+  __typename?: 'TransactionAsset';
+  id: Scalars['ID'];
+  name: Maybe<Scalars['String']>;
+  filetype: Maybe<Scalars['String']>;
+  thumbnail: Maybe<Scalars['String']>;
+  fullsize: Maybe<Scalars['String']>;
 };
 
 export enum TransactionCategory {
