@@ -33,6 +33,7 @@ export const createTransaction = (
     paymentMethod: "card",
     type: TransactionProjectionType.Atm,
     splits: [],
+    assets: [],
     createdAt: new Date(0).toISOString(),
     ...override,
   };

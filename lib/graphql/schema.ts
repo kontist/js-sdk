@@ -15,7 +15,6 @@ export type Account = {
   __typename?: 'Account';
   iban: Scalars['String'];
   cardHolderRepresentation?: Maybe<Scalars['String']>;
-  balance: Scalars['Int'];
   canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
   transfers: TransfersConnection;
@@ -40,6 +39,7 @@ export type Account = {
    * @deprecated This data will be removed in an upcoming release. Do not use it for any new features.
    */
   wirecard: WirecardDetails;
+  balance: Scalars['Int'];
 };
 
 
@@ -298,6 +298,13 @@ export type ConfirmFraudResponse = {
   resolution: Scalars['String'];
 };
 
+export type CreateAssetResponse = {
+  __typename?: 'CreateAssetResponse';
+  assetId: Scalars['ID'];
+  url: Scalars['String'];
+  formData: Array<FormDataPair>;
+};
+
 /** The available fields to create an OAuth2 client */
 export type CreateClientInput = {
   /** The name of the OAuth2 client displayed when users log in */
@@ -391,6 +398,12 @@ export enum DocumentType {
   Voucher = 'VOUCHER',
   Invoice = 'INVOICE'
 }
+
+export type FormDataPair = {
+  __typename?: 'FormDataPair';
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
 
 export enum Gender {
   Male = 'MALE',
@@ -512,6 +525,12 @@ export type Mutation = {
   categorizeTransaction: Transaction;
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
+  /** Create an TransactionAsset and obtain an upload config */
+  createTransactionAsset: CreateAssetResponse;
+  /** Confirm and validate an TransactionAsset upload as completed */
+  finalizeTransactionAssetUpload: TransactionAsset;
+  /** Remove an TransactionAsset from the Transaction and storage */
+  deleteTransactionAsset: MutationResult;
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
   /** Activate Overdraft Application  - only available for Kontist Application */
@@ -693,6 +712,23 @@ export type MutationUpdateTransactionArgs = {
   category?: Maybe<TransactionCategory>;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   personalNote?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCreateTransactionAssetArgs = {
+  filetype: Scalars['String'];
+  name: Scalars['String'];
+  transactionId: Scalars['String'];
+};
+
+
+export type MutationFinalizeTransactionAssetUploadArgs = {
+  assetId: Scalars['String'];
+};
+
+
+export type MutationDeleteTransactionAssetArgs = {
+  assetId: Scalars['String'];
 };
 
 
@@ -1232,6 +1268,8 @@ export type Transaction = {
   fees: Array<TransactionFee>;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
+  /** List of uploaded Asset files for this transaction */
+  assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
   directDebitFees: Array<DirectDebitFee>;
@@ -1251,6 +1289,23 @@ export type Transaction = {
   documentType?: Maybe<DocumentType>;
   foreignCurrency?: Maybe<Scalars['String']>;
   originalAmount?: Maybe<Scalars['Int']>;
+  /** View a single TransactionAsset for a transaction */
+  asset?: Maybe<TransactionAsset>;
+};
+
+
+export type TransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
+
+export type TransactionAsset = {
+  __typename?: 'TransactionAsset';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  filetype: Scalars['String'];
+  path: Scalars['String'];
+  thumbnail: Scalars['String'];
+  fullsize: Scalars['String'];
 };
 
 export enum TransactionCategory {

@@ -8,6 +8,9 @@ import {
   MutationCreateTransactionSplitsArgs,
   MutationDeleteTransactionSplitsArgs,
   MutationUpdateTransactionSplitsArgs,
+  MutationCreateTransactionAssetArgs,
+  MutationFinalizeTransactionAssetUploadArgs,
+  MutationDeleteTransactionAssetArgs,
   Query,
   Transaction as TransactionModel,
   TransactionFilter,
@@ -37,6 +40,14 @@ type AmountSearchFilter = {
   conditions: AmountBetweenFilter[];
 };
 
+const ASSET_FIELDS = `
+  id
+  name
+  filetype
+  thumbnail
+  fullsize
+`;
+
 const TRANSACTION_FIELDS = `
   id
   amount
@@ -64,6 +75,9 @@ const TRANSACTION_FIELDS = `
     amount
     category
     userSelectedBookingDate
+  }
+  assets {
+    ${ASSET_FIELDS}
   }
 `;
 
@@ -156,6 +170,45 @@ export const UPDATE_SPLIT_TRANSACTION = `mutation updateTransactionSplits(
     splits: $splits
   ) {
     ${TRANSACTION_FIELDS}
+  }
+}`;
+
+export const CREATE_TRANSACTION_ASSET = `mutation createTransactionAsset(
+  $transactionId: ID!
+  $name: String!
+  $filetype: String!
+) {
+  createTransactionAsset(
+    transactionId: $transactionId
+    name: $name
+    filetype: $filetype
+  ) {
+    assetId
+    url
+    formData {
+      key
+      value
+    }
+  }
+}`;
+
+export const FINALIZE_TRANSACTION_ASSET = `mutation finalizeTransactionAssetUpload(
+  $assetId: ID!
+) {
+  finalizeTransactionAssetUpload(
+    assetId: $assetId
+  ) {
+    ${ASSET_FIELDS}
+  }
+}`;
+
+export const DELETE_TRANSACTION_ASSET = `mutation deleteTransactionAsset(
+  $assetId: ID!
+) {
+  deleteTransactionAsset(
+    assetId: $assetId
+  ) {
+    successs
   }
 }`;
 
@@ -267,6 +320,39 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async updateSplit(args: MutationUpdateTransactionSplitsArgs) {
     const result = await this.client.rawQuery(UPDATE_SPLIT_TRANSACTION, args);
     return result.updateTransactionSplits;
+  }
+
+  /**
+   * Creates upload parameters for uploading a TransactionAsset file
+   *
+   * @param args   transaction ID, name, and filetype
+   * @returns      the required data to upload a file
+   */
+  public async createTransactionAsset(args: MutationCreateTransactionAssetArgs) {
+    const result = await this.client.rawQuery(CREATE_TRANSACTION_ASSET, args);
+    return result.createTransactionAsset;
+  }
+
+  /**
+   * Verifies and marks a TransactionAsset file as ready
+   *
+   * @param args   asset ID
+   * @returns      the finalized TransactionAsset information
+   */
+  public async finalizeTransactionAssetUpload(args: MutationFinalizeTransactionAssetUploadArgs) {
+    const result = await this.client.rawQuery(FINALIZE_TRANSACTION_ASSET, args);
+    return result.finalizeTransactionAssetUpload;
+  }
+
+  /**
+   * Deletes a TransactionAsset
+   *
+   * @param args   asset ID
+   * @returns      a MutationResult
+   */
+  public async deleteTransactionAsset(args: MutationDeleteTransactionAssetArgs) {
+    const result = await this.client.rawQuery(DELETE_TRANSACTION_ASSET, args);
+    return result.deleteTransactionAsset;
   }
 
   private parseAmountSearchTerm(amountTerm: string): AmountSearchFilter {
