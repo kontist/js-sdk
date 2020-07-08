@@ -9,7 +9,7 @@ import {
   MutationDeleteTransactionSplitsArgs,
   MutationUpdateTransactionSplitsArgs,
   MutationCreateTransactionAssetArgs,
-  MutationFinalizeTransactionAssetArgs,
+  MutationFinalizeTransactionAssetUploadArgs,
   MutationDeleteTransactionAssetArgs,
   Query,
   Transaction as TransactionModel,
@@ -339,7 +339,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args   asset ID
    * @returns      the finalized TransactionAsset information
    */
-  public async finalizeTransactionAssetUpload(args: MutationFinalizeTransactionAssetArgs) {
+  public async finalizeTransactionAssetUpload(args: MutationFinalizeTransactionAssetUploadArgs) {
     const result = await this.client.rawQuery(FINALIZE_TRANSACTION_ASSET, args);
     return result.finalizeTransactionAssetUpload;
   }
