@@ -12,8 +12,8 @@ module.exports = {
     library: 'Kontist'
   },
   plugins: [
-    new CopyPlugin([
-      { from: './lib/graphql/schema.flow.js', to: './lib/graphql/schema.flow.js'}
-    ])
+    new CopyPlugin({
+      patterns: [{ from: './lib/graphql/schema.flow.js', to: './lib/graphql/schema.flow.js'}]
+    })
   ]
 };
