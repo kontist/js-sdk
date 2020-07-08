@@ -9,7 +9,7 @@ import {
   MutationDeleteTransactionSplitsArgs,
   MutationUpdateTransactionSplitsArgs,
   MutationCreateTransactionAssetArgs,
-  MutationFinaliseTransactionAssetArgs,
+  MutationFinalizeTransactionAssetArgs,
   MutationDeleteTransactionAssetArgs,
   Query,
   Transaction as TransactionModel,
@@ -192,10 +192,10 @@ export const CREATE_TRANSACTION_ASSET = `mutation createTransactionAsset(
   }
 }`;
 
-export const FINALISE_TRANSACTION_ASSET = `mutation finaliseTransactionAssetUpload(
+export const FINALIZE_TRANSACTION_ASSET = `mutation finalizeTransactionAssetUpload(
   $assetId: ID!
 ) {
-  finaliseTransactionAssetUpload(
+  finalizeTransactionAssetUpload(
     assetId: $assetId
   ) {
     ${ASSET_FIELDS}
@@ -211,7 +211,6 @@ export const DELETE_TRANSACTION_ASSET = `mutation deleteTransactionAsset(
     successs
   }
 }`;
-
 
 export class Transaction extends IterableModel<TransactionModel> {
   /**
@@ -338,18 +337,18 @@ export class Transaction extends IterableModel<TransactionModel> {
    * Verifies and marks a TransactionAsset file as ready
    *
    * @param args   asset ID
-   * @returns      the finalised TransactionAsset information
+   * @returns      the finalized TransactionAsset information
    */
-  public async finaliseTransactionAssetUpload(args: MutationFinaliseTransactionAssetArgs) {
-    const result = await this.client.rawQuery(FINALISE_TRANSACTION_ASSET, args);
-    return result.finaliseTransactionAssetUpload;
+  public async finalizeTransactionAssetUpload(args: MutationFinalizeTransactionAssetArgs) {
+    const result = await this.client.rawQuery(FINALIZE_TRANSACTION_ASSET, args);
+    return result.finalizeTransactionAssetUpload;
   }
 
   /**
    * Deletes a TransactionAsset
    *
    * @param args   asset ID
-   * @returns      the finalised TransactionAsset information
+   * @returns      a MutationResult
    */
   public async deleteTransactionAsset(args: MutationDeleteTransactionAssetArgs) {
     const result = await this.client.rawQuery(DELETE_TRANSACTION_ASSET, args);

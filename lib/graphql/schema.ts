@@ -529,8 +529,8 @@ export type Mutation = {
   deleteTransactionSplits: Transaction;
   /** Create transaction asset, returning parameters required for upload */
   createTransactionAsset: CreateTransactionAssetMutationResult;
-  /** Finalise + validate a transaction asset upload, returning the asset */
-  finaliseTransactionAssetUpload: TransactionAsset;
+  /** Finalize + validate a transaction asset upload, returning the asset */
+  finalizeTransactionAssetUpload: TransactionAsset;
   /** Delete transaction asset */
   deleteTransactionAsset: MutationResult;
   /** Subscribe user to a plan */
@@ -736,7 +736,7 @@ export type CreateTransactionAssetMutationResult = {
   formData: { key: Scalars['String'], value: Scalars['String'] }[];
 };
 
-export type MutationFinaliseTransactionAssetArgs = {
+export type MutationFinalizeTransactionAssetArgs = {
   assetId: Scalars['ID'];
 };
 

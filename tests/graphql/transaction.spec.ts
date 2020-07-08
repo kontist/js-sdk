@@ -9,7 +9,7 @@ import {
   UPDATE_SPLIT_TRANSACTION,
 
   CREATE_TRANSACTION_ASSET,
-  FINALISE_TRANSACTION_ASSET,
+  FINALIZE_TRANSACTION_ASSET,
   DELETE_TRANSACTION_ASSET
 } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
@@ -484,7 +484,7 @@ describe("Transaction", () => {
     });
   });
 
-  describe("#finaliseTransactionAssetUpload", () => {
+  describe("#finalizeTransactionAssetUpload", () => {
     let client: Client;
     let stub: any;
 
@@ -507,16 +507,16 @@ describe("Transaction", () => {
       };
 
       stub.resolves({
-        finaliseTransactionAssetUpload: asset,
+        finalizeTransactionAssetUpload: asset,
       } as any);
 
-      const result = await client.models.transaction.finaliseTransactionAssetUpload({
+      const result = await client.models.transaction.finalizeTransactionAssetUpload({
         assetId: asset.id
       });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
-      expect(stub.args[0][0]).to.eq(FINALISE_TRANSACTION_ASSET,
+      expect(stub.args[0][0]).to.eq(FINALIZE_TRANSACTION_ASSET,
         DELETE_TRANSACTION_ASSET);
       expect(stub.args[0][1]).to.deep.eq({ assetId: asset.id });
       expect(result).to.deep.eq(asset);
