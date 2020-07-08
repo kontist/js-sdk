@@ -527,11 +527,11 @@ export type Mutation = {
   updateTransactionSplits: Transaction;
   /** Delete transaction splits */
   deleteTransactionSplits: Transaction;
-  /** Create transaction asset */
+  /** Create transaction asset, returning parameters required for upload */
   createTransactionAsset: CreateTransactionAssetMutationResult;
-  /** Create transaction asset */
+  /** Finalise + validate a transaction asset upload, returning the asset */
   finaliseTransactionAssetUpload: TransactionAsset;
-  /** Create transaction asset */
+  /** Delete transaction asset */
   deleteTransactionAsset: MutationResult;
   /** Subscribe user to a plan */
   subscribeToPlan: UserSubscription;
