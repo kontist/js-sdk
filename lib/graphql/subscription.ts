@@ -6,13 +6,15 @@ import {
 
 const UPDATE_PLAN = `mutation updatePlan(
   $newPlan: PurchaseType!
+  $couponCode: String
 ) {
-  updateSubscriptionPlan(newPlan: $newPlan) {
+  updateSubscriptionPlan(newPlan: $newPlan, couponCode: $couponCode) {
     newPlan
     previousPlans
     updateActiveAt
     hasCanceledDowngrade
     hasOrderedPhysicalCard
+    couponCode
   }
 }`;
 

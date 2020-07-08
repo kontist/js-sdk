@@ -726,6 +726,7 @@ export type MutationSubscribeToPlanArgs = {
 
 
 export type MutationUpdateSubscriptionPlanArgs = {
+  couponCode?: Maybe<Scalars['String']>;
   newPlan: PurchaseType;
 };
 
@@ -1518,6 +1519,7 @@ export type UpdateSubscriptionPlanResult = {
   hasOrderedPhysicalCard: Scalars['Boolean'];
   updateActiveAt: Scalars['String'];
   hasCanceledDowngrade: Scalars['Boolean'];
+  couponCode?: Maybe<Scalars['String']>;
 };
 
 export type UpdateTransactionSplitsInput = {
