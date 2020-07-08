@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.30.0] - 2020-07-08
+
+### Added
+- Added helpers for uploading and deleting transaction assets (`models.transaction.createTransactionAsset`, `models.transaction.finalizeTransactionAssetUpload`, `models.transaction.deleteTransactionAsset`)
+
+### Changed
+- `updatePlan` method of `subscription` model extended with optional `couponCode` param
+
 ## [0.29.1] - 2020-06-11
 
 ### Added
