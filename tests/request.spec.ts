@@ -8,12 +8,16 @@ import { HttpMethod } from "../lib/types";
 
 describe("HttpRequest", () => {
   let sandbox: sinon.SinonSandbox;
+  let oldFetch: any;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    oldFetch = (global as any).fetch;
+    (global as any).fetch = () => Promise.resolve();
   });
 
   afterEach(() => {
+    (global as any).fetch = oldFetch;
     sandbox.restore();
   });
 
