@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
+import * as nodefetch from "node-fetch";
 
 import { TokenManager } from "../lib/auth/tokenManager";
 import { KontistSDKError, UserUnauthorizedError } from "../lib/errors";
@@ -47,11 +48,11 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(global as any, "fetch").resolves({
+      sandbox.stub(nodefetch, "default").resolves({
         ok: false,
         status: 123,
         statusText: "mock",
-      } as Response);
+      } as nodefetch.Response);
 
       // act
       let error;
@@ -74,10 +75,10 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(global as any, "fetch").resolves({
+      sandbox.stub(nodefetch, "default").resolves({
         ok: true,
         status: 204,
-      } as Response);
+      } as nodefetch.Response);
 
       // act
       const result = await request.fetch("", HttpMethod.POST);
@@ -93,10 +94,10 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      const stubOnFetch = sandbox.stub(global as any, "fetch").resolves({
+      const stubOnFetch = sandbox.stub(nodefetch, "default").resolves({
         ok: true,
         status: 204,
-      } as Response);
+      } as nodefetch.Response);
 
       // act
       await request.fetch("/path", HttpMethod.POST, { test: 123 });
@@ -120,10 +121,10 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(global as any, "fetch").resolves({
+      sandbox.stub(nodefetch, "default").resolves({
         ok: true,
         json: () => Promise.resolve({ test: 123 }),
-      } as Response);
+      } as nodefetch.Response);
 
       // act
       const result = await request.fetch("", HttpMethod.POST);

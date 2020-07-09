@@ -21,6 +21,7 @@
     "graphql": "^15.3.0",
     "graphql-request": "^2.0.0",
     "js-sha256": "^0.9.0",
+    "node-fetch": "^3.0.0-beta.7",
     "subscriptions-transport-ws": "^0.9.16",
     "ws": "^7.3.1"
   },
