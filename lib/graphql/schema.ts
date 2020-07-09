@@ -1306,7 +1306,7 @@ export type TransactionAssetArgs = {
 
 export type TransactionAsset = {
   __typename?: 'TransactionAsset';
-  id: Scalars['String'];
+  id: Scalars['ID'];
   name: Scalars['String'];
   filetype: Scalars['String'];
   path: Scalars['String'];
