@@ -48,13 +48,15 @@ const CONFIRM_TRANSFER = `mutation confirmTransfer(
   }
 }`;
 
-const CREATE_TRANSFERS = `mutation($transfers: [CreateSepaTransferInput!]!) {
+const CREATE_TRANSFERS = `mutation createTransfers(
+  $transfers: [CreateSepaTransferInput!]!
+) {
   createTransfers(transfers: $transfers) {
     confirmationId
   }
 }`;
 
-const CONFIRM_TRANSFERS = `mutation confirmTransfer(
+const CONFIRM_TRANSFERS = `mutation confirmTransfers(
   $confirmationId: String!
   $authorizationToken: String!
 ) {
@@ -283,11 +285,11 @@ export class Transfer extends IterableModel<
   ): Promise<ResultPage<TransferModel, AccountTransfersArgs>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
 
-    const transfers = (result?.viewer?.mainAccount?.transfers?.edges ?? []).map(
+    const transfers = (result.viewer?.mainAccount?.transfers?.edges ?? []).map(
       (edge: TransfersConnectionEdge) => edge.node,
     );
 
-    const pageInfo = result?.viewer?.mainAccount?.transfers?.pageInfo ?? {
+    const pageInfo = result.viewer?.mainAccount?.transfers?.pageInfo ?? {
       hasNextPage: false,
       hasPreviousPage: false,
     };
@@ -302,6 +304,6 @@ export class Transfer extends IterableModel<
    */
   public async suggestions(): Promise<TransferSuggestion[]> {
     const result: Query = await this.client.rawQuery(GET_TRANSFER_SUGGESTIONS);
-    return result.viewer?.mainAccount ?.transferSuggestions ?? [];
+    return result.viewer?.mainAccount?.transferSuggestions ?? [];
   }
 }

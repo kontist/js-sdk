@@ -88,7 +88,7 @@ export class Auth {
    *
    * Build a uri to which the user must be redirected for login.
    */
-  public getAuthUri = async (opts: GetAuthUriOpts = {}): Promise<string> => {
+  public getAuthUri = async (opts?: GetAuthUriOpts): Promise<string> => {
     this.showDeprecationWarning("getAuthUri");
     return this.tokenManager.getAuthUri(opts);
   }

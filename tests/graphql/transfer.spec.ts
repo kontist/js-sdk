@@ -5,7 +5,8 @@ import {
   TransferType,
   Transfer,
   StandingOrderReoccurrenceType,
-  TransactionCategory
+  TransactionCategory,
+  CreateTransferInput
 } from "../../lib/graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
 
@@ -21,7 +22,140 @@ describe("Transfer", () => {
     transferInstance = new TransferClass(graphqlClientStub as any);
   });
 
-  describe("cancelTransfer", () => {
+  describe("#createOne", () => {
+    const transfer: CreateTransferInput = {
+        amount: 1,
+        purpose: "money1",
+        e2eId: "e2e-1",
+        reoccurrence: StandingOrderReoccurrenceType.Annually,
+        lastExecutionDate: "2022-02-01",
+        recipient: "r1",
+        iban: "iban1"
+    };
+    const createTransferResult = {
+        confirmationId: 100
+    };
+
+    before(async () => {
+      graphqlClientStub.rawQuery.reset();
+      graphqlClientStub.rawQuery.resolves({
+        createTransfer: createTransferResult,
+      });
+      result = await transferInstance.createOne(transfer);
+    });
+
+    it("should send createOne GraphQL mutation", () => {
+      expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+      const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
+      expect(query).to.include("createTransfer");
+      expect(variables).to.eql({ transfer });
+    });
+
+    it("should return confirmTransfers result", () => {
+      expect(result).to.eql(100);
+    });
+  });
+
+  describe("#confirmOne", () => {
+    const confirmationId = "id-stub";
+    const authorizationToken = "token";
+    const confirmTransferResult = {
+      __stub__: "confirmTransferResult",
+    };
+
+    before(async () => {
+      graphqlClientStub.rawQuery.reset();
+      graphqlClientStub.rawQuery.resolves({
+        confirmTransfer: confirmTransferResult,
+      });
+      result = await transferInstance.confirmOne(confirmationId, authorizationToken);
+    });
+
+    it("should send confirmOne GraphQL mutation", () => {
+      expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+      const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
+      expect(query).to.include("confirmTransfer");
+      expect(variables).to.eql({ confirmationId, authorizationToken });
+    });
+
+    it("should return confirmTransfer result", () => {
+      expect(result).to.eql(confirmTransferResult);
+    });
+  });
+
+  describe("#createMany", () => {
+    const transfers: CreateTransferInput[] = [
+      {
+        amount: 1,
+        purpose: "money1",
+        e2eId: "e2e-1",
+        reoccurrence: StandingOrderReoccurrenceType.Annually,
+        lastExecutionDate: "2022-02-01",
+        recipient: "r1",
+        iban: "iban1"
+      },
+      {
+        amount: 2,
+        purpose: "money2",
+        e2eId: "e2e-2",
+        reoccurrence: StandingOrderReoccurrenceType.EverySixMonths,
+        lastExecutionDate: "2022-02-02",
+        recipient: "r2",
+        iban: "iban2"
+      },
+    ];
+    const createTransfersResult = {
+        confirmationId: 100
+    };
+
+    before(async () => {
+      graphqlClientStub.rawQuery.reset();
+      graphqlClientStub.rawQuery.resolves({
+        createTransfers: createTransfersResult,
+      });
+      result = await transferInstance.createMany(transfers);
+    });
+
+    it("should send createMany GraphQL mutation", () => {
+      expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+      const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
+      expect(query).to.include("createTransfers");
+      expect(variables).to.eql({ transfers });
+    });
+
+    it("should return confirmTransfers result", () => {
+      expect(result).to.eql(100);
+    });
+  });
+  
+  describe("#confirmMany", () => {
+    const confirmationId = "id-stub";
+    const authorizationToken = "token";
+    const confirmTransfersResult = {
+      __stub__: "confirmTransfersResult",
+    };
+
+    before(async () => {
+      graphqlClientStub.rawQuery.reset();
+      graphqlClientStub.rawQuery.resolves({
+        confirmTransfers: confirmTransfersResult,
+      });
+      result = await transferInstance.confirmMany(confirmationId, authorizationToken);
+    });
+
+    it("should send confirmMany GraphQL mutation", () => {
+      expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+      const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
+      expect(query).to.include("confirmTransfers");
+      expect(variables).to.eql({ confirmationId, authorizationToken });
+    });
+
+    it("should return confirmTransfers result", () => {
+      expect(result).to.eql(confirmTransfersResult);
+    });
+  });
+
+  describe("#cancelTransfer", () => {
     const id = "id-stub";
     const type = TransferType.StandingOrder;
     const cancelTransferResult = {
@@ -48,7 +182,7 @@ describe("Transfer", () => {
     });
   });
 
-  describe("confirmCancelTransfer", () => {
+  describe("#confirmCancelTransfer", () => {
     const type = TransferType.StandingOrder;
     const confirmationId = "confirmation-id-stub";
     const authorizationToken = "authorization-token-stub";
@@ -182,7 +316,7 @@ describe("Transfer", () => {
     });
   });
 
-  describe("suggestions", () => {
+  describe("#suggestions", () => {
     const suggestions = [
       { iban: "DE12345", name: "First customer" },
       { iban: "DE54321", name: "Second customer" },
@@ -220,6 +354,36 @@ describe("Transfer", () => {
       it("should return an empty array", () => {
         expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
         expect(result).to.eql([]);
+      });
+    });
+
+    describe("when there is no user", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({});
+        result = await transferInstance.suggestions();
+      });
+
+      it("should return an empty array", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result).to.eql([]);
+      });
+    });
+  });
+
+  describe("#fetch", () => {
+    describe("when there is no result", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({});
+        result = await transferInstance.fetch({ type: TransferType.SepaTransfer });
+      });
+
+      it("should return an empty result", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result.items).to.eql([]);
+        expect(result.pageInfo.hasNextPage).to.eql(false);
+        expect(result.pageInfo.hasPreviousPage).to.eql(false);
       });
     });
   });
