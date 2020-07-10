@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.31.0] - 2020-07-10
+
 ### Changed
 - Updated dependencies (client-oauth2, graphql, graphql-request, ws) and dev dependencies
 - Added cross-fetch ponyfill
