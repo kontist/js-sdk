@@ -208,7 +208,7 @@ export const DELETE_TRANSACTION_ASSET = `mutation deleteTransactionAsset(
   deleteTransactionAsset(
     assetId: $assetId
   ) {
-    successs
+    success
   }
 }`;
 
