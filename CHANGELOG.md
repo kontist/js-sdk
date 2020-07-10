@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.31.1] - 2020-07-10
+## [0.31.2] - 2020-07-10
 
 ### Changed
 - Move graphql back to dependencies [#122](https://github.com/kontist/js-sdk/pull/122)
