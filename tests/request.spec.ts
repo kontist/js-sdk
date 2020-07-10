@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
+import * as crossFetch from 'cross-fetch';
 
 import { TokenManager } from "../lib/auth/tokenManager";
 import { KontistSDKError, UserUnauthorizedError } from "../lib/errors";
@@ -8,12 +9,16 @@ import { HttpMethod } from "../lib/types";
 
 describe("HttpRequest", () => {
   let sandbox: sinon.SinonSandbox;
+  let oldFetch: any;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    oldFetch = (global as any).fetch;
+    (global as any).fetch = () => Promise.resolve();
   });
 
   afterEach(() => {
+    (global as any).fetch = oldFetch;
     sandbox.restore();
   });
 
@@ -43,7 +48,7 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(global as any, "fetch").resolves({
+      sandbox.stub(crossFetch, "default").resolves({
         ok: false,
         status: 123,
         statusText: "mock",
@@ -70,7 +75,7 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(global as any, "fetch").resolves({
+      sandbox.stub(crossFetch, "default").resolves({
         ok: true,
         status: 204,
       } as Response);
@@ -89,7 +94,7 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      const stubOnFetch = sandbox.stub(global as any, "fetch").resolves({
+      const stubOnFetch = sandbox.stub(crossFetch, "default").resolves({
         ok: true,
         status: 204,
       } as Response);
@@ -116,7 +121,7 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(global as any, "fetch").resolves({
+      sandbox.stub(crossFetch, "default").resolves({
         ok: true,
         json: () => Promise.resolve({ test: 123 }),
       } as Response);

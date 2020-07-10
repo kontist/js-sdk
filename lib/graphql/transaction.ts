@@ -223,10 +223,10 @@ export class Transaction extends IterableModel<TransactionModel> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
 
     const transactions = (
-      result?.viewer?.mainAccount?.transactions?.edges ?? []
+      result.viewer?.mainAccount?.transactions?.edges ?? []
     ).map((edge: TransactionsConnectionEdge) => edge.node);
 
-    const pageInfo = result?.viewer?.mainAccount?.transactions?.pageInfo ?? {
+    const pageInfo = result.viewer?.mainAccount?.transactions?.pageInfo ?? {
       hasNextPage: false,
       hasPreviousPage: false,
     };

@@ -18,6 +18,7 @@ import {
   createTransaction,
   generatePaginatedResponse,
 } from "../helpers";
+import { Transaction as TransactionClass } from "../../lib/graphql/transaction";
 
 describe("Transaction", () => {
   describe("iterator", () => {
@@ -153,6 +154,34 @@ describe("Transaction", () => {
         const secondPage =
           firstPage.previousPage && (await firstPage.previousPage());
         expect(secondPage?.items).to.deep.equal([firstTransaction]);
+      });
+    });
+  });
+
+  describe("#fetch", () => {
+    let graphqlClientStub: { rawQuery: sinon.SinonStub };
+    let transactionInstance: TransactionClass;
+    let result: any;
+
+    before(() => {
+      graphqlClientStub = {
+        rawQuery: sinon.stub(),
+      };
+      transactionInstance = new TransactionClass(graphqlClientStub as any);
+    });
+  
+    describe("when there is no result", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({});
+        result = await transactionInstance.fetch();
+      });
+
+      it("should return an empty result", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result.items).to.eql([]);
+        expect(result.pageInfo.hasNextPage).to.eql(false);
+        expect(result.pageInfo.hasPreviousPage).to.eql(false);
       });
     });
   });

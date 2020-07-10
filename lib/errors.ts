@@ -34,7 +34,7 @@ export class KontistSDKError extends Error {
 }
 
 export class ChallengeExpiredError extends KontistSDKError {
-  constructor(opts: ErrorOpts = {}) {
+  constructor(opts?: ErrorOpts) {
     super({
       message: ErrorMessage.CHALLENGE_EXPIRED_ERROR,
       ...opts,
@@ -45,7 +45,7 @@ export class ChallengeExpiredError extends KontistSDKError {
 }
 
 export class ChallengeDeniedError extends KontistSDKError {
-  constructor(opts: ErrorOpts = {}) {
+  constructor(opts?: ErrorOpts) {
     super({
       message: ErrorMessage.CHALLENGE_DENIED_ERROR,
       ...opts,
@@ -56,7 +56,7 @@ export class ChallengeDeniedError extends KontistSDKError {
 }
 
 export class MFAConfirmationCanceledError extends KontistSDKError {
-  constructor(opts: ErrorOpts = {}) {
+  constructor(opts?: ErrorOpts) {
     super({
       message: ErrorMessage.MFA_CONFIRMATION_CANCELED_ERROR,
       ...opts,
@@ -67,7 +67,7 @@ export class MFAConfirmationCanceledError extends KontistSDKError {
 }
 
 export class UserUnauthorizedError extends KontistSDKError {
-  constructor(opts: ErrorOpts = {}) {
+  constructor(opts?: ErrorOpts) {
     super({
       message: ErrorMessage.USER_UNAUTHORIZED_ERROR,
       ...opts,
@@ -79,7 +79,7 @@ export class UserUnauthorizedError extends KontistSDKError {
 }
 
 export class RenewTokenError extends KontistSDKError {
-  constructor(opts: ErrorOpts = {}) {
+  constructor(opts?: ErrorOpts) {
     super({
       message: ErrorMessage.RENEW_TOKEN_ERROR,
       ...opts,
@@ -90,7 +90,7 @@ export class RenewTokenError extends KontistSDKError {
 }
 
 export class GraphQLError extends KontistSDKError {
-  constructor(opts: ErrorOpts = {}) {
+  constructor(opts?: ErrorOpts) {
     super({
       message: ErrorMessage.GRAPHQL_ERROR,
       ...opts,

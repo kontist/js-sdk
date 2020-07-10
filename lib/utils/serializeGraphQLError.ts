@@ -2,15 +2,14 @@ import { ErrorOpts } from "../errors";
 
 interface GraphQLAPIError {
   response?: {
-    errors?: [
+    errors?:
       {
         message?: string;
         extensions?: {
           status?: number;
           type?: string;
         };
-      }
-    ];
+      }[]
   };
 }
 
