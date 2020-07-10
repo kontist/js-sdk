@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import * as nodefetch from "node-fetch";
+import * as crossFetch from 'cross-fetch';
 
 import { TokenManager } from "../lib/auth/tokenManager";
 import { KontistSDKError, UserUnauthorizedError } from "../lib/errors";
@@ -48,11 +48,11 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(nodefetch, "default").resolves({
+      sandbox.stub(crossFetch, "default").resolves({
         ok: false,
         status: 123,
         statusText: "mock",
-      } as nodefetch.Response);
+      } as Response);
 
       // act
       let error;
@@ -75,10 +75,10 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(nodefetch, "default").resolves({
+      sandbox.stub(crossFetch, "default").resolves({
         ok: true,
         status: 204,
-      } as nodefetch.Response);
+      } as Response);
 
       // act
       const result = await request.fetch("", HttpMethod.POST);
@@ -94,10 +94,10 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      const stubOnFetch = sandbox.stub(nodefetch, "default").resolves({
+      const stubOnFetch = sandbox.stub(crossFetch, "default").resolves({
         ok: true,
         status: 204,
-      } as nodefetch.Response);
+      } as Response);
 
       // act
       await request.fetch("/path", HttpMethod.POST, { test: 123 });
@@ -121,10 +121,10 @@ describe("HttpRequest", () => {
         token: { accessToken: "eyMockToken" },
       } as TokenManager;
       const request = new HttpRequest(baseUrl, tm);
-      sandbox.stub(nodefetch, "default").resolves({
+      sandbox.stub(crossFetch, "default").resolves({
         ok: true,
         json: () => Promise.resolve({ test: 123 }),
-      } as nodefetch.Response);
+      } as Response);
 
       // act
       const result = await request.fetch("", HttpMethod.POST);

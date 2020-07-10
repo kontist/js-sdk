@@ -1,4 +1,4 @@
-import fetch, { Response } from "node-fetch";
+import fetch from 'cross-fetch';
 
 import { TokenManager } from "./auth/tokenManager";
 import { KontistSDKError, UserUnauthorizedError } from "./errors";
