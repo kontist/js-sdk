@@ -724,17 +724,17 @@ export type MutationUpdateTransactionArgs = {
 export type MutationCreateTransactionAssetArgs = {
   filetype: Scalars['String'];
   name: Scalars['String'];
-  transactionId: Scalars['String'];
+  transactionId: Scalars['ID'];
 };
 
 
 export type MutationFinalizeTransactionAssetUploadArgs = {
-  assetId: Scalars['String'];
+  assetId: Scalars['ID'];
 };
 
 
 export type MutationDeleteTransactionAssetArgs = {
-  assetId: Scalars['String'];
+  assetId: Scalars['ID'];
 };
 
 
@@ -1306,7 +1306,7 @@ export type TransactionAssetArgs = {
 
 export type TransactionAsset = {
   __typename?: 'TransactionAsset';
-  id: Scalars['String'];
+  id: Scalars['ID'];
   name: Scalars['String'];
   filetype: Scalars['String'];
   path: Scalars['String'];
