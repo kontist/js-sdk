@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.31.3] - 2020-07-16
+
+### Added
+- Added `isSelfEmployed` field in schema for `UserUpdateInput` and `viewer`
+
 ## [0.31.2] - 2020-07-10
 
 ### Changed
