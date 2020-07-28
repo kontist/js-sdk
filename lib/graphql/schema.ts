@@ -1780,6 +1780,7 @@ export type UserUpdateInput = {
   vatNumber?: Maybe<Scalars['String']>;
   vatRate?: Maybe<Scalars['Int']>;
   language?: Maybe<Scalars['String']>;
+  gender?: Maybe<Gender>;
   /** Indicates whether the user pays taxes in the US */
   isUSPerson?: Maybe<Scalars['Boolean']>;
   /** The version of terms user has accepted */
