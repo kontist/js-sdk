@@ -4,7 +4,7 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -111,6 +111,8 @@ export type User = {
   metadata: UserMetadata;
   /** All push-notification types and their state */
   notifications: Array<Notification>;
+  /** The user's associated Recurly Account */
+  recurlyAccount?: Maybe<RecurlyAccount>;
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
 };
@@ -1037,7 +1039,8 @@ export enum PurchaseType {
   Basic = 'BASIC',
   Premium = 'PREMIUM',
   Card = 'CARD',
-  Lexoffice = 'LEXOFFICE'
+  Lexoffice = 'LEXOFFICE',
+  Kontax = 'KONTAX'
 }
 
 export enum PurchaseState {
@@ -1159,6 +1162,7 @@ export type UserMetadata = {
   phoneNumberVerificationRequired: Scalars['Boolean'];
   signupCompleted: Scalars['Boolean'];
   categorizationScreenShown?: Maybe<Scalars['Boolean']>;
+  taxAdvisoryTermsVersionAccepted: Scalars['Boolean'];
 };
 
 export type AvailableStatements = {
@@ -1189,13 +1193,25 @@ export type Notification = {
 };
 
 export enum NotificationType {
-  Transactions = 'TRANSACTIONS',
+  CardTransactions = 'CARD_TRANSACTIONS',
+  IncomingTransactions = 'INCOMING_TRANSACTIONS',
+  DirectDebitTransactions = 'DIRECT_DEBIT_TRANSACTIONS',
+  AtmWithdrawalTransactions = 'ATM_WITHDRAWAL_TRANSACTIONS',
   Statements = 'STATEMENTS',
   ProductInfo = 'PRODUCT_INFO',
   Tax = 'TAX',
   ReceiptScanning = 'RECEIPT_SCANNING',
   All = 'ALL'
 }
+
+export type RecurlyAccount = {
+  __typename?: 'RecurlyAccount';
+  recurlyAccountId: Scalars['String'];
+  balance: Scalars['Float'];
+  pastDue: Scalars['Boolean'];
+  pastDueSince?: Maybe<Scalars['DateTime']>;
+  accountManagementUrl: Scalars['String'];
+};
 
 export type Discount = {
   __typename?: 'Discount';
@@ -1805,13 +1821,13 @@ export type UserUpdateInput = {
   wirecardCardType?: Maybe<Scalars['String']>;
   categorizationScreenShown?: Maybe<Scalars['Boolean']>;
   profession?: Maybe<Scalars['String']>;
-  hasTaxAdvisor?: Maybe<Scalars['Boolean']>;
   accountingTool?: Maybe<Scalars['String']>;
   hasSecondBusinessAccount?: Maybe<Scalars['Boolean']>;
   maximumCashTransactionsPercentage?: Maybe<MaximumCashTransactionsPercentage>;
   hasEmployees?: Maybe<Scalars['Boolean']>;
   internationalCustomers?: Maybe<InternationalCustomers>;
-  hasPermanentExtension?: Maybe<Scalars['Boolean']>;
+  permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
+  taxAdvisoryTermsVersionAccepted?: Maybe<Scalars['String']>;
 };
 
 export enum MaximumCashTransactionsPercentage {
@@ -1824,6 +1840,12 @@ export enum InternationalCustomers {
   None = 'NONE',
   Eu = 'EU',
   Worldwide = 'WORLDWIDE'
+}
+
+export enum PermanentExtensionStatus {
+  DoesHave = 'DOES_HAVE',
+  DoesNotHave = 'DOES_NOT_HAVE',
+  DoesNotKnow = 'DOES_NOT_KNOW'
 }
 
 export type PublicMutationResult = {
