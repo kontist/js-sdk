@@ -1197,6 +1197,7 @@ export enum NotificationType {
   IncomingTransactions = 'INCOMING_TRANSACTIONS',
   DirectDebitTransactions = 'DIRECT_DEBIT_TRANSACTIONS',
   AtmWithdrawalTransactions = 'ATM_WITHDRAWAL_TRANSACTIONS',
+  Transactions = 'TRANSACTIONS',
   Statements = 'STATEMENTS',
   ProductInfo = 'PRODUCT_INFO',
   Tax = 'TAX',
