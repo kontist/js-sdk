@@ -2,6 +2,7 @@ import { IterableModel } from "./iterableModel";
 import { ResultPage } from "./resultPage";
 import {
   AccountTransactionsArgs,
+  AccountTransactionArgs,
   BaseOperator,
   MutationCategorizeTransactionArgs,
   MutationUpdateTransactionArgs,
@@ -56,19 +57,10 @@ const TRANSACTION_FIELDS = `
   type
   bookingDate
   valutaDate
-  originalAmount
-  foreignCurrency
-  e2eId
-  mandateNumber
   paymentMethod
   category
   userSelectedBookingDate
-  personalNote
   purpose
-  documentNumber
-  documentPreviewUrl
-  documentDownloadUrl
-  documentType
   createdAt
   splits {
     id
@@ -76,9 +68,21 @@ const TRANSACTION_FIELDS = `
     category
     userSelectedBookingDate
   }
+`;
+
+const TRANSACTION_DETAILS = `
   assets {
     ${ASSET_FIELDS}
   }
+  documentNumber
+  documentPreviewUrl
+  documentDownloadUrl
+  documentType
+  personalNote
+  e2eId
+  mandateNumber
+  originalAmount
+  foreignCurrency
 `;
 
 const FETCH_TRANSACTIONS = `
@@ -97,6 +101,19 @@ const FETCH_TRANSACTIONS = `
             startCursor
             endCursor
           }
+        }
+      }
+    }
+  }
+`;
+
+const FETCH_TRANSACTION = `
+  query fetchTransaction ($id: ID!) {
+    viewer {
+      mainAccount {
+        transaction(id: $id) {
+          ${TRANSACTION_FIELDS}
+          ${TRANSACTION_DETAILS}
         }
       }
     }
@@ -215,6 +232,7 @@ export const DELETE_TRANSACTION_ASSET = `mutation deleteTransactionAsset(
 export class Transaction extends IterableModel<TransactionModel> {
   /**
    * Fetches first 50 transactions which match the query
+   * Only the main transaction fields will be included in the results
    *
    * @param args  query parameters
    * @returns     result page
@@ -251,6 +269,19 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public fetchAll(args?: FetchOptions) {
     return super.fetchAll(args ?? {});
+  }
+
+  /**
+   * Fetches the transaction with the provided ID
+   * All transaction fields will be included in the result
+   *
+   * @param args  transaction ID
+   * @returns     Transaction
+   */
+  public async fetchOne(args: AccountTransactionArgs) {
+    const result: Query = await this.client.rawQuery(FETCH_TRANSACTION, args);
+
+    return result.viewer?.mainAccount?.transaction;
   }
 
   public subscribe(
