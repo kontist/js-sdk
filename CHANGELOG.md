@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- *Breaking*: removed several transaction fields from the results of the fetch and fetchAll transaction methods (see `TRANSACTION_DETAILS` in `lib/graphql/transaction` for the details) [#132](https://github.com/kontist/js-sdk/pull/132)
+
+### Added
+- Added `fetchOne` method on transaction model which will return all transaction fields for a given transaction ID [#132](https://github.com/kontist/js-sdk/pull/132)
+
 ## [0.31.3] - 2020-07-16
 
 ### Added
