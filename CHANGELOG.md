@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.33.0] - 2020-08-18
+
 ### Changed
 - *Breaking*: removed several transaction fields from the results of the fetch and fetchAll transaction methods (see `TRANSACTION_DETAILS` in `lib/graphql/transaction` for the details) [#132](https://github.com/kontist/js-sdk/pull/132)
 
