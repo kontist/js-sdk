@@ -169,7 +169,7 @@ describe("Transaction", () => {
       };
       transactionInstance = new TransactionClass(graphqlClientStub as any);
     });
-  
+
     describe("when there is no result", () => {
       before(async () => {
         graphqlClientStub.rawQuery.reset();
@@ -182,6 +182,52 @@ describe("Transaction", () => {
         expect(result.items).to.eql([]);
         expect(result.pageInfo.hasNextPage).to.eql(false);
         expect(result.pageInfo.hasPreviousPage).to.eql(false);
+      });
+    });
+  });
+
+  describe("#fetchOne", () => {
+    let graphqlClientStub: { rawQuery: sinon.SinonStub };
+    let transactionInstance: TransactionClass;
+    let result: any;
+
+    before(() => {
+      graphqlClientStub = {
+        rawQuery: sinon.stub(),
+      };
+      transactionInstance = new TransactionClass(graphqlClientStub as any);
+    });
+
+    describe("when transaction is not found", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({
+          viewer: { mainAccount: { transaction: null } },
+        });
+        result = await transactionInstance.fetchOne({ id: "some-id" });
+      });
+
+      it("should return null", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result).to.eql(null);
+      });
+    });
+
+    describe("when transaction is found", () => {
+      let transaction: Transaction;
+
+      before(async () => {
+        transaction = createTransaction();
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({
+          viewer: { mainAccount: { transaction } },
+        });
+        result = await transactionInstance.fetchOne({ id: transaction.id });
+      });
+
+      it("should return the fetched transaction", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result).to.eql(transaction);
       });
     });
   });
