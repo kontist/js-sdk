@@ -5,7 +5,6 @@
 
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -696,6 +695,12 @@ export type TransactionAssetArgs = {
 export enum TransactionProjectionType {
   CreditPresentment = 'CREDIT_PRESENTMENT',
   CashManual = 'CASH_MANUAL',
+  CashAtmReversal = 'CASH_ATM_REVERSAL',
+  CashManualReversal = 'CASH_MANUAL_REVERSAL',
+  PurchaseReversal = 'PURCHASE_REVERSAL',
+  Oct = 'OCT',
+  ForcePostTransaction = 'FORCE_POST_TRANSACTION',
+  DebitPresentment = 'DEBIT_PRESENTMENT',
   Atm = 'ATM',
   CancelManualLoad = 'CANCEL_MANUAL_LOAD',
   CardUsage = 'CARD_USAGE',
@@ -1829,6 +1834,8 @@ export type UserUpdateInput = {
   internationalCustomers?: Maybe<InternationalCustomers>;
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
   taxAdvisoryTermsVersionAccepted?: Maybe<Scalars['String']>;
+  idnowReminderType?: Maybe<IdnowReminderType>;
+  idnowReminderTime?: Maybe<Scalars['DateTime']>;
 };
 
 export enum MaximumCashTransactionsPercentage {
@@ -1847,6 +1854,11 @@ export enum PermanentExtensionStatus {
   DoesHave = 'DOES_HAVE',
   DoesNotHave = 'DOES_NOT_HAVE',
   DoesNotKnow = 'DOES_NOT_KNOW'
+}
+
+export enum IdnowReminderType {
+  Email = 'EMAIL',
+  Sms = 'SMS'
 }
 
 export type PublicMutationResult = {
