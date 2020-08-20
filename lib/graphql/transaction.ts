@@ -123,6 +123,7 @@ const FETCH_TRANSACTION = `
 export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
   newTransaction {
     ${TRANSACTION_FIELDS}
+    ${TRANSACTION_DETAILS}
   }
 }`;
 
@@ -137,6 +138,7 @@ export const CATEGORIZE_TRANSACTION = `mutation categorizeTransaction(
     userSelectedBookingDate: $userSelectedBookingDate
   ) {
     ${TRANSACTION_FIELDS}
+    ${TRANSACTION_DETAILS}
   }
 }`;
 
@@ -153,6 +155,7 @@ export const UPDATE_TRANSACTION = `mutation updateTransaction(
     personalNote: $personalNote
   ) {
     ${TRANSACTION_FIELDS}
+    ${TRANSACTION_DETAILS}
   }
 }`;
 
@@ -165,6 +168,7 @@ export const CREATE_SPLIT_TRANSACTION = `mutation createTransactionSplits(
     splits: $splits
   ) {
     ${TRANSACTION_FIELDS}
+    ${TRANSACTION_DETAILS}
   }
 }`;
 
@@ -175,6 +179,7 @@ export const DELETE_SPLIT_TRANSACTION = `mutation deleteTransactionSplits(
     transactionId: $transactionId
   ) {
     ${TRANSACTION_FIELDS}
+    ${TRANSACTION_DETAILS}
   }
 }`;
 
@@ -187,6 +192,7 @@ export const UPDATE_SPLIT_TRANSACTION = `mutation updateTransactionSplits(
     splits: $splits
   ) {
     ${TRANSACTION_FIELDS}
+    ${TRANSACTION_DETAILS}
   }
 }`;
 
