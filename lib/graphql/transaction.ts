@@ -61,6 +61,9 @@ const TRANSACTION_FIELDS = `
   category
   userSelectedBookingDate
   purpose
+  personalNote
+  originalAmount
+  foreignCurrency
   createdAt
   splits {
     id
@@ -78,11 +81,8 @@ const TRANSACTION_DETAILS = `
   documentPreviewUrl
   documentDownloadUrl
   documentType
-  personalNote
   e2eId
   mandateNumber
-  originalAmount
-  foreignCurrency
 `;
 
 const FETCH_TRANSACTIONS = `
@@ -93,7 +93,6 @@ const FETCH_TRANSACTIONS = `
           edges {
             node {
               ${TRANSACTION_FIELDS}
-              ${TRANSACTION_DETAILS}
             }
           }
           pageInfo {
