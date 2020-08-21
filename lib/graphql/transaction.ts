@@ -93,6 +93,7 @@ const FETCH_TRANSACTIONS = `
           edges {
             node {
               ${TRANSACTION_FIELDS}
+              ${TRANSACTION_DETAILS}
             }
           }
           pageInfo {
