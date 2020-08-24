@@ -485,4 +485,32 @@ describe("Card", () => {
       expect(result).to.eql(response);
     });
   });
+
+  describe("#confirmFraud", () => {
+    it("should call rawQuery and return ConfirmFraudResponse", async () => {
+      // arrange;
+      const fraudCaseId = "Rwt3tJek_k1JxivcwbPHjKDk";
+      const args = {
+        fraudCaseId,
+        id: cardData.id,
+      };
+      const response = {
+        id: cardData.id,
+        resolution: CaseResolution.Confirmed,
+      };
+
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        confirmFraud: response,
+      } as any);
+
+      // act
+      const result = await card.confirmFraud(args);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(spyOnRawQuery.getCall(0).args[1]).to.eql(args);
+      expect(result).to.eql(response);
+    });
+  });
 });

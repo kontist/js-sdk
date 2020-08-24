@@ -15,6 +15,8 @@ import {
   MutationDeleteGooglePayCardTokenArgs,
   MutationWhitelistCardArgs,
   WhitelistCardResponse,
+  MutationConfirmFraudArgs,
+  ConfirmFraudResponse,
 } from "./schema";
 
 import { Model } from "./model";
@@ -265,6 +267,20 @@ export const WHITELIST_CARD = `mutation(
   }
 }`;
 
+export const CONFIRM_FRAUD = `
+mutation(
+  $id: String!,
+  $fraudCaseId: String!
+) {
+  confirmFraud(
+    id: $id,
+    fraudCaseId: $fraudCaseId
+  ) {
+    id
+    resolution
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -443,5 +459,18 @@ export class Card extends Model<CardModel> {
   ): Promise<WhitelistCardResponse> {
     const result = await this.client.rawQuery(WHITELIST_CARD, args);
     return result.whitelistCard;
+  }
+
+  /**
+   * Confirm card fraud case
+   *
+   * @param args   query parameters including card id and card fraud case id
+   * @returns      case resolution
+   */
+  public async confirmFraud(
+    args: MutationConfirmFraudArgs
+  ): Promise<ConfirmFraudResponse> {
+    const result = await this.client.rawQuery(CONFIRM_FRAUD, args);
+    return result.confirmFraud;
   }
 }
