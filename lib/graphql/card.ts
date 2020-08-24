@@ -13,13 +13,13 @@ import {
   GooglePayCardToken,
   MutationAddGooglePayCardTokenArgs,
   MutationDeleteGooglePayCardTokenArgs,
+  MutationWhitelistCardArgs,
+  WhitelistCardResponse,
 } from "./schema";
 
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import {
-  GetCardOptions,
-} from "./types";
+import { GetCardOptions } from "./types";
 
 const CARD_FIELDS = `
   id
@@ -251,6 +251,20 @@ export const DELETE_GOOGLE_PAY_CARD_TOKEN = `mutation(
   }
 }`;
 
+export const WHITELIST_CARD = `mutation(
+  $id: String!,
+  $fraudCaseId: String!
+) {
+  whitelistCard(
+    id: $id,
+    fraudCaseId: $fraudCaseId
+  ) {
+    id
+    resolution
+    whitelisted_until
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -416,5 +430,18 @@ export class Card extends Model<CardModel> {
   public async deleteGooglePayCardToken(args: MutationDeleteGooglePayCardTokenArgs): Promise<GooglePayCardToken> {
     const result = await this.client.rawQuery(DELETE_GOOGLE_PAY_CARD_TOKEN, args);
     return result.deleteGooglePayCardToken;
+  }
+
+  /**
+   * Whitelist card fraud case
+   *
+   * @param args   query parameters including card id and card fraud case id
+   * @returns      case resolution and timestamp till when the case is whitelisted
+   */
+  public async whitelistCard(
+    args: MutationWhitelistCardArgs
+  ): Promise<WhitelistCardResponse> {
+    const result = await this.client.rawQuery(WHITELIST_CARD, args);
+    return result.whitelistCard;
   }
 }

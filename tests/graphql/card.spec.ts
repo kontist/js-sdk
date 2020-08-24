@@ -1,6 +1,11 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { CardAction, CardStatus, CardType } from "../../lib/graphql/schema";
+import {
+  CardAction,
+  CardStatus,
+  CardType,
+  CaseResolution,
+} from "../../lib/graphql/schema";
 
 import { Client } from "../../lib";
 import { Card } from "../../lib/graphql/card";
@@ -449,6 +454,35 @@ describe("Card", () => {
         walletId,
         tokenRefId,
       });
+    });
+  });
+
+  describe("#whitelistCard", () => {
+    it("should call rawQuery and return WhitelistCardResponse", async () => {
+      // arrange;
+      const fraudCaseId = "Rwt3tJek_k1JxivcwbPHjKDk";
+      const args = {
+        fraudCaseId,
+        id: cardData.id,
+      };
+      const response = {
+        id: cardData.id,
+        resolution: CaseResolution.Whitelisted,
+        whitelisted_until: new Date().toISOString(),
+      };
+
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        whitelistCard: response,
+      } as any);
+
+      // act
+      const result = await card.whitelistCard(args);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(spyOnRawQuery.getCall(0).args[1]).to.eql(args);
+      expect(result).to.eql(response);
     });
   });
 });
