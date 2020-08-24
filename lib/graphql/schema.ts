@@ -1708,14 +1708,22 @@ export enum SepaTransferStatus {
 export type WhitelistCardResponse = {
   __typename?: 'WhitelistCardResponse';
   id: Scalars['String'];
-  resolution: Scalars['String'];
+  resolution: CaseResolution;
   whitelisted_until: Scalars['String'];
 };
+
+export enum CaseResolution {
+  Pending = 'PENDING',
+  Confirmed = 'CONFIRMED',
+  Whitelisted = 'WHITELISTED',
+  TimedOut = 'TIMED_OUT',
+  Timeout = 'TIMEOUT'
+}
 
 export type ConfirmFraudResponse = {
   __typename?: 'ConfirmFraudResponse';
   id: Scalars['String'];
-  resolution: Scalars['String'];
+  resolution: CaseResolution;
 };
 
 export type CardSettingsInput = {
@@ -1834,6 +1842,9 @@ export type UserUpdateInput = {
   internationalCustomers?: Maybe<InternationalCustomers>;
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
   taxAdvisoryTermsVersionAccepted?: Maybe<Scalars['String']>;
+  subjectToAccounting?: Maybe<ThreeStateAnswer>;
+  workingInEcommerce?: Maybe<Scalars['Boolean']>;
+  hasMoreThanOneBusiness?: Maybe<Scalars['Boolean']>;
   idnowReminderType?: Maybe<IdnowReminderType>;
   idnowReminderTime?: Maybe<Scalars['DateTime']>;
 };
@@ -1854,6 +1865,12 @@ export enum PermanentExtensionStatus {
   DoesHave = 'DOES_HAVE',
   DoesNotHave = 'DOES_NOT_HAVE',
   DoesNotKnow = 'DOES_NOT_KNOW'
+}
+
+export enum ThreeStateAnswer {
+  Yes = 'YES',
+  No = 'NO',
+  NotSure = 'NOT_SURE'
 }
 
 export enum IdnowReminderType {
