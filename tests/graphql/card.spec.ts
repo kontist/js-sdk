@@ -460,11 +460,6 @@ describe("Card", () => {
   describe("#whitelistCard", () => {
     it("should call rawQuery and return WhitelistCardResponse", async () => {
       // arrange;
-      const fraudCaseId = "Rwt3tJek_k1JxivcwbPHjKDk";
-      const args = {
-        fraudCaseId,
-        id: cardData.id,
-      };
       const response = {
         id: cardData.id,
         resolution: CaseResolution.Whitelisted,
@@ -477,11 +472,10 @@ describe("Card", () => {
       } as any);
 
       // act
-      const result = await card.whitelistCard(args);
+      const result = await card.whitelistCard();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      expect(spyOnRawQuery.getCall(0).args[1]).to.eql(args);
       expect(result).to.eql(response);
     });
   });
@@ -489,11 +483,6 @@ describe("Card", () => {
   describe("#confirmFraud", () => {
     it("should call rawQuery and return ConfirmFraudResponse", async () => {
       // arrange;
-      const fraudCaseId = "Rwt3tJek_k1JxivcwbPHjKDk";
-      const args = {
-        fraudCaseId,
-        id: cardData.id,
-      };
       const response = {
         id: cardData.id,
         resolution: CaseResolution.Confirmed,
@@ -505,11 +494,10 @@ describe("Card", () => {
       } as any);
 
       // act
-      const result = await card.confirmFraud(args);
+      const result = await card.confirmFraud();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      expect(spyOnRawQuery.getCall(0).args[1]).to.eql(args);
       expect(result).to.eql(response);
     });
   });

@@ -474,7 +474,8 @@ export enum ScopeType {
   Clients = 'CLIENTS',
   Overdraft = 'OVERDRAFT',
   Banners = 'BANNERS',
-  Signup = 'SIGNUP'
+  Signup = 'SIGNUP',
+  CardFraud = 'CARD_FRAUD'
 }
 
 /** The bank account of the current user */
@@ -1381,18 +1382,6 @@ export type MutationCreateTransfersArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
-};
-
-
-export type MutationWhitelistCardArgs = {
-  fraudCaseId: Scalars['String'];
-  id: Scalars['String'];
-};
-
-
-export type MutationConfirmFraudArgs = {
-  fraudCaseId: Scalars['String'];
-  id: Scalars['String'];
 };
 
 

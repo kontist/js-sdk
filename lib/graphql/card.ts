@@ -13,9 +13,7 @@ import {
   GooglePayCardToken,
   MutationAddGooglePayCardTokenArgs,
   MutationDeleteGooglePayCardTokenArgs,
-  MutationWhitelistCardArgs,
   WhitelistCardResponse,
-  MutationConfirmFraudArgs,
   ConfirmFraudResponse,
 } from "./schema";
 
@@ -253,14 +251,8 @@ export const DELETE_GOOGLE_PAY_CARD_TOKEN = `mutation(
   }
 }`;
 
-export const WHITELIST_CARD = `mutation(
-  $id: String!,
-  $fraudCaseId: String!
-) {
-  whitelistCard(
-    id: $id,
-    fraudCaseId: $fraudCaseId
-  ) {
+export const WHITELIST_CARD = `mutation {
+  whitelistCard {
     id
     resolution
     whitelisted_until
@@ -268,14 +260,8 @@ export const WHITELIST_CARD = `mutation(
 }`;
 
 export const CONFIRM_FRAUD = `
-mutation(
-  $id: String!,
-  $fraudCaseId: String!
-) {
-  confirmFraud(
-    id: $id,
-    fraudCaseId: $fraudCaseId
-  ) {
+mutation {
+  confirmFraud {
     id
     resolution
   }
@@ -454,10 +440,8 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and card fraud case id
    * @returns      case resolution and timestamp till when the case is whitelisted
    */
-  public async whitelistCard(
-    args: MutationWhitelistCardArgs
-  ): Promise<WhitelistCardResponse> {
-    const result = await this.client.rawQuery(WHITELIST_CARD, args);
+  public async whitelistCard(): Promise<WhitelistCardResponse> {
+    const result = await this.client.rawQuery(WHITELIST_CARD);
     return result.whitelistCard;
   }
 
@@ -467,10 +451,8 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and card fraud case id
    * @returns      case resolution
    */
-  public async confirmFraud(
-    args: MutationConfirmFraudArgs
-  ): Promise<ConfirmFraudResponse> {
-    const result = await this.client.rawQuery(CONFIRM_FRAUD, args);
+  public async confirmFraud(): Promise<ConfirmFraudResponse> {
+    const result = await this.client.rawQuery(CONFIRM_FRAUD);
     return result.confirmFraud;
   }
 }
