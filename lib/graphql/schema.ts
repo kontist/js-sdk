@@ -485,6 +485,7 @@ export type Account = {
   cardHolderRepresentation?: Maybe<Scalars['String']>;
   canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
+  hasPendingCardFraudCase: Scalars['Boolean'];
   transfers: TransfersConnection;
   transaction?: Maybe<Transaction>;
   transactions: TransactionsConnection;

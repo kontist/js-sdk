@@ -10,6 +10,8 @@ const GET_ACCOUNT = `query {
       balance
       cardHolderRepresentation
       cardHolderRepresentations
+      hasPendingCardFraudCase
+      canCreateOverdraft
     }
   }
 }`;

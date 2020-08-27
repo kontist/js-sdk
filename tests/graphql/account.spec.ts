@@ -72,7 +72,9 @@ describe("Account", () => {
             iban: "DE1234",
             balance: 1234,
             cardHolderRepresentation: null,
-            cardHolderRepresentations: ["STEPHEN/JAMES"]
+            cardHolderRepresentations: ["STEPHEN/JAMES"],
+            hasPendingCardFraudCase: false,
+            canCreateOverdraft: true,
           },
         },
       } as any);
@@ -84,6 +86,10 @@ describe("Account", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result?.iban).to.eq("DE1234");
       expect(result?.balance).to.eq(1234);
+      expect(result?.cardHolderRepresentation).to.eq(null);
+      expect(result?.cardHolderRepresentations[0]).to.eq("STEPHEN/JAMES");
+      expect(result?.hasPendingCardFraudCase).to.eq(false);
+      expect(result?.canCreateOverdraft).to.eq(true);
     });
 
     it("should call rawQuery and return null for empty account", async () => {
@@ -101,6 +107,7 @@ describe("Account", () => {
       expect(result).to.eq(null);
     });
   });
+
   describe("#getStats", () => {
     it("should call rawQuery and return correct stats", async () => {
       // arrange
@@ -123,7 +130,7 @@ describe("Account", () => {
 
     it("should call rawQuery and return null for missing account", async () => {
       // arrange
-      const account =  new Account(client.graphQL);
+      const account = new Account(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {},
       } as any);
