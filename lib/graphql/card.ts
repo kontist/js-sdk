@@ -255,7 +255,7 @@ export const WHITELIST_CARD = `mutation {
   whitelistCard {
     id
     resolution
-    whitelisted_until
+    whitelistedUntil
   }
 }`;
 

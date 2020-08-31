@@ -1699,7 +1699,7 @@ export type WhitelistCardResponse = {
   __typename?: 'WhitelistCardResponse';
   id: Scalars['String'];
   resolution: CaseResolution;
-  whitelisted_until: Scalars['String'];
+  whitelistedUntil: Scalars['String'];
 };
 
 export enum CaseResolution {

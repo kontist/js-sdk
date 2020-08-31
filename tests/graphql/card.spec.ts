@@ -463,7 +463,7 @@ describe("Card", () => {
       const response = {
         id: cardData.id,
         resolution: CaseResolution.Whitelisted,
-        whitelisted_until: new Date().toISOString(),
+        whitelistedUntil: new Date().toISOString(),
       };
 
       const card = new Card(client.graphQL);
