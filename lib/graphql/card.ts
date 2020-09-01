@@ -437,7 +437,6 @@ export class Card extends Model<CardModel> {
   /**
    * Whitelist card fraud case
    *
-   * @param args   query parameters including card id and card fraud case id
    * @returns      case resolution and timestamp till when the case is whitelisted
    */
   public async whitelistCard(): Promise<WhitelistCardResponse> {
@@ -448,7 +447,6 @@ export class Card extends Model<CardModel> {
   /**
    * Confirm card fraud case
    *
-   * @param args   query parameters including card id and card fraud case id
    * @returns      case resolution
    */
   public async confirmFraud(): Promise<ConfirmFraudResponse> {
