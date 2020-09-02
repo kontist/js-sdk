@@ -52,8 +52,8 @@ export class TokenManager {
         btoa(String.fromCharCode.apply(null, sha256.array(this.verifier)))!
 
         .split("=")[0]
-        .replace("+", "-")
-        .replace("/", "_");
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
 
       query.code_challenge = challenge;
       query.code_challenge_method = "S256";
