@@ -1,6 +1,11 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { CardAction, CardStatus, CardType } from "../../lib/graphql/schema";
+import {
+  CardAction,
+  CardStatus,
+  CardType,
+  CaseResolution,
+} from "../../lib/graphql/schema";
 
 import { Client } from "../../lib";
 import { Card } from "../../lib/graphql/card";
@@ -449,6 +454,51 @@ describe("Card", () => {
         walletId,
         tokenRefId,
       });
+    });
+  });
+
+  describe("#whitelistCard", () => {
+    it("should call rawQuery and return WhitelistCardResponse", async () => {
+      // arrange;
+      const response = {
+        id: cardData.id,
+        resolution: CaseResolution.Whitelisted,
+        whitelistedUntil: new Date().toISOString(),
+      };
+
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        whitelistCard: response,
+      } as any);
+
+      // act
+      const result = await card.whitelistCard();
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eql(response);
+    });
+  });
+
+  describe("#confirmFraud", () => {
+    it("should call rawQuery and return ConfirmFraudResponse", async () => {
+      // arrange;
+      const response = {
+        id: cardData.id,
+        resolution: CaseResolution.Confirmed,
+      };
+
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        confirmFraud: response,
+      } as any);
+
+      // act
+      const result = await card.confirmFraud();
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eql(response);
     });
   });
 });

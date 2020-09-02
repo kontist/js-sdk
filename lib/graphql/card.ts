@@ -13,13 +13,13 @@ import {
   GooglePayCardToken,
   MutationAddGooglePayCardTokenArgs,
   MutationDeleteGooglePayCardTokenArgs,
+  WhitelistCardResponse,
+  ConfirmFraudResponse,
 } from "./schema";
 
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import {
-  GetCardOptions,
-} from "./types";
+import { GetCardOptions } from "./types";
 
 const CARD_FIELDS = `
   id
@@ -251,6 +251,22 @@ export const DELETE_GOOGLE_PAY_CARD_TOKEN = `mutation(
   }
 }`;
 
+export const WHITELIST_CARD = `mutation {
+  whitelistCard {
+    id
+    resolution
+    whitelistedUntil
+  }
+}`;
+
+export const CONFIRM_FRAUD = `
+mutation {
+  confirmFraud {
+    id
+    resolution
+  }
+}`;
+
 export class Card extends Model<CardModel> {
   /**
    * Fetches all cards belonging to the current user
@@ -416,5 +432,25 @@ export class Card extends Model<CardModel> {
   public async deleteGooglePayCardToken(args: MutationDeleteGooglePayCardTokenArgs): Promise<GooglePayCardToken> {
     const result = await this.client.rawQuery(DELETE_GOOGLE_PAY_CARD_TOKEN, args);
     return result.deleteGooglePayCardToken;
+  }
+
+  /**
+   * Whitelist card fraud case
+   *
+   * @returns      case resolution and timestamp till when the case is whitelisted
+   */
+  public async whitelistCard(): Promise<WhitelistCardResponse> {
+    const result = await this.client.rawQuery(WHITELIST_CARD);
+    return result.whitelistCard;
+  }
+
+  /**
+   * Confirm card fraud case
+   *
+   * @returns      case resolution
+   */
+  public async confirmFraud(): Promise<ConfirmFraudResponse> {
+    const result = await this.client.rawQuery(CONFIRM_FRAUD);
+    return result.confirmFraud;
   }
 }
