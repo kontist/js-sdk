@@ -1016,7 +1016,8 @@ export enum OverdraftApplicationStatus {
   AccountSnapshotVerificationPending = 'ACCOUNT_SNAPSHOT_VERIFICATION_PENDING',
   Offered = 'OFFERED',
   Rejected = 'REJECTED',
-  OverdraftCreated = 'OVERDRAFT_CREATED'
+  OverdraftCreated = 'OVERDRAFT_CREATED',
+  Expired = 'EXPIRED'
 }
 
 export type WirecardDetails = {
@@ -1047,7 +1048,8 @@ export enum PurchaseType {
   Premium = 'PREMIUM',
   Card = 'CARD',
   Lexoffice = 'LEXOFFICE',
-  Kontax = 'KONTAX'
+  Kontax = 'KONTAX',
+  KontaxPending = 'KONTAX_PENDING'
 }
 
 export enum PurchaseState {
@@ -1066,7 +1068,8 @@ export enum BannerName {
   Overdraft = 'OVERDRAFT',
   Bookkeeping = 'BOOKKEEPING',
   FriendReferral = 'FRIEND_REFERRAL',
-  PrimaryWebapp = 'PRIMARY_WEBAPP'
+  PrimaryWebapp = 'PRIMARY_WEBAPP',
+  TaxService = 'TAX_SERVICE'
 }
 
 export type UserIntegration = {
@@ -1317,6 +1320,8 @@ export type Mutation = {
   dismissBanner: MutationResult;
   /** Connect user to a bookkeeping partner */
   connectIntegration: MutationResult;
+  /** Create a new identification if applicable */
+  requestIdentification: IdentificationDetails;
   /** Update user signup information */
   updateUserSignupInformation: MutationResult;
   /** Create a new user */
