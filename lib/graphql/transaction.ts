@@ -59,6 +59,7 @@ const TRANSACTION_FIELDS = `
   valutaDate
   paymentMethod
   category
+  categorizationType
   userSelectedBookingDate
   purpose
   personalNote

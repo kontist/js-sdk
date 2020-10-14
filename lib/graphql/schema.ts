@@ -672,6 +672,7 @@ export type Transaction = {
   name?: Maybe<Scalars['String']>;
   paymentMethod: Scalars['String'];
   category?: Maybe<TransactionCategory>;
+  categorizationType?: Maybe<CategorizationType>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   personalNote?: Maybe<Scalars['String']>;
@@ -791,6 +792,13 @@ export enum InvoiceStatus {
   Closed = 'CLOSED',
   Rejected = 'REJECTED',
   Pending = 'PENDING'
+}
+
+export enum CategorizationType {
+  Manual = 'MANUAL',
+  Automatic = 'AUTOMATIC',
+  Recategorized = 'RECATEGORIZED',
+  Kontax = 'KONTAX'
 }
 
 export enum DocumentType {

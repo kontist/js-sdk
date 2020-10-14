@@ -35,6 +35,7 @@ export const createTransaction = (
     splits: [],
     assets: [],
     createdAt: new Date(0).toISOString(),
+    categorizationType: null,
     ...override,
   };
 };
