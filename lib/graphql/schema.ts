@@ -711,6 +711,7 @@ export enum TransactionProjectionType {
   Oct = 'OCT',
   ForcePostTransaction = 'FORCE_POST_TRANSACTION',
   DebitPresentment = 'DEBIT_PRESENTMENT',
+  DisputeTransaction = 'DISPUTE_TRANSACTION',
   Atm = 'ATM',
   CancelManualLoad = 'CANCEL_MANUAL_LOAD',
   CardUsage = 'CARD_USAGE',
