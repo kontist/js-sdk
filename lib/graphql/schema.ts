@@ -4,7 +4,8 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -134,6 +135,11 @@ export type UserAvailablePlansArgs = {
 
 export type UserMetadataArgs = {
   platform?: Maybe<Platform>;
+};
+
+
+export type UserPremiumSubscriptionDiscountArgs = {
+  couponCode?: Maybe<Scalars['String']>;
 };
 
 
@@ -481,6 +487,7 @@ export enum ScopeType {
 /** The bank account of the current user */
 export type Account = {
   __typename?: 'Account';
+  publicId: Scalars['ID'];
   iban: Scalars['String'];
   cardHolderRepresentation?: Maybe<Scalars['String']>;
   canCreateOverdraft: Scalars['Boolean'];
@@ -732,7 +739,8 @@ export enum TransactionProjectionType {
   CancellationSepaCreditTransferReturn = 'CANCELLATION_SEPA_CREDIT_TRANSFER_RETURN',
   CardTransaction = 'CARD_TRANSACTION',
   InterestAccrued = 'INTEREST_ACCRUED',
-  CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED'
+  CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED',
+  CommissionOverdraft = 'COMMISSION_OVERDRAFT'
 }
 
 export type TransactionFee = {
@@ -1235,6 +1243,7 @@ export type RecurlyAccount = {
 export type Discount = {
   __typename?: 'Discount';
   amount: Scalars['Float'];
+  couponIsValid: Scalars['Boolean'];
   subtitle?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
@@ -1336,6 +1345,9 @@ export type Mutation = {
   createUser: PublicMutationResult;
   /** Update the push-notifications a user should receive */
   updateUserNotifications: Array<Notification>;
+  refundDirectDebit: MutationResult;
+  createReview: CreateReviewResponse;
+  updateReview: MutationResult;
 };
 
 
@@ -1556,6 +1568,23 @@ export type MutationCreateUserArgs = {
 export type MutationUpdateUserNotificationsArgs = {
   active: Scalars['Boolean'];
   type: NotificationType;
+};
+
+
+export type MutationRefundDirectDebitArgs = {
+  transactionId: Scalars['String'];
+};
+
+
+export type MutationCreateReviewArgs = {
+  platform: ReviewTriggerPlatform;
+  triggerName: ReviewTriggerName;
+};
+
+
+export type MutationUpdateReviewArgs = {
+  status: UserReviewStatus;
+  reviewId: Scalars['Int'];
 };
 
 export type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
@@ -1902,6 +1931,36 @@ export type AttributionData = {
   platform?: Maybe<Platform>;
   trackingId?: Maybe<Scalars['String']>;
 };
+
+export type CreateReviewResponse = {
+  __typename?: 'CreateReviewResponse';
+  id: Scalars['String'];
+};
+
+export enum ReviewTriggerPlatform {
+  Mobile = 'MOBILE',
+  Webapp = 'WEBAPP'
+}
+
+export enum ReviewTriggerName {
+  Googlepay = 'GOOGLEPAY',
+  OverdraftOffered = 'OVERDRAFT_OFFERED',
+  VirtualCardActivated = 'VIRTUAL_CARD_ACTIVATED',
+  PhysicalCardActivated = 'PHYSICAL_CARD_ACTIVATED',
+  OutgoingTransactions = 'OUTGOING_TRANSACTIONS',
+  ReceiptsScanned = 'RECEIPTS_SCANNED',
+  BatchTransfers = 'BATCH_TRANSFERS',
+  SettingsButtonClicked = 'SETTINGS_BUTTON_CLICKED'
+}
+
+export enum UserReviewStatus {
+  Reviewed = 'REVIEWED',
+  PositiveReminder = 'POSITIVE_REMINDER',
+  PositivePending = 'POSITIVE_PENDING',
+  NegativePending = 'NEGATIVE_PENDING',
+  NegativeReminder = 'NEGATIVE_REMINDER',
+  Feedback = 'FEEDBACK'
+}
 
 export type Subscription = {
   __typename?: 'Subscription';
