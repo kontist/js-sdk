@@ -14,7 +14,7 @@ describe("Auth: TokenManager", () => {
     it("should return proper redirect url when clientSecret is provided", async () => {
       const client = createClient({ clientSecret });
       const url = await client.auth.tokenManager.getAuthUri();
-      const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
+      const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&response_type=code&state=25843739712322056&scope=transactions`;
       expect(url).to.equal(expectedUrl);
     });
 
@@ -23,7 +23,7 @@ describe("Auth: TokenManager", () => {
       const codeChallenge = "xc3uY4-XMuobNWXzzfEqbYx3rUYBH69_zu4EFQIJH8w";
       const codeChallengeMethod = "S256";
       const url = await client.auth.tokenManager.getAuthUri();
-      const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
+      const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&response_type=code&state=25843739712322056&scope=transactions&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
       expect(url).to.equal(expectedUrl);
     });
   });
