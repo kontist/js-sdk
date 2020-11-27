@@ -20,7 +20,7 @@ interface Subscriptions {
 }
 
 export class GraphQLClient {
-  private auth: Auth;
+  private auth?: Auth;
   private client: GQLClient;
   private subscriptionEndpoint: string;
   private subscriptionClient?: SubscriptionClient | null;
@@ -42,14 +42,16 @@ export class GraphQLClient {
       [key: string]: any;
     },
   ): Promise<RawQueryResponse> => {
-    if (!this.auth.tokenManager.token) {
-      throw new UserUnauthorizedError();
-    }
+    if (this.auth) {
+      if (!this.auth.tokenManager.token) {
+        throw new UserUnauthorizedError();
+      }
 
-    this.client.setHeader(
-      "Authorization",
-      `Bearer ${this.auth.tokenManager.token.accessToken}`,
-    );
+      this.client.setHeader(
+        "Authorization",
+        `Bearer ${this.auth.tokenManager.token.accessToken}`,
+      );
+    }
 
     try {
       const { data } = await this.client.rawRequest(query, variables);
@@ -115,18 +117,25 @@ export class GraphQLClient {
    * Create a subscription client
    */
   private createSubscriptionClient = (): SubscriptionClient => {
-    if (!this.auth.tokenManager.token) {
-      throw new UserUnauthorizedError();
+    let connectionParams = {};
+
+    if (this.auth) {
+      if (!this.auth.tokenManager.token) {
+        throw new UserUnauthorizedError();
+      }
+
+      connectionParams = {
+        Authorization: `Bearer ${this.auth.tokenManager.token.accessToken}`,
+      }
     }
+
 
     const webSocket = typeof window === "undefined" ? ws : window.WebSocket;
 
     return new SubscriptionClient(
       this.subscriptionEndpoint,
       {
-        connectionParams: {
-          Authorization: `Bearer ${this.auth.tokenManager.token.accessToken}`,
-        },
+        connectionParams,
         lazy: true,
       },
       webSocket,
@@ -141,14 +150,16 @@ export class GraphQLClient {
    * 3. Resubscribe all previously active subscriptions
    */
   private handleDisconnection = async (): Promise<void> => {
-    try {
-      await this.auth.tokenManager.refresh();
-    } catch (error) {
-      Object.values(this.subscriptions).forEach(({ onError }) => {
-        if (typeof onError === "function") {
-          onError(error);
-        }
-      });
+    if (this.auth) {
+      try {
+        await this.auth.tokenManager.refresh();
+      } catch (error) {
+        Object.values(this.subscriptions).forEach(({ onError }) => {
+          if (typeof onError === "function") {
+            onError(error);
+          }
+        });
+      }
     }
 
     this.subscriptionClient = null;
