@@ -550,7 +550,7 @@ describe("createSubscriptionClient", () => {
 
         client.graphQL.createSubscriptionClient();
 
-        expect(subscriptionClientStub.callCount).to.equal(0);
+        expect(subscriptionClientStub.callCount).to.equal(1);
         expect(subscriptionClientStub.getCall(0).args[2].fake).to.equal(
           "websocket",
         );
