@@ -14,7 +14,7 @@ export enum HttpMethod {
 export type GraphQLClientOpts = {
   endpoint: string;
   subscriptionEndpoint: string;
-  auth: Auth;
+  auth?: Auth;
 };
 
 export type ClientOpts = {
