@@ -33,6 +33,18 @@ export class GraphQLClient {
     this.subscriptionEndpoint = subscriptionEndpoint;
   }
 
+  private getAuthHeader = (): [string, string] | false => {
+    if (!this.auth) {
+      return false;
+    }
+
+    if (!this.auth.tokenManager.token) {
+      throw new UserUnauthorizedError();
+    }
+
+    return ["Authorization", `Bearer ${this.auth.tokenManager.token.accessToken}`];
+  }
+
   /**
    * Send a raw GraphQL request and return its response.
    */
@@ -42,16 +54,8 @@ export class GraphQLClient {
       [key: string]: any;
     },
   ): Promise<RawQueryResponse> => {
-    if (this.auth) {
-      if (!this.auth.tokenManager.token) {
-        throw new UserUnauthorizedError();
-      }
-
-      this.client.setHeader(
-        "Authorization",
-        `Bearer ${this.auth.tokenManager.token.accessToken}`,
-      );
-    }
+    const auth = this.getAuthHeader();
+    if (auth) this.client.setHeader(...auth);
 
     try {
       const { data } = await this.client.rawRequest(query, variables);
@@ -117,19 +121,8 @@ export class GraphQLClient {
    * Create a subscription client
    */
   private createSubscriptionClient = (): SubscriptionClient => {
-    let connectionParams = {};
-
-    if (this.auth) {
-      if (!this.auth.tokenManager.token) {
-        throw new UserUnauthorizedError();
-      }
-
-      connectionParams = {
-        Authorization: `Bearer ${this.auth.tokenManager.token.accessToken}`,
-      }
-    }
-
-
+    const auth = this.getAuthHeader();
+    const connectionParams = auth ? { [auth[0]]: auth[1] } : {};
     const webSocket = typeof window === "undefined" ? ws : window.WebSocket;
 
     return new SubscriptionClient(
