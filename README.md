@@ -71,6 +71,17 @@ Optionally, this method accepts a number as an argument to specify after how man
 const token = await client.auth.tokenManager.refresh(20000);
 ```
 
+**Note:** to create a client that can handle public request, you need to initialize `Client` without `clientId`.
+
+```typescript
+const client = new Client({
+  redirectUri: REDIRECT_URI,
+  scopes: ["transactions"],
+  clientSecret,
+  state
+});
+```
+
 ## Usage (Browser)
 
 ```html
