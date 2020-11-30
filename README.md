@@ -75,9 +75,7 @@ const token = await client.auth.tokenManager.refresh(20000);
 
 ```typescript
 const client = new Client({
-  redirectUri: REDIRECT_URI,
   scopes: ["transactions"],
-  clientSecret,
   state
 });
 ```
