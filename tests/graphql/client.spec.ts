@@ -558,3 +558,77 @@ describe("createSubscriptionClient", () => {
     });
   });
 });
+
+
+describe("without clientId", () => {
+  const sandbox = sinon.createSandbox();
+
+  afterEach(() => sandbox.restore());
+
+  describe("rawQuery", () => {
+    const fakeHeaders = {
+      append: () => null,
+      delete: () => null,
+      get: () => null,
+      has: () => false,
+      set: () => null,
+      forEach: () => null,
+    };
+
+    let client: any;
+    let error: any;
+
+    before(async () => {
+      sandbox.stub(GQLClient.prototype, "rawRequest").resolves({
+        data: {}, // need to return data, otherwise it will throw error
+        status: 200,
+        headers: fakeHeaders,
+      });
+
+      client = createClient({ clientId: undefined });
+
+      try {
+        await client.graphQL.rawQuery(``);
+      } catch (err) {
+        error = err;
+      }
+    });
+
+    it("should not contain auth token", async () => {
+      expect(client.auth).to.be.undefined;
+    });
+
+    it("should not throw unauthorized error", async () => {
+      expect(error).to.be.undefined;
+    });
+  });
+
+  describe("createSubscriptionClient1", () => {
+    let client: any;
+    let fakeSubscriptionClient: any;
+
+    before(() => {
+      client = createClient({ clientId: undefined });
+
+      fakeSubscriptionClient = {
+        fake: "client",
+      };
+
+      sandbox.stub(subscriptions, "SubscriptionClient")
+        .returns(fakeSubscriptionClient);
+    });
+
+    describe("when auth token is missing", () => {
+      it("should NOT throw a UserUnauthorized error", () => {
+        let error;
+        try {
+          client.graphQL.createSubscriptionClient();
+        } catch (err) {
+          error = err;
+        }
+
+        expect(error).to.be.undefined;
+      });
+    });
+  });
+});

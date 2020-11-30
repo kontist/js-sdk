@@ -20,7 +20,7 @@ interface Subscriptions {
 }
 
 export class GraphQLClient {
-  private auth: Auth;
+  private auth?: Auth;
   private client: GQLClient;
   private subscriptionEndpoint: string;
   private subscriptionClient?: SubscriptionClient | null;
@@ -33,6 +33,18 @@ export class GraphQLClient {
     this.subscriptionEndpoint = subscriptionEndpoint;
   }
 
+  private getAuthHeader = (): [string, string] | false => {
+    if (!this.auth) {
+      return false;
+    }
+
+    if (!this.auth.tokenManager.token) {
+      throw new UserUnauthorizedError();
+    }
+
+    return ["Authorization", `Bearer ${this.auth.tokenManager.token.accessToken}`];
+  }
+
   /**
    * Send a raw GraphQL request and return its response.
    */
@@ -42,14 +54,8 @@ export class GraphQLClient {
       [key: string]: any;
     },
   ): Promise<RawQueryResponse> => {
-    if (!this.auth.tokenManager.token) {
-      throw new UserUnauthorizedError();
-    }
-
-    this.client.setHeader(
-      "Authorization",
-      `Bearer ${this.auth.tokenManager.token.accessToken}`,
-    );
+    const auth = this.getAuthHeader();
+    if (auth) this.client.setHeader(...auth);
 
     try {
       const { data } = await this.client.rawRequest(query, variables);
@@ -115,18 +121,14 @@ export class GraphQLClient {
    * Create a subscription client
    */
   private createSubscriptionClient = (): SubscriptionClient => {
-    if (!this.auth.tokenManager.token) {
-      throw new UserUnauthorizedError();
-    }
-
+    const auth = this.getAuthHeader();
+    const connectionParams = auth ? { [auth[0]]: auth[1] } : {};
     const webSocket = typeof window === "undefined" ? ws : window.WebSocket;
 
     return new SubscriptionClient(
       this.subscriptionEndpoint,
       {
-        connectionParams: {
-          Authorization: `Bearer ${this.auth.tokenManager.token.accessToken}`,
-        },
+        connectionParams,
         lazy: true,
       },
       webSocket,
@@ -141,14 +143,16 @@ export class GraphQLClient {
    * 3. Resubscribe all previously active subscriptions
    */
   private handleDisconnection = async (): Promise<void> => {
-    try {
-      await this.auth.tokenManager.refresh();
-    } catch (error) {
-      Object.values(this.subscriptions).forEach(({ onError }) => {
-        if (typeof onError === "function") {
-          onError(error);
-        }
-      });
+    if (this.auth) {
+      try {
+        await this.auth.tokenManager.refresh();
+      } catch (error) {
+        Object.values(this.subscriptions).forEach(({ onError }) => {
+          if (typeof onError === "function") {
+            onError(error);
+          }
+        });
+      }
     }
 
     this.subscriptionClient = null;

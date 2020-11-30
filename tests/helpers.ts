@@ -1,4 +1,5 @@
 import { Client } from "../lib";
+import { ClientOpts } from "../lib/types";
 import {
   Transaction,
   TransactionProjectionType,
@@ -11,13 +12,20 @@ export const redirectUri = "https://localhost:3000/auth/callback";
 export const scopes = ["transactions"];
 export const state = "25843739712322056";
 
-export const createClient = (opts = {}) => {
+export const createClient = (opts: Partial<ClientOpts> = {}) => {
+  const { clientId: optClientId, ...rest } = opts;
+
+  // trying to trim clientId from request
+  const clientIdObj = opts.hasOwnProperty("clientId") && optClientId === undefined
+    ? {}
+    : { clientId: optClientId ?? clientId };
+
   return new Client({
-    clientId,
+    ...clientIdObj,
     redirectUri,
     scopes,
-    state,
-    ...opts,
+    state: opts.state || state,
+    ...rest,
   });
 };
 

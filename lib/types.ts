@@ -14,13 +14,13 @@ export enum HttpMethod {
 export type GraphQLClientOpts = {
   endpoint: string;
   subscriptionEndpoint: string;
-  auth: Auth;
+  auth?: Auth;
 };
 
 export type ClientOpts = {
   baseUrl?: string;
   baseSubscriptionUrl?: string;
-  clientId: string;
+  clientId?: string;
   clientSecret?: string;
   oauthClient?: ClientOAuth2;
   redirectUri?: string;
