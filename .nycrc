@@ -2,9 +2,9 @@
     "cache": false,
     "check-coverage": true,
     "branches": 93,
-    "lines": 98,
-    "functions": 98,
-    "statements": 98,
+    "lines": 99,
+    "functions": 99,
+    "statements": 99,
     "watermarks": {
         "branches": [
             80,

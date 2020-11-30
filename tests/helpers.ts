@@ -11,12 +11,23 @@ export const redirectUri = "https://localhost:3000/auth/callback";
 export const scopes = ["transactions"];
 export const state = "25843739712322056";
 
-export const createClient = (opts = {}) => {
+type ClientOpts = {
+  baseUrl?: string;
+  baseSubscriptionUrl?: string;
+  clientId?: string | undefined;
+  clientSecret?: string;
+  oauthClient?: any;
+  verifier?: string;
+  state?: string;
+};
+
+export const createClient = (opts: ClientOpts = {}) => {
   return new Client({
-    clientId,
+    // opts.clientId can be undefined
+    clientId: opts.hasOwnProperty('clientId') ? opts.clientId : clientId,
     redirectUri,
     scopes,
-    state,
+    state: opts.state || state,
     ...opts,
   });
 };
