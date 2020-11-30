@@ -13,13 +13,19 @@ export const scopes = ["transactions"];
 export const state = "25843739712322056";
 
 export const createClient = (opts: Partial<ClientOpts> = {}) => {
+  const { clientId: optClientId, ...rest } = opts;
+
+  // trying to trim clientId from request
+  const clientIdObj = opts.hasOwnProperty("clientId") && optClientId === undefined
+    ? {}
+    : { clientId: optClientId ?? clientId };
+
   return new Client({
-    // opts.clientId can be undefined
-    clientId: opts.clientId ?? clientId,
+    ...clientIdObj,
     redirectUri,
     scopes,
     state: opts.state || state,
-    ...opts,
+    ...rest,
   });
 };
 
