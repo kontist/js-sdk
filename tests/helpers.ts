@@ -1,5 +1,3 @@
-import { Client } from "../lib";
-import { ClientOpts } from "../lib/types";
 import {
   Transaction,
   TransactionProjectionType,
@@ -7,25 +5,22 @@ import {
   TransferStatus,
 } from "../lib/graphql/schema";
 
+import { Client } from "../lib";
+import { ClientOpts } from "../lib/types";
+
 export const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
 export const redirectUri = "https://localhost:3000/auth/callback";
 export const scopes = ["transactions"];
 export const state = "25843739712322056";
 
 export const createClient = (opts: Partial<ClientOpts> = {}) => {
-  const { clientId: optClientId, ...rest } = opts;
-
-  // trying to trim clientId from request
-  const clientIdObj = opts.hasOwnProperty("clientId") && optClientId === undefined
-    ? {}
-    : { clientId: optClientId ?? clientId };
 
   return new Client({
-    ...clientIdObj,
+    clientId,
     redirectUri,
     scopes,
-    state: opts.state || state,
-    ...rest,
+    state,
+    ...opts,
   });
 };
 
