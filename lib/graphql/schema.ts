@@ -22,6 +22,8 @@ export type Query = {
   /** The current user information */
   viewer?: Maybe<User>;
   status: SystemStatus;
+  /** Get all released generic features, that are needed before user creation */
+  genericFeatures: Array<GenericFeature>;
 };
 
 export type User = {
@@ -38,7 +40,7 @@ export type User = {
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxRate" */
   taxRate?: Maybe<Scalars['Int']>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatRate" */
-  vatRate?: Maybe<Scalars['Int']>;
+  vatRate?: Maybe<UserVatRate>;
   /**
    * The user's IDNow identification status
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.identification.status"
@@ -152,6 +154,11 @@ export enum PaymentFrequency {
 
 export enum TaxPaymentFrequency {
   Quarterly = 'QUARTERLY'
+}
+
+export enum UserVatRate {
+  Vat_0 = 'VAT_0',
+  Vat_19 = 'VAT_19'
 }
 
 export enum IdentificationStatus {
@@ -693,6 +700,9 @@ export type Transaction = {
   documentType?: Maybe<DocumentType>;
   foreignCurrency?: Maybe<Scalars['String']>;
   originalAmount?: Maybe<Scalars['Int']>;
+  elsterCode?: Maybe<Scalars['String']>;
+  elsterCodeTranslation?: Maybe<Scalars['String']>;
+  recurlyInvoiceNumber?: Maybe<Scalars['String']>;
   /** View a single TransactionAsset for a transaction */
   asset?: Maybe<TransactionAsset>;
 };
@@ -741,7 +751,8 @@ export enum TransactionProjectionType {
   CardTransaction = 'CARD_TRANSACTION',
   InterestAccrued = 'INTEREST_ACCRUED',
   CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED',
-  CommissionOverdraft = 'COMMISSION_OVERDRAFT'
+  CommissionOverdraft = 'COMMISSION_OVERDRAFT',
+  Charge = 'CHARGE'
 }
 
 export type TransactionFee = {
@@ -804,10 +815,13 @@ export enum InvoiceStatus {
 }
 
 export enum CategorizationType {
+  AutomaticKontistMl = 'AUTOMATIC_KONTIST_ML',
+  BookkeepingPartner = 'BOOKKEEPING_PARTNER',
+  User = 'USER',
+  Kontax = 'KONTAX',
   Manual = 'MANUAL',
   Automatic = 'AUTOMATIC',
-  Recategorized = 'RECATEGORIZED',
-  Kontax = 'KONTAX'
+  Recategorized = 'RECATEGORIZED'
 }
 
 export enum DocumentType {
@@ -1066,6 +1080,7 @@ export enum PurchaseType {
   Card = 'CARD',
   Lexoffice = 'LEXOFFICE',
   Kontax = 'KONTAX',
+  KontaxSb = 'KONTAX_SB',
   KontaxPending = 'KONTAX_PENDING'
 }
 
@@ -1148,7 +1163,7 @@ export type UserTaxDetails = {
   /** @deprecated This field will be removed in an upcoming release. Do not rely on it for any new features */
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
   taxRate?: Maybe<Scalars['Int']>;
-  vatRate?: Maybe<Scalars['Int']>;
+  vatRate?: Maybe<UserVatRate>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
@@ -1160,6 +1175,7 @@ export type ReferralDetails = {
   link?: Maybe<Scalars['String']>;
   /** Amount in euros granted to user and their referee */
   bonusAmount: Scalars['Int'];
+  copy: Scalars['String'];
 };
 
 export type IdentificationDetails = {
@@ -1259,8 +1275,19 @@ export enum Status {
   Error = 'ERROR'
 }
 
+export type GenericFeature = {
+  __typename?: 'GenericFeature';
+  name: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Create an TransactionAsset and obtain an upload config */
+  createTransactionAsset: CreateAssetResponse;
+  /** Confirm and validate an TransactionAsset upload as completed */
+  finalizeTransactionAssetUpload: TransactionAsset;
+  /** Remove an TransactionAsset from the Transaction and storage */
+  deleteTransactionAsset: MutationResult;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
   /** Confirm a Standing Order cancellation */
@@ -1313,12 +1340,6 @@ export type Mutation = {
   categorizeTransaction: Transaction;
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
-  /** Create an TransactionAsset and obtain an upload config */
-  createTransactionAsset: CreateAssetResponse;
-  /** Confirm and validate an TransactionAsset upload as completed */
-  finalizeTransactionAssetUpload: TransactionAsset;
-  /** Remove an TransactionAsset from the Transaction and storage */
-  deleteTransactionAsset: MutationResult;
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
   /** Activate Overdraft Application  - only available for Kontist Application */
@@ -1349,6 +1370,27 @@ export type Mutation = {
   refundDirectDebit: MutationResult;
   createReview: CreateReviewResponse;
   updateReview: MutationResult;
+  /** Clear preselected plan */
+  clearPreselectedPlan: MutationResult;
+  /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
+  assignKontaxCouponCodeToDeclinedUser: MutationResult;
+};
+
+
+export type MutationCreateTransactionAssetArgs = {
+  filetype: Scalars['String'];
+  name: Scalars['String'];
+  transactionId: Scalars['ID'];
+};
+
+
+export type MutationFinalizeTransactionAssetUploadArgs = {
+  assetId: Scalars['ID'];
+};
+
+
+export type MutationDeleteTransactionAssetArgs = {
+  assetId: Scalars['ID'];
 };
 
 
@@ -1493,23 +1535,6 @@ export type MutationUpdateTransactionArgs = {
 };
 
 
-export type MutationCreateTransactionAssetArgs = {
-  filetype: Scalars['String'];
-  name: Scalars['String'];
-  transactionId: Scalars['ID'];
-};
-
-
-export type MutationFinalizeTransactionAssetUploadArgs = {
-  assetId: Scalars['ID'];
-};
-
-
-export type MutationDeleteTransactionAssetArgs = {
-  assetId: Scalars['ID'];
-};
-
-
 export type MutationUpdateOverdraftArgs = {
   offeredScreenShown?: Maybe<Scalars['Boolean']>;
   rejectionScreenShown?: Maybe<Scalars['Boolean']>;
@@ -1586,6 +1611,24 @@ export type MutationCreateReviewArgs = {
 export type MutationUpdateReviewArgs = {
   status: UserReviewStatus;
   reviewId: Scalars['Int'];
+};
+
+export type CreateAssetResponse = {
+  __typename?: 'CreateAssetResponse';
+  assetId: Scalars['ID'];
+  url: Scalars['String'];
+  formData: Array<FormDataPair>;
+};
+
+export type FormDataPair = {
+  __typename?: 'FormDataPair';
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type MutationResult = {
+  __typename?: 'MutationResult';
+  success: Scalars['Boolean'];
 };
 
 export type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
@@ -1784,24 +1827,6 @@ export enum CardAction {
 export type ConfirmationStatus = {
   __typename?: 'ConfirmationStatus';
   status: Scalars['String'];
-};
-
-export type CreateAssetResponse = {
-  __typename?: 'CreateAssetResponse';
-  assetId: Scalars['ID'];
-  url: Scalars['String'];
-  formData: Array<FormDataPair>;
-};
-
-export type FormDataPair = {
-  __typename?: 'FormDataPair';
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type MutationResult = {
-  __typename?: 'MutationResult';
-  success: Scalars['Boolean'];
 };
 
 export type CreateTransactionSplitsInput = {
