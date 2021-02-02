@@ -72,6 +72,7 @@ const TRANSACTION_FIELDS = `
     category
     userSelectedBookingDate
   }
+  recurlyInvoiceNumber
 `;
 
 const TRANSACTION_DETAILS = `
