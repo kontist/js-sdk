@@ -117,6 +117,7 @@ export type User = {
   recurlyAccount?: Maybe<RecurlyAccount>;
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
+  invoiceSettings?: Maybe<InvoiceSettingsOutput>;
 };
 
 
@@ -640,7 +641,8 @@ export enum TransactionCategory {
   TaxRefund = 'TAX_REFUND',
   VatRefund = 'VAT_REFUND',
   VatSaving = 'VAT_SAVING',
-  TaxSaving = 'TAX_SAVING'
+  TaxSaving = 'TAX_SAVING',
+  ReverseCharge = 'REVERSE_CHARGE'
 }
 
 export type PageInfo = {
@@ -1265,6 +1267,23 @@ export type Discount = {
   description?: Maybe<Scalars['String']>;
 };
 
+export type InvoiceSettingsOutput = {
+  __typename?: 'InvoiceSettingsOutput';
+  senderName?: Maybe<Scalars['String']>;
+  companyName?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  phoneNumber?: Maybe<Scalars['String']>;
+  /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
+  dueDateDefaultOffset?: Maybe<Scalars['Float']>;
+  numberSeriesStart?: Maybe<Scalars['Float']>;
+  taxNumber?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+};
+
 export type SystemStatus = {
   __typename?: 'SystemStatus';
   type?: Maybe<Status>;
@@ -1374,6 +1393,7 @@ export type Mutation = {
   clearPreselectedPlan: MutationResult;
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
+  updateInvoiceSettings: InvoiceSettingsOutput;
 };
 
 
@@ -1611,6 +1631,11 @@ export type MutationCreateReviewArgs = {
 export type MutationUpdateReviewArgs = {
   status: UserReviewStatus;
   reviewId: Scalars['Int'];
+};
+
+
+export type MutationUpdateInvoiceSettingsArgs = {
+  payload: InvoiceSettingsInput;
 };
 
 export type CreateAssetResponse = {
@@ -1987,6 +2012,22 @@ export enum UserReviewStatus {
   NegativeReminder = 'NEGATIVE_REMINDER',
   Feedback = 'FEEDBACK'
 }
+
+export type InvoiceSettingsInput = {
+  senderName?: Maybe<Scalars['String']>;
+  companyName?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  phoneNumber?: Maybe<Scalars['String']>;
+  /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
+  dueDateDefaultOffset?: Maybe<Scalars['Float']>;
+  numberSeriesStart?: Maybe<Scalars['Float']>;
+  taxNumber?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+};
 
 export type Subscription = {
   __typename?: 'Subscription';
