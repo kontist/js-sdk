@@ -88,6 +88,7 @@ export type User = {
   /** Coupon code assigned to the user that can be redeemed during subscription update */
   couponCodeOffer?: Maybe<Scalars['String']>;
   isSelfEmployed?: Maybe<Scalars['Boolean']>;
+  poaSignedAt?: Maybe<Scalars['DateTime']>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -117,6 +118,7 @@ export type User = {
   recurlyAccount?: Maybe<RecurlyAccount>;
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
+  invoiceSettings?: Maybe<InvoiceSettingsOutput>;
 };
 
 
@@ -640,7 +642,8 @@ export enum TransactionCategory {
   TaxRefund = 'TAX_REFUND',
   VatRefund = 'VAT_REFUND',
   VatSaving = 'VAT_SAVING',
-  TaxSaving = 'TAX_SAVING'
+  TaxSaving = 'TAX_SAVING',
+  ReverseCharge = 'REVERSE_CHARGE'
 }
 
 export type PageInfo = {
@@ -1165,9 +1168,17 @@ export type UserTaxDetails = {
   taxRate?: Maybe<Scalars['Int']>;
   vatRate?: Maybe<UserVatRate>;
   taxNumber?: Maybe<Scalars['String']>;
+  deTaxId?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
+  permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
 };
+
+export enum PermanentExtensionStatus {
+  DoesHave = 'DOES_HAVE',
+  DoesNotHave = 'DOES_NOT_HAVE',
+  DoesNotKnow = 'DOES_NOT_KNOW'
+}
 
 export type ReferralDetails = {
   __typename?: 'ReferralDetails';
@@ -1263,6 +1274,23 @@ export type Discount = {
   couponIsValid: Scalars['Boolean'];
   subtitle?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+};
+
+export type InvoiceSettingsOutput = {
+  __typename?: 'InvoiceSettingsOutput';
+  senderName?: Maybe<Scalars['String']>;
+  companyName?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  phoneNumber?: Maybe<Scalars['String']>;
+  /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
+  dueDateDefaultOffset?: Maybe<Scalars['Float']>;
+  numberSeriesStart?: Maybe<Scalars['Float']>;
+  taxNumber?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
 };
 
 export type SystemStatus = {
@@ -1374,6 +1402,7 @@ export type Mutation = {
   clearPreselectedPlan: MutationResult;
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
+  updateInvoiceSettings: InvoiceSettingsOutput;
 };
 
 
@@ -1611,6 +1640,11 @@ export type MutationCreateReviewArgs = {
 export type MutationUpdateReviewArgs = {
   status: UserReviewStatus;
   reviewId: Scalars['Int'];
+};
+
+
+export type MutationUpdateInvoiceSettingsArgs = {
+  payload: InvoiceSettingsInput;
 };
 
 export type CreateAssetResponse = {
@@ -1919,12 +1953,6 @@ export enum InternationalCustomers {
   Worldwide = 'WORLDWIDE'
 }
 
-export enum PermanentExtensionStatus {
-  DoesHave = 'DOES_HAVE',
-  DoesNotHave = 'DOES_NOT_HAVE',
-  DoesNotKnow = 'DOES_NOT_KNOW'
-}
-
 export enum ThreeStateAnswer {
   Yes = 'YES',
   No = 'NO',
@@ -1987,6 +2015,22 @@ export enum UserReviewStatus {
   NegativeReminder = 'NEGATIVE_REMINDER',
   Feedback = 'FEEDBACK'
 }
+
+export type InvoiceSettingsInput = {
+  senderName?: Maybe<Scalars['String']>;
+  companyName?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  phoneNumber?: Maybe<Scalars['String']>;
+  /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
+  dueDateDefaultOffset?: Maybe<Scalars['Float']>;
+  numberSeriesStart?: Maybe<Scalars['Float']>;
+  taxNumber?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+};
 
 export type Subscription = {
   __typename?: 'Subscription';
