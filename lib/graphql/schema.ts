@@ -31,8 +31,6 @@ export type User = {
   email: Scalars['String'];
   /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
-  /** @deprecated This field will be removed in an upcoming release */
-  vatCutoffLine?: Maybe<Scalars['DateTime']>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatPaymentFrequency" */
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxPaymentFrequency" */
@@ -119,6 +117,8 @@ export type User = {
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
   invoiceSettings?: Maybe<InvoiceSettingsOutput>;
+  /** The list of all customers of the current user */
+  invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
 };
 
 
@@ -1293,6 +1293,19 @@ export type InvoiceSettingsOutput = {
   vatNumber?: Maybe<Scalars['String']>;
 };
 
+export type InvoiceCustomerOutput = {
+  __typename?: 'InvoiceCustomerOutput';
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+  taxNumber?: Maybe<Scalars['String']>;
+};
+
 export type SystemStatus = {
   __typename?: 'SystemStatus';
   type?: Maybe<Status>;
@@ -1387,6 +1400,8 @@ export type Mutation = {
   dismissBanner: MutationResult;
   /** Connect user to a bookkeeping partner */
   connectIntegration: MutationResult;
+  /** Update user's tax details */
+  updateUserTaxDetails: MutationResult;
   /** Create a new identification if applicable */
   requestIdentification: IdentificationDetails;
   /** Update user signup information */
@@ -1403,6 +1418,7 @@ export type Mutation = {
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
   updateInvoiceSettings: InvoiceSettingsOutput;
+  updateInvoiceCustomer: InvoiceCustomerOutput;
 };
 
 
@@ -1610,6 +1626,11 @@ export type MutationConnectIntegrationArgs = {
 };
 
 
+export type MutationUpdateUserTaxDetailsArgs = {
+  payload: UserTaxDetailsInput;
+};
+
+
 export type MutationUpdateUserSignupInformationArgs = {
   payload: UserUpdateInput;
 };
@@ -1645,6 +1666,11 @@ export type MutationUpdateReviewArgs = {
 
 export type MutationUpdateInvoiceSettingsArgs = {
   payload: InvoiceSettingsInput;
+};
+
+
+export type MutationUpdateInvoiceCustomerArgs = {
+  payload: InvoiceCustomerInput;
 };
 
 export type CreateAssetResponse = {
@@ -1886,6 +1912,14 @@ export type UpdateSubscriptionPlanResult = {
   couponCode?: Maybe<Scalars['String']>;
 };
 
+export type UserTaxDetailsInput = {
+  deTaxId?: Maybe<Scalars['String']>;
+  taxNumber?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+  vatPaymentFrequency?: Maybe<PaymentFrequency>;
+  permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
+};
+
 export type UserUpdateInput = {
   birthDate?: Maybe<Scalars['DateTime']>;
   city?: Maybe<Scalars['String']>;
@@ -2030,6 +2064,18 @@ export type InvoiceSettingsInput = {
   numberSeriesStart?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
+};
+
+export type InvoiceCustomerInput = {
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+  taxNumber?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
