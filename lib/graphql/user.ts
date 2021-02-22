@@ -30,7 +30,6 @@ const GET_USER = `query {
     taxPaymentFrequency
     taxRate
     untrustedPhoneNumber
-    vatCutoffLine
     vatNumber
     vatPaymentFrequency
     vatRate
