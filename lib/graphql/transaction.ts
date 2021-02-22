@@ -71,6 +71,7 @@ const TRANSACTION_FIELDS = `
     amount
     category
     userSelectedBookingDate
+    categorizationType
   }
   recurlyInvoiceNumber
 `;
