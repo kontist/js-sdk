@@ -4,8 +4,9 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
-
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -788,7 +789,18 @@ export type TransactionSplit = {
   amount: Scalars['Int'];
   category: TransactionCategory;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  categorizationType?: Maybe<CategorizationType>;
 };
+
+export enum CategorizationType {
+  AutomaticKontistMl = 'AUTOMATIC_KONTIST_ML',
+  BookkeepingPartner = 'BOOKKEEPING_PARTNER',
+  User = 'USER',
+  Kontax = 'KONTAX',
+  Manual = 'MANUAL',
+  Automatic = 'AUTOMATIC',
+  Recategorized = 'RECATEGORIZED'
+}
 
 export type TransactionAsset = {
   __typename?: 'TransactionAsset';
@@ -815,16 +827,6 @@ export enum InvoiceStatus {
   Closed = 'CLOSED',
   Rejected = 'REJECTED',
   Pending = 'PENDING'
-}
-
-export enum CategorizationType {
-  AutomaticKontistMl = 'AUTOMATIC_KONTIST_ML',
-  BookkeepingPartner = 'BOOKKEEPING_PARTNER',
-  User = 'USER',
-  Kontax = 'KONTAX',
-  Manual = 'MANUAL',
-  Automatic = 'AUTOMATIC',
-  Recategorized = 'RECATEGORIZED'
 }
 
 export enum DocumentType {
