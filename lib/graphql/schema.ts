@@ -788,7 +788,18 @@ export type TransactionSplit = {
   amount: Scalars['Int'];
   category: TransactionCategory;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  categorizationType?: Maybe<CategorizationType>;
 };
+
+export enum CategorizationType {
+  AutomaticKontistMl = 'AUTOMATIC_KONTIST_ML',
+  BookkeepingPartner = 'BOOKKEEPING_PARTNER',
+  User = 'USER',
+  Kontax = 'KONTAX',
+  Manual = 'MANUAL',
+  Automatic = 'AUTOMATIC',
+  Recategorized = 'RECATEGORIZED'
+}
 
 export type TransactionAsset = {
   __typename?: 'TransactionAsset';
@@ -815,16 +826,6 @@ export enum InvoiceStatus {
   Closed = 'CLOSED',
   Rejected = 'REJECTED',
   Pending = 'PENDING'
-}
-
-export enum CategorizationType {
-  AutomaticKontistMl = 'AUTOMATIC_KONTIST_ML',
-  BookkeepingPartner = 'BOOKKEEPING_PARTNER',
-  User = 'USER',
-  Kontax = 'KONTAX',
-  Manual = 'MANUAL',
-  Automatic = 'AUTOMATIC',
-  Recategorized = 'RECATEGORIZED'
 }
 
 export enum DocumentType {
