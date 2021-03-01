@@ -6,12 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.16] - 2021-03-01
 ### Changed
 - Allow making GQL request to public endpoint [#153](https://github.com/kontist/js-sdk/pull/153)
 
 ### Added
-- Added `poaUrl` field in schema for `viewer`
-- Added `signPOA` mutation to schema
+- Added `poaUrl` field in schema for `viewer` [#169](https://github.com/kontist/js-sdk/pull/169)
+- Added `signPOA` mutation to schema [#169](https://github.com/kontist/js-sdk/pull/169)
 
 ## [0.35.15] - 2021-02-24
 ### Added
