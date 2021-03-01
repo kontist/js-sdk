@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Allow making GQL request to public endpoint [#153](https://github.com/kontist/js-sdk/pull/153)
 
+### Added
+- Added `poaUrl` field in schema for `viewer`
+- Added `signPOA` mutation to schema
+
 ## [0.35.15] - 2021-02-24
 ### Added
 - Added `categorizationType` field of `TransactionSplit` to the schema and the transactions query [#167](https://github.com/kontist/js-sdk/pull/167)
