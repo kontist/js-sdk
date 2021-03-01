@@ -117,6 +117,8 @@ export type User = {
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
   invoiceSettings?: Maybe<InvoiceSettingsOutput>;
+  /** Retrieves signed POA PDF for user. */
+  poaUrl?: Maybe<Scalars['String']>;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
 };
@@ -1419,6 +1421,8 @@ export type Mutation = {
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
   updateInvoiceSettings: InvoiceSettingsOutput;
+  /** Allow user to sign Power of Attorney */
+  signPOA: MutationResult;
   updateInvoiceCustomer: InvoiceCustomerOutput;
 };
 
@@ -1667,6 +1671,11 @@ export type MutationUpdateReviewArgs = {
 
 export type MutationUpdateInvoiceSettingsArgs = {
   payload: InvoiceSettingsInput;
+};
+
+
+export type MutationSignPoaArgs = {
+  signature: Scalars['String'];
 };
 
 
