@@ -17,7 +17,12 @@ import {
   TransactionFilter,
   TransactionsConnectionEdge,
 } from "./schema";
-import { FetchOptions, Subscription, SubscriptionType } from "./types";
+import {
+  FetchOptions,
+  Subscription,
+  SubscriptionType,
+  SearchFilter,
+} from "./types";
 
 const MAX_SEARCH_QUERY_LENGTH = 200;
 const MAX_SEARCH_AMOUNT_IN_CENTS = 2000000000;
@@ -431,7 +436,7 @@ export class Transaction extends IterableModel<TransactionModel> {
     };
   }
 
-  private parseSearchQuery(searchQuery: string): TransactionFilter {
+  private parseSearchQuery(searchQuery: string, searchFilter?: SearchFilter): TransactionFilter {
     const searchTerms = searchQuery
       .slice(0, MAX_SEARCH_QUERY_LENGTH)
       .split(" ")
@@ -486,11 +491,11 @@ export class Transaction extends IterableModel<TransactionModel> {
       // TO DO: Refactor
       const existingConditions = filter.conditions || [];
       delete filter.conditions;
-      delete filter.amount_in;
+
       return {
         operator: BaseOperator.And,
         ...searchFilter,
-        conditions: [...existingConditions],
+        conditions: [filter, ...existingConditions],
       };
     }
 
