@@ -4,8 +4,9 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
-
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -117,6 +118,8 @@ export type User = {
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
   invoiceSettings?: Maybe<InvoiceSettingsOutput>;
+  /** Retrieves signed POA PDF for user. */
+  poaUrl?: Maybe<Scalars['String']>;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
 };
@@ -865,6 +868,7 @@ export type TransactionFilter = {
   valutaDate_lt?: Maybe<Scalars['DateTime']>;
   valutaDate_gte?: Maybe<Scalars['DateTime']>;
   valutaDate_lte?: Maybe<Scalars['DateTime']>;
+  assets_exist?: Maybe<Scalars['Boolean']>;
   bookingDate_eq?: Maybe<Scalars['DateTime']>;
   bookingDate_ne?: Maybe<Scalars['DateTime']>;
   bookingDate_gt?: Maybe<Scalars['DateTime']>;
@@ -908,6 +912,7 @@ export type TransactionCondition = {
   valutaDate_lt?: Maybe<Scalars['DateTime']>;
   valutaDate_gte?: Maybe<Scalars['DateTime']>;
   valutaDate_lte?: Maybe<Scalars['DateTime']>;
+  assets_exist?: Maybe<Scalars['Boolean']>;
   bookingDate_eq?: Maybe<Scalars['DateTime']>;
   bookingDate_ne?: Maybe<Scalars['DateTime']>;
   bookingDate_gt?: Maybe<Scalars['DateTime']>;
@@ -1279,6 +1284,7 @@ export type Discount = {
 
 export type InvoiceSettingsOutput = {
   __typename?: 'InvoiceSettingsOutput';
+  id: Scalars['String'];
   senderName?: Maybe<Scalars['String']>;
   companyName?: Maybe<Scalars['String']>;
   streetLine?: Maybe<Scalars['String']>;
@@ -1287,6 +1293,8 @@ export type InvoiceSettingsOutput = {
   country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
+  /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
+  logoUrl?: Maybe<Scalars['String']>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
   dueDateDefaultOffset?: Maybe<Scalars['Float']>;
   numberSeriesStart?: Maybe<Scalars['Float']>;
@@ -1419,6 +1427,12 @@ export type Mutation = {
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
   updateInvoiceSettings: InvoiceSettingsOutput;
+  /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
+  createInvoiceLogo: CreateInvoiceLogoResponse;
+  /** Deletes the logo of a user's most recent settings entry */
+  deleteInvoiceLogo: MutationResult;
+  /** Allow user to sign Power of Attorney */
+  signPOA: MutationResult;
   updateInvoiceCustomer: InvoiceCustomerOutput;
 };
 
@@ -1667,6 +1681,16 @@ export type MutationUpdateReviewArgs = {
 
 export type MutationUpdateInvoiceSettingsArgs = {
   payload: InvoiceSettingsInput;
+};
+
+
+export type MutationCreateInvoiceLogoArgs = {
+  filetype: Scalars['String'];
+};
+
+
+export type MutationSignPoaArgs = {
+  signature: Scalars['String'];
 };
 
 
@@ -2065,6 +2089,18 @@ export type InvoiceSettingsInput = {
   numberSeriesStart?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
+};
+
+export type CreateInvoiceLogoResponse = {
+  __typename?: 'CreateInvoiceLogoResponse';
+  url: Scalars['String'];
+  formData: Array<InvoiceLogoFormDataPair>;
+};
+
+export type InvoiceLogoFormDataPair = {
+  __typename?: 'InvoiceLogoFormDataPair';
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type InvoiceCustomerInput = {
