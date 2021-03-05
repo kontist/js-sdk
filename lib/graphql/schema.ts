@@ -1281,6 +1281,7 @@ export type Discount = {
 
 export type InvoiceSettingsOutput = {
   __typename?: 'InvoiceSettingsOutput';
+  id: Scalars['String'];
   senderName?: Maybe<Scalars['String']>;
   companyName?: Maybe<Scalars['String']>;
   streetLine?: Maybe<Scalars['String']>;
@@ -1289,6 +1290,8 @@ export type InvoiceSettingsOutput = {
   country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
+  /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
+  logoUrl?: Maybe<Scalars['String']>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
   dueDateDefaultOffset?: Maybe<Scalars['Float']>;
   numberSeriesStart?: Maybe<Scalars['Float']>;
@@ -1421,6 +1424,10 @@ export type Mutation = {
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
   updateInvoiceSettings: InvoiceSettingsOutput;
+  /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
+  createInvoiceLogo: CreateInvoiceLogoResponse;
+  /** Deletes the logo of a user's most recent settings entry */
+  deleteInvoiceLogo: MutationResult;
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
   updateInvoiceCustomer: InvoiceCustomerOutput;
@@ -1671,6 +1678,11 @@ export type MutationUpdateReviewArgs = {
 
 export type MutationUpdateInvoiceSettingsArgs = {
   payload: InvoiceSettingsInput;
+};
+
+
+export type MutationCreateInvoiceLogoArgs = {
+  filetype: Scalars['String'];
 };
 
 
@@ -2074,6 +2086,18 @@ export type InvoiceSettingsInput = {
   numberSeriesStart?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
+};
+
+export type CreateInvoiceLogoResponse = {
+  __typename?: 'CreateInvoiceLogoResponse';
+  url: Scalars['String'];
+  formData: Array<InvoiceLogoFormDataPair>;
+};
+
+export type InvoiceLogoFormDataPair = {
+  __typename?: 'InvoiceLogoFormDataPair';
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type InvoiceCustomerInput = {
