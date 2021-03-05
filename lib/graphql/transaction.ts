@@ -268,8 +268,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param searchQuery  input query from user
    * @returns
    */
-  public async search(searchQuery: string): Promise<ResultPage<TransactionModel>> {
-    const filter = this.parseSearchQuery(searchQuery);
+  public async search(
+    searchQuery: string,
+    searchFilter?: SearchFilter
+  ): Promise<ResultPage<TransactionModel>> {
+    const filter = this.parseSearchQuery(searchQuery, searchFilter);
     return this.fetch({ filter });
   }
 
@@ -477,6 +480,18 @@ export class Transaction extends IterableModel<TransactionModel> {
 
     if (ibanTerms.length > 0) {
       filter.iban_likeAny = ibanTerms;
+    }
+
+    if (searchFilter) {
+      // TO DO: Refactor
+      const existingConditions = filter.conditions || [];
+      delete filter.conditions;
+      delete filter.amount_in;
+      return {
+        operator: BaseOperator.And,
+        ...searchFilter,
+        conditions: [...existingConditions],
+      };
     }
 
     return filter;
