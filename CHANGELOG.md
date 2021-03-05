@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.20] - 2021-03-05
+### Added
+- Added `createInvoiceLogo` and `deleteInvoiceLogo` mutations to GraphQL schema
+- Added `logoUrl` field to `InvoiceSettingsOutput` type
+
 ## [0.35.16] - 2021-03-01
 ### Changed
 - Allow making GQL request to public endpoint [#153](https://github.com/kontist/js-sdk/pull/153)
