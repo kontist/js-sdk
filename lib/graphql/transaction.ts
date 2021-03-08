@@ -437,6 +437,12 @@ export class Transaction extends IterableModel<TransactionModel> {
   }
 
   private parseSearchQuery(searchQuery: string, searchFilter?: SearchFilter): TransactionFilter {
+    if (!searchQuery) {
+      return {
+        ...searchFilter,
+      };
+    }
+
     const searchTerms = searchQuery
       .slice(0, MAX_SEARCH_QUERY_LENGTH)
       .split(" ")
@@ -476,7 +482,7 @@ export class Transaction extends IterableModel<TransactionModel> {
       filter.amount_in = amountFilter.amount_in;
     }
 
-    if (amountFilter.conditions.length > 0) {
+    if (amountFilter.conditions.length > 0 && !searchFilter) {
       filter.conditions = amountFilter.conditions;
     }
 
@@ -488,14 +494,10 @@ export class Transaction extends IterableModel<TransactionModel> {
     }
 
     if (searchFilter) {
-      // TO DO: Refactor
-      const existingConditions = filter.conditions || [];
-      delete filter.conditions;
-
       return {
         operator: BaseOperator.And,
         ...searchFilter,
-        conditions: [filter, ...existingConditions],
+        conditions: [filter, ...(amountFilter.conditions || [])],
       };
     }
 
