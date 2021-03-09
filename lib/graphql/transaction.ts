@@ -437,10 +437,8 @@ export class Transaction extends IterableModel<TransactionModel> {
   }
 
   private parseSearchQuery(searchQuery: string, searchFilter?: SearchFilter): TransactionFilter {
-    if (!searchQuery) {
-      return {
-        ...searchFilter,
-      };
+    if (!searchQuery && searchFilter) {
+      return searchFilter;
     }
 
     const searchTerms = searchQuery
