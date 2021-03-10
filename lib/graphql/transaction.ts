@@ -17,7 +17,12 @@ import {
   TransactionFilter,
   TransactionsConnectionEdge,
 } from "./schema";
-import { FetchOptions, Subscription, SubscriptionType } from "./types";
+import {
+  FetchOptions,
+  Subscription,
+  SubscriptionType,
+  SearchFilter,
+} from "./types";
 
 const MAX_SEARCH_QUERY_LENGTH = 200;
 const MAX_SEARCH_AMOUNT_IN_CENTS = 2000000000;
@@ -268,8 +273,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param searchQuery  input query from user
    * @returns
    */
-  public async search(searchQuery: string): Promise<ResultPage<TransactionModel>> {
-    const filter = this.parseSearchQuery(searchQuery);
+  public async search(
+    searchQuery: string,
+    searchFilter?: SearchFilter
+  ): Promise<ResultPage<TransactionModel>> {
+    const filter = this.parseSearchQuery(searchQuery, searchFilter);
     return this.fetch({ filter });
   }
 
@@ -428,7 +436,11 @@ export class Transaction extends IterableModel<TransactionModel> {
     };
   }
 
-  private parseSearchQuery(searchQuery: string): TransactionFilter {
+  private parseSearchQuery(searchQuery: string, searchFilter?: SearchFilter): TransactionFilter {
+    if (!searchQuery && searchFilter) {
+      return searchFilter;
+    }
+
     const searchTerms = searchQuery
       .slice(0, MAX_SEARCH_QUERY_LENGTH)
       .split(" ")
@@ -468,7 +480,7 @@ export class Transaction extends IterableModel<TransactionModel> {
       filter.amount_in = amountFilter.amount_in;
     }
 
-    if (amountFilter.conditions.length > 0) {
+    if (amountFilter.conditions.length > 0 && !searchFilter) {
       filter.conditions = amountFilter.conditions;
     }
 
@@ -477,6 +489,14 @@ export class Transaction extends IterableModel<TransactionModel> {
 
     if (ibanTerms.length > 0) {
       filter.iban_likeAny = ibanTerms;
+    }
+
+    if (searchFilter) {
+      return {
+        operator: BaseOperator.And,
+        ...searchFilter,
+        conditions: [filter, ...(amountFilter.conditions || [])],
+      };
     }
 
     return filter;
