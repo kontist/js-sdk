@@ -2108,8 +2108,13 @@ export type UserDependentInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   birthDate: Scalars['String'];
-  type: Scalars['String'];
+  type: UserDependentType;
 };
+
+export enum UserDependentType {
+  Partner = 'PARTNER',
+  Child = 'CHILD'
+}
 
 export type InvoiceCustomerInput = {
   id?: Maybe<Scalars['String']>;
