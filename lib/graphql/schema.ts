@@ -1690,6 +1690,7 @@ export type MutationCreateInvoiceLogoArgs = {
 
 
 export type MutationSignPoaArgs = {
+  dependents?: Maybe<Array<UserDependentInput>>;
   signature: Scalars['String'];
 };
 
@@ -2101,6 +2102,13 @@ export type InvoiceLogoFormDataPair = {
   __typename?: 'InvoiceLogoFormDataPair';
   key: Scalars['String'];
   value: Scalars['String'];
+};
+
+export type UserDependentInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  birthDate: Scalars['String'];
+  type: Scalars['String'];
 };
 
 export type InvoiceCustomerInput = {
