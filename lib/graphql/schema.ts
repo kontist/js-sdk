@@ -5,8 +5,6 @@
 
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -87,6 +85,7 @@ export type User = {
   /** Coupon code assigned to the user that can be redeemed during subscription update */
   couponCodeOffer?: Maybe<Scalars['String']>;
   isSelfEmployed?: Maybe<Scalars['Boolean']>;
+  taxServiceOnboardingCompletedAt?: Maybe<Scalars['DateTime']>;
   poaSignedAt?: Maybe<Scalars['DateTime']>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
@@ -869,6 +868,7 @@ export type TransactionFilter = {
   valutaDate_gte?: Maybe<Scalars['DateTime']>;
   valutaDate_lte?: Maybe<Scalars['DateTime']>;
   assets_exist?: Maybe<Scalars['Boolean']>;
+  vatAssets_exist?: Maybe<Scalars['Boolean']>;
   bookingDate_eq?: Maybe<Scalars['DateTime']>;
   bookingDate_ne?: Maybe<Scalars['DateTime']>;
   bookingDate_gt?: Maybe<Scalars['DateTime']>;
@@ -913,6 +913,7 @@ export type TransactionCondition = {
   valutaDate_gte?: Maybe<Scalars['DateTime']>;
   valutaDate_lte?: Maybe<Scalars['DateTime']>;
   assets_exist?: Maybe<Scalars['Boolean']>;
+  vatAssets_exist?: Maybe<Scalars['Boolean']>;
   bookingDate_eq?: Maybe<Scalars['DateTime']>;
   bookingDate_ne?: Maybe<Scalars['DateTime']>;
   bookingDate_gt?: Maybe<Scalars['DateTime']>;
