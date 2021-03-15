@@ -88,6 +88,7 @@ export type User = {
   couponCodeOffer?: Maybe<Scalars['String']>;
   isSelfEmployed?: Maybe<Scalars['Boolean']>;
   poaSignedAt?: Maybe<Scalars['DateTime']>;
+  invoicePdf: Scalars['String'];
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -122,6 +123,11 @@ export type User = {
   poaUrl?: Maybe<Scalars['String']>;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
+};
+
+
+export type UserInvoicePdfArgs = {
+  invoiceId: Scalars['ID'];
 };
 
 
