@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.23] - 2021-03-15
+### Added
+- Added `invoicePdf` field to `User` type
+
 ## [0.35.20] - 2021-03-05
 ### Added
 - Added `createInvoiceLogo` and `deleteInvoiceLogo` mutations to GraphQL schema
