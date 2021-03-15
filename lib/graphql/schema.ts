@@ -4,8 +4,9 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
-
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -873,6 +874,7 @@ export type TransactionFilter = {
   valutaDate_lt?: Maybe<Scalars['DateTime']>;
   valutaDate_gte?: Maybe<Scalars['DateTime']>;
   valutaDate_lte?: Maybe<Scalars['DateTime']>;
+  assets_exist?: Maybe<Scalars['Boolean']>;
   bookingDate_eq?: Maybe<Scalars['DateTime']>;
   bookingDate_ne?: Maybe<Scalars['DateTime']>;
   bookingDate_gt?: Maybe<Scalars['DateTime']>;
@@ -916,6 +918,7 @@ export type TransactionCondition = {
   valutaDate_lt?: Maybe<Scalars['DateTime']>;
   valutaDate_gte?: Maybe<Scalars['DateTime']>;
   valutaDate_lte?: Maybe<Scalars['DateTime']>;
+  assets_exist?: Maybe<Scalars['Boolean']>;
   bookingDate_eq?: Maybe<Scalars['DateTime']>;
   bookingDate_ne?: Maybe<Scalars['DateTime']>;
   bookingDate_gt?: Maybe<Scalars['DateTime']>;
@@ -1693,6 +1696,7 @@ export type MutationCreateInvoiceLogoArgs = {
 
 
 export type MutationSignPoaArgs = {
+  dependents?: Maybe<Array<UserDependentInput>>;
   signature: Scalars['String'];
 };
 
@@ -2105,6 +2109,18 @@ export type InvoiceLogoFormDataPair = {
   key: Scalars['String'];
   value: Scalars['String'];
 };
+
+export type UserDependentInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  birthDate: Scalars['String'];
+  type: UserDependentType;
+};
+
+export enum UserDependentType {
+  Partner = 'PARTNER',
+  Child = 'CHILD'
+}
 
 export type InvoiceCustomerInput = {
   id?: Maybe<Scalars['String']>;

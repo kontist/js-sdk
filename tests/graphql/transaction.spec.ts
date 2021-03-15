@@ -836,5 +836,98 @@ describe("Transaction", () => {
         });
       });
     });
+
+    describe("when user provides 'assets_exist: false' filter", () => {
+      describe("and input is empty", () => {
+        it("should call fetch event", async () => {
+          // arrange
+          const filterQuery = { assets_exist: false };
+
+          // act
+          await client.models.transaction.search("", filterQuery);
+
+          // assert
+          expect(fetchStub.callCount).to.eq(1);
+          expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+            filter: {
+              assets_exist: false,
+            }
+          });
+        });
+      });
+
+      describe("and user provides text", () => {
+        it("should call fetch event with properly formatted filter", async () => {
+          // arrange
+          const userQuery = "hello";
+          const filterQuery = { assets_exist: false };
+
+          // act
+          await client.models.transaction.search(userQuery, filterQuery);
+
+          // assert
+          expect(fetchStub.callCount).to.eq(1);
+          expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+            filter: {
+              assets_exist: false,
+              operator: "AND",
+              conditions: [
+                {
+                  name_likeAny: [
+                    "hello"
+                  ],
+                  operator: "OR",
+                  purpose_likeAny: [
+                    "hello"
+                  ]
+                }
+              ]
+            }
+          });
+        });
+      });
+
+      describe("and user provides numbers", () => {
+        it("should call fetch including assets and amount filter", async () => {
+          // arrange
+          const userQuery = "5";
+          const filterQuery = { assets_exist: false };
+
+          // act
+          await client.models.transaction.search(userQuery, filterQuery);
+
+          // assert
+          expect(fetchStub.callCount).to.eq(1);
+          expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+            filter: {
+              assets_exist: false,
+              operator: "AND",
+              conditions: [
+                {
+                  name_likeAny: [
+                    "5"
+                  ],
+                  operator: "OR",
+                  purpose_likeAny: [
+                    "5"
+                  ],
+                  amount_in: [ 500, -500 ],
+                },
+                {
+                  amount_gte: 500,
+                  amount_lt: 600,
+                  operator: "AND"
+                },
+                {
+                  amount_gt: -600,
+                  amount_lte: -500,
+                  operator: "AND"
+                }
+              ]
+            }
+          });
+        });
+      });
+    });
   });
 });

@@ -1,14 +1,14 @@
-import {
-  CardType,
-  Mutation,
-  Query,
-} from "./schema";
+import { CardType, Mutation, Query } from "./schema";
 
 export type FetchOptions = {
   first?: number;
   last?: number;
   before?: string | null;
   after?: string | null;
+};
+
+export type SearchFilter = {
+  assets_exist?: boolean;
 };
 
 export type GetCardOptions = {
