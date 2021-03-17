@@ -1,6 +1,6 @@
 {
   "name": "kontist",
-  "version": "0.35.24",
+  "version": "0.35.25",
   "description": "Kontist client SDK",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
