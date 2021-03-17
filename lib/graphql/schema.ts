@@ -5,6 +5,8 @@
 
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -1185,12 +1187,28 @@ export type UserTaxDetails = {
   vatNumber?: Maybe<Scalars['String']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
+  dependents?: Maybe<Array<UserDependent>>;
 };
 
 export enum PermanentExtensionStatus {
   DoesHave = 'DOES_HAVE',
   DoesNotHave = 'DOES_NOT_HAVE',
   DoesNotKnow = 'DOES_NOT_KNOW'
+}
+
+export type UserDependent = {
+  __typename?: 'UserDependent';
+  id: Scalars['ID'];
+  type: UserDependentType;
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  birthDate: Scalars['DateTime'];
+  deTaxId?: Maybe<Scalars['String']>;
+};
+
+export enum UserDependentType {
+  Partner = 'PARTNER',
+  Child = 'CHILD'
 }
 
 export type ReferralDetails = {
@@ -1374,6 +1392,8 @@ export type Mutation = {
   activateCard: Card;
   /** Adds Google Pay card token reference id for given wallet id */
   addGooglePayCardToken: GooglePayCardToken;
+  /** Adds card to given wallet */
+  cardPushProvisioning: PushProvisioningOutput;
   /** Deletes Google Pay card token reference id for given wallet id */
   deleteGooglePayCardToken: GooglePayCardToken;
   /** Update settings (e.g. limits) */
@@ -1441,6 +1461,7 @@ export type Mutation = {
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
   updateInvoiceCustomer: InvoiceCustomerOutput;
+  updateInvoice: InvoiceOutput;
 };
 
 
@@ -1537,6 +1558,13 @@ export type MutationAddGooglePayCardTokenArgs = {
   tokenRefId: Scalars['String'];
   walletId: Scalars['String'];
   id: Scalars['String'];
+};
+
+
+export type MutationCardPushProvisioningArgs = {
+  android?: Maybe<PushProvisioningAndroidInput>;
+  ios?: Maybe<PushProvisioningIosInput>;
+  cardId: Scalars['String'];
 };
 
 
@@ -1704,6 +1732,11 @@ export type MutationSignPoaArgs = {
 
 export type MutationUpdateInvoiceCustomerArgs = {
   payload: InvoiceCustomerInput;
+};
+
+
+export type MutationUpdateInvoiceArgs = {
+  payload: InvoiceInput;
 };
 
 export type CreateAssetResponse = {
@@ -1895,6 +1928,30 @@ export type ConfirmFraudResponse = {
   resolution: CaseResolution;
 };
 
+export type PushProvisioningOutput = {
+  __typename?: 'PushProvisioningOutput';
+  walletPayload?: Maybe<Scalars['String']>;
+  activationData?: Maybe<Scalars['String']>;
+  encryptedPassData?: Maybe<Scalars['String']>;
+  ephemeralPublicKey?: Maybe<Scalars['String']>;
+};
+
+export type PushProvisioningAndroidInput = {
+  /** Stable identifier for a physical Android device Google refers to this atribute as a Stable hardware ID in their SDK documentation the method getStableHardwareId describes how you can retrieve this value. */
+  deviceId?: Maybe<Scalars['String']>;
+  /** Unique 24-byte identifier for each instance of a [Android user, Google account] pair wallet. ID is computed as a keyed hash of the Android user ID and the Google account ID. The key to this hash lives on Google servers, meaning the wallet ID is created during user setup as an RPC. */
+  walletAccountId?: Maybe<Scalars['String']>;
+};
+
+export type PushProvisioningIosInput = {
+  /** A one-time-use nonce in Base64 encoded format provided by Apple */
+  nonce?: Maybe<Scalars['String']>;
+  /** Nonce signature in Base64 encoded format provided by Apple */
+  nonceSignature?: Maybe<Scalars['String']>;
+  /** An array of leaf and sub-CA certificates in Base64 encoded format provided by Apple. Each object contains a DER encoded X.509 certificate, with the leaf first and followed by sub-CA */
+  certificates?: Maybe<Array<Scalars['String']>>;
+};
+
 export type CardSettingsInput = {
   cardPresentLimits?: Maybe<CardLimitsInput>;
   cardNotPresentLimits?: Maybe<CardLimitsInput>;
@@ -1951,6 +2008,12 @@ export type UserTaxDetailsInput = {
   vatNumber?: Maybe<Scalars['String']>;
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
+  dependentsTaxIds?: Maybe<Array<DependentsTaxIds>>;
+};
+
+export type DependentsTaxIds = {
+  id: Scalars['ID'];
+  deTaxId: Scalars['String'];
 };
 
 export type UserUpdateInput = {
@@ -2118,11 +2181,6 @@ export type UserDependentInput = {
   type: UserDependentType;
 };
 
-export enum UserDependentType {
-  Partner = 'PARTNER',
-  Child = 'CHILD'
-}
-
 export type InvoiceCustomerInput = {
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -2133,6 +2191,27 @@ export type InvoiceCustomerInput = {
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   taxNumber?: Maybe<Scalars['String']>;
+};
+
+export type InvoiceOutput = {
+  __typename?: 'InvoiceOutput';
+  id?: Maybe<Scalars['String']>;
+  invoiceSettingsId?: Maybe<Scalars['String']>;
+  customerId?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
+  invoiceNumber?: Maybe<Scalars['Float']>;
+  dueDate?: Maybe<Scalars['DateTime']>;
+  note?: Maybe<Scalars['String']>;
+};
+
+export type InvoiceInput = {
+  id?: Maybe<Scalars['String']>;
+  invoiceSettingsId?: Maybe<Scalars['String']>;
+  customerId?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  invoiceNumber?: Maybe<Scalars['Float']>;
+  dueDate?: Maybe<Scalars['DateTime']>;
+  note?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
