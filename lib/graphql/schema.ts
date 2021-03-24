@@ -124,6 +124,8 @@ export type User = {
   poaUrl?: Maybe<Scalars['String']>;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
+  /** Indicate if taxServiceOnboardingCompletedAt is set, and all dependents have deTaxId */
+  isYearlyTaxServiceOnboardingCompleted?: Maybe<Scalars['Boolean']>;
 };
 
 
