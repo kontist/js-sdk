@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.26] - 2021-03-24
+### Added
+- Added `isYearlyTaxServiceOnboardingCompleted` field to `User` type
+
 ## [0.35.23] - 2021-03-15
 ### Added
 - Added `invoicePdf` field to `User` type
