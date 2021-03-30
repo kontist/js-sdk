@@ -5,8 +5,6 @@
 
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -124,8 +122,7 @@ export type User = {
   poaUrl?: Maybe<Scalars['String']>;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
-  /** Indicate if taxServiceOnboardingCompletedAt is set, and all dependents have deTaxId */
-  isYearlyTaxServiceOnboardingCompleted?: Maybe<Scalars['Boolean']>;
+  invoice?: Maybe<Invoice>;
 };
 
 
@@ -156,6 +153,11 @@ export type UserMetadataArgs = {
 
 export type UserPremiumSubscriptionDiscountArgs = {
   couponCode?: Maybe<Scalars['String']>;
+};
+
+
+export type UserInvoiceArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -534,6 +536,7 @@ export type Account = {
    */
   wirecard: WirecardDetails;
   balance: Scalars['Int'];
+  bic: Scalars['String'];
 };
 
 
@@ -767,7 +770,8 @@ export enum TransactionProjectionType {
   InterestAccrued = 'INTEREST_ACCRUED',
   CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED',
   CommissionOverdraft = 'COMMISSION_OVERDRAFT',
-  Charge = 'CHARGE'
+  Charge = 'CHARGE',
+  DepositFee = 'DEPOSIT_FEE'
 }
 
 export type TransactionFee = {
@@ -1340,6 +1344,22 @@ export type InvoiceCustomerOutput = {
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   taxNumber?: Maybe<Scalars['String']>;
+};
+
+export type Invoice = {
+  __typename?: 'Invoice';
+  id: Scalars['ID'];
+  /** A list of products from the invoice */
+  products?: Maybe<Array<InvoiceProductOutput>>;
+};
+
+export type InvoiceProductOutput = {
+  __typename?: 'InvoiceProductOutput';
+  id: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  vat?: Maybe<Scalars['String']>;
+  quantity?: Maybe<Scalars['Float']>;
 };
 
 export type SystemStatus = {
