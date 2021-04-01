@@ -70,6 +70,7 @@ describe("Account", () => {
         viewer: {
           mainAccount: {
             iban: "DE1234",
+            bic: "SOBKDEBBXXX",
             balance: 1234,
             cardHolderRepresentation: null,
             cardHolderRepresentations: ["STEPHEN/JAMES"],
@@ -85,6 +86,7 @@ describe("Account", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result?.iban).to.eq("DE1234");
+      expect(result?.bic).to.eq("SOBKDEBBXXX");
       expect(result?.balance).to.eq(1234);
       expect(result?.cardHolderRepresentation).to.eq(null);
       expect(result?.cardHolderRepresentations[0]).to.eq("STEPHEN/JAMES");
