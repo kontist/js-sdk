@@ -7,6 +7,7 @@ const GET_ACCOUNT = `query {
   viewer {
     mainAccount {
       iban
+      bic
       balance
       cardHolderRepresentation
       cardHolderRepresentations
