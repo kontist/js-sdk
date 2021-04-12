@@ -1341,22 +1341,34 @@ export type InvoiceProductOutput = {
 
 export type InvoicingDashboardData = {
   __typename?: 'InvoicingDashboardData';
+  pageInfo: InvoicePageInfo;
+  data: Array<DashboardInvoice>;
+};
+
+export type InvoicePageInfo = {
+  __typename?: 'InvoicePageInfo';
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
-  currentPage: Scalars['Float'];
-  invoices: Array<DashboardInvoice>;
+  currentPage: Scalars['Int'];
 };
 
 export type DashboardInvoice = {
   __typename?: 'DashboardInvoice';
-  id: Scalars['String'];
-  status: Scalars['String'];
-  invoiceNumber?: Maybe<Scalars['Float']>;
+  id: Scalars['ID'];
+  status: InvoiceStatusType;
+  invoiceNumber?: Maybe<Scalars['Int']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   paidAt?: Maybe<Scalars['DateTime']>;
-  amount?: Maybe<Scalars['Float']>;
+  amount?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
 };
+
+export enum InvoiceStatusType {
+  Draft = 'DRAFT',
+  Created = 'CREATED',
+  Sent = 'SENT',
+  Paid = 'PAID'
+}
 
 export type SystemStatus = {
   __typename?: 'SystemStatus';
