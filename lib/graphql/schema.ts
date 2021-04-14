@@ -530,11 +530,6 @@ export type Account = {
   card?: Maybe<Card>;
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
-  /**
-   * Wirecard details
-   * @deprecated This data will be removed in an upcoming release. Do not use it for any new features.
-   */
-  wirecard: WirecardDetails;
   balance: Scalars['Int'];
   bic: Scalars['String'];
 };
@@ -1073,20 +1068,6 @@ export enum OverdraftApplicationStatus {
   Rejected = 'REJECTED',
   OverdraftCreated = 'OVERDRAFT_CREATED',
   Expired = 'EXPIRED'
-}
-
-export type WirecardDetails = {
-  __typename?: 'WirecardDetails';
-  cardStatus: WirecardCardStatus;
-  directDebitMandateAccepted: Scalars['Boolean'];
-  hasAccount: Scalars['Boolean'];
-  plasticCardOrderedAt?: Maybe<Scalars['DateTime']>;
-};
-
-export enum WirecardCardStatus {
-  NotOrdered = 'NOT_ORDERED',
-  Ordered = 'ORDERED',
-  Issued = 'ISSUED'
 }
 
 export type UserSubscription = {
@@ -2074,9 +2055,6 @@ export type UserUpdateInput = {
   nonConsumerConfirmed?: Maybe<Scalars['Boolean']>;
   /** Indicates user has accepted to receive Kontist marketing communication */
   marketingConsentAccepted?: Maybe<Scalars['Boolean']>;
-  /** Indicates user has accepted Wirecard direct debit mandate */
-  wirecardDirectDebitMandateAccepted?: Maybe<Scalars['Boolean']>;
-  wirecardCardType?: Maybe<Scalars['String']>;
   categorizationScreenShown?: Maybe<Scalars['Boolean']>;
   profession?: Maybe<Scalars['String']>;
   accountingTool?: Maybe<Scalars['String']>;
