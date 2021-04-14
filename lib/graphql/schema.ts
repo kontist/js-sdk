@@ -5,6 +5,8 @@
 
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -1225,8 +1227,6 @@ export type UserMetadata = {
   availableStatements?: Maybe<Array<AvailableStatements>>;
   /** Is user's Kontist account closed */
   isAccountClosed: Scalars['Boolean'];
-  /** User status for VISA card migration */
-  cardMigrationStatus: CardMigrationStatus;
   currentTermsVersion: Scalars['String'];
   intercomDigest?: Maybe<Scalars['String']>;
   directDebitMandateAccepted: Scalars['Boolean'];
@@ -1242,15 +1242,6 @@ export type AvailableStatements = {
   year: Scalars['Int'];
   months: Array<Scalars['Int']>;
 };
-
-export enum CardMigrationStatus {
-  Required = 'REQUIRED',
-  Requested = 'REQUESTED',
-  RequestedAndLocked = 'REQUESTED_AND_LOCKED',
-  RequestedAndClosed = 'REQUESTED_AND_CLOSED',
-  Completed = 'COMPLETED',
-  NotRequired = 'NOT_REQUIRED'
-}
 
 export enum Platform {
   Ios = 'IOS',
@@ -1336,11 +1327,11 @@ export type Invoice = {
 
 export type InvoiceProductOutput = {
   __typename?: 'InvoiceProductOutput';
-  id: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   vat?: Maybe<Scalars['String']>;
   quantity?: Maybe<Scalars['Float']>;
+  id: Scalars['String'];
 };
 
 export type SystemStatus = {
@@ -1465,6 +1456,8 @@ export type Mutation = {
   signPOA: MutationResult;
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoice: InvoiceOutput;
+  /** Create or update user products that can be linked to the user's invoice(s) */
+  upsertProducts: Array<Product>;
 };
 
 
@@ -1740,6 +1733,11 @@ export type MutationUpdateInvoiceCustomerArgs = {
 
 export type MutationUpdateInvoiceArgs = {
   payload: InvoiceInput;
+};
+
+
+export type MutationUpsertProductsArgs = {
+  payload: Array<UserProductInput>;
 };
 
 export type CreateAssetResponse = {
@@ -2114,6 +2112,8 @@ export type AttributionData = {
   /** Platform used for signup */
   platform?: Maybe<Platform>;
   trackingId?: Maybe<Scalars['String']>;
+  preselected_plan?: Maybe<Scalars['String']>;
+  utm_source?: Maybe<Scalars['String']>;
 };
 
 export type CreateReviewResponse = {
@@ -2175,6 +2175,8 @@ export type InvoiceLogoFormDataPair = {
 };
 
 export type UserDependentInput = {
+  id?: Maybe<Scalars['ID']>;
+  deTaxId?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   birthDate: Scalars['String'];
@@ -2202,6 +2204,7 @@ export type InvoiceOutput = {
   invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  products?: Maybe<Array<InvoiceProductOutput>>;
 };
 
 export type InvoiceInput = {
@@ -2212,6 +2215,30 @@ export type InvoiceInput = {
   invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  products?: Maybe<Array<InvoiceProductInput>>;
+};
+
+export type InvoiceProductInput = {
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  vat?: Maybe<Scalars['String']>;
+  quantity?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['String']>;
+};
+
+export type Product = {
+  __typename?: 'Product';
+  id: Scalars['ID'];
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  vat?: Maybe<Scalars['String']>;
+};
+
+export type UserProductInput = {
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  vat?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
