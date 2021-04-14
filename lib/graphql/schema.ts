@@ -4,9 +4,8 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -506,7 +505,8 @@ export enum ScopeType {
   Overdraft = 'OVERDRAFT',
   Banners = 'BANNERS',
   Signup = 'SIGNUP',
-  CardFraud = 'CARD_FRAUD'
+  CardFraud = 'CARD_FRAUD',
+  ChangeRequest = 'CHANGE_REQUEST'
 }
 
 /** The bank account of the current user */
@@ -1322,16 +1322,16 @@ export type Invoice = {
   __typename?: 'Invoice';
   id: Scalars['ID'];
   /** A list of products from the invoice */
-  products?: Maybe<Array<InvoiceProductOutput>>;
+  products?: Maybe<Array<InvoiceProduct>>;
 };
 
-export type InvoiceProductOutput = {
-  __typename?: 'InvoiceProductOutput';
+export type InvoiceProduct = {
+  __typename?: 'InvoiceProduct';
+  id: Scalars['ID'];
   description?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   vat?: Maybe<Scalars['String']>;
   quantity?: Maybe<Scalars['Float']>;
-  id: Scalars['String'];
 };
 
 export type SystemStatus = {
@@ -1380,6 +1380,8 @@ export type Mutation = {
   confirmTransfers: BatchTransfer;
   whitelistCard: WhitelistCardResponse;
   confirmFraud: ConfirmFraudResponse;
+  authorizeChangeRequest: AuthorizeChangeRequestRespone;
+  confirmChangeRequest: ConfirmChangeRequestRespone;
   /** Create a new card */
   createCard: Card;
   /** Activate a card */
@@ -1535,6 +1537,19 @@ export type MutationCreateTransfersArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
+};
+
+
+export type MutationAuthorizeChangeRequestArgs = {
+  deviceId: Scalars['String'];
+  changeRequestId: Scalars['String'];
+};
+
+
+export type MutationConfirmChangeRequestArgs = {
+  deviceId: Scalars['String'];
+  signature: Scalars['String'];
+  changeRequestId: Scalars['String'];
 };
 
 
@@ -1929,6 +1944,16 @@ export type ConfirmFraudResponse = {
   resolution: CaseResolution;
 };
 
+export type AuthorizeChangeRequestRespone = {
+  __typename?: 'AuthorizeChangeRequestRespone';
+  stringToSign: Scalars['String'];
+};
+
+export type ConfirmChangeRequestRespone = {
+  __typename?: 'ConfirmChangeRequestRespone';
+  success: Scalars['Boolean'];
+};
+
 export type PushProvisioningOutput = {
   __typename?: 'PushProvisioningOutput';
   walletPayload?: Maybe<Scalars['String']>;
@@ -2204,7 +2229,6 @@ export type InvoiceOutput = {
   invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
-  products?: Maybe<Array<InvoiceProductOutput>>;
 };
 
 export type InvoiceInput = {
@@ -2215,15 +2239,6 @@ export type InvoiceInput = {
   invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
-  products?: Maybe<Array<InvoiceProductInput>>;
-};
-
-export type InvoiceProductInput = {
-  description?: Maybe<Scalars['String']>;
-  price?: Maybe<Scalars['Float']>;
-  vat?: Maybe<Scalars['String']>;
-  quantity?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['String']>;
 };
 
 export type Product = {
@@ -2235,10 +2250,10 @@ export type Product = {
 };
 
 export type UserProductInput = {
+  id?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   vat?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
