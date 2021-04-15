@@ -17,7 +17,7 @@
   "dependencies": {
     "abab": "^2.0.3",
     "client-oauth2": "^4.3.0",
-    "cross-fetch": "^3.0.5",
+    "cross-fetch": "^3.1.4",
     "dotenv": "^8.2.0",
     "graphql": "^15.3.0",
     "graphql-request": "^2.1.0-next.1",
@@ -28,8 +28,8 @@
   "devDependencies": {
     "@graphql-codegen/add": "^1.16.3",
     "@graphql-codegen/cli": "^1.16.3",
-    "@graphql-codegen/flow": "^1.16.3",
-    "@graphql-codegen/typescript": "^1.16.3",
+    "@graphql-codegen/flow": "^1.18.5",
+    "@graphql-codegen/typescript": "^1.21.1",
     "@types/chai": "^4.2.11",
     "@types/jsdom": "^16.2.3",
     "@types/mocha": "^7.0.2",
