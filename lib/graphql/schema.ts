@@ -4,9 +4,8 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -125,6 +124,7 @@ export type User = {
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
   invoice?: Maybe<Invoice>;
+  invoices: InvoicingDashboardData;
 };
 
 
@@ -160,6 +160,11 @@ export type UserPremiumSubscriptionDiscountArgs = {
 
 export type UserInvoiceArgs = {
   id: Scalars['String'];
+};
+
+
+export type UserInvoicesArgs = {
+  pageNumber: Scalars['Float'];
 };
 
 
@@ -1333,6 +1338,37 @@ export type InvoiceProductOutput = {
   quantity?: Maybe<Scalars['Float']>;
   id: Scalars['String'];
 };
+
+export type InvoicingDashboardData = {
+  __typename?: 'InvoicingDashboardData';
+  pageInfo: InvoicePageInfo;
+  data: Array<DashboardInvoice>;
+};
+
+export type InvoicePageInfo = {
+  __typename?: 'InvoicePageInfo';
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  currentPage: Scalars['Int'];
+};
+
+export type DashboardInvoice = {
+  __typename?: 'DashboardInvoice';
+  id: Scalars['ID'];
+  status: InvoiceStatusType;
+  invoiceNumber?: Maybe<Scalars['Int']>;
+  dueDate?: Maybe<Scalars['DateTime']>;
+  paidAt?: Maybe<Scalars['DateTime']>;
+  amount?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export enum InvoiceStatusType {
+  Draft = 'DRAFT',
+  Created = 'CREATED',
+  Sent = 'SENT',
+  Paid = 'PAID'
+}
 
 export type SystemStatus = {
   __typename?: 'SystemStatus';
