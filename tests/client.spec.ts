@@ -39,6 +39,7 @@ describe("Client", () => {
         user: {} as any,
         card: {} as any,
         subscription: {} as any,
+        changeRequest: {} as any,
       };
 
       // act
