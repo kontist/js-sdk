@@ -124,6 +124,7 @@ export type User = {
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
   invoice?: Maybe<Invoice>;
+  invoices: InvoicingDashboardData;
 };
 
 
@@ -159,6 +160,11 @@ export type UserPremiumSubscriptionDiscountArgs = {
 
 export type UserInvoiceArgs = {
   id: Scalars['String'];
+};
+
+
+export type UserInvoicesArgs = {
+  pageNumber: Scalars['Float'];
 };
 
 
@@ -1333,6 +1339,37 @@ export type InvoiceProduct = {
   vat?: Maybe<Scalars['String']>;
   quantity?: Maybe<Scalars['Float']>;
 };
+
+export type InvoicingDashboardData = {
+  __typename?: 'InvoicingDashboardData';
+  pageInfo: InvoicePageInfo;
+  data: Array<DashboardInvoice>;
+};
+
+export type InvoicePageInfo = {
+  __typename?: 'InvoicePageInfo';
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  currentPage: Scalars['Int'];
+};
+
+export type DashboardInvoice = {
+  __typename?: 'DashboardInvoice';
+  id: Scalars['ID'];
+  status: InvoiceStatusType;
+  invoiceNumber?: Maybe<Scalars['Int']>;
+  dueDate?: Maybe<Scalars['DateTime']>;
+  paidAt?: Maybe<Scalars['DateTime']>;
+  amount?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export enum InvoiceStatusType {
+  Draft = 'DRAFT',
+  Created = 'CREATED',
+  Sent = 'SENT',
+  Paid = 'PAID'
+}
 
 export type SystemStatus = {
   __typename?: 'SystemStatus';
