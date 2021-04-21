@@ -76,6 +76,7 @@ describe("Account", () => {
             cardHolderRepresentations: ["STEPHEN/JAMES"],
             hasPendingCardFraudCase: false,
             canCreateOverdraft: true,
+            pendingTransactionVerification: null,
           },
         },
       } as any);
