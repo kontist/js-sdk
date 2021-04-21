@@ -524,6 +524,7 @@ export type Account = {
   canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
   hasPendingCardFraudCase: Scalars['Boolean'];
+  pendingTransactionVerification: PendingTransactionVerification;
   transfers: TransfersConnection;
   transaction?: Maybe<Transaction>;
   transactions: TransactionsConnection;
@@ -580,6 +581,20 @@ export type AccountTransferArgs = {
 /** The bank account of the current user */
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>;
+};
+
+export type PendingTransactionVerification = {
+  __typename?: 'PendingTransactionVerification';
+  /** Transaction merchant name */
+  name: Scalars['String'];
+  /** Transaction amount */
+  amount: Scalars['String'];
+  /** When verification gets expired */
+  expiresAt: Scalars['String'];
+  /** Change request id to decline verification */
+  declineChangeRequestId: Scalars['String'];
+  /** Change request id to authenticate verification */
+  authenticateChangeRequestId: Scalars['String'];
 };
 
 export type TransfersConnection = {
@@ -1328,16 +1343,16 @@ export type Invoice = {
   __typename?: 'Invoice';
   id: Scalars['ID'];
   /** A list of products from the invoice */
-  products?: Maybe<Array<InvoiceProduct>>;
+  products?: Maybe<Array<InvoiceProductOutput>>;
 };
 
-export type InvoiceProduct = {
-  __typename?: 'InvoiceProduct';
-  id: Scalars['ID'];
+export type InvoiceProductOutput = {
+  __typename?: 'InvoiceProductOutput';
   description?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   vat?: Maybe<Scalars['String']>;
   quantity?: Maybe<Scalars['Float']>;
+  id: Scalars['String'];
 };
 
 export type InvoicingDashboardData = {
@@ -2266,6 +2281,7 @@ export type InvoiceOutput = {
   invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  products?: Maybe<Array<InvoiceProductOutput>>;
 };
 
 export type InvoiceInput = {
@@ -2276,6 +2292,15 @@ export type InvoiceInput = {
   invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  products?: Maybe<Array<InvoiceProductInput>>;
+};
+
+export type InvoiceProductInput = {
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  vat?: Maybe<Scalars['String']>;
+  quantity?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['String']>;
 };
 
 export type Product = {
@@ -2287,10 +2312,10 @@ export type Product = {
 };
 
 export type UserProductInput = {
-  id?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   vat?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
