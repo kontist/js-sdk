@@ -1,4 +1,4 @@
-import {GraphQLClient} from "./client";
+import { GraphQLClient } from "./client";
 import {
   AuthorizeChangeRequestRespone,
   MutationAuthorizeChangeRequestArgs,
