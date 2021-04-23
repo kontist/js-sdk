@@ -76,6 +76,7 @@ describe("Account", () => {
             cardHolderRepresentations: ["STEPHEN/JAMES"],
             hasPendingCardFraudCase: false,
             canCreateOverdraft: true,
+            pendingTransactionVerification: null,
           },
         },
       } as any);
@@ -91,7 +92,8 @@ describe("Account", () => {
       expect(result?.cardHolderRepresentation).to.eq(null);
       expect(result?.cardHolderRepresentations[0]).to.eq("STEPHEN/JAMES");
       expect(result?.hasPendingCardFraudCase).to.eq(false);
-      expect(result?.canCreateOverdraft).to.eq(true);
+      expect(result?.canCreateOverdraft).to.eq(true); 
+      expect(result?.pendingTransactionVerification).to.eq(null);
     });
 
     it("should call rawQuery and return null for empty account", async () => {

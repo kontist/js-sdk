@@ -511,7 +511,8 @@ export enum ScopeType {
   Overdraft = 'OVERDRAFT',
   Banners = 'BANNERS',
   Signup = 'SIGNUP',
-  CardFraud = 'CARD_FRAUD'
+  CardFraud = 'CARD_FRAUD',
+  ChangeRequest = 'CHANGE_REQUEST'
 }
 
 /** The bank account of the current user */
@@ -523,6 +524,7 @@ export type Account = {
   canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
   hasPendingCardFraudCase: Scalars['Boolean'];
+  pendingTransactionVerification: PendingTransactionVerification;
   transfers: TransfersConnection;
   transaction?: Maybe<Transaction>;
   transactions: TransactionsConnection;
@@ -579,6 +581,20 @@ export type AccountTransferArgs = {
 /** The bank account of the current user */
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>;
+};
+
+export type PendingTransactionVerification = {
+  __typename?: 'PendingTransactionVerification';
+  /** Transaction merchant name */
+  name: Scalars['String'];
+  /** Transaction amount */
+  amount: Scalars['String'];
+  /** When verification gets expired */
+  expiresAt: Scalars['String'];
+  /** Change request id to decline verification */
+  declineChangeRequestId: Scalars['String'];
+  /** Change request id to authenticate verification */
+  authenticateChangeRequestId: Scalars['String'];
 };
 
 export type TransfersConnection = {
@@ -1416,6 +1432,8 @@ export type Mutation = {
   confirmTransfers: BatchTransfer;
   whitelistCard: WhitelistCardResponse;
   confirmFraud: ConfirmFraudResponse;
+  authorizeChangeRequest: AuthorizeChangeRequestRespone;
+  confirmChangeRequest: ConfirmChangeRequestRespone;
   /** Create a new card */
   createCard: Card;
   /** Activate a card */
@@ -1571,6 +1589,19 @@ export type MutationCreateTransfersArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
+};
+
+
+export type MutationAuthorizeChangeRequestArgs = {
+  deviceId: Scalars['String'];
+  changeRequestId: Scalars['String'];
+};
+
+
+export type MutationConfirmChangeRequestArgs = {
+  deviceId: Scalars['String'];
+  signature: Scalars['String'];
+  changeRequestId: Scalars['String'];
 };
 
 
@@ -1963,6 +1994,16 @@ export type ConfirmFraudResponse = {
   __typename?: 'ConfirmFraudResponse';
   id: Scalars['String'];
   resolution: CaseResolution;
+};
+
+export type AuthorizeChangeRequestRespone = {
+  __typename?: 'AuthorizeChangeRequestRespone';
+  stringToSign: Scalars['String'];
+};
+
+export type ConfirmChangeRequestRespone = {
+  __typename?: 'ConfirmChangeRequestRespone';
+  success: Scalars['Boolean'];
 };
 
 export type PushProvisioningOutput = {
