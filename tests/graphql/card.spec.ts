@@ -21,7 +21,8 @@ const cardData = {
   settings: {
     contactlessEnabled: true,
   },
-  googlePayTokens: []
+  googlePayTokens: [],
+  addedToApplePay: true
 };
 
 const cardLimitsData = {
