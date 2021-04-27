@@ -29,6 +29,7 @@ const CARD_FIELDS = `
   formattedExpirationDate
   maskedPan
   pinSet
+  addedToApplePay
   settings {
     contactlessEnabled
   }
