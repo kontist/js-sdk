@@ -88,6 +88,7 @@ export type User = {
   isSelfEmployed?: Maybe<Scalars['Boolean']>;
   taxServiceOnboardingCompletedAt?: Maybe<Scalars['DateTime']>;
   poaSignedAt?: Maybe<Scalars['DateTime']>;
+  poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
@@ -164,7 +165,7 @@ export type UserInvoiceArgs = {
 
 
 export type UserInvoicesArgs = {
-  pageNumber: Scalars['Float'];
+  pageNumber: Scalars['Int'];
 };
 
 
@@ -789,7 +790,8 @@ export enum TransactionProjectionType {
   CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED',
   CommissionOverdraft = 'COMMISSION_OVERDRAFT',
   Charge = 'CHARGE',
-  DepositFee = 'DEPOSIT_FEE'
+  DepositFee = 'DEPOSIT_FEE',
+  VerificationCode = 'VERIFICATION_CODE'
 }
 
 export type TransactionFee = {
@@ -1011,6 +1013,7 @@ export type Card = {
   status: CardStatus;
   type: CardType;
   pinSet: Scalars['Boolean'];
+  addedToApplePay: Scalars['Boolean'];
   holder?: Maybe<Scalars['String']>;
   formattedExpirationDate?: Maybe<Scalars['String']>;
   maskedPan?: Maybe<Scalars['String']>;
@@ -1321,7 +1324,7 @@ export type InvoiceSettingsOutput = {
   logoUrl?: Maybe<Scalars['String']>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
   dueDateDefaultOffset?: Maybe<Scalars['Float']>;
-  numberSeriesStart?: Maybe<Scalars['Float']>;
+  nextInvoiceNumber?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
 };
@@ -1342,6 +1345,7 @@ export type InvoiceCustomerOutput = {
 export type Invoice = {
   __typename?: 'Invoice';
   id: Scalars['ID'];
+  transactionId: Scalars['ID'];
   /** A list of products from the invoice */
   products?: Maybe<Array<InvoiceProductOutput>>;
 };
@@ -2234,7 +2238,7 @@ export type InvoiceSettingsInput = {
   phoneNumber?: Maybe<Scalars['String']>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
   dueDateDefaultOffset?: Maybe<Scalars['Float']>;
-  numberSeriesStart?: Maybe<Scalars['Float']>;
+  nextInvoiceNumber?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
 };
