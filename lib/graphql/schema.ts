@@ -4,7 +4,9 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -90,6 +92,7 @@ export type User = {
   poaSignedAt?: Maybe<Scalars['DateTime']>;
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
+  invoice?: Maybe<Invoice>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -122,15 +125,19 @@ export type User = {
   invoiceSettings?: Maybe<InvoiceSettingsOutput>;
   /** Retrieves signed POA PDF for user. */
   poaUrl?: Maybe<Scalars['String']>;
+  invoices: InvoicingDashboardData;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
-  invoice?: Maybe<Invoice>;
-  invoices: InvoicingDashboardData;
 };
 
 
 export type UserInvoicePdfArgs = {
   invoiceId: Scalars['ID'];
+};
+
+
+export type UserInvoiceArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -156,11 +163,6 @@ export type UserMetadataArgs = {
 
 export type UserPremiumSubscriptionDiscountArgs = {
   couponCode?: Maybe<Scalars['String']>;
-};
-
-
-export type UserInvoiceArgs = {
-  id: Scalars['String'];
 };
 
 
@@ -479,6 +481,41 @@ export enum AccountState {
   PremiumOld = 'PREMIUM_OLD'
 }
 
+export type Invoice = {
+  __typename?: 'Invoice';
+  id: Scalars['ID'];
+  invoiceSettingsId?: Maybe<Scalars['String']>;
+  customer?: Maybe<Customer>;
+  status: Scalars['String'];
+  invoiceNumber?: Maybe<Scalars['Float']>;
+  dueDate?: Maybe<Scalars['DateTime']>;
+  note?: Maybe<Scalars['String']>;
+  transactionId: Scalars['ID'];
+  /** A list of products from the invoice */
+  products?: Maybe<Array<InvoiceProductOutput>>;
+};
+
+export type Customer = {
+  __typename?: 'Customer';
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+  taxNumber?: Maybe<Scalars['String']>;
+};
+
+export type InvoiceProductOutput = {
+  __typename?: 'InvoiceProductOutput';
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  vat?: Maybe<Scalars['String']>;
+  quantity?: Maybe<Scalars['Float']>;
+  id: Scalars['String'];
+};
+
 export type Client = {
   __typename?: 'Client';
   id: Scalars['ID'];
@@ -522,6 +559,7 @@ export type Account = {
   publicId: Scalars['ID'];
   iban: Scalars['String'];
   cardHolderRepresentation?: Maybe<Scalars['String']>;
+  bic: Scalars['String'];
   canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
   hasPendingCardFraudCase: Scalars['Boolean'];
@@ -541,7 +579,6 @@ export type Account = {
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
   balance: Scalars['Int'];
-  bic: Scalars['String'];
 };
 
 
@@ -1329,36 +1366,6 @@ export type InvoiceSettingsOutput = {
   vatNumber?: Maybe<Scalars['String']>;
 };
 
-export type InvoiceCustomerOutput = {
-  __typename?: 'InvoiceCustomerOutput';
-  id: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  streetLine?: Maybe<Scalars['String']>;
-  postCode?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  vatNumber?: Maybe<Scalars['String']>;
-  taxNumber?: Maybe<Scalars['String']>;
-};
-
-export type Invoice = {
-  __typename?: 'Invoice';
-  id: Scalars['ID'];
-  transactionId: Scalars['ID'];
-  /** A list of products from the invoice */
-  products?: Maybe<Array<InvoiceProductOutput>>;
-};
-
-export type InvoiceProductOutput = {
-  __typename?: 'InvoiceProductOutput';
-  description?: Maybe<Scalars['String']>;
-  price?: Maybe<Scalars['Float']>;
-  vat?: Maybe<Scalars['String']>;
-  quantity?: Maybe<Scalars['Float']>;
-  id: Scalars['String'];
-};
-
 export type InvoicingDashboardData = {
   __typename?: 'InvoicingDashboardData';
   pageInfo: InvoicePageInfo;
@@ -1389,6 +1396,19 @@ export enum InvoiceStatusType {
   Sent = 'SENT',
   Paid = 'PAID'
 }
+
+export type InvoiceCustomerOutput = {
+  __typename?: 'InvoiceCustomerOutput';
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+  taxNumber?: Maybe<Scalars['String']>;
+};
 
 export type SystemStatus = {
   __typename?: 'SystemStatus';
@@ -1508,7 +1528,7 @@ export type Mutation = {
   updateInvoiceSettings: InvoiceSettingsOutput;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
   createInvoiceLogo: CreateInvoiceLogoResponse;
-  /** Deletes the logo of a user's most recent settings entry */
+  /** Deletes the logo of a user's settings entry */
   deleteInvoiceLogo: MutationResult;
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
@@ -2281,6 +2301,7 @@ export type InvoiceOutput = {
   id?: Maybe<Scalars['String']>;
   invoiceSettingsId?: Maybe<Scalars['String']>;
   customerId?: Maybe<Scalars['String']>;
+  customer?: Maybe<InvoiceCustomerOutput>;
   status: Scalars['String'];
   invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
