@@ -40,7 +40,7 @@ describe("Client", () => {
         card: {} as any,
         subscription: {} as any,
         changeRequest: {} as any,
-        vatDeclaration: {} as any,
+        declaration: {} as any,
       };
 
       // act

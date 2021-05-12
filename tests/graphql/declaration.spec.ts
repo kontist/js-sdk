@@ -2,16 +2,17 @@ import {expect} from "chai";
 import * as sinon from "sinon";
 
 import {Client} from "../../lib";
-import {VatDeclaration} from "../../lib/graphql/vatDeclaration";
+import {Declaration} from "../../lib/graphql/declaration";
 import {
-  VatDeclaration as VatDeclarationModel,
-  VatDeclarationPdf,
+  Declaration as DeclarationModel,
+  DeclarationPdf,
+  DeclarationType,
 } from "../../lib/graphql/schema";
 
-describe("VatDeclaration", () => {
+describe("Declaration", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
-  let vatDeclaration: VatDeclaration;
+  let declaration: Declaration;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -28,7 +29,7 @@ describe("VatDeclaration", () => {
       state,
     });
 
-    vatDeclaration = new VatDeclaration(client.graphQL);
+    declaration = new Declaration(client.graphQL);
   });
 
   afterEach(() => {
@@ -38,7 +39,7 @@ describe("VatDeclaration", () => {
   describe("#fetch", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
-      const vatDeclarationsRespone: VatDeclarationModel[] = [
+      const declarationsRespone: DeclarationModel[] = [
         {
           id: 1,
           amount: 5,
@@ -49,42 +50,38 @@ describe("VatDeclaration", () => {
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           mainAccount: {
-            vatDeclarations: vatDeclarationsRespone,
+            declarations: declarationsRespone,
           },
         },
       } as any);
 
       // act
-      const result = await vatDeclaration.fetch();
+      const result = await declaration.fetch({
+        type: DeclarationType.UStVa,
+      });
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      expect(result).to.deep.eq({
-        items: vatDeclarationsRespone,
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-        },
-      });
+      expect(result).to.deep.eq(declarationsRespone);
     });
   });
 
   describe("#getPdf", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
-      const getPdfRespone: VatDeclarationPdf = {
+      const getPdfRespone: DeclarationPdf = {
         url: "https://amazonaws.com/example.pdf",
       };
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           mainAccount: {
-            vatDeclarationPdf: getPdfRespone,
+            declarationPdf: getPdfRespone,
           },
         },
       } as any);
 
       // act
-      const result = await vatDeclaration.getPdf({
+      const result = await declaration.getPdf({
         id: "1",
       });
 
