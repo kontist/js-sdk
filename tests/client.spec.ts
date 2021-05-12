@@ -1,7 +1,7 @@
-import { expect } from "chai";
-import { Client } from "../lib";
-import { Auth } from "../lib/auth";
-import { GraphQLClient } from "../lib/graphql/client";
+import {expect} from "chai";
+import {Client} from "../lib";
+import {Auth} from "../lib/auth";
+import {GraphQLClient} from "../lib/graphql/client";
 
 describe("Client", () => {
   describe("#constructor", () => {
@@ -40,6 +40,7 @@ describe("Client", () => {
         card: {} as any,
         subscription: {} as any,
         changeRequest: {} as any,
+        vatDeclaration: {} as any,
       };
 
       // act
