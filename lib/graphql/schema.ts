@@ -579,8 +579,8 @@ export type Account = {
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
   balance: Scalars['Int'];
-  vatDeclarations: Array<VatDeclaration>;
-  vatDeclarationPdf?: Maybe<VatDeclarationPdf>;
+  declarations: Array<Declaration>;
+  declarationPdf?: Maybe<DeclarationPdf>;
 };
 
 
@@ -625,7 +625,13 @@ export type AccountCardArgs = {
 
 
 /** The bank account of the current user */
-export type AccountVatDeclarationPdfArgs = {
+export type AccountDeclarationsArgs = {
+  type: DeclarationType;
+};
+
+
+/** The bank account of the current user */
+export type AccountDeclarationPdfArgs = {
   id: Scalars['ID'];
 };
 
@@ -1141,16 +1147,20 @@ export enum OverdraftApplicationStatus {
   Expired = 'EXPIRED'
 }
 
-export type VatDeclaration = {
-  __typename?: 'VatDeclaration';
+export type Declaration = {
+  __typename?: 'Declaration';
   period: Scalars['String'];
   year: Scalars['Float'];
   id: Scalars['Float'];
   amount: Scalars['Float'];
 };
 
-export type VatDeclarationPdf = {
-  __typename?: 'VatDeclarationPdf';
+export enum DeclarationType {
+  UStVa = 'UStVA'
+}
+
+export type DeclarationPdf = {
+  __typename?: 'DeclarationPdf';
   url: Scalars['String'];
 };
 
