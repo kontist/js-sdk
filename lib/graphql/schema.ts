@@ -579,6 +579,8 @@ export type Account = {
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
   balance: Scalars['Int'];
+  vatDeclarations: Array<VatDeclaration>;
+  vatDeclarationPdf?: Maybe<VatDeclarationPdf>;
 };
 
 
@@ -619,6 +621,12 @@ export type AccountTransferArgs = {
 /** The bank account of the current user */
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>;
+};
+
+
+/** The bank account of the current user */
+export type AccountVatDeclarationPdfArgs = {
+  id: Scalars['ID'];
 };
 
 export type PendingTransactionVerification = {
@@ -1132,6 +1140,19 @@ export enum OverdraftApplicationStatus {
   OverdraftCreated = 'OVERDRAFT_CREATED',
   Expired = 'EXPIRED'
 }
+
+export type VatDeclaration = {
+  __typename?: 'VatDeclaration';
+  period: Scalars['String'];
+  year: Scalars['Float'];
+  id: Scalars['Float'];
+  amount: Scalars['Float'];
+};
+
+export type VatDeclarationPdf = {
+  __typename?: 'VatDeclarationPdf';
+  url: Scalars['String'];
+};
 
 export type UserSubscription = {
   __typename?: 'UserSubscription';
