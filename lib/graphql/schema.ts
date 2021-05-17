@@ -632,7 +632,7 @@ export type AccountDeclarationsArgs = {
 
 /** The bank account of the current user */
 export type AccountDeclarationPdfArgs = {
-  id: Scalars['ID'];
+  id: Scalars['Int'];
 };
 
 export type PendingTransactionVerification = {

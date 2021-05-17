@@ -82,7 +82,7 @@ describe("Declaration", () => {
 
       // act
       const result = await declaration.getPdf({
-        id: "1",
+        id: 1,
       });
 
       // assert

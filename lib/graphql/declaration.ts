@@ -24,7 +24,7 @@ const FETCH_DECLARATIONS = `
 `;
 
 const GET_DECLARATION_PDF = `
-  query GetDeclarationPdf ($id: ID!) {
+  query GetDeclarationPdf ($id: Int!) {
     viewer {
       mainAccount {
         declarationPdf(id: $id) {
