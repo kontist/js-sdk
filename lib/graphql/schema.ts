@@ -93,6 +93,7 @@ export type User = {
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
   invoice?: Maybe<Invoice>;
+  vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -1200,7 +1201,8 @@ export enum BannerName {
   Bookkeeping = 'BOOKKEEPING',
   FriendReferral = 'FRIEND_REFERRAL',
   PrimaryWebapp = 'PRIMARY_WEBAPP',
-  TaxService = 'TAX_SERVICE'
+  TaxService = 'TAX_SERVICE',
+  VatDeclaration = 'VAT_DECLARATION'
 }
 
 export type UserIntegration = {
