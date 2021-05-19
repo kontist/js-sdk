@@ -64,6 +64,22 @@ describe("Declaration", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(declarationsRespone);
     });
+
+    it("should call rawQuery and return result for missing account", async () => {
+      // arrange
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      // act
+      const result = await declaration.fetch({
+        type: DeclarationType.UStVa,
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq([]);
+    });
   });
 
   describe("#getPdf", () => {
@@ -88,6 +104,22 @@ describe("Declaration", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(getPdfRespone);
+    });
+
+    it("should call rawQuery and return result for missing account", async () => {
+      // arrange
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      // act
+      const result = await declaration.getPdf({
+        id: 1,
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(null);
     });
   });
 });
