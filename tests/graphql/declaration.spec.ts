@@ -64,7 +64,7 @@ describe("Declaration", () => {
       expect(result).to.deep.eq(declarationsRespone);
     });
 
-    it("should call rawQuery and return result for missing account", async () => {
+    it("should call rawQuery and return empty array for missing account", async () => {
       // arrange
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {},
