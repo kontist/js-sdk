@@ -36,7 +36,7 @@ describe("Declaration", () => {
   });
 
   describe("#fetch", () => {
-    it("should call rawQuery and return result", async () => {
+    it("should call rawQuery and return declarations array", async () => {
       // arrange
       const declarationsRespone: DeclarationModel[] = [
         {
