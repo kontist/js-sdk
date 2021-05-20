@@ -2,8 +2,7 @@ import {GraphQLClient} from "./client";
 
 import {
   Query,
-  DeclarationPdf,
-  AccountDeclarationPdfArgs,
+  AccountDeclarationPdfUrlArgs,
   AccountDeclarationsArgs,
   Declaration as DeclarationModel,
 } from "./schema";
@@ -27,9 +26,7 @@ const GET_DECLARATION_PDF = `
   query GetDeclarationPdf ($id: Int!) {
     viewer {
       mainAccount {
-        declarationPdf(id: $id) {
-          url
-        }
+        declarationPdfUrl(id: $id)
       }
     }
   }
@@ -47,10 +44,10 @@ export class Declaration {
   }
 
   public async getPdf(
-    args: AccountDeclarationPdfArgs
-  ): Promise<DeclarationPdf | null> {
+    args: AccountDeclarationPdfUrlArgs
+  ): Promise<string | null> {
     const result: Query = await this.client.rawQuery(GET_DECLARATION_PDF, args);
 
-    return result.viewer?.mainAccount?.declarationPdf ?? null;
+    return result.viewer?.mainAccount?.declarationPdfUrl ?? null;
   }
 }

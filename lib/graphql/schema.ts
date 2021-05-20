@@ -581,7 +581,7 @@ export type Account = {
   overdraft?: Maybe<Overdraft>;
   balance: Scalars['Int'];
   declarations: Array<Declaration>;
-  declarationPdf?: Maybe<DeclarationPdf>;
+  declarationPdfUrl?: Maybe<Scalars['String']>;
 };
 
 
@@ -632,7 +632,7 @@ export type AccountDeclarationsArgs = {
 
 
 /** The bank account of the current user */
-export type AccountDeclarationPdfArgs = {
+export type AccountDeclarationPdfUrlArgs = {
   id: Scalars['Int'];
 };
 
@@ -1151,19 +1151,14 @@ export enum OverdraftApplicationStatus {
 export type Declaration = {
   __typename?: 'Declaration';
   period: Scalars['String'];
-  year: Scalars['Float'];
-  id: Scalars['Float'];
-  amount: Scalars['Float'];
+  year: Scalars['Int'];
+  id: Scalars['Int'];
+  amount: Scalars['Int'];
 };
 
 export enum DeclarationType {
   UStVa = 'UStVA'
 }
-
-export type DeclarationPdf = {
-  __typename?: 'DeclarationPdf';
-  url: Scalars['String'];
-};
 
 export type UserSubscription = {
   __typename?: 'UserSubscription';

@@ -5,7 +5,6 @@ import {Client} from "../../lib";
 import {Declaration} from "../../lib/graphql/declaration";
 import {
   Declaration as DeclarationModel,
-  DeclarationPdf,
   DeclarationType,
 } from "../../lib/graphql/schema";
 
@@ -85,13 +84,11 @@ describe("Declaration", () => {
   describe("#getPdf", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
-      const getPdfRespone: DeclarationPdf = {
-        url: "https://amazonaws.com/example.pdf",
-      };
+      const getPdfRespone = "https://amazonaws.com/example.pdf";
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           mainAccount: {
-            declarationPdf: getPdfRespone,
+            declarationPdfUrl: getPdfRespone,
           },
         },
       } as any);
