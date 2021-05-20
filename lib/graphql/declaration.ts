@@ -43,7 +43,7 @@ export class Declaration {
     return result.viewer?.mainAccount?.declarations || [];
   }
 
-  public async getPdf(
+  public async getPdfUrl(
     args: AccountDeclarationPdfUrlArgs
   ): Promise<string | null> {
     const result: Query = await this.client.rawQuery(GET_DECLARATION_PDF, args);

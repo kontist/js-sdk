@@ -81,26 +81,26 @@ describe("Declaration", () => {
     });
   });
 
-  describe("#getPdf", () => {
+  describe("#getPdfUrl", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
-      const getPdfRespone = "https://amazonaws.com/example.pdf";
+      const getPdfUrlRespone = "https://amazonaws.com/example.pdf";
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           mainAccount: {
-            declarationPdfUrl: getPdfRespone,
+            declarationPdfUrl: getPdfUrlRespone,
           },
         },
       } as any);
 
       // act
-      const result = await declaration.getPdf({
+      const result = await declaration.getPdfUrl({
         id: 1,
       });
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      expect(result).to.deep.eq(getPdfRespone);
+      expect(result).to.deep.eq(getPdfUrlRespone);
     });
 
     it("should call rawQuery and return result for missing account", async () => {
@@ -110,7 +110,7 @@ describe("Declaration", () => {
       } as any);
 
       // act
-      const result = await declaration.getPdf({
+      const result = await declaration.getPdfUrl({
         id: 1,
       });
 
