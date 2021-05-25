@@ -93,6 +93,7 @@ export type User = {
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
   invoice?: Maybe<Invoice>;
+  vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -579,6 +580,8 @@ export type Account = {
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
   balance: Scalars['Int'];
+  declarations: Array<Declaration>;
+  declarationPdfUrl?: Maybe<Scalars['String']>;
 };
 
 
@@ -619,6 +622,18 @@ export type AccountTransferArgs = {
 /** The bank account of the current user */
 export type AccountCardArgs = {
   filter?: Maybe<CardFilter>;
+};
+
+
+/** The bank account of the current user */
+export type AccountDeclarationsArgs = {
+  type: DeclarationType;
+};
+
+
+/** The bank account of the current user */
+export type AccountDeclarationPdfUrlArgs = {
+  id: Scalars['Int'];
 };
 
 export type PendingTransactionVerification = {
@@ -1133,6 +1148,18 @@ export enum OverdraftApplicationStatus {
   Expired = 'EXPIRED'
 }
 
+export type Declaration = {
+  __typename?: 'Declaration';
+  period: Scalars['String'];
+  year: Scalars['Int'];
+  id: Scalars['Int'];
+  amount: Scalars['Int'];
+};
+
+export enum DeclarationType {
+  UStVa = 'UStVA'
+}
+
 export type UserSubscription = {
   __typename?: 'UserSubscription';
   /** The type of the plans a user has subscribed to */
@@ -1169,7 +1196,8 @@ export enum BannerName {
   Bookkeeping = 'BOOKKEEPING',
   FriendReferral = 'FRIEND_REFERRAL',
   PrimaryWebapp = 'PRIMARY_WEBAPP',
-  TaxService = 'TAX_SERVICE'
+  TaxService = 'TAX_SERVICE',
+  VatDeclaration = 'VAT_DECLARATION'
 }
 
 export type UserIntegration = {

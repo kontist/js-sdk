@@ -6,6 +6,7 @@ import { Transaction } from "./transaction";
 import { Transfer } from "./transfer";
 import { User } from "./user";
 import { ChangeRequest } from "./changeRequest"
+import { Declaration } from "./declaration";
 
 export const getModels = (graphQLClient: GraphQLClient) => ({
   account: new Account(graphQLClient),
@@ -15,4 +16,5 @@ export const getModels = (graphQLClient: GraphQLClient) => ({
   transfer: new Transfer(graphQLClient),
   user: new User(graphQLClient),
   changeRequest: new ChangeRequest(graphQLClient),
+  declaration: new Declaration(graphQLClient),
 });
