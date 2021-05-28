@@ -4,9 +4,7 @@
 //
 
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -92,8 +90,8 @@ export type User = {
   poaSignedAt?: Maybe<Scalars['DateTime']>;
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
-  invoice?: Maybe<Invoice>;
   vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
+  invoice?: Maybe<Invoice>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -128,7 +126,7 @@ export type User = {
   poaUrl?: Maybe<Scalars['String']>;
   invoices: InvoicingDashboardData;
   /** The list of all customers of the current user */
-  invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
+  invoiceCustomers?: Maybe<Array<Customer>>;
 };
 
 
@@ -500,6 +498,7 @@ export type Customer = {
   __typename?: 'Customer';
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
   streetLine?: Maybe<Scalars['String']>;
   postCode?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
@@ -768,7 +767,7 @@ export type Transaction = {
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** List of uploaded Asset files for this transaction */
-  assets: Array<TransactionAsset>;
+  assets: Array<Asset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
   directDebitFees: Array<DirectDebitFee>;
@@ -792,8 +791,8 @@ export type Transaction = {
   elsterCode?: Maybe<Scalars['String']>;
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
-  /** View a single TransactionAsset for a transaction */
-  asset?: Maybe<TransactionAsset>;
+  /** View a single Asset for a transaction */
+  asset?: Maybe<Asset>;
 };
 
 
@@ -873,6 +872,7 @@ export enum TransactionFeeStatus {
 export type TransactionSplit = {
   __typename?: 'TransactionSplit';
   id: Scalars['Int'];
+  uuid: Scalars['ID'];
   amount: Scalars['Int'];
   category: TransactionCategory;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -884,16 +884,15 @@ export enum CategorizationType {
   BookkeepingPartner = 'BOOKKEEPING_PARTNER',
   User = 'USER',
   Kontax = 'KONTAX',
-  Manual = 'MANUAL',
-  Automatic = 'AUTOMATIC',
-  Recategorized = 'RECATEGORIZED'
+  Invoicing = 'INVOICING'
 }
 
-export type TransactionAsset = {
-  __typename?: 'TransactionAsset';
+export type Asset = {
+  __typename?: 'Asset';
   id: Scalars['ID'];
   name: Scalars['String'];
   filetype: Scalars['String'];
+  assetableId: Scalars['ID'];
   path: Scalars['String'];
   thumbnail: Scalars['String'];
   fullsize: Scalars['String'];
@@ -1376,7 +1375,6 @@ export type Discount = {
 
 export type InvoiceSettingsOutput = {
   __typename?: 'InvoiceSettingsOutput';
-  id: Scalars['String'];
   senderName?: Maybe<Scalars['String']>;
   companyName?: Maybe<Scalars['String']>;
   streetLine?: Maybe<Scalars['String']>;
@@ -1385,13 +1383,14 @@ export type InvoiceSettingsOutput = {
   country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
-  /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
-  logoUrl?: Maybe<Scalars['String']>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
   dueDateDefaultOffset?: Maybe<Scalars['Float']>;
   nextInvoiceNumber?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
+  logoUrl?: Maybe<Scalars['String']>;
 };
 
 export type InvoicingDashboardData = {
@@ -1425,19 +1424,6 @@ export enum InvoiceStatusType {
   Paid = 'PAID'
 }
 
-export type InvoiceCustomerOutput = {
-  __typename?: 'InvoiceCustomerOutput';
-  id: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  streetLine?: Maybe<Scalars['String']>;
-  postCode?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  vatNumber?: Maybe<Scalars['String']>;
-  taxNumber?: Maybe<Scalars['String']>;
-};
-
 export type SystemStatus = {
   __typename?: 'SystemStatus';
   type?: Maybe<Status>;
@@ -1455,11 +1441,11 @@ export type GenericFeature = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Create an TransactionAsset and obtain an upload config */
+  /** Create a transaction Asset and obtain an upload config */
   createTransactionAsset: CreateAssetResponse;
-  /** Confirm and validate an TransactionAsset upload as completed */
-  finalizeTransactionAssetUpload: TransactionAsset;
-  /** Remove an TransactionAsset from the Transaction and storage */
+  /** Confirm and validate an Asset upload as completed */
+  finalizeTransactionAssetUpload: Asset;
+  /** Remove an Asset from the Transaction and storage */
   deleteTransactionAsset: MutationResult;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
@@ -1560,8 +1546,9 @@ export type Mutation = {
   deleteInvoiceLogo: MutationResult;
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
-  updateInvoiceCustomer: InvoiceCustomerOutput;
+  updateInvoiceCustomer: Customer;
   updateInvoice: InvoiceOutput;
+  deleteInvoice: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
 };
@@ -1846,12 +1833,17 @@ export type MutationSignPoaArgs = {
 
 
 export type MutationUpdateInvoiceCustomerArgs = {
-  payload: InvoiceCustomerInput;
+  payload: CustomerInput;
 };
 
 
 export type MutationUpdateInvoiceArgs = {
   payload: InvoiceInput;
+};
+
+
+export type MutationDeleteInvoiceArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -2312,7 +2304,7 @@ export type UserDependentInput = {
   type: UserDependentType;
 };
 
-export type InvoiceCustomerInput = {
+export type CustomerInput = {
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
@@ -2326,25 +2318,24 @@ export type InvoiceCustomerInput = {
 
 export type InvoiceOutput = {
   __typename?: 'InvoiceOutput';
-  id?: Maybe<Scalars['String']>;
   invoiceSettingsId?: Maybe<Scalars['String']>;
   customerId?: Maybe<Scalars['String']>;
-  customer?: Maybe<InvoiceCustomerOutput>;
   status: Scalars['String'];
-  invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  customer?: Maybe<Customer>;
+  invoiceNumber?: Maybe<Scalars['Float']>;
   products?: Maybe<Array<InvoiceProductOutput>>;
 };
 
 export type InvoiceInput = {
-  id?: Maybe<Scalars['String']>;
   invoiceSettingsId?: Maybe<Scalars['String']>;
   customerId?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  invoiceNumber?: Maybe<Scalars['Float']>;
+  status: Scalars['String'];
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
   products?: Maybe<Array<InvoiceProductInput>>;
 };
 
