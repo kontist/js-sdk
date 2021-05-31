@@ -103,13 +103,6 @@ const CONFIRM_CANCEL_TRANSFER = `mutation confirmCancelTransfer(
     ${TRANSFER_FIELDS}
   }
 }`;
-const ASSET_FIELDS = `
-  id
-  name
-  filetype
-  thumbnail
-  fullsize
-`;
 
 const FETCH_TRANSFERS = `
   query fetchTransfers(
@@ -133,9 +126,6 @@ const FETCH_TRANSFERS = `
           edges {
             node {
               ${TRANSFER_FIELDS}
-              assets {
-                ${ASSET_FIELDS}
-              }
             }
           }
           pageInfo {
