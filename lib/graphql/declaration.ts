@@ -5,7 +5,7 @@ import {
   AccountDeclarationPdfUrlArgs,
   AccountDeclarationsArgs,
   Declaration as DeclarationModel,
-  MutationSubmitUStVaArgs,
+  MutationSubmitDeclarationArgs,
 } from "./schema";
 
 const FETCH_DECLARATIONS = `
@@ -70,9 +70,9 @@ export class Declaration {
   }
 
   public async submit(
-    args: MutationSubmitUStVaArgs
+    args: MutationSubmitDeclarationArgs
   ): Promise<DeclarationModel> {
     const result = await this.client.rawQuery(SUBMIT_DECLARATION, args);
-    return result.submitUStVA;
+    return result.submitDeclaration;
   }
 }

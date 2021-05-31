@@ -1566,7 +1566,7 @@ export type Mutation = {
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
   /** Submits UStVA declaration */
-  submitUStVA: Declaration;
+  submitDeclaration: Declaration;
 };
 
 
@@ -1868,7 +1868,7 @@ export type MutationUpsertProductsArgs = {
 };
 
 
-export type MutationSubmitUStVaArgs = {
+export type MutationSubmitDeclarationArgs = {
   year: Scalars['String'];
   period: Scalars['String'];
 };

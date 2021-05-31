@@ -133,7 +133,7 @@ describe("Declaration", () => {
         year,
       };
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        submitUStVA: response,
+        submitDeclaration: response,
       } as any);
 
       // act
