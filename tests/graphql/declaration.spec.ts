@@ -1,8 +1,8 @@
-import {expect} from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
 
-import {Client} from "../../lib";
-import {Declaration} from "../../lib/graphql/declaration";
+import { Client } from "../../lib";
+import { Declaration } from "../../lib/graphql/declaration";
 import {
   Declaration as DeclarationModel,
   DeclarationType,
@@ -117,6 +117,34 @@ describe("Declaration", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(null);
+    });
+  });
+
+  describe("#submit", () => {
+    it("should call rawQuery and return declarations array", async () => {
+      const period = "02";
+      const year = 2021;
+
+      // arrange
+      const response: DeclarationModel = {
+        id: 1,
+        amount: 5,
+        period,
+        year,
+      };
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        submitUStVA: response,
+      } as any);
+
+      // act
+      const result = await declaration.submit({
+        period,
+        year: year.toString(),
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(response);
     });
   });
 });
