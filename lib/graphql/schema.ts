@@ -126,7 +126,7 @@ export type User = {
   poaUrl?: Maybe<Scalars['String']>;
   invoices: InvoicingDashboardData;
   /** The list of all customers of the current user */
-  invoiceCustomers?: Maybe<Array<Customer>>;
+  invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
 };
 
 
@@ -767,7 +767,7 @@ export type Transaction = {
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** List of uploaded Asset files for this transaction */
-  assets: Array<Asset>;
+  assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
   directDebitFees: Array<DirectDebitFee>;
@@ -792,7 +792,7 @@ export type Transaction = {
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
   /** View a single Asset for a transaction */
-  asset?: Maybe<Asset>;
+  asset?: Maybe<TransactionAsset>;
 };
 
 
@@ -887,8 +887,8 @@ export enum CategorizationType {
   Invoicing = 'INVOICING'
 }
 
-export type Asset = {
-  __typename?: 'Asset';
+export type TransactionAsset = {
+  __typename?: 'TransactionAsset';
   id: Scalars['ID'];
   name: Scalars['String'];
   filetype: Scalars['String'];
@@ -1424,6 +1424,19 @@ export enum InvoiceStatusType {
   Paid = 'PAID'
 }
 
+export type InvoiceCustomerOutput = {
+  __typename?: 'InvoiceCustomerOutput';
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  streetLine?: Maybe<Scalars['String']>;
+  postCode?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars['String']>;
+  taxNumber?: Maybe<Scalars['String']>;
+};
+
 export type SystemStatus = {
   __typename?: 'SystemStatus';
   type?: Maybe<Status>;
@@ -1444,7 +1457,7 @@ export type Mutation = {
   /** Create a transaction Asset and obtain an upload config */
   createTransactionAsset: CreateAssetResponse;
   /** Confirm and validate an Asset upload as completed */
-  finalizeTransactionAssetUpload: Asset;
+  finalizeTransactionAssetUpload: TransactionAsset;
   /** Remove an Asset from the Transaction and storage */
   deleteTransactionAsset: MutationResult;
   /** Cancel an existing Timed Order or Standing Order */
@@ -1546,7 +1559,7 @@ export type Mutation = {
   deleteInvoiceLogo: MutationResult;
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
-  updateInvoiceCustomer: Customer;
+  updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoice: InvoiceOutput;
   deleteInvoice: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
@@ -1833,7 +1846,7 @@ export type MutationSignPoaArgs = {
 
 
 export type MutationUpdateInvoiceCustomerArgs = {
-  payload: CustomerInput;
+  payload: InvoiceCustomerInput;
 };
 
 
@@ -2304,7 +2317,7 @@ export type UserDependentInput = {
   type: UserDependentType;
 };
 
-export type CustomerInput = {
+export type InvoiceCustomerInput = {
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
@@ -2324,7 +2337,7 @@ export type InvoiceOutput = {
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
-  customer?: Maybe<Customer>;
+  customer?: Maybe<InvoiceCustomerOutput>;
   invoiceNumber?: Maybe<Scalars['Float']>;
   products?: Maybe<Array<InvoiceProductOutput>>;
 };
