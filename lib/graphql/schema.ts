@@ -1565,6 +1565,8 @@ export type Mutation = {
   deleteInvoice: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
+  /** Submits UStVA declaration */
+  submitUStVA: Declaration;
 };
 
 
@@ -1863,6 +1865,12 @@ export type MutationDeleteInvoiceArgs = {
 
 export type MutationUpsertProductsArgs = {
   payload: Array<UserProductInput>;
+};
+
+
+export type MutationSubmitUStVaArgs = {
+  year: Scalars['String'];
+  period: Scalars['String'];
 };
 
 export type CreateAssetResponse = {
