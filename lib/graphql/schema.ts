@@ -92,8 +92,8 @@ export type User = {
   poaSignedAt?: Maybe<Scalars['DateTime']>;
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
-  invoice?: Maybe<Invoice>;
   vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
+  invoice?: Maybe<Invoice>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -768,7 +768,7 @@ export type Transaction = {
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** List of uploaded Asset files for this transaction */
-  assets: Array<TransactionAsset>;
+  assets: Array<Asset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
   directDebitFees: Array<DirectDebitFee>;
@@ -792,8 +792,8 @@ export type Transaction = {
   elsterCode?: Maybe<Scalars['String']>;
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
-  /** View a single TransactionAsset for a transaction */
-  asset?: Maybe<TransactionAsset>;
+  /** View a single Asset for a transaction */
+  asset?: Maybe<Asset>;
 };
 
 
@@ -873,6 +873,7 @@ export enum TransactionFeeStatus {
 export type TransactionSplit = {
   __typename?: 'TransactionSplit';
   id: Scalars['Int'];
+  uuid: Scalars['ID'];
   amount: Scalars['Int'];
   category: TransactionCategory;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -884,16 +885,15 @@ export enum CategorizationType {
   BookkeepingPartner = 'BOOKKEEPING_PARTNER',
   User = 'USER',
   Kontax = 'KONTAX',
-  Manual = 'MANUAL',
-  Automatic = 'AUTOMATIC',
-  Recategorized = 'RECATEGORIZED'
+  Invoicing = 'INVOICING'
 }
 
-export type TransactionAsset = {
-  __typename?: 'TransactionAsset';
+export type Asset = {
+  __typename?: 'Asset';
   id: Scalars['ID'];
   name: Scalars['String'];
   filetype: Scalars['String'];
+  assetableId: Scalars['ID'];
   path: Scalars['String'];
   thumbnail: Scalars['String'];
   fullsize: Scalars['String'];
@@ -1455,11 +1455,11 @@ export type GenericFeature = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Create an TransactionAsset and obtain an upload config */
+  /** Create a transaction Asset and obtain an upload config */
   createTransactionAsset: CreateAssetResponse;
-  /** Confirm and validate an TransactionAsset upload as completed */
-  finalizeTransactionAssetUpload: TransactionAsset;
-  /** Remove an TransactionAsset from the Transaction and storage */
+  /** Confirm and validate an Asset upload as completed */
+  finalizeTransactionAssetUpload: Asset;
+  /** Remove an Asset from the Transaction and storage */
   deleteTransactionAsset: MutationResult;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
@@ -1562,6 +1562,7 @@ export type Mutation = {
   signPOA: MutationResult;
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoice: InvoiceOutput;
+  deleteInvoice: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
 };
@@ -1852,6 +1853,11 @@ export type MutationUpdateInvoiceCustomerArgs = {
 
 export type MutationUpdateInvoiceArgs = {
   payload: InvoiceInput;
+};
+
+
+export type MutationDeleteInvoiceArgs = {
+  id: Scalars['ID'];
 };
 
 
