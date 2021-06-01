@@ -1388,7 +1388,7 @@ export type InvoiceSettingsOutput = {
   nextInvoiceNumber?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
   /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
   logoUrl?: Maybe<Scalars['String']>;
 };
