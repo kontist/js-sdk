@@ -92,8 +92,8 @@ export type User = {
   poaSignedAt?: Maybe<Scalars['DateTime']>;
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
-  invoice?: Maybe<Invoice>;
   vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
+  invoice?: Maybe<Invoice>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** The details of an existing OAuth2 client */
@@ -665,6 +665,7 @@ export type TransfersConnectionEdge = {
 export type Transfer = {
   __typename?: 'Transfer';
   id: Scalars['String'];
+  uuid: Scalars['String'];
   /** The name of the transfer recipient */
   recipient: Scalars['String'];
   /** The IBAN of the transfer recipient */
@@ -689,6 +690,8 @@ export type Transfer = {
   nextOccurrence?: Maybe<Scalars['DateTime']>;
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
+  /** List of uploaded Asset files for this transfer */
+  assets?: Maybe<Array<Asset>>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
@@ -731,6 +734,17 @@ export enum TransactionCategory {
   TaxSaving = 'TAX_SAVING',
   ReverseCharge = 'REVERSE_CHARGE'
 }
+
+export type Asset = {
+  __typename?: 'Asset';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  filetype: Scalars['String'];
+  assetableId: Scalars['ID'];
+  path: Scalars['String'];
+  thumbnail: Scalars['String'];
+  fullsize: Scalars['String'];
+};
 
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -792,7 +806,7 @@ export type Transaction = {
   elsterCode?: Maybe<Scalars['String']>;
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
-  /** View a single TransactionAsset for a transaction */
+  /** View a single Asset for a transaction */
   asset?: Maybe<TransactionAsset>;
 };
 
@@ -873,6 +887,7 @@ export enum TransactionFeeStatus {
 export type TransactionSplit = {
   __typename?: 'TransactionSplit';
   id: Scalars['Int'];
+  uuid: Scalars['ID'];
   amount: Scalars['Int'];
   category: TransactionCategory;
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -884,9 +899,7 @@ export enum CategorizationType {
   BookkeepingPartner = 'BOOKKEEPING_PARTNER',
   User = 'USER',
   Kontax = 'KONTAX',
-  Manual = 'MANUAL',
-  Automatic = 'AUTOMATIC',
-  Recategorized = 'RECATEGORIZED'
+  Invoicing = 'INVOICING'
 }
 
 export type TransactionAsset = {
@@ -894,6 +907,7 @@ export type TransactionAsset = {
   id: Scalars['ID'];
   name: Scalars['String'];
   filetype: Scalars['String'];
+  assetableId: Scalars['ID'];
   path: Scalars['String'];
   thumbnail: Scalars['String'];
   fullsize: Scalars['String'];
@@ -1455,11 +1469,11 @@ export type GenericFeature = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Create an TransactionAsset and obtain an upload config */
+  /** Create a transaction Asset and obtain an upload config */
   createTransactionAsset: CreateAssetResponse;
-  /** Confirm and validate an TransactionAsset upload as completed */
+  /** Confirm and validate an Asset upload as completed */
   finalizeTransactionAssetUpload: TransactionAsset;
-  /** Remove an TransactionAsset from the Transaction and storage */
+  /** Remove an Asset from the Transaction and storage */
   deleteTransactionAsset: MutationResult;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
@@ -1562,12 +1576,14 @@ export type Mutation = {
   signPOA: MutationResult;
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoice: InvoiceOutput;
+  deleteInvoice: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
 };
 
 
 export type MutationCreateTransactionAssetArgs = {
+  transactionType?: Maybe<Scalars['String']>;
   filetype: Scalars['String'];
   name: Scalars['String'];
   transactionId: Scalars['ID'];
@@ -1855,6 +1871,11 @@ export type MutationUpdateInvoiceArgs = {
 };
 
 
+export type MutationDeleteInvoiceArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationUpsertProductsArgs = {
   payload: Array<UserProductInput>;
 };
@@ -2006,6 +2027,7 @@ export enum BatchTransferStatus {
 
 export type SepaTransfer = {
   __typename?: 'SepaTransfer';
+  uuid: Scalars['ID'];
   /** The status of the SEPA Transfer */
   status: SepaTransferStatus;
   /** The amount of the SEPA Transfer in cents */
@@ -2019,6 +2041,8 @@ export type SepaTransfer = {
   iban: Scalars['String'];
   /** The end to end ID of the SEPA Transfer */
   e2eId?: Maybe<Scalars['String']>;
+  /** List of uploaded Asset files for this transfer */
+  assets: Array<Asset>;
 };
 
 export enum SepaTransferStatus {
