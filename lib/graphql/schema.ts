@@ -1583,7 +1583,7 @@ export type Mutation = {
 
 
 export type MutationCreateTransactionAssetArgs = {
-  transactionType?: Maybe<Scalars['String']>;
+  assetableType?: Maybe<Scalars['String']>;
   filetype: Scalars['String'];
   name: Scalars['String'];
   transactionId: Scalars['ID'];
