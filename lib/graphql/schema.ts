@@ -1426,7 +1426,7 @@ export enum InvoiceStatusType {
 
 export type InvoiceCustomerOutput = {
   __typename?: 'InvoiceCustomerOutput';
-  id: Scalars['ID'];
+  id: Scalars['String'];
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   streetLine?: Maybe<Scalars['String']>;
