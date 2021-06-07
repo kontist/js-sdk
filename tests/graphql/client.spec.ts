@@ -1,13 +1,13 @@
-import { expect } from "chai";
-import { GraphQLClient as GQLClient } from "graphql-request";
 import * as sinon from "sinon";
-import * as subscriptions from "subscriptions-transport-ws";
 import * as ws from "ws";
 
-import { KONTIST_SUBSCRIPTION_API_BASE_URL } from "../../lib/constants";
 import { GraphQLError, UserUnauthorizedError } from "../../lib/errors";
+
+import { GraphQLClient as GQLClient } from "graphql-request";
+import { KONTIST_SUBSCRIPTION_API_BASE_URL } from "../../lib/constants";
 import { SubscriptionType } from "../../lib/graphql/types";
 import { createClient } from "../helpers";
+import { expect } from "chai";
 
 describe("rawQuery", () => {
   describe("Error handling", () => {
@@ -106,26 +106,22 @@ describe("subscribe", () => {
 
   const subscribeStub = sinon
     .stub()
-    .callsFake(({ next, error }: { next: any; error: any }) => {
+    .callsFake((payload: any, { next, error }: { next: any; error: any }) => {
       observableMock.nextHandlers.push(next as any);
       observableMock.errorHandlers.push(error as any);
-      return {
-        unsubscribe: () => {
+      return () => {
           observableMock.nextHandlers = observableMock.nextHandlers.filter(
             (handler: any) => handler !== next,
           );
           observableMock.errorHandlers = observableMock.errorHandlers.filter(
             (handler: any) => handler !== error,
           );
-        },
-      };
+        }
     });
-  const subscriptionClientMock = {
-    onDisconnected: sinon.spy(),
-    close: sinon.spy(),
-    request: () => ({
-      subscribe: subscribeStub,
-    }),
+  const clientMock = {
+    on: sinon.spy(),
+    subscribe: subscribeStub,
+    dispose: sinon.spy(),
   };
   const subscriptionQuery = `subscription someSubscription {}`;
   const client = createClient();
@@ -140,7 +136,7 @@ describe("subscribe", () => {
   before(() => {
     createSubscriptionClientStub = sinon
       .stub(client.graphQL as any, "createSubscriptionClient")
-      .returns(subscriptionClientMock);
+      .returns(clientMock);
   });
 
   after(() => {
@@ -163,8 +159,11 @@ describe("subscribe", () => {
     });
 
     it("should setup a disconnection handler", () => {
-      expect(subscriptionClientMock.onDisconnected.callCount).to.equal(1);
-      expect(subscriptionClientMock.onDisconnected.getCall(0).args[0]).to.equal(
+      expect(clientMock.on.callCount).to.equal(1);
+      expect(clientMock.on.getCall(0).args[0]).to.equal(
+        'closed'
+      );
+      expect(clientMock.on.getCall(0).args[1]).to.equal(
         (client.graphQL as any).handleDisconnection,
       );
     });
@@ -215,7 +214,7 @@ describe("subscribe", () => {
       expect(secondSubscriptionOnNextStub.callCount).to.equal(0);
 
       const dummyData = {
-        data: { [SubscriptionType.newTransaction]: "some-data" },
+        [SubscriptionType.newTransaction]: "some-data",
       };
       observableMock.triggerNext(dummyData);
 
@@ -254,7 +253,7 @@ describe("subscribe", () => {
     });
 
     it("should no longer call the unsubscribed handlers", () => {
-      observableMock.triggerNext({ data: { some: "data" } });
+      observableMock.triggerNext({ some: "data" });
 
       expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
       expect(secondSubscriptionOnNextStub.callCount).to.equal(2);
@@ -276,16 +275,16 @@ describe("subscribe", () => {
 
   describe("when the last subscription is unsubscribed", () => {
     it("should close the websocket and remove the subscription client", () => {
-      expect(subscriptionClientMock.close.callCount).to.equal(0);
+      expect(clientMock.dispose.callCount).to.equal(0);
 
       secondSubscriptionUnsubscriber();
 
       expect(Object.keys((client.graphQL as any).subscriptions).length).to.equal(0);
 
-      expect(subscriptionClientMock.close.callCount).to.equal(1);
+      expect(clientMock.dispose.callCount).to.equal(1);
       expect((client.graphQL as any).subscriptionClient).to.be.a("null");
 
-      observableMock.triggerNext({ data: { some: "data" } });
+      observableMock.triggerNext({ some: "data" });
       observableMock.triggerError(new Error());
 
       expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
@@ -310,7 +309,7 @@ describe("createUnsubscriber", () => {
 
     client = createClient();
 
-    client.graphQL.subscriptionClient = { close: closeStub };
+    client.graphQL.subscriptionClient = { dispose: closeStub };
     client.graphQL.subscriptions = {
       1: {
         unsubscribe: firstUnsubscribeStub,
@@ -481,21 +480,21 @@ describe("handleDisconnection", () => {
 
 describe("createSubscriptionClient", () => {
   let client: any;
-  let subscriptionClientStub: any;
-  let fakeSubscriptionClient: any;
+  let createClientStub: any;
+  let fakeGraphqlWsClient: any;
 
   before(() => {
     client = createClient();
-    fakeSubscriptionClient = {
+    fakeGraphqlWsClient = {
       fake: "client",
     };
-    subscriptionClientStub = sinon
-      .stub(subscriptions, "SubscriptionClient")
-      .returns(fakeSubscriptionClient);
+    createClientStub = sinon
+      .stub(client.graphQL, "createClient")
+      .returns(fakeGraphqlWsClient);
   });
 
   after(() => {
-    subscriptionClientStub.restore();
+    createClientStub.restore();
   });
 
   describe("when auth token is missing", () => {
@@ -518,26 +517,24 @@ describe("createSubscriptionClient", () => {
 
     it("should create a new SubscriptionClient and return it", () => {
       const subscriptionClient = client.graphQL.createSubscriptionClient();
-      expect(subscriptionClientStub.callCount).to.equal(1);
-      const [endpoint, options, websocket] = subscriptionClientStub.getCall(
+      expect(createClientStub.callCount).to.equal(1);
+      const {url, connectionParams} = createClientStub.getCall(
         0,
-      ).args;
+      ).args[0];
 
-      expect(endpoint).to.equal(
+      expect(url).to.equal(
         `${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`,
       );
-      expect(options.lazy).to.equal(true);
-      expect(options.connectionParams).to.deep.equal({
+      expect(connectionParams).to.deep.equal({
         Authorization: "Bearer dummy-token",
       });
-      expect(websocket).to.equal(ws);
-      expect(subscriptionClient).to.equal(fakeSubscriptionClient);
+      expect(subscriptionClient).to.equal(fakeGraphqlWsClient);
     });
 
     describe("when executing in a browser environment", () => {
       before(() => {
         (global as any).window = {
-          WebSocket: { fake: "websocket" },
+          WebSocket: {...ws, fake: true},
         };
       });
 
@@ -546,14 +543,12 @@ describe("createSubscriptionClient", () => {
       });
 
       it("should use the native browser WebSocket implementation", () => {
-        subscriptionClientStub.resetHistory();
+        createClientStub.resetHistory();
 
         client.graphQL.createSubscriptionClient();
 
-        expect(subscriptionClientStub.callCount).to.equal(1);
-        expect(subscriptionClientStub.getCall(0).args[2].fake).to.equal(
-          "websocket",
-        );
+        expect(createClientStub.callCount).to.equal(1);
+        expect(createClientStub.getCall(0).args[0].webSocketImpl.fake).to.equal(true);
       });
     });
   });
@@ -614,7 +609,7 @@ describe("without clientId", () => {
         fake: "client",
       };
 
-      sandbox.stub(subscriptions, "SubscriptionClient")
+      sandbox.stub(client.graphQL, "createClient")
         .returns(fakeSubscriptionClient);
     });
 
