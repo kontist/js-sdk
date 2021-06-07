@@ -11,7 +11,7 @@
     "build": "tsc && npx webpack",
     "test": "npm run lint && npm run build && mocha --recursive 'dist/tests/**/*.spec.js'",
     "cover": "nyc npm run test",
-    "schema:generate": "npx @graphql-codegen/cli --config codegen.yml",
+    "schema:generate": "npx -y @graphql-codegen/cli@1.21.5 --config codegen.yml",
     "lint": "tslint --fix --project ."
   },
   "dependencies": {
