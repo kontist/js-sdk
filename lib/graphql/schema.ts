@@ -665,6 +665,7 @@ export type TransfersConnectionEdge = {
 export type Transfer = {
   __typename?: 'Transfer';
   id: Scalars['String'];
+  uuid: Scalars['String'];
   /** The name of the transfer recipient */
   recipient: Scalars['String'];
   /** The IBAN of the transfer recipient */
@@ -689,6 +690,8 @@ export type Transfer = {
   nextOccurrence?: Maybe<Scalars['DateTime']>;
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
+  /** List of uploaded Asset files for this transfer */
+  assets?: Maybe<Array<Asset>>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
@@ -732,6 +735,17 @@ export enum TransactionCategory {
   ReverseCharge = 'REVERSE_CHARGE'
 }
 
+export type Asset = {
+  __typename?: 'Asset';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  filetype: Scalars['String'];
+  assetableId: Scalars['ID'];
+  path: Scalars['String'];
+  thumbnail: Scalars['String'];
+  fullsize: Scalars['String'];
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   startCursor?: Maybe<Scalars['String']>;
@@ -768,7 +782,7 @@ export type Transaction = {
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** List of uploaded Asset files for this transaction */
-  assets: Array<Asset>;
+  assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
   directDebitFees: Array<DirectDebitFee>;
@@ -793,7 +807,7 @@ export type Transaction = {
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
   /** View a single Asset for a transaction */
-  asset?: Maybe<Asset>;
+  asset?: Maybe<TransactionAsset>;
 };
 
 
@@ -888,8 +902,8 @@ export enum CategorizationType {
   Invoicing = 'INVOICING'
 }
 
-export type Asset = {
-  __typename?: 'Asset';
+export type TransactionAsset = {
+  __typename?: 'TransactionAsset';
   id: Scalars['ID'];
   name: Scalars['String'];
   filetype: Scalars['String'];
@@ -1176,7 +1190,8 @@ export enum PurchaseType {
   Lexoffice = 'LEXOFFICE',
   Kontax = 'KONTAX',
   KontaxSb = 'KONTAX_SB',
-  KontaxPending = 'KONTAX_PENDING'
+  KontaxPending = 'KONTAX_PENDING',
+  Accounting = 'ACCOUNTING'
 }
 
 export enum PurchaseState {
@@ -1458,7 +1473,7 @@ export type Mutation = {
   /** Create a transaction Asset and obtain an upload config */
   createTransactionAsset: CreateAssetResponse;
   /** Confirm and validate an Asset upload as completed */
-  finalizeTransactionAssetUpload: Asset;
+  finalizeTransactionAssetUpload: TransactionAsset;
   /** Remove an Asset from the Transaction and storage */
   deleteTransactionAsset: MutationResult;
   /** Cancel an existing Timed Order or Standing Order */
@@ -1571,6 +1586,7 @@ export type Mutation = {
 
 
 export type MutationCreateTransactionAssetArgs = {
+  assetableType?: Maybe<Scalars['String']>;
   filetype: Scalars['String'];
   name: Scalars['String'];
   transactionId: Scalars['ID'];
@@ -2033,6 +2049,8 @@ export type SepaTransfer = {
   iban: Scalars['String'];
   /** The end to end ID of the SEPA Transfer */
   e2eId?: Maybe<Scalars['String']>;
+  /** List of uploaded Asset files for this transfer */
+  assets: Array<Asset>;
 };
 
 export enum SepaTransferStatus {
