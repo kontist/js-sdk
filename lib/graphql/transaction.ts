@@ -208,11 +208,13 @@ export const CREATE_TRANSACTION_ASSET = `mutation createTransactionAsset(
   $transactionId: ID!
   $name: String!
   $filetype: String!
+  $assetableType: String
 ) {
   createTransactionAsset(
     transactionId: $transactionId
     name: $name
     filetype: $filetype
+    assetableType: $assetableType
   ) {
     assetId
     url

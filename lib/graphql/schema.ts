@@ -664,6 +664,7 @@ export type TransfersConnectionEdge = {
 export type Transfer = {
   __typename?: 'Transfer';
   id: Scalars['String'];
+  uuid: Scalars['String'];
   /** The name of the transfer recipient */
   recipient: Scalars['String'];
   /** The IBAN of the transfer recipient */
@@ -688,6 +689,8 @@ export type Transfer = {
   nextOccurrence?: Maybe<Scalars['DateTime']>;
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
+  /** List of uploaded Asset files for this transfer */
+  assets?: Maybe<Array<Asset>>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
@@ -730,6 +733,17 @@ export enum TransactionCategory {
   TaxSaving = 'TAX_SAVING',
   ReverseCharge = 'REVERSE_CHARGE'
 }
+
+export type Asset = {
+  __typename?: 'Asset';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  filetype: Scalars['String'];
+  assetableId: Scalars['ID'];
+  path: Scalars['String'];
+  thumbnail: Scalars['String'];
+  fullsize: Scalars['String'];
+};
 
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -1568,6 +1582,7 @@ export type Mutation = {
 
 
 export type MutationCreateTransactionAssetArgs = {
+  assetableType?: Maybe<Scalars['String']>;
   filetype: Scalars['String'];
   name: Scalars['String'];
   transactionId: Scalars['ID'];
@@ -2011,6 +2026,7 @@ export enum BatchTransferStatus {
 
 export type SepaTransfer = {
   __typename?: 'SepaTransfer';
+  uuid: Scalars['ID'];
   /** The status of the SEPA Transfer */
   status: SepaTransferStatus;
   /** The amount of the SEPA Transfer in cents */
@@ -2024,6 +2040,8 @@ export type SepaTransfer = {
   iban: Scalars['String'];
   /** The end to end ID of the SEPA Transfer */
   e2eId?: Maybe<Scalars['String']>;
+  /** List of uploaded Asset files for this transfer */
+  assets: Array<Asset>;
 };
 
 export enum SepaTransferStatus {
