@@ -100,7 +100,7 @@ export class GraphQLClient {
           onError(error);
         }
       },
-      complete: () => onComplete(),
+      complete: onComplete,
     });
 
     const id = subscriptionId || (this.subscriptionId += 1);
