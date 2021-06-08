@@ -11,7 +11,7 @@
     "build": "tsc && npx webpack",
     "test": "npm run lint && npm run build && mocha --recursive 'dist/tests/**/*.spec.js'",
     "cover": "nyc npm run test",
-    "schema:generate": "npx -y @graphql-codegen/cli@1.21.5 --config codegen.yml",
+    "schema:generate": "graphql-codegen --config codegen.yml",
     "lint": "tslint --fix --project ."
   },
   "dependencies": {
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/add": "^1.16.3",
+    "@graphql-codegen/cli": "^1.21.5",
     "@graphql-codegen/flow": "^1.19.1",
     "@graphql-codegen/typescript": "^1.22.1",
     "@types/chai": "^4.2.11",
