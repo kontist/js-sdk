@@ -500,6 +500,7 @@ export type Customer = {
   __typename?: 'Customer';
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
   streetLine?: Maybe<Scalars['String']>;
   postCode?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
@@ -1190,7 +1191,8 @@ export enum PurchaseType {
   Lexoffice = 'LEXOFFICE',
   Kontax = 'KONTAX',
   KontaxSb = 'KONTAX_SB',
-  KontaxPending = 'KONTAX_PENDING'
+  KontaxPending = 'KONTAX_PENDING',
+  Accounting = 'ACCOUNTING'
 }
 
 export enum PurchaseState {
@@ -1390,7 +1392,6 @@ export type Discount = {
 
 export type InvoiceSettingsOutput = {
   __typename?: 'InvoiceSettingsOutput';
-  id: Scalars['String'];
   senderName?: Maybe<Scalars['String']>;
   companyName?: Maybe<Scalars['String']>;
   streetLine?: Maybe<Scalars['String']>;
@@ -1399,13 +1400,14 @@ export type InvoiceSettingsOutput = {
   country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
-  /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
-  logoUrl?: Maybe<Scalars['String']>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
   dueDateDefaultOffset?: Maybe<Scalars['Float']>;
   nextInvoiceNumber?: Maybe<Scalars['Float']>;
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
+  logoUrl?: Maybe<Scalars['String']>;
 };
 
 export type InvoicingDashboardData = {
@@ -1428,6 +1430,7 @@ export type DashboardInvoice = {
   invoiceNumber?: Maybe<Scalars['Int']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   paidAt?: Maybe<Scalars['DateTime']>;
+  transactionId?: Maybe<Scalars['ID']>;
   amount?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
 };
@@ -1579,6 +1582,8 @@ export type Mutation = {
   deleteInvoice: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
+  /** Submits UStVA declaration */
+  submitDeclaration: Declaration;
 };
 
 
@@ -1880,6 +1885,12 @@ export type MutationUpsertProductsArgs = {
   payload: Array<UserProductInput>;
 };
 
+
+export type MutationSubmitDeclarationArgs = {
+  year: Scalars['String'];
+  period: Scalars['String'];
+};
+
 export type CreateAssetResponse = {
   __typename?: 'CreateAssetResponse';
   assetId: Scalars['ID'];
@@ -2027,7 +2038,6 @@ export enum BatchTransferStatus {
 
 export type SepaTransfer = {
   __typename?: 'SepaTransfer';
-  uuid: Scalars['ID'];
   /** The status of the SEPA Transfer */
   status: SepaTransferStatus;
   /** The amount of the SEPA Transfer in cents */
@@ -2350,25 +2360,24 @@ export type InvoiceCustomerInput = {
 
 export type InvoiceOutput = {
   __typename?: 'InvoiceOutput';
-  id?: Maybe<Scalars['String']>;
   invoiceSettingsId?: Maybe<Scalars['String']>;
   customerId?: Maybe<Scalars['String']>;
-  customer?: Maybe<InvoiceCustomerOutput>;
   status: Scalars['String'];
-  invoiceNumber?: Maybe<Scalars['Float']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  customer?: Maybe<InvoiceCustomerOutput>;
+  invoiceNumber?: Maybe<Scalars['Float']>;
   products?: Maybe<Array<InvoiceProductOutput>>;
 };
 
 export type InvoiceInput = {
-  id?: Maybe<Scalars['String']>;
   invoiceSettingsId?: Maybe<Scalars['String']>;
   customerId?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  invoiceNumber?: Maybe<Scalars['Float']>;
+  status: Scalars['String'];
   dueDate?: Maybe<Scalars['DateTime']>;
   note?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
   products?: Maybe<Array<InvoiceProductInput>>;
 };
 
