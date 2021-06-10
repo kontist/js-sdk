@@ -216,7 +216,7 @@ describe("subscribe", () => {
       const dummyData = {
         [SubscriptionType.newTransaction]: "some-data",
       };
-      observableMock.triggerNext(dummyData);
+      observableMock.triggerNext({ data: dummyData});
 
       expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
       const data = firstSubscriptionOnNextStub.getCall(0).args[0];

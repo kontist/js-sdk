@@ -93,7 +93,7 @@ export class GraphQLClient {
 
     const unsubscribe = this.subscriptionClient.subscribe({query}, {
       next(data: any) {
-        onNext(data?.[type]);
+        onNext(data?.data?.[type]);
       },
       error(error) {
         if (typeof onError === "function") {
