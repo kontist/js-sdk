@@ -293,8 +293,16 @@ export enum CategorizationType {
   BookkeepingPartner = 'BOOKKEEPING_PARTNER',
   User = 'USER',
   Kontax = 'KONTAX',
-  Invoicing = 'INVOICING'
+  Invoicing = 'INVOICING',
+  UserOverwrite = 'USER_OVERWRITE'
 }
+
+export type CategorizeTransactionForDeclarationResponse = {
+  __typename?: 'CategorizeTransactionForDeclarationResponse';
+  elsterCode?: Maybe<Scalars['String']>;
+  category?: Maybe<Scalars['String']>;
+  date?: Maybe<Scalars['String']>;
+};
 
 export type Client = {
   __typename?: 'Client';
@@ -445,9 +453,13 @@ export type Customer = {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  /** @deprecated The streetLine field is being replaced by the address field */
   streetLine?: Maybe<Scalars['String']>;
+  /** @deprecated The postCode field is being replaced by the address field */
   postCode?: Maybe<Scalars['String']>;
+  /** @deprecated The city field is being replaced by the address field */
   city?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   taxNumber?: Maybe<Scalars['String']>;
@@ -460,6 +472,7 @@ export type DashboardInvoice = {
   invoiceNumber?: Maybe<Scalars['Int']>;
   dueDate?: Maybe<Scalars['DateTime']>;
   paidAt?: Maybe<Scalars['DateTime']>;
+  transactionId?: Maybe<Scalars['ID']>;
   amount?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
 };
@@ -599,6 +612,7 @@ export type InvoiceCustomerInput = {
   streetLine?: Maybe<Scalars['String']>;
   postCode?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   taxNumber?: Maybe<Scalars['String']>;
@@ -606,12 +620,16 @@ export type InvoiceCustomerInput = {
 
 export type InvoiceCustomerOutput = {
   __typename?: 'InvoiceCustomerOutput';
-  id: Scalars['String'];
+  id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  /** @deprecated The streetLine field is being replaced by the address field */
   streetLine?: Maybe<Scalars['String']>;
+  /** @deprecated The postCode field is being replaced by the address field */
   postCode?: Maybe<Scalars['String']>;
+  /** @deprecated The city field is being replaced by the address field */
   city?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
   taxNumber?: Maybe<Scalars['String']>;
@@ -851,6 +869,8 @@ export type Mutation = {
   deleteInvoice: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
+  /** Categorize transaction for VAT declaration */
+  categorizeTransactionForDeclaration: CategorizeTransactionForDeclarationResponse;
   /** Submits UStVA declaration */
   submitDeclaration: Declaration;
 };
@@ -1152,6 +1172,14 @@ export type MutationDeleteInvoiceArgs = {
 
 export type MutationUpsertProductsArgs = {
   payload: Array<UserProductInput>;
+};
+
+
+export type MutationCategorizeTransactionForDeclarationArgs = {
+  id: Scalars['ID'];
+  elsterCode?: Maybe<Scalars['String']>;
+  category?: Maybe<TransactionCategory>;
+  date?: Maybe<Scalars['String']>;
 };
 
 
@@ -1941,7 +1969,11 @@ export enum TransactionProjectionType {
   CommissionOverdraft = 'COMMISSION_OVERDRAFT',
   Charge = 'CHARGE',
   DepositFee = 'DEPOSIT_FEE',
-  VerificationCode = 'VERIFICATION_CODE'
+  VerificationCode = 'VERIFICATION_CODE',
+  CancellationCardTransaction = 'CANCELLATION_CARD_TRANSACTION',
+  CancellationCharge = 'CANCELLATION_CHARGE',
+  IntraCustomerTransfer = 'INTRA_CUSTOMER_TRANSFER',
+  Target2CreditTransfer = 'Target2CreditTransfer'
 }
 
 export type TransactionSplit = {

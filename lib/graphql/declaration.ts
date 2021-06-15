@@ -1,10 +1,11 @@
-import {GraphQLClient} from "./client";
+import { GraphQLClient } from "./client";
 
 import {
   Query,
   AccountDeclarationPdfUrlArgs,
   AccountDeclarationsArgs,
   Declaration as DeclarationModel,
+  MutationSubmitDeclarationArgs,
 } from "./schema";
 
 const FETCH_DECLARATIONS = `
@@ -32,6 +33,23 @@ const GET_DECLARATION_PDF = `
   }
 `;
 
+const SUBMIT_DECLARATION = `
+  mutation(
+    $period: String!,
+    $year: String!
+  ) {
+    submitUStVA(
+      period: $period,
+      year: $year
+    ) {
+      id
+      amount
+      period
+      year
+    }
+  }
+`;
+
 export class Declaration {
   constructor(protected client: GraphQLClient) {}
 
@@ -49,5 +67,12 @@ export class Declaration {
     const result: Query = await this.client.rawQuery(GET_DECLARATION_PDF, args);
 
     return result.viewer?.mainAccount?.declarationPdfUrl ?? null;
+  }
+
+  public async submit(
+    args: MutationSubmitDeclarationArgs
+  ): Promise<DeclarationModel> {
+    const result = await this.client.rawQuery(SUBMIT_DECLARATION, args);
+    return result.submitDeclaration;
   }
 }
