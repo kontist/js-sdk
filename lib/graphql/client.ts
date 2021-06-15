@@ -1,12 +1,13 @@
-import { GraphQLClient as GQLClient } from "graphql-request";
-import { SubscriptionClient } from "subscriptions-transport-ws";
 import * as ws from "ws";
 
-import { Auth } from "../auth";
+import { Client, createClient } from "graphql-ws";
 import { GraphQLError, UserUnauthorizedError } from "../errors";
+import { RawQueryResponse, Subscription, SubscriptionType } from "./types";
+
+import { Auth } from "../auth";
+import { GraphQLClient as GQLClient } from "graphql-request";
 import { GraphQLClientOpts } from "../types";
 import { serializeGraphQLError } from "../utils";
-import { RawQueryResponse, Subscription, SubscriptionType } from "./types";
 
 interface Subscriptions {
   [key: number]: {
@@ -23,9 +24,10 @@ export class GraphQLClient {
   private auth?: Auth;
   private client: GQLClient;
   private subscriptionEndpoint: string;
-  private subscriptionClient?: SubscriptionClient | null;
+  private subscriptionClient?: Client | null;
   private subscriptions: Subscriptions = {};
   private subscriptionId: number = 0;
+  private createClient = createClient;
 
   constructor({ auth, endpoint, subscriptionEndpoint }: GraphQLClientOpts) {
     this.auth = auth;
@@ -71,35 +73,34 @@ export class GraphQLClient {
   public subscribe = ({
     query,
     type,
-    onError,
     onNext,
+    onError,
+    onComplete = () => void 0,
     subscriptionId,
   }: {
     query: string;
     type: SubscriptionType;
     onNext: (result: any) => void;
     onError?: (err: any) => void;
+    onComplete?: () => void;
     subscriptionId?: number;
   }): Subscription => {
     if (!this.subscriptionClient) {
       this.subscriptionClient = this.createSubscriptionClient();
 
-      this.subscriptionClient.onDisconnected(this.handleDisconnection);
+      this.subscriptionClient.on('closed', this.handleDisconnection);
     }
 
-    const subscription = this.subscriptionClient.request({
-      query,
-    });
-
-    const { unsubscribe } = subscription.subscribe({
-      next(response) {
-        onNext(response.data?.[type]);
+    const unsubscribe = this.subscriptionClient.subscribe({query}, {
+      next(data: any) {
+        onNext(data?.data?.[type]);
       },
       error(error) {
         if (typeof onError === "function") {
           onError(error);
         }
       },
+      complete: onComplete,
     });
 
     const id = subscriptionId || (this.subscriptionId += 1);
@@ -120,19 +121,16 @@ export class GraphQLClient {
   /**
    * Create a subscription client
    */
-  private createSubscriptionClient = (): SubscriptionClient => {
+  private createSubscriptionClient = (): Client => {
     const auth = this.getAuthHeader();
     const connectionParams = auth ? { [auth[0]]: auth[1] } : {};
-    const webSocket = typeof window === "undefined" ? ws : window.WebSocket;
+    const webSocketImpl = typeof window === "undefined" ? ws : window.WebSocket;
 
-    return new SubscriptionClient(
-      this.subscriptionEndpoint,
-      {
-        connectionParams,
-        lazy: true,
-      },
-      webSocket,
-    );
+    return this.createClient({
+      url: this.subscriptionEndpoint,
+      connectionParams,
+      webSocketImpl,
+    })
   }
 
   /**
@@ -176,7 +174,7 @@ export class GraphQLClient {
     delete this.subscriptions[subscriptionId];
 
     if (Object.keys(this.subscriptions).length === 0) {
-      this.subscriptionClient?.close();
+      this.subscriptionClient?.dispose();
       this.subscriptionClient = null;
     }
   }
