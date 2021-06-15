@@ -75,7 +75,7 @@ describe("Auth", () => {
     it("should show deprecation notice and call correct method", () => {
       // arrange
       const client = createClient({ clientSecret });
-      const spyOnShowDeprecationWarning = sandbox.stub(client.auth as any, "showDeprecationWarning");
+      const spyOnShowDeprecationWarning = sandbox.spy(client.auth as any, "showDeprecationWarning");
       const spyOnFetchToken = sandbox.stub(client.auth.tokenManager, "fetchToken");
       const callbackUri = "http://example.com";
 
