@@ -46,6 +46,7 @@ export type Account = {
   balance: Scalars['Int'];
   declarations: Array<Declaration>;
   declarationPdfUrl?: Maybe<Scalars['String']>;
+  declarationStats: DeclarationStats;
 };
 
 
@@ -98,6 +99,13 @@ export type AccountDeclarationsArgs = {
 /** The bank account of the current user */
 export type AccountDeclarationPdfUrlArgs = {
   id: Scalars['Int'];
+};
+
+
+/** The bank account of the current user */
+export type AccountDeclarationStatsArgs = {
+  year: Scalars['Int'];
+  period: Scalars['String'];
 };
 
 export enum AccountState {
@@ -486,6 +494,13 @@ export type Declaration = {
   amount: Scalars['Int'];
 };
 
+export type DeclarationStats = {
+  __typename?: 'DeclarationStats';
+  amount: Scalars['Int'];
+  elsterGroups: Array<ElsterGroup>;
+  uncategorized: Array<TransactionForAccountingView>;
+};
+
 export enum DeclarationType {
   UStVa = 'UStVA'
 }
@@ -517,6 +532,13 @@ export enum DocumentType {
   Voucher = 'VOUCHER',
   Invoice = 'INVOICE'
 }
+
+export type ElsterGroup = {
+  __typename?: 'ElsterGroup';
+  elsterCode: Scalars['String'];
+  elsterCodeTranslation: Scalars['String'];
+  transactions: Array<TransactionForAccountingView>;
+};
 
 export type FormDataPair = {
   __typename?: 'FormDataPair';
@@ -867,6 +889,7 @@ export type Mutation = {
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoice: InvoiceOutput;
   deleteInvoice: MutationResult;
+  duplicateInvoice: InvoiceOutput;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
   /** Categorize transaction for VAT declaration */
@@ -1170,6 +1193,11 @@ export type MutationDeleteInvoiceArgs = {
 };
 
 
+export type MutationDuplicateInvoiceArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationUpsertProductsArgs = {
   payload: Array<UserProductInput>;
 };
@@ -1184,7 +1212,7 @@ export type MutationCategorizeTransactionForDeclarationArgs = {
 
 
 export type MutationSubmitDeclarationArgs = {
-  year: Scalars['String'];
+  year: Scalars['Int'];
   period: Scalars['String'];
 };
 
@@ -1925,6 +1953,21 @@ export type TransactionFilter = {
   purpose_like?: Maybe<Scalars['String']>;
   purpose_likeAny?: Maybe<Array<Scalars['String']>>;
   conditions?: Maybe<Array<TransactionCondition>>;
+};
+
+export type TransactionForAccountingView = {
+  __typename?: 'TransactionForAccountingView';
+  id: Scalars['ID'];
+  amount: Scalars['Int'];
+  name: Scalars['String'];
+  purpose?: Maybe<Scalars['String']>;
+  valutaDate: Scalars['DateTime'];
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  category?: Maybe<Scalars['String']>;
+  elsterCode?: Maybe<Scalars['String']>;
+  vatRate?: Maybe<Scalars['String']>;
+  vatAmount?: Maybe<Scalars['Int']>;
+  isSplit: Scalars['Boolean'];
 };
 
 export enum TransactionProjectionType {
