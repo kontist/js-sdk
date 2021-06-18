@@ -24,6 +24,7 @@ export type Account = {
   publicId: Scalars['ID'];
   iban: Scalars['String'];
   cardHolderRepresentation?: Maybe<Scalars['String']>;
+  availableBalance: Scalars['Float'];
   bic: Scalars['String'];
   canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
@@ -867,6 +868,7 @@ export type Mutation = {
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoice: InvoiceOutput;
   deleteInvoice: MutationResult;
+  duplicateInvoice: InvoiceOutput;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
   /** Categorize transaction for VAT declaration */
@@ -1166,6 +1168,11 @@ export type MutationUpdateInvoiceArgs = {
 
 
 export type MutationDeleteInvoiceArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDuplicateInvoiceArgs = {
   id: Scalars['ID'];
 };
 
