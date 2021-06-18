@@ -36,7 +36,7 @@ const GET_DECLARATION_PDF = `
 const SUBMIT_DECLARATION = `
   mutation(
     $period: String!,
-    $year: String!
+    $year: Int!
   ) {
     submitUStVA(
       period: $period,

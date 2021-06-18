@@ -139,7 +139,7 @@ describe("Declaration", () => {
       // act
       const result = await declaration.submit({
         period,
-        year: year.toString(),
+        year: year,
       });
 
       // assert
