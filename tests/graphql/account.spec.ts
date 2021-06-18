@@ -72,6 +72,7 @@ describe("Account", () => {
             iban: "DE1234",
             bic: "SOBKDEBBXXX",
             balance: 1234,
+            availableBalance: 1000,
             cardHolderRepresentation: null,
             cardHolderRepresentations: ["STEPHEN/JAMES"],
             hasPendingCardFraudCase: false,
