@@ -6,6 +6,7 @@ import { Declaration } from "../../lib/graphql/declaration";
 import {
   Declaration as DeclarationModel,
   DeclarationType,
+  DeclarationStats,
 } from "../../lib/graphql/schema";
 
 describe("Declaration", () => {
@@ -117,6 +118,87 @@ describe("Declaration", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(null);
+    });
+  });
+
+  describe("#getStats", () => {
+    it("should call rawQuery and return declaration stats", async () => {
+      // arrange
+      const declarationStatsRespone: DeclarationStats[] = [
+        {
+          amount: 5,
+          uncategorized: [
+            {
+              amount: 3,
+              category: null,
+              elsterCode: null,
+              id: "4",
+              name: "name",
+              purpose: "",
+              userSelectedBookingDate: null,
+              valutaDate: "2021-01-01",
+              vatAmount: null,
+              vatRate: null,
+              isSplit: false,
+            },
+          ],
+          elsterGroups: [
+            {
+              elsterCode: "01",
+              elsterCodeTranslation: "Private",
+              transactions: [
+                {
+                  id: "1",
+                  amount: 2,
+                  category: "private",
+                  elsterCode: null,
+                  name: "name",
+                  purpose: null,
+                  userSelectedBookingDate: null,
+                  valutaDate: "2021-01-01",
+                  vatAmount: 0,
+                  vatRate: "5",
+                  isSplit: false,
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {
+            declarationStats: declarationStatsRespone,
+          },
+        },
+      } as any);
+
+      // act
+      const result = await declaration.getStats({
+        year: 2021,
+        period: "01",
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(declarationStatsRespone);
+    });
+
+    it("should call rawQuery and return empty array for missing account", async () => {
+      // arrange
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      // act
+      const result = await declaration.getStats({
+        year: 2021,
+        period: "01",
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(null);
     });
   });
 
