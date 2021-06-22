@@ -6,6 +6,8 @@ import {
   AccountDeclarationsArgs,
   Declaration as DeclarationModel,
   MutationSubmitDeclarationArgs,
+  AccountDeclarationStatsArgs,
+  DeclarationStats,
 } from "./schema";
 
 const FETCH_DECLARATIONS = `
@@ -36,7 +38,7 @@ const GET_DECLARATION_PDF = `
 const SUBMIT_DECLARATION = `
   mutation(
     $period: String!,
-    $year: String!
+    $year: Int!
   ) {
     submitUStVA(
       period: $period,
@@ -46,6 +48,51 @@ const SUBMIT_DECLARATION = `
       amount
       period
       year
+    }
+  }
+`;
+
+const GET_DECLARATION_STATS = `
+  query GetDeclarationStats($period: String!, $year: Int!) {
+    viewer {
+      mainAccount {
+        declarationStats(
+          period: $period,
+          year: $year
+        ) {
+          amount
+          uncategorized {
+            id
+            amount
+            name
+            purpose
+            valutaDate
+            userSelectedBookingDate
+            category
+            elsterCode
+            vatRate
+            vatAmount
+            isSplit
+          }
+          elsterGroups {
+            elsterCode
+            elsterCodeTranslation
+            transactions {
+              id
+              amount
+              name
+              purpose
+              valutaDate
+              userSelectedBookingDate
+              category
+              elsterCode
+              vatRate
+              vatAmount
+              isSplit
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -67,6 +114,17 @@ export class Declaration {
     const result: Query = await this.client.rawQuery(GET_DECLARATION_PDF, args);
 
     return result.viewer?.mainAccount?.declarationPdfUrl ?? null;
+  }
+
+  public async getStats(
+    args: AccountDeclarationStatsArgs
+  ): Promise<DeclarationStats | null> {
+    const result: Query = await this.client.rawQuery(
+      GET_DECLARATION_STATS,
+      args
+    );
+
+    return result.viewer?.mainAccount?.declarationStats ?? null;
   }
 
   public async submit(
