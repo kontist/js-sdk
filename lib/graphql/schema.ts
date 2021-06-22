@@ -24,7 +24,7 @@ export type Account = {
   publicId: Scalars['ID'];
   iban: Scalars['String'];
   cardHolderRepresentation?: Maybe<Scalars['String']>;
-  availableBalance: Scalars['Float'];
+  availableBalance: Scalars['Int'];
   bic: Scalars['String'];
   canCreateOverdraft: Scalars['Boolean'];
   cardHolderRepresentations: Array<Scalars['String']>;
