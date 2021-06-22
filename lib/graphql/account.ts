@@ -9,6 +9,7 @@ const GET_ACCOUNT = `query {
       iban
       bic
       balance
+      availableBalance
       cardHolderRepresentation
       cardHolderRepresentations
       hasPendingCardFraudCase
