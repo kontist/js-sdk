@@ -1963,7 +1963,7 @@ export type TransactionForAccountingView = {
   name: Scalars['String'];
   purpose?: Maybe<Scalars['String']>;
   valutaDate: Scalars['DateTime'];
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  selectedBookingDate?: Maybe<Scalars['DateTime']>;
   category?: Maybe<Scalars['String']>;
   elsterCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<Scalars['String']>;
