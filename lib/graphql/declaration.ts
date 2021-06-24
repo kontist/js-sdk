@@ -73,6 +73,7 @@ const GET_DECLARATION_STATS = `
             vatRate
             vatAmount
             isSplit
+            reverseCharge
           }
           elsterGroups {
             elsterCode
@@ -89,6 +90,7 @@ const GET_DECLARATION_STATS = `
               vatRate
               vatAmount
               isSplit
+              reverseCharge
             }
           }
         }

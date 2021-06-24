@@ -1209,6 +1209,7 @@ export type MutationCategorizeTransactionForDeclarationArgs = {
   elsterCode?: Maybe<Scalars['String']>;
   category?: Maybe<TransactionCategory>;
   date?: Maybe<Scalars['String']>;
+  isSplit?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -1969,6 +1970,7 @@ export type TransactionForAccountingView = {
   vatRate?: Maybe<Scalars['String']>;
   vatAmount?: Maybe<Scalars['Int']>;
   isSplit: Scalars['Boolean'];
+  reverseCharge?: Maybe<Scalars['Boolean']>;
 };
 
 export enum TransactionProjectionType {

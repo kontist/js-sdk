@@ -140,6 +140,7 @@ describe("Declaration", () => {
               vatAmount: null,
               vatRate: null,
               isSplit: false,
+              reverseCharge: false,
             },
           ],
           elsterGroups: [
@@ -159,6 +160,7 @@ describe("Declaration", () => {
                   vatAmount: 0,
                   vatRate: "5",
                   isSplit: false,
+                  reverseCharge: null,
                 },
               ],
             },
