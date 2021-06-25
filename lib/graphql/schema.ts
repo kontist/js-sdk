@@ -837,11 +837,6 @@ export type Mutation = {
   reorderCard: Card;
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
-  /**
-   * DEPRECATED use `updateTransaction()` instead - Categorize a transaction with an optional custom booking date for VAT or Tax categories
-   * @deprecated This mutation will be removed in an upcoming release, please use `updateTransaction` mutation instead
-   */
-  categorizeTransaction: Transaction;
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
   /** Create Overdraft Application  - only available for Kontist Application */
@@ -1061,13 +1056,6 @@ export type MutationReorderCardArgs = {
 
 export type MutationSetCardHolderRepresentationArgs = {
   cardHolderRepresentation: Scalars['String'];
-};
-
-
-export type MutationCategorizeTransactionArgs = {
-  id: Scalars['String'];
-  category?: Maybe<TransactionCategory>;
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
 
 

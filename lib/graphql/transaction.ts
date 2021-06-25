@@ -4,7 +4,6 @@ import {
   AccountTransactionsArgs,
   AccountTransactionArgs,
   BaseOperator,
-  MutationCategorizeTransactionArgs,
   MutationUpdateTransactionArgs,
   MutationCreateTransactionSplitsArgs,
   MutationDeleteTransactionSplitsArgs,
@@ -130,21 +129,6 @@ const FETCH_TRANSACTION = `
 
 export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
   newTransaction {
-    ${TRANSACTION_FIELDS}
-    ${TRANSACTION_DETAILS}
-  }
-}`;
-
-export const CATEGORIZE_TRANSACTION = `mutation categorizeTransaction(
-  $id: String!
-  $category: TransactionCategory,
-  $userSelectedBookingDate: DateTime
-) {
-  categorizeTransaction(
-    id: $id
-    category: $category
-    userSelectedBookingDate: $userSelectedBookingDate
-  ) {
     ${TRANSACTION_FIELDS}
     ${TRANSACTION_DETAILS}
   }
@@ -313,19 +297,6 @@ export class Transaction extends IterableModel<TransactionModel> {
       query: NEW_TRANSACTION_SUBSCRIPTION,
       type: SubscriptionType.newTransaction,
     });
-  }
-
-  /**
-   * Categorizes a transaction
-   * @deprecated   This method will be removed in an upcoming release.
-   *               Use `transaction.update` method instead.
-   *
-   * @param args   query parameters including category and userSelectedBookingDate
-   * @returns      the transaction with updated categorization data
-   */
-  public async categorize(args: MutationCategorizeTransactionArgs) {
-    const result = await this.client.rawQuery(CATEGORIZE_TRANSACTION, args);
-    return result.categorizeTransaction;
   }
 
   /**
