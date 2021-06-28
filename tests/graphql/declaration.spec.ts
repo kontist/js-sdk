@@ -1,8 +1,8 @@
-import { expect } from "chai";
+import {expect} from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { Declaration } from "../../lib/graphql/declaration";
+import {Client} from "../../lib";
+import {Declaration} from "../../lib/graphql/declaration";
 import {
   Declaration as DeclarationModel,
   DeclarationType,
