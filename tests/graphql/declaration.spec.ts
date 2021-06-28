@@ -1,8 +1,8 @@
-import {expect} from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
 
-import {Client} from "../../lib";
-import {Declaration} from "../../lib/graphql/declaration";
+import { Client } from "../../lib";
+import { Declaration } from "../../lib/graphql/declaration";
 import {
   Declaration as DeclarationModel,
   DeclarationType,
@@ -45,6 +45,7 @@ describe("Declaration", () => {
           amount: 5,
           period: "02",
           year: 2021,
+          uploadedAt: "2021-07-01",
         },
       ];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
@@ -213,6 +214,7 @@ describe("Declaration", () => {
         amount: 5,
         period,
         year,
+        uploadedAt: "2021-07-01",
       };
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         submitDeclaration: response,
