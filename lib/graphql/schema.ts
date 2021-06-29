@@ -371,6 +371,7 @@ export type CreateAssetResponse = {
   assetId: Scalars['ID'];
   url: Scalars['String'];
   formData: Array<FormDataPair>;
+  name?: Maybe<Scalars['String']>;
 };
 
 /** The available fields to create an OAuth2 client */
@@ -462,12 +463,6 @@ export type Customer = {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  /** @deprecated The streetLine field is being replaced by the address field */
-  streetLine?: Maybe<Scalars['String']>;
-  /** @deprecated The postCode field is being replaced by the address field */
-  postCode?: Maybe<Scalars['String']>;
-  /** @deprecated The city field is being replaced by the address field */
-  city?: Maybe<Scalars['String']>;
   address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
@@ -633,9 +628,6 @@ export type InvoiceCustomerInput = {
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  streetLine?: Maybe<Scalars['String']>;
-  postCode?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
   address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
@@ -647,12 +639,6 @@ export type InvoiceCustomerOutput = {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  /** @deprecated The streetLine field is being replaced by the address field */
-  streetLine?: Maybe<Scalars['String']>;
-  /** @deprecated The postCode field is being replaced by the address field */
-  postCode?: Maybe<Scalars['String']>;
-  /** @deprecated The city field is being replaced by the address field */
-  city?: Maybe<Scalars['String']>;
   address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
@@ -2229,6 +2215,7 @@ export type User = {
   poaSignedAt?: Maybe<Scalars['DateTime']>;
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
+  invoiceAsset: Scalars['String'];
   vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   invoice?: Maybe<Invoice>;
   /** The list of all OAuth2 clients for the current user */
@@ -2270,6 +2257,12 @@ export type User = {
 
 
 export type UserInvoicePdfArgs = {
+  invoiceId: Scalars['ID'];
+};
+
+
+export type UserInvoiceAssetArgs = {
+  isBase64: Scalars['Boolean'];
   invoiceId: Scalars['ID'];
 };
 
