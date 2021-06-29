@@ -493,6 +493,7 @@ export type Declaration = {
   year: Scalars['Int'];
   id: Scalars['Int'];
   amount: Scalars['Int'];
+  uploadedAt: Scalars['DateTime'];
 };
 
 export type DeclarationStats = {
