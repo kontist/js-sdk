@@ -371,6 +371,7 @@ export type CreateAssetResponse = {
   assetId: Scalars['ID'];
   url: Scalars['String'];
   formData: Array<FormDataPair>;
+  name?: Maybe<Scalars['String']>;
 };
 
 /** The available fields to create an OAuth2 client */
@@ -462,12 +463,6 @@ export type Customer = {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  /** @deprecated The streetLine field is being replaced by the address field */
-  streetLine?: Maybe<Scalars['String']>;
-  /** @deprecated The postCode field is being replaced by the address field */
-  postCode?: Maybe<Scalars['String']>;
-  /** @deprecated The city field is being replaced by the address field */
-  city?: Maybe<Scalars['String']>;
   address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
@@ -493,6 +488,7 @@ export type Declaration = {
   year: Scalars['Int'];
   id: Scalars['Int'];
   amount: Scalars['Int'];
+  uploadedAt: Scalars['DateTime'];
 };
 
 export type DeclarationStats = {
@@ -632,9 +628,6 @@ export type InvoiceCustomerInput = {
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  streetLine?: Maybe<Scalars['String']>;
-  postCode?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
   address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
@@ -646,12 +639,6 @@ export type InvoiceCustomerOutput = {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  /** @deprecated The streetLine field is being replaced by the address field */
-  streetLine?: Maybe<Scalars['String']>;
-  /** @deprecated The postCode field is being replaced by the address field */
-  postCode?: Maybe<Scalars['String']>;
-  /** @deprecated The city field is being replaced by the address field */
-  city?: Maybe<Scalars['String']>;
   address?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
@@ -837,11 +824,6 @@ export type Mutation = {
   reorderCard: Card;
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
-  /**
-   * DEPRECATED use `updateTransaction()` instead - Categorize a transaction with an optional custom booking date for VAT or Tax categories
-   * @deprecated This mutation will be removed in an upcoming release, please use `updateTransaction` mutation instead
-   */
-  categorizeTransaction: Transaction;
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
   /** Create Overdraft Application  - only available for Kontist Application */
@@ -1061,13 +1043,6 @@ export type MutationReorderCardArgs = {
 
 export type MutationSetCardHolderRepresentationArgs = {
   cardHolderRepresentation: Scalars['String'];
-};
-
-
-export type MutationCategorizeTransactionArgs = {
-  id: Scalars['String'];
-  category?: Maybe<TransactionCategory>;
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
 };
 
 
@@ -2242,6 +2217,7 @@ export type User = {
   poaSignedAt?: Maybe<Scalars['DateTime']>;
   poaExportedAt?: Maybe<Scalars['DateTime']>;
   invoicePdf: Scalars['String'];
+  invoiceAsset: Scalars['String'];
   vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   invoice?: Maybe<Invoice>;
   /** The list of all OAuth2 clients for the current user */
@@ -2283,6 +2259,12 @@ export type User = {
 
 
 export type UserInvoicePdfArgs = {
+  invoiceId: Scalars['ID'];
+};
+
+
+export type UserInvoiceAssetArgs = {
+  isBase64: Scalars['Boolean'];
   invoiceId: Scalars['ID'];
 };
 

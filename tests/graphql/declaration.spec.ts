@@ -47,6 +47,7 @@ describe("Declaration", () => {
           amount: 5,
           period: "02",
           year: 2021,
+          uploadedAt: "2021-07-01",
         },
       ];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
@@ -217,6 +218,7 @@ describe("Declaration", () => {
         amount: 5,
         period,
         year,
+        uploadedAt: "2021-07-01",
       };
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         submitDeclaration: response,
