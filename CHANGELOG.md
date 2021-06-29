@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+## [0.35.41] - 2021-06-29
+- Remove deprecated `categorizeTransaction` mutation
+### Added
+- Added `isYearlyTaxServiceOnboardingCompleted` field to `User` type
 ## [0.35.26] - 2021-03-24
 ### Added
 - Added `isYearlyTaxServiceOnboardingCompleted` field to `User` type
