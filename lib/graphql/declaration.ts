@@ -1,4 +1,4 @@
-import { GraphQLClient } from "./client";
+import {GraphQLClient} from "./client";
 
 import {
   Query,
@@ -75,7 +75,6 @@ const GET_DECLARATION_STATS = `
             vatRate
             vatAmount
             isSplit
-            reverseCharge
           }
           elsterGroups {
             elsterCode
@@ -92,7 +91,6 @@ const GET_DECLARATION_STATS = `
               vatRate
               vatAmount
               isSplit
-              reverseCharge
             }
           }
         }

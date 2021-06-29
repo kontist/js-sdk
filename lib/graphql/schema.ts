@@ -1945,7 +1945,6 @@ export type TransactionForAccountingView = {
   vatRate?: Maybe<Scalars['String']>;
   vatAmount?: Maybe<Scalars['Int']>;
   isSplit: Scalars['Boolean'];
-  reverseCharge?: Maybe<Scalars['Boolean']>;
 };
 
 export enum TransactionProjectionType {
