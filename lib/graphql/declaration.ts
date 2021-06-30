@@ -69,7 +69,7 @@ const GET_DECLARATION_STATS = `
             name
             purpose
             valutaDate
-            userSelectedBookingDate
+            selectedBookingDate
             category
             elsterCode
             vatRate
@@ -85,7 +85,7 @@ const GET_DECLARATION_STATS = `
               name
               purpose
               valutaDate
-              userSelectedBookingDate
+              selectedBookingDate
               category
               elsterCode
               vatRate
