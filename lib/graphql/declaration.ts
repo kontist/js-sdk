@@ -1,4 +1,4 @@
-import { GraphQLClient } from "./client";
+import {GraphQLClient} from "./client";
 
 import {
   Query,
@@ -8,6 +8,8 @@ import {
   MutationSubmitDeclarationArgs,
   AccountDeclarationStatsArgs,
   DeclarationStats,
+  MutationCategorizeTransactionForDeclarationArgs,
+  CategorizeTransactionForDeclarationResponse,
 } from "./schema";
 
 const FETCH_DECLARATIONS = `
@@ -99,6 +101,26 @@ const GET_DECLARATION_STATS = `
   }
 `;
 
+const CATEGORIZE_TRANSACTION_MUTATION = `mutation(
+  $id: ID!,
+  $category: TransactionCategory,
+  $elsterCode: String,
+  $date: String
+  $isSplit: Boolean
+) {
+  categorizeTransactionForDeclaration(
+    id: $id,
+    category: $category,
+    elsterCode: $elsterCode
+    date: $date
+    isSplit: $isSplit
+  ) {
+    category
+    elsterCode
+    date
+  }
+}`;
+
 export class Declaration {
   constructor(protected client: GraphQLClient) {}
 
@@ -127,6 +149,17 @@ export class Declaration {
     );
 
     return result.viewer?.mainAccount?.declarationStats ?? null;
+  }
+
+  public async categorizeTransaction(
+    args: MutationCategorizeTransactionForDeclarationArgs
+  ): Promise<CategorizeTransactionForDeclarationResponse> {
+    const result = await this.client.rawQuery(
+      CATEGORIZE_TRANSACTION_MUTATION,
+      args
+    );
+
+    return result.categorizeTransactionForDeclaration;
   }
 
   public async submit(

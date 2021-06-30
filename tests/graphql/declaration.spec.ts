@@ -7,6 +7,8 @@ import {
   Declaration as DeclarationModel,
   DeclarationType,
   DeclarationStats,
+  TransactionCategory,
+  CategorizeTransactionForDeclarationResponse,
 } from "../../lib/graphql/schema";
 
 describe("Declaration", () => {
@@ -223,7 +225,40 @@ describe("Declaration", () => {
       // act
       const result = await declaration.submit({
         period,
-        year: year,
+        year,
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(response);
+    });
+  });
+
+  describe("#categorizeTransaction", () => {
+    it("should call rawQuery and return categorization response", async () => {
+      const id = "1";
+      const elsterCode = "17";
+      const category = TransactionCategory.TaxPayment;
+      const date = new Date().toISOString();
+      const isSplit = true;
+
+      // arrange
+      const response: CategorizeTransactionForDeclarationResponse = {
+        elsterCode,
+        category,
+        date,
+      };
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        categorizeTransactionForDeclaration: response,
+      } as any);
+
+      // act
+      const result = await declaration.categorizeTransaction({
+        id,
+        elsterCode,
+        category,
+        date,
+        isSplit,
       });
 
       // assert

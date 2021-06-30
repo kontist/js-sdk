@@ -1184,6 +1184,7 @@ export type MutationCategorizeTransactionForDeclarationArgs = {
   elsterCode?: Maybe<Scalars['String']>;
   category?: Maybe<TransactionCategory>;
   date?: Maybe<Scalars['String']>;
+  isSplit?: Maybe<Scalars['Boolean']>;
 };
 
 
