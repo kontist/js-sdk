@@ -19,6 +19,7 @@ const FETCH_DECLARATIONS = `
           amount
           period
           year
+          uploadedAt
         }
       }
     }
@@ -48,6 +49,7 @@ const SUBMIT_DECLARATION = `
       amount
       period
       year
+      uploadedAt
     }
   }
 `;
