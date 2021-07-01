@@ -1993,7 +1993,13 @@ export enum TransactionProjectionType {
   CancellationCardTransaction = 'CANCELLATION_CARD_TRANSACTION',
   CancellationCharge = 'CANCELLATION_CHARGE',
   IntraCustomerTransfer = 'INTRA_CUSTOMER_TRANSFER',
-  Target2CreditTransfer = 'Target2CreditTransfer'
+  Target2CreditTransfer = 'Target2CreditTransfer',
+  CorrectionCardTransaction = 'CorrectionCardTransaction',
+  RebookedSepaDirectDebitCoreReturn = 'RebookedSEPADirectDebitCoreReturn',
+  RebookedSepaCreditTransferReturn = 'RebookedSEPACreditTransferReturn',
+  ChargeRecallRequest = 'ChargeRecallRequest',
+  CorrectionSepaCreditTransfer = 'CorrectionSEPACreditTransfer',
+  InterestExcessDeposit = 'InterestExcessDeposit'
 }
 
 export type TransactionSplit = {
