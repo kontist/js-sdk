@@ -153,7 +153,7 @@ describe("Declaration", () => {
                 {
                   id: "1",
                   amount: 2,
-                  category: "private",
+                  category: TransactionCategory.Private,
                   elsterCode: null,
                   name: "name",
                   purpose: null,
