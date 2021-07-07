@@ -147,6 +147,7 @@ describe("Declaration", () => {
           ],
           elsterGroups: [
             {
+              amount: 0,
               elsterCode: "01",
               elsterCodeTranslation: "Private",
               transactions: [
