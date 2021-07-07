@@ -533,6 +533,7 @@ export enum DocumentType {
 export type ElsterGroup = {
   __typename?: 'ElsterGroup';
   elsterCode: Scalars['String'];
+  amount: Scalars['Int'];
   elsterCodeTranslation: Scalars['String'];
   transactions: Array<TransactionForAccountingView>;
 };
