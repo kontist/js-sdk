@@ -25,7 +25,7 @@ export const createClient = (opts: Partial<ClientOpts> = {}) => {
 };
 
 export const createTransaction = (
-  override: Record<string, any> = {},
+  override: Record<string, any> = {}
 ): Transaction => {
   return {
     amount: parseInt((Math.random() * 100).toString(), 10),
@@ -37,6 +37,7 @@ export const createTransaction = (
     type: TransactionProjectionType.Atm,
     splits: [],
     assets: [],
+    transactionAssets: [],
     createdAt: new Date(0).toISOString(),
     categorizationType: null,
     ...override,
@@ -44,7 +45,7 @@ export const createTransaction = (
 };
 
 export const createTransfer = (
-  override: Record<string, any> = {},
+  override: Record<string, any> = {}
 ): Transfer => {
   return {
     amount: parseInt((Math.random() * 100).toString(), 10),

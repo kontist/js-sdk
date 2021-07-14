@@ -775,6 +775,10 @@ export type Mutation = {
   finalizeTransactionAssetUpload: TransactionAsset;
   /** Remove an Asset from the Transaction and storage */
   deleteTransactionAsset: MutationResult;
+  /** Confirm and validate an Asset upload as completed */
+  finalizeAssetUpload: Asset;
+  /** Remove an Asset from the db and storage */
+  deleteAsset: MutationResult;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
   /** Confirm a Standing Order cancellation */
@@ -855,6 +859,7 @@ export type Mutation = {
   createUser: PublicMutationResult;
   /** Update the push-notifications a user should receive */
   updateUserNotifications: Array<Notification>;
+  setTimestamp: MutationResult;
   refundDirectDebit: MutationResult;
   createReview: CreateReviewResponse;
   updateReview: MutationResult;
@@ -896,6 +901,16 @@ export type MutationFinalizeTransactionAssetUploadArgs = {
 
 
 export type MutationDeleteTransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
+
+
+export type MutationFinalizeAssetUploadArgs = {
+  assetId: Scalars['ID'];
+};
+
+
+export type MutationDeleteAssetArgs = {
   assetId: Scalars['ID'];
 };
 
@@ -1118,6 +1133,11 @@ export type MutationCreateUserArgs = {
 export type MutationUpdateUserNotificationsArgs = {
   active: Scalars['Boolean'];
   type: NotificationType;
+};
+
+
+export type MutationSetTimestampArgs = {
+  fieldName: Scalars['String'];
 };
 
 
@@ -1649,6 +1669,13 @@ export enum ScopeType {
   ChangeRequest = 'CHANGE_REQUEST'
 }
 
+export enum ScreeningStatus {
+  NotScreened = 'NOT_SCREENED',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  ScreenedAccepted = 'SCREENED_ACCEPTED',
+  ScreenedDeclined = 'SCREENED_DECLINED'
+}
+
 export type SepaTransfer = {
   __typename?: 'SepaTransfer';
   /** The status of the SEPA Transfer */
@@ -1792,12 +1819,21 @@ export type Transaction = {
   elsterCode?: Maybe<Scalars['String']>;
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
+  /** List Assets for a transaction */
+  transactionAssets: Array<Asset>;
   /** View a single Asset for a transaction */
   asset?: Maybe<TransactionAsset>;
+  /** View a single Asset for a transaction */
+  transactionAsset?: Maybe<Asset>;
 };
 
 
 export type TransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
+
+
+export type TransactionTransactionAssetArgs = {
   assetId: Scalars['ID'];
 };
 
@@ -2181,6 +2217,8 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.identification.link"
    */
   identificationLink?: Maybe<Scalars['String']>;
+  /** The user's Solaris screening status */
+  screeningStatus?: Maybe<ScreeningStatus>;
   gender?: Maybe<Gender>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
@@ -2260,11 +2298,6 @@ export type User = {
   invoices: InvoicingDashboardData;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
-};
-
-
-export type UserInvoicePdfArgs = {
-  invoiceId: Scalars['ID'];
 };
 
 

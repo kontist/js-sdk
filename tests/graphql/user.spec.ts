@@ -44,7 +44,9 @@ describe("User", () => {
 
       // assert
       expect(error).to.be.an.instanceOf(KontistSDKError);
-      expect(error.message).to.eq("You are allowed only to fetch your details.");
+      expect(error.message).to.eq(
+        "You are allowed only to fetch your details."
+      );
     });
   });
 
@@ -53,7 +55,9 @@ describe("User", () => {
       // arrange
       const user = new User(client.graphQL);
       const viewer = { email: "test@kontist.com" };
-      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ viewer } as any);
+      const spyOnRawQuery = sandbox
+        .stub(client.graphQL, "rawQuery")
+        .resolves({ viewer } as any);
 
       // act
       const result = await user.get();
@@ -62,6 +66,29 @@ describe("User", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(viewer);
     });
+  });
 
+  describe("#setTimestamp", () => {
+    it("should call rawQuery and return success", async () => {
+      const user = new User(client.graphQL);
+
+      // arrange
+      const response = {
+        setTimestamp: { success: true },
+      };
+
+      const spyOnRawQuery = sandbox
+        .stub(client.graphQL, "rawQuery")
+        .resolves(response as any);
+
+      // act
+      const result = await user.setTimestamp({
+        fieldName: "accountingOnboardingStartedAt",
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(response.setTimestamp);
+    });
   });
 });
