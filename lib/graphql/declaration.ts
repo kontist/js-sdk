@@ -79,6 +79,7 @@ const GET_DECLARATION_STATS = `
             isSplit
           }
           elsterGroups {
+            amount
             elsterCode
             elsterCodeTranslation
             transactions {
