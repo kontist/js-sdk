@@ -18,6 +18,7 @@ const GET_USER = `query {
     gender
     identificationLink
     identificationStatus
+    screeningStatus
     isUSPerson
     lastName
     mobileNumber
