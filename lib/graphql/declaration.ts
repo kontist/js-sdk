@@ -1,4 +1,4 @@
-import {GraphQLClient} from "./client";
+import { GraphQLClient } from "./client";
 
 import {
   Query,
@@ -43,7 +43,7 @@ const SUBMIT_DECLARATION = `
     $period: String!,
     $year: Int!
   ) {
-    submitUStVA(
+    submitDeclaration(
       period: $period,
       year: $year
     ) {
