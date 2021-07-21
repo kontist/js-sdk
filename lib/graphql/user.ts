@@ -1,7 +1,8 @@
+import { Query, User as UserModel } from "./schema";
+
 import { KontistSDKError } from "../errors";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { Query, User as UserModel } from "./schema";
 
 const GET_USER = `query {
   viewer {
@@ -18,6 +19,7 @@ const GET_USER = `query {
     gender
     identificationLink
     identificationStatus
+    screeningStatus
     isUSPerson
     lastName
     mobileNumber
