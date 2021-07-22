@@ -2488,6 +2488,8 @@ export type UserUpdateInput = {
   idnowReminderTime?: Maybe<Scalars['DateTime']>;
   /** Indicates if user started upgrading to accounting plan */
   accountingOnboardingStarted?: Maybe<Scalars['Boolean']>;
+  /** Indicates if user started upgrading to Kontax plan */
+  taxServiceOnboardingStarted?: Maybe<Scalars['Boolean']>;
 };
 
 export enum UserVatRate {
