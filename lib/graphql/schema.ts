@@ -308,9 +308,20 @@ export enum CategorizationType {
 
 export type CategorizeTransactionForDeclarationResponse = {
   __typename?: 'CategorizeTransactionForDeclarationResponse';
+  categoryCode?: Maybe<Scalars['String']>;
   elsterCode?: Maybe<Scalars['String']>;
   category?: Maybe<Scalars['String']>;
   date?: Maybe<Scalars['String']>;
+};
+
+export type CategoryGroup = {
+  __typename?: 'CategoryGroup';
+  categoryCode: Scalars['String'];
+  elsterCode: Scalars['String'];
+  amount: Scalars['Int'];
+  categoryCodeTranslation: Scalars['String'];
+  elsterCodeTranslation: Scalars['String'];
+  transactions: Array<TransactionForAccountingView>;
 };
 
 export type Client = {
@@ -494,7 +505,8 @@ export type Declaration = {
 export type DeclarationStats = {
   __typename?: 'DeclarationStats';
   amount: Scalars['Int'];
-  elsterGroups: Array<ElsterGroup>;
+  categoryGroups: Array<CategoryGroup>;
+  elsterGroups: Array<CategoryGroup>;
   uncategorized: Array<TransactionForAccountingView>;
 };
 
@@ -529,14 +541,6 @@ export enum DocumentType {
   Voucher = 'VOUCHER',
   Invoice = 'INVOICE'
 }
-
-export type ElsterGroup = {
-  __typename?: 'ElsterGroup';
-  elsterCode: Scalars['String'];
-  amount: Scalars['Int'];
-  elsterCodeTranslation: Scalars['String'];
-  transactions: Array<TransactionForAccountingView>;
-};
 
 export type FormDataPair = {
   __typename?: 'FormDataPair';
@@ -1196,6 +1200,7 @@ export type MutationUpsertProductsArgs = {
 
 export type MutationCategorizeTransactionForDeclarationArgs = {
   id: Scalars['ID'];
+  categoryCode?: Maybe<Scalars['String']>;
   elsterCode?: Maybe<Scalars['String']>;
   category?: Maybe<TransactionCategory>;
   date?: Maybe<Scalars['String']>;
@@ -1811,7 +1816,8 @@ export type Transaction = {
   documentType?: Maybe<DocumentType>;
   foreignCurrency?: Maybe<Scalars['String']>;
   originalAmount?: Maybe<Scalars['Int']>;
-  elsterCode?: Maybe<Scalars['String']>;
+  categoryCode?: Maybe<Scalars['String']>;
+  categoryCodeTranslation?: Maybe<Scalars['String']>;
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
   /** List Assets for a transaction */
@@ -1972,6 +1978,7 @@ export type TransactionForAccountingView = {
   valutaDate: Scalars['DateTime'];
   selectedBookingDate?: Maybe<Scalars['DateTime']>;
   category?: Maybe<TransactionCategory>;
+  categoryCode?: Maybe<Scalars['String']>;
   elsterCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<Scalars['String']>;
   vatAmount?: Maybe<Scalars['Int']>;
@@ -2030,7 +2037,10 @@ export enum TransactionProjectionType {
   RebookedSepaCreditTransferReturn = 'RebookedSEPACreditTransferReturn',
   ChargeRecallRequest = 'ChargeRecallRequest',
   CorrectionSepaCreditTransfer = 'CorrectionSEPACreditTransfer',
-  InterestExcessDeposit = 'InterestExcessDeposit'
+  InterestExcessDeposit = 'InterestExcessDeposit',
+  InterestOverdraft = 'InterestOverdraft',
+  InterestOverdraftExceeded = 'InterestOverdraftExceeded',
+  ReimbursementCustomer = 'ReimbursementCustomer'
 }
 
 export type TransactionSplit = {

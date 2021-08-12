@@ -134,7 +134,7 @@ describe("Declaration", () => {
             {
               amount: 3,
               category: null,
-              elsterCode: null,
+              categoryCode: null,
               id: "4",
               name: "name",
               purpose: "",
@@ -148,6 +148,8 @@ describe("Declaration", () => {
           elsterGroups: [
             {
               amount: 0,
+              categoryCode: "01",
+              categoryCodeTranslation: "Private",
               elsterCode: "01",
               elsterCodeTranslation: "Private",
               transactions: [
@@ -155,7 +157,31 @@ describe("Declaration", () => {
                   id: "1",
                   amount: 2,
                   category: TransactionCategory.Private,
-                  elsterCode: null,
+                  categoryCode: null,
+                  name: "name",
+                  purpose: null,
+                  selectedBookingDate: null,
+                  valutaDate: "2021-01-01",
+                  vatAmount: 0,
+                  vatRate: "5",
+                  isSplit: false,
+                },
+              ],
+            },
+          ],
+          categoryGroups: [
+            {
+              amount: 0,
+              categoryCode: "01",
+              categoryCodeTranslation: "Private",
+              elsterCode: "01",
+              elsterCodeTranslation: "Private",
+              transactions: [
+                {
+                  id: "1",
+                  amount: 2,
+                  category: TransactionCategory.Private,
+                  categoryCode: null,
                   name: "name",
                   purpose: null,
                   selectedBookingDate: null,
@@ -238,14 +264,14 @@ describe("Declaration", () => {
   describe("#categorizeTransaction", () => {
     it("should call rawQuery and return categorization response", async () => {
       const id = "1";
-      const elsterCode = "17";
+      const categoryCode = "17";
       const category = TransactionCategory.TaxPayment;
       const date = new Date().toISOString();
       const isSplit = true;
 
       // arrange
       const response: CategorizeTransactionForDeclarationResponse = {
-        elsterCode,
+        categoryCode,
         category,
         date,
       };
@@ -256,7 +282,7 @@ describe("Declaration", () => {
       // act
       const result = await declaration.categorizeTransaction({
         id,
-        elsterCode,
+        categoryCode,
         category,
         date,
         isSplit,
