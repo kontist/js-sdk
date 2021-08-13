@@ -1817,6 +1817,7 @@ export type Transaction = {
   foreignCurrency?: Maybe<Scalars['String']>;
   originalAmount?: Maybe<Scalars['Int']>;
   categoryCode?: Maybe<Scalars['String']>;
+  elsterCode?: Maybe<Scalars['String']>;
   categoryCodeTranslation?: Maybe<Scalars['String']>;
   elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
