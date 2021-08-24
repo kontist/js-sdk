@@ -14,8 +14,19 @@ describe("Auth: TokenManager", () => {
     it("should return proper redirect url when clientSecret is provided", async () => {
       const client = createClient({ clientSecret });
       const url = await client.auth.tokenManager.getAuthUri();
-      const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056`;
-      expect(url).to.equal(expectedUrl);
+      const searchParams = new URLSearchParams(new URL(url).search);
+      expect(
+        url.startsWith(`${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?`)
+      ).to.equal(true);
+      expect(searchParams.get("client_id")).to.equal(clientId);
+      expect(searchParams.get("redirect_uri")).to.equal(
+        "https://localhost:3000/auth/callback"
+      );
+      expect(searchParams.get("response_type")).to.equal("code");
+      expect(searchParams.get("state")).to.equal("25843739712322056");
+      expect(searchParams.get("scope")).to.equal("transactions");
+      expect(searchParams.get("code_challenge")).to.equal(null);
+      expect(searchParams.get("code_challenge_method")).to.equal(null);
     });
 
     it("should return proper redirect url when code verifier is provided", async () => {
@@ -23,8 +34,21 @@ describe("Auth: TokenManager", () => {
       const codeChallenge = "xc3uY4-XMuobNWXzzfEqbYx3rUYBH69_zu4EFQIJH8w";
       const codeChallengeMethod = "S256";
       const url = await client.auth.tokenManager.getAuthUri();
-      const expectedUrl = `${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?client_id=${clientId}&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=transactions&response_type=code&state=25843739712322056&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
-      expect(url).to.equal(expectedUrl);
+      const searchParams = new URLSearchParams(new URL(url).search);
+      expect(
+        url.startsWith(`${Constants.KONTIST_API_BASE_URL}/api/oauth/authorize?`)
+      ).to.equal(true);
+      expect(searchParams.get("client_id")).to.equal(clientId);
+      expect(searchParams.get("redirect_uri")).to.equal(
+        "https://localhost:3000/auth/callback"
+      );
+      expect(searchParams.get("response_type")).to.equal("code");
+      expect(searchParams.get("state")).to.equal("25843739712322056");
+      expect(searchParams.get("scope")).to.equal("transactions");
+      expect(searchParams.get("code_challenge")).to.equal(codeChallenge);
+      expect(searchParams.get("code_challenge_method")).to.equal(
+        codeChallengeMethod
+      );
     });
   });
 
