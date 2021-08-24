@@ -73,15 +73,15 @@ const GET_DECLARATION_STATS = `
             valutaDate
             selectedBookingDate
             category
-            elsterCode
+            categoryCode
             vatRate
             vatAmount
             isSplit
           }
-          elsterGroups {
+          categoryGroups {
             amount
-            elsterCode
-            elsterCodeTranslation
+            categoryCode
+            categoryCodeTranslation
             transactions {
               id
               amount
@@ -90,7 +90,7 @@ const GET_DECLARATION_STATS = `
               valutaDate
               selectedBookingDate
               category
-              elsterCode
+              categoryCode
               vatRate
               vatAmount
               isSplit
@@ -105,19 +105,19 @@ const GET_DECLARATION_STATS = `
 const CATEGORIZE_TRANSACTION_MUTATION = `mutation(
   $id: ID!,
   $category: TransactionCategory,
-  $elsterCode: String,
+  $categoryCode: String,
   $date: String
   $isSplit: Boolean
 ) {
   categorizeTransactionForDeclaration(
     id: $id,
     category: $category,
-    elsterCode: $elsterCode
+    categoryCode: $categoryCode
     date: $date
     isSplit: $isSplit
   ) {
     category
-    elsterCode
+    categoryCode
     date
   }
 }`;

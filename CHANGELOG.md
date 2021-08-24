@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.36.0] - 2021-08-13
+### Changed
+- Replace `elsterCode` by `categoryCode`. Keep `elsterCode` for backward compatibility.
+
 ## [0.35.41] - 2021-06-29
 - Remove deprecated `categorizeTransaction` mutation
 ### Added
