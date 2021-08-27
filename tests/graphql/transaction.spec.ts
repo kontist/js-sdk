@@ -925,5 +925,22 @@ describe("Transaction", () => {
         expect(result).to.eql(csv);
       });
     });
+
+    describe("when not transactions are found", () => {
+      beforeEach(async () => {
+        stub.resolves({
+          viewer: { mainAccount: { transactionsCSV: null } },
+        });
+      });
+
+      it("should return empty string", async () => {
+        const result = await client.models.transaction.fetchCSV({
+          from: new Date(),
+          to: new Date(),
+        });
+        expect(stub.callCount).to.equal(1);
+        expect(result).to.eql("");
+      });
+    });
   });
 });
