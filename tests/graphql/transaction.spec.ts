@@ -893,4 +893,54 @@ describe("Transaction", () => {
       });
     });
   });
+
+  describe("#fetchCSV", () => {
+    let stub: any;
+    let client: Client;
+    const csv = "Buchungsdatum";"Wertstellungsdatum";"Transaktionstyp";"Empfänger";"Betrag";"IBAN";"Verwendungszweck";"end_to_end_id";"Buchungsstatus";"Kategorie";"Persönliche Notiz"
+    "2021-08-23";"2021-08-23";"Überweisung";;"-12,34";"DE32110101001000000029";"transaction1";"test1";"Gebucht";;
+
+    beforeEach(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    afterEach(() => {
+      stub.restore();
+    });
+
+    describe("when transactions are found", () => {
+      beforeEach(async () => {
+        stub.resolves({
+          viewer: { mainAccount: { transactionsCSV: csv } },
+        });
+      });
+
+      it("should return csv with transactions", async () => {
+        const result = await client.models.transaction.fetchCSV({
+          from: new Date(),
+          to: new Date(),
+        });
+        expect(stub.callCount).to.equal(1);
+        expect(result).to.eql(csv);
+      });
+    });
+
+    describe("when no transactions are found", () => {
+      beforeEach(async () => {
+        stub.resolves({
+          viewer: { mainAccount: { transactionsCSV: null } },
+        });
+      });
+
+      it("should return empty string", async () => {
+        const result = await client.models.transaction.fetchCSV({
+          from: new Date(),
+          to: new Date(),
+        });
+        expect(stub.callCount).to.equal(1);
+        expect(result).to.eql("");
+      });
+    });
+  });
 });

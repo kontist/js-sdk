@@ -15,6 +15,7 @@ import {
   Transaction as TransactionModel,
   TransactionFilter,
   TransactionsConnectionEdge,
+  AccountTransactionsCsvArgs,
 } from "./schema";
 import {
   FetchOptions,
@@ -228,6 +229,16 @@ export const DELETE_TRANSACTION_ASSET = `mutation deleteTransactionAsset(
     success
   }
 }`;
+
+const FETCH_TRANSACTIONS_CSV = `
+  query fetchTransactionsCSV ($from: DateTime, $to: DateTime) {
+    viewer {
+      mainAccount {
+        transactionsCSV(from: $from, to: $to)
+      }
+    }
+  }
+`;
 
 export class Transaction extends IterableModel<TransactionModel> {
   /**
@@ -473,5 +484,17 @@ export class Transaction extends IterableModel<TransactionModel> {
     }
 
     return filter;
+  }
+
+  /**
+   * Fetches transactions in CSV format for specified date period
+   * If date period is not provided, all transactions are returned
+   *
+   * @param args  query parameters
+   * @returns     result page
+   */
+  public async fetchCSV(args?: AccountTransactionsCsvArgs): Promise<string> {
+    const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS_CSV, args);
+    return result.viewer?.mainAccount?.transactionsCSV ?? "";
   }
 }

@@ -33,6 +33,7 @@ export type Account = {
   transfers: TransfersConnection;
   transaction?: Maybe<Transaction>;
   transactions: TransactionsConnection;
+  transactionsCSV: Scalars['String'];
   transfer?: Maybe<Transfer>;
   /** Different information about account balances, e.g. taxes, VAT, ... */
   stats: AccountStats;
@@ -75,6 +76,13 @@ export type AccountTransactionsArgs = {
   last?: Maybe<Scalars['Int']>;
   after?: Maybe<Scalars['String']>;
   before?: Maybe<Scalars['String']>;
+};
+
+
+/** The bank account of the current user */
+export type AccountTransactionsCsvArgs = {
+  to?: Maybe<Scalars['DateTime']>;
+  from?: Maybe<Scalars['DateTime']>;
 };
 
 
