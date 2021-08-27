@@ -926,7 +926,7 @@ describe("Transaction", () => {
       });
     });
 
-    describe("when not transactions are found", () => {
+    describe("when no transactions are found", () => {
       beforeEach(async () => {
         stub.resolves({
           viewer: { mainAccount: { transactionsCSV: null } },
