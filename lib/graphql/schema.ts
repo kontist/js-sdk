@@ -767,6 +767,17 @@ export type InvoicingDashboardData = {
   data: Array<DashboardInvoice>;
 };
 
+export type Jwe = {
+  alg: Scalars['String'];
+  enc: Scalars['String'];
+};
+
+export type Jwk = {
+  kty: Scalars['String'];
+  n: Scalars['String'];
+  e: Scalars['String'];
+};
+
 export enum MaximumCashTransactionsPercentage {
   Null = 'NULL',
   Ten = 'TEN',
@@ -841,6 +852,8 @@ export type Mutation = {
   reorderCard: Card;
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
+  /** Returns encrypted card details for virtual card */
+  virtualCardDetails: Scalars['String'];
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
   /** Create Overdraft Application  - only available for Kontist Application */
@@ -1070,6 +1083,12 @@ export type MutationReorderCardArgs = {
 
 export type MutationSetCardHolderRepresentationArgs = {
   cardHolderRepresentation: Scalars['String'];
+};
+
+
+export type MutationVirtualCardDetailsArgs = {
+  args: VirtualCardDetailsArgs;
+  id: Scalars['String'];
 };
 
 
@@ -2515,6 +2534,13 @@ export enum UserVatRate {
   Vat_0 = 'VAT_0',
   Vat_19 = 'VAT_19'
 }
+
+export type VirtualCardDetailsArgs = {
+  signature: Scalars['String'];
+  deviceId: Scalars['String'];
+  jwk: Jwk;
+  jwe: Jwe;
+};
 
 export type WhitelistCardResponse = {
   __typename?: 'WhitelistCardResponse';
