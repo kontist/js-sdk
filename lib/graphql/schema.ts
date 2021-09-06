@@ -317,6 +317,7 @@ export enum CategorizationType {
 export type CategorizeTransactionForDeclarationResponse = {
   __typename?: 'CategorizeTransactionForDeclarationResponse';
   categoryCode?: Maybe<Scalars['String']>;
+  elsterCode?: Maybe<Scalars['String']>;
   category?: Maybe<Scalars['String']>;
   date?: Maybe<Scalars['String']>;
 };
@@ -324,8 +325,10 @@ export type CategorizeTransactionForDeclarationResponse = {
 export type CategoryGroup = {
   __typename?: 'CategoryGroup';
   categoryCode: Scalars['String'];
+  elsterCode: Scalars['String'];
   amount: Scalars['Int'];
   categoryCodeTranslation: Scalars['String'];
+  elsterCodeTranslation: Scalars['String'];
   transactions: Array<TransactionForAccountingView>;
 };
 
@@ -511,6 +514,7 @@ export type DeclarationStats = {
   __typename?: 'DeclarationStats';
   amount: Scalars['Int'];
   categoryGroups: Array<CategoryGroup>;
+  elsterGroups: Array<CategoryGroup>;
   uncategorized: Array<TransactionForAccountingView>;
 };
 
@@ -1224,6 +1228,7 @@ export type MutationUpsertProductsArgs = {
 export type MutationCategorizeTransactionForDeclarationArgs = {
   id: Scalars['ID'];
   categoryCode?: Maybe<Scalars['String']>;
+  elsterCode?: Maybe<Scalars['String']>;
   category?: Maybe<TransactionCategory>;
   date?: Maybe<Scalars['String']>;
   isSplit?: Maybe<Scalars['Boolean']>;
@@ -1839,8 +1844,9 @@ export type Transaction = {
   foreignCurrency?: Maybe<Scalars['String']>;
   originalAmount?: Maybe<Scalars['Int']>;
   categoryCode?: Maybe<Scalars['String']>;
-  canBeRecategorized?: Maybe<Scalars['Boolean']>;
+  elsterCode?: Maybe<Scalars['String']>;
   categoryCodeTranslation?: Maybe<Scalars['String']>;
+  elsterCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
   /** List Assets for a transaction */
   transactionAssets: Array<Asset>;
@@ -2001,6 +2007,7 @@ export type TransactionForAccountingView = {
   selectedBookingDate?: Maybe<Scalars['DateTime']>;
   category?: Maybe<TransactionCategory>;
   categoryCode?: Maybe<Scalars['String']>;
+  elsterCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<Scalars['String']>;
   vatAmount?: Maybe<Scalars['Int']>;
   isSplit: Scalars['Boolean'];
