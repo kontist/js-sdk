@@ -91,6 +91,7 @@ const TRANSACTION_DETAILS = `
   documentType
   e2eId
   mandateNumber
+  canBeRecategorized
 `;
 
 const FETCH_TRANSACTIONS = `
