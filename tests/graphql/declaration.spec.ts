@@ -145,37 +145,11 @@ describe("Declaration", () => {
               isSplit: false,
             },
           ],
-          elsterGroups: [
-            {
-              amount: 0,
-              categoryCode: "01",
-              categoryCodeTranslation: "Private",
-              elsterCode: "01",
-              elsterCodeTranslation: "Private",
-              transactions: [
-                {
-                  id: "1",
-                  amount: 2,
-                  category: TransactionCategory.Private,
-                  categoryCode: null,
-                  name: "name",
-                  purpose: null,
-                  selectedBookingDate: null,
-                  valutaDate: "2021-01-01",
-                  vatAmount: 0,
-                  vatRate: "5",
-                  isSplit: false,
-                },
-              ],
-            },
-          ],
           categoryGroups: [
             {
               amount: 0,
               categoryCode: "01",
               categoryCodeTranslation: "Private",
-              elsterCode: "01",
-              elsterCodeTranslation: "Private",
               transactions: [
                 {
                   id: "1",
