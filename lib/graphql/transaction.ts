@@ -79,6 +79,7 @@ const TRANSACTION_FIELDS = `
     categorizationType
   }
   recurlyInvoiceNumber
+  canBeRecategorized
 `;
 
 const TRANSACTION_DETAILS = `
