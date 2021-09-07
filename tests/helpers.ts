@@ -40,6 +40,7 @@ export const createTransaction = (
     transactionAssets: [],
     createdAt: new Date(0).toISOString(),
     categorizationType: null,
+    canBeRecategorized: true,
     ...override,
   };
 };
