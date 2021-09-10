@@ -1839,7 +1839,7 @@ export type Transaction = {
   foreignCurrency?: Maybe<Scalars['String']>;
   originalAmount?: Maybe<Scalars['Int']>;
   categoryCode?: Maybe<Scalars['String']>;
-  canBeRecategorized?: Maybe<Scalars['Boolean']>;
+  canBeRecategorized: Scalars['Boolean'];
   categoryCodeTranslation?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
   /** List Assets for a transaction */
@@ -2163,6 +2163,14 @@ export type TransfersConnectionFilter = {
   status?: Maybe<TransferStatus>;
 };
 
+export type UnfinishedTransfer = {
+  __typename?: 'UnfinishedTransfer';
+  amount: Scalars['Int'];
+  recipient: Scalars['String'];
+  iban: Scalars['String'];
+  purpose: Scalars['String'];
+};
+
 /** The available fields to update an OAuth2 client */
 export type UpdateClientInput = {
   /** The name of the OAuth2 client displayed when users log in */
@@ -2312,6 +2320,7 @@ export type User = {
   identification: IdentificationDetails;
   /** User metadata. These fields are likely to get frequently updated or changed. */
   metadata: UserMetadata;
+  unfinishedTransfers: Array<UnfinishedTransfer>;
   /** All push-notification types and their state */
   notifications: Array<Notification>;
   /** The user's associated Recurly Account */
