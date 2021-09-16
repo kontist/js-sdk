@@ -317,7 +317,7 @@ export enum CategorizationType {
 export type CategorizeTransactionForDeclarationResponse = {
   __typename?: 'CategorizeTransactionForDeclarationResponse';
   categoryCode?: Maybe<Scalars['String']>;
-  category?: Maybe<Scalars['String']>;
+  category?: Maybe<TransactionCategory>;
   date?: Maybe<Scalars['String']>;
 };
 
