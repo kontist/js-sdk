@@ -10,6 +10,7 @@ import {
   TransfersConnectionEdge,
   TransferSuggestion,
   TransferType,
+  UnfinishedTransfer,
   UpdateTransferInput,
 } from "./schema";
 
@@ -148,6 +149,19 @@ const GET_TRANSFER_SUGGESTIONS = `
           iban
           name
         }
+      }
+    }
+  }
+`;
+
+const GET_UNFINISHED_TRANSFERS = `
+  query {
+    viewer {
+      unfinishedTransfers {
+        amount
+        recipient
+        iban
+        purpose
       }
     }
   }
@@ -305,5 +319,15 @@ export class Transfer extends IterableModel<
   public async suggestions(): Promise<TransferSuggestion[]> {
     const result: Query = await this.client.rawQuery(GET_TRANSFER_SUGGESTIONS);
     return result.viewer?.mainAccount?.transferSuggestions ?? [];
+  }
+
+  /**
+   * Fetches a list of unfinished wire transfers
+   *
+   * @returns array of unifinished wire transfers
+   */
+  public async fetchUnfinished(): Promise<UnfinishedTransfer[]> {
+    const result: Query = await this.client.rawQuery(GET_UNFINISHED_TRANSFERS);
+    return result.viewer?.unfinishedTransfers ?? [];
   }
 }

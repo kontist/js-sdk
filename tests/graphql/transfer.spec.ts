@@ -6,7 +6,8 @@ import {
   Transfer,
   StandingOrderReoccurrenceType,
   TransactionCategory,
-  CreateTransferInput
+  CreateTransferInput,
+  UnfinishedTransfer
 } from "../../lib/graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
 
@@ -498,6 +499,47 @@ describe("Transfer", () => {
         category,
         userSelectedBookingDate,
         personalNote
+      });
+    });
+  });
+
+  describe("#fetchUnfinished", () => {
+    let result: UnfinishedTransfer[];
+
+    const unfinishedTransfers = [{
+      amount: 1234,
+      recipient: "John Doe",
+      iban: "DE32110101001000000029",
+      purpose: "time is money",
+    }];
+
+    describe("when there are unfinished transfers", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({
+          viewer: {
+            unfinishedTransfers,
+          },
+        });
+        result = await transferInstance.fetchUnfinished();
+      });
+
+      it("should return list of unfinished transfers", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result).to.eql(unfinishedTransfers);
+      });
+    });
+
+    describe("when response does not contain unfinished transfers", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({});
+        result = await transferInstance.fetchUnfinished();
+      });
+
+      it("should return empty list", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(result).to.eql([]);
       });
     });
   });
