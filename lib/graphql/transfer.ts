@@ -324,7 +324,7 @@ export class Transfer extends IterableModel<
   /**
    * Fetches a list of unfinished wire transfers
    *
-   * @returns array of unifinished wire transfers
+   * @returns array of unfinished wire transfers
    */
   public async fetchUnfinished(): Promise<UnfinishedTransfer[]> {
     const result: Query = await this.client.rawQuery(GET_UNFINISHED_TRANSFERS);
