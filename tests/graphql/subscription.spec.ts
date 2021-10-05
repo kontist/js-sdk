@@ -3,7 +3,10 @@ import * as sinon from "sinon";
 
 import { Client } from "../../lib";
 import { Subscription } from "../../lib/graphql/subscription";
-import { PurchaseType, UpdateSubscriptionPlanResult } from "../../lib/graphql/schema";
+import {
+  PurchaseType,
+  UpdateSubscriptionPlanResult,
+} from "../../lib/graphql/schema";
 
 describe("Subscription", () => {
   let sandbox: sinon.SinonSandbox;
@@ -30,42 +33,69 @@ describe("Subscription", () => {
   });
 
   describe("#fetch", () => {
-    it("should call rawQuery and return results", async () => {
-      // arrange
-      const couponCode = "free100";
-      const plans = [{
-        title: "Free",
-        description: "All-round business banking with virtual card",
-        button: "Open Free",
-        featuresToggleLabel: "All Kontist Free features",
-        featureGroups: [
+    describe("when there are plans", () => {
+      it("should call rawQuery and return results", async () => {
+        // arrange
+        const couponCode = "free100";
+        const plans = [
           {
-            title: null,
-            features: [
-              { title: "Unlimited SEPA transfers" },
-              { title: "Virtual Card" },
+            title: "Free",
+            description: "All-round business banking with virtual card",
+            button: "Open Free",
+            featuresToggleLabel: "All Kontist Free features",
+            featureGroups: [
+              {
+                title: null,
+                features: [
+                  { title: "Unlimited SEPA transfers" },
+                  { title: "Virtual Card" },
+                ],
+              },
             ],
+            fee: {
+              amount: 0,
+              fullAmount: null,
+              discountPercentage: null,
+            },
           },
-        ],
-        fee: {
-          amount: 0,
-          fullAmount: null,
-          discountPercentage: null,
-        },
-      }];
-      const subscription = new Subscription(client.graphQL);
-      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        viewer: {
-          availablePlans: plans
-        },
-      } as any);
+        ];
+        const subscription = new Subscription(client.graphQL);
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              availablePlans: plans,
+            },
+          } as any);
 
-      // act
-      const result = await subscription.fetch(couponCode);
+        // act
+        const result = await subscription.fetch(couponCode);
 
-      // assert
-      sinon.assert.calledOnce(spyOnRawQuery);
-      expect(result).to.deep.eq(plans);
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(result).to.deep.eq(plans);
+      });
+    });
+
+    describe("when there are no plans", () => {
+      it("should call rawQuery and return empty array", async () => {
+        // arrange
+        const subscription = new Subscription(client.graphQL);
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              availablePlans: null,
+            },
+          } as any);
+
+        // act
+        const result = await subscription.fetch();
+
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(result).to.deep.eq([]);
+      });
     });
   });
 
