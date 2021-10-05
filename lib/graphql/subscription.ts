@@ -2,7 +2,9 @@ import { GraphQLClient } from "./client";
 import {
   MutationUpdateSubscriptionPlanArgs,
   SubscriptionPlan,
+  PurchaseType,
   UpdateSubscriptionPlanResult,
+  UserSubscription,
 } from "./schema";
 
 const UPDATE_PLAN = `mutation updatePlan(
@@ -43,6 +45,22 @@ const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
   }
 }`;
 
+const FETCH_PURCHASES = `query FetchUserPlans {
+  viewer {
+    subscriptions {
+      type
+      state
+    }
+  }
+}`;
+
+const SUBSCRIBE_TO_PLAN = `mutation SubscribeToPlan($type: PurchaseType!, $couponCode: String) {
+  subscribeToPlan(type: $type, couponCode: $couponCode) {
+    type,
+    state
+  }
+}`;
+
 export class Subscription {
   constructor(protected client: GraphQLClient) {}
 
@@ -55,6 +73,34 @@ export class Subscription {
   public async fetch(couponCode?: string): Promise<SubscriptionPlan[]> {
     const result = await this.client.rawQuery(FETCH_PLANS, { couponCode });
     return result.viewer?.availablePlans ?? [];
+  }
+
+  /**
+   * Fetches active subscription plans for user
+   *
+   * @returns     list of active subscription types
+   */
+  public async fetchPurchases(): Promise<UserSubscription[]> {
+    const result = await this.client.rawQuery(FETCH_PURCHASES);
+    return result.viewer?.subscriptions ?? [];
+  }
+
+  /**
+   * Subscribe user to a plan
+   *
+   * @param type  subscription type
+   * @param couponCode  coupon code
+   * @returns     subscribe result
+   */
+  public async makePurchase(
+    type: PurchaseType,
+    couponCode?: string
+  ): Promise<UserSubscription> {
+    const result = await this.client.rawQuery(SUBSCRIBE_TO_PLAN, {
+      type,
+      couponCode,
+    });
+    return result.subscribeToPlan;
   }
 
   /**

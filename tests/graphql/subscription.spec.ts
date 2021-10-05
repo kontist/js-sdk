@@ -124,4 +124,79 @@ describe("Subscription", () => {
       expect(result).to.deep.eq(updateSubscriptionPlanData);
     });
   });
+
+  describe("#fetchPurchases", () => {
+    describe("when user is subscribed to plan", () => {
+      it("should call rawQuery and return results", async () => {
+        // arrange
+        const plans = [
+          {
+            type: "accounting",
+            state: "processed",
+          }
+        ];
+        const subscription = new Subscription(client.graphQL);
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              subscriptions: plans,
+            },
+          } as any);
+
+        // act
+        const result = await subscription.fetchPurchases();
+
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(result).to.deep.eq(plans);
+      });
+    });
+
+    describe("when use is not subscribed to any plan", () => {
+      it("should call rawQuery and return empty array", async () => {
+        // arrange
+        const subscription = new Subscription(client.graphQL);
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              subscriptions: null,
+            },
+          } as any);
+
+        // act
+        const result = await subscription.fetchPurchases();
+
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(result).to.deep.eq([]);
+      });
+    });
+  });
+
+  describe("#makePurchase", () => {
+    it("should call rawQuery and return results", async () => {
+      // arrange
+      const couponCode = "lexoffice100";
+      const type = PurchaseType.Accounting;
+      const subscriptionResult = {
+        type: "accounting",
+        state: "processed",
+      }
+      const subscription = new Subscription(client.graphQL);
+      const spyOnRawQuery = sandbox
+        .stub(client.graphQL, "rawQuery")
+        .resolves({
+          subscribeToPlan: subscriptionResult
+        } as any);
+
+      // act
+      const result = await subscription.makePurchase(type, couponCode);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(subscriptionResult);
+    });
+  });
 });
