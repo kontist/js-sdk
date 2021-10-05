@@ -1764,6 +1764,12 @@ export type SubscriptionPlan = {
   featureGroups: Array<SubscriptionFeatureGroup>;
 };
 
+export type SubscriptionPlansResponse = {
+  __typename?: 'SubscriptionPlansResponse';
+  plans: Array<SubscriptionPlan>;
+  couponCode?: Maybe<Scalars['String']>;
+};
+
 export type SystemStatus = {
   __typename?: 'SystemStatus';
   type?: Maybe<Status>;
@@ -2304,6 +2310,8 @@ export type User = {
   mainAccount?: Maybe<Account>;
   /** The plans a user has subscribed to */
   subscriptions: Array<UserSubscription>;
+  /** The available subscription plans */
+  subscriptionPlans: SubscriptionPlansResponse;
   /** The state of banners in mobile or web app for the user */
   banners?: Maybe<Array<Banner>>;
   /** Bookkeeping partners information for user */
@@ -2349,6 +2357,11 @@ export type UserInvoiceArgs = {
 
 export type UserClientArgs = {
   id: Scalars['String'];
+};
+
+
+export type UserSubscriptionPlansArgs = {
+  couponCode?: Maybe<Scalars['String']>;
 };
 
 

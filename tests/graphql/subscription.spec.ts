@@ -39,6 +39,7 @@ describe("Subscription", () => {
         const couponCode = "free100";
         const plans = [
           {
+            type: "BASIC",
             title: "Free",
             description: "All-round business banking with virtual card",
             button: "Open Free",
@@ -64,7 +65,10 @@ describe("Subscription", () => {
           .stub(client.graphQL, "rawQuery")
           .resolves({
             viewer: {
-              availablePlans: plans,
+              subscriptionPlans: {
+                plans,
+                couponCode: "someOtherCode",
+              },
             },
           } as any);
 
@@ -73,28 +77,10 @@ describe("Subscription", () => {
 
         // assert
         sinon.assert.calledOnce(spyOnRawQuery);
-        expect(result).to.deep.eq(plans);
-      });
-    });
-
-    describe("when there are no plans", () => {
-      it("should call rawQuery and return empty array", async () => {
-        // arrange
-        const subscription = new Subscription(client.graphQL);
-        const spyOnRawQuery = sandbox
-          .stub(client.graphQL, "rawQuery")
-          .resolves({
-            viewer: {
-              availablePlans: null,
-            },
-          } as any);
-
-        // act
-        const result = await subscription.fetch();
-
-        // assert
-        sinon.assert.calledOnce(spyOnRawQuery);
-        expect(result).to.deep.eq([]);
+        expect(result).to.deep.eq({
+          plans,
+          couponCode: "someOtherCode",
+        });
       });
     });
   });
@@ -133,7 +119,7 @@ describe("Subscription", () => {
           {
             type: "accounting",
             state: "processed",
-          }
+          },
         ];
         const subscription = new Subscription(client.graphQL);
         const spyOnRawQuery = sandbox
@@ -183,13 +169,11 @@ describe("Subscription", () => {
       const subscriptionResult = {
         type: "accounting",
         state: "processed",
-      }
+      };
       const subscription = new Subscription(client.graphQL);
-      const spyOnRawQuery = sandbox
-        .stub(client.graphQL, "rawQuery")
-        .resolves({
-          subscribeToPlan: subscriptionResult
-        } as any);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        subscribeToPlan: subscriptionResult,
+      } as any);
 
       // act
       const result = await subscription.makePurchase(type, couponCode);

@@ -1,10 +1,10 @@
 import { GraphQLClient } from "./client";
 import {
   MutationUpdateSubscriptionPlanArgs,
-  SubscriptionPlan,
   PurchaseType,
   UpdateSubscriptionPlanResult,
   UserSubscription,
+  SubscriptionPlansResponse,
 } from "./schema";
 
 const UPDATE_PLAN = `mutation updatePlan(
@@ -23,22 +23,24 @@ const UPDATE_PLAN = `mutation updatePlan(
 
 const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
   viewer {
-    availablePlans (couponCode: $couponCode) {
-      type
-      subtitle
-      fee {
-        amount
-        fullAmount
-        discountPercentage
-      }
-      title
-      description
-      button
-      featuresToggleLabel
-      featureGroups {
+    subscriptionPlans (couponCode: $couponCode) {
+      couponCode
+      plans {
+        type
         title
-        features {
+        description
+        button
+        featuresToggleLabel
+        featureGroups {
           title
+          features {
+            title
+          }
+        }
+        fee {
+          amount
+          fullAmount
+          discountPercentage
         }
       }
     }
@@ -70,9 +72,11 @@ export class Subscription {
    * @param couponCode  coupon code
    * @returns     list of plans
    */
-  public async fetch(couponCode?: string): Promise<SubscriptionPlan[]> {
+  public async fetch(
+    couponCode?: string
+  ): Promise<SubscriptionPlansResponse | undefined> {
     const result = await this.client.rawQuery(FETCH_PLANS, { couponCode });
-    return result.viewer?.availablePlans ?? [];
+    return result.viewer?.subscriptionPlans;
   }
 
   /**
