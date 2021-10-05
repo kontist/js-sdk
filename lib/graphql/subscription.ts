@@ -35,14 +35,8 @@ const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
       featuresToggleLabel
       featureGroups {
         title
-        icon {
-          uri
-        }
         features {
           title
-          icon {
-            uri
-          }
         }
       }
     }
