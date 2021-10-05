@@ -1,6 +1,7 @@
 import { GraphQLClient } from "./client";
 import {
   MutationUpdateSubscriptionPlanArgs,
+  SubscriptionPlan,
   UpdateSubscriptionPlanResult,
 } from "./schema";
 
@@ -18,8 +19,49 @@ const UPDATE_PLAN = `mutation updatePlan(
   }
 }`;
 
+const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
+  viewer {
+    availablePlans (couponCode: $couponCode) {
+      type
+      subtitle
+      fee {
+        amount
+        fullAmount
+        discountPercentage
+      }
+      title
+      description
+      button
+      featuresToggleLabel
+      featureGroups {
+        title
+        icon {
+          uri
+        }
+        features {
+          title
+          icon {
+            uri
+          }
+        }
+      }
+    }
+  }
+}`;
+
 export class Subscription {
   constructor(protected client: GraphQLClient) {}
+
+  /**
+   * Fetches all available subscription plans for user
+   *
+   * @param couponCode  coupon code
+   * @returns     list of plans
+   */
+  public async fetch(couponCode?: string): Promise<SubscriptionPlan[]> {
+    const result = await this.client.rawQuery(FETCH_PLANS, { couponCode });
+    return result.viewer?.availablePlans ?? [];
+  }
 
   /**
    * Updates subscription plan

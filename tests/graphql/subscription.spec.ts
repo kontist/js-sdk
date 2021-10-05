@@ -29,6 +29,46 @@ describe("Subscription", () => {
     sandbox.restore();
   });
 
+  describe("#fetch", () => {
+    it("should call rawQuery and return results", async () => {
+      // arrange
+      const couponCode = "free100";
+      const plans = [{
+        title: "Free",
+        description: "All-round business banking with virtual card",
+        button: "Open Free",
+        featuresToggleLabel: "All Kontist Free features",
+        featureGroups: [
+          {
+            title: null,
+            features: [
+              { title: "Unlimited SEPA transfers" },
+              { title: "Virtual Card" },
+            ],
+          },
+        ],
+        fee: {
+          amount: 0,
+          fullAmount: null,
+          discountPercentage: null,
+        },
+      }];
+      const subscription = new Subscription(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          availablePlans: plans
+        },
+      } as any);
+
+      // act
+      const result = await subscription.fetch(couponCode);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(plans);
+    });
+  });
+
   describe("#updatePlan", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
