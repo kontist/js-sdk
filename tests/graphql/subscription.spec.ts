@@ -3,7 +3,10 @@ import * as sinon from "sinon";
 
 import { Client } from "../../lib";
 import { Subscription } from "../../lib/graphql/subscription";
-import { PurchaseType, UpdateSubscriptionPlanResult } from "../../lib/graphql/schema";
+import {
+  PurchaseType,
+  UpdateSubscriptionPlanResult,
+} from "../../lib/graphql/schema";
 
 describe("Subscription", () => {
   let sandbox: sinon.SinonSandbox;
@@ -29,6 +32,59 @@ describe("Subscription", () => {
     sandbox.restore();
   });
 
+  describe("#fetch", () => {
+    describe("when there are plans", () => {
+      it("should call rawQuery and return results", async () => {
+        // arrange
+        const couponCode = "free100";
+        const plans = [
+          {
+            type: "BASIC",
+            title: "Free",
+            description: "All-round business banking with virtual card",
+            button: "Open Free",
+            featuresToggleLabel: "All Kontist Free features",
+            featureGroups: [
+              {
+                title: null,
+                features: [
+                  { title: "Unlimited SEPA transfers" },
+                  { title: "Virtual Card" },
+                ],
+              },
+            ],
+            fee: {
+              amount: 0,
+              fullAmount: null,
+              discountPercentage: null,
+            },
+          },
+        ];
+        const subscription = new Subscription(client.graphQL);
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              subscriptionPlans: {
+                plans,
+                couponCode: "someOtherCode",
+              },
+            },
+          } as any);
+
+        // act
+        const result = await subscription.fetch(couponCode);
+
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(result).to.deep.eq({
+          plans,
+          couponCode: "someOtherCode",
+        });
+      });
+    });
+  });
+
   describe("#updatePlan", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
@@ -52,6 +108,79 @@ describe("Subscription", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(updateSubscriptionPlanData);
+    });
+  });
+
+  describe("#fetchPurchases", () => {
+    describe("when user is subscribed to plan", () => {
+      it("should call rawQuery and return results", async () => {
+        // arrange
+        const plans = [
+          {
+            type: "accounting",
+            state: "processed",
+          },
+        ];
+        const subscription = new Subscription(client.graphQL);
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              subscriptions: plans,
+            },
+          } as any);
+
+        // act
+        const result = await subscription.fetchPurchases();
+
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(result).to.deep.eq(plans);
+      });
+    });
+
+    describe("when use is not subscribed to any plan", () => {
+      it("should call rawQuery and return empty array", async () => {
+        // arrange
+        const subscription = new Subscription(client.graphQL);
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              subscriptions: null,
+            },
+          } as any);
+
+        // act
+        const result = await subscription.fetchPurchases();
+
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(result).to.deep.eq([]);
+      });
+    });
+  });
+
+  describe("#makePurchase", () => {
+    it("should call rawQuery and return results", async () => {
+      // arrange
+      const couponCode = "lexoffice100";
+      const type = PurchaseType.Accounting;
+      const subscriptionResult = {
+        type: "accounting",
+        state: "processed",
+      };
+      const subscription = new Subscription(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        subscribeToPlan: subscriptionResult,
+      } as any);
+
+      // act
+      const result = await subscription.makePurchase(type, couponCode);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(subscriptionResult);
     });
   });
 });
