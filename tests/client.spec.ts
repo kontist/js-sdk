@@ -41,6 +41,7 @@ describe("Client", () => {
         subscription: {} as any,
         changeRequest: {} as any,
         declaration: {} as any,
+        document: {} as any,
       };
 
       // act
