@@ -884,6 +884,8 @@ export type Mutation = {
   updateUserTaxDetails: MutationResult;
   /** Updates document meta */
   updateDocument: Document;
+  /** Deletes document */
+  deleteDocument: MutationResult;
   /** Create a new identification if applicable */
   requestIdentification: IdentificationDetails;
   /** Update user signup information */
@@ -1161,6 +1163,11 @@ export type MutationUpdateUserTaxDetailsArgs = {
 export type MutationUpdateDocumentArgs = {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationDeleteDocumentArgs = {
+  id: Scalars['ID'];
 };
 
 

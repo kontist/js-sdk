@@ -1,9 +1,7 @@
 import { GraphQLClient } from "./client";
 
 import {
-  Query,
   Document as DocumentModel,
-  Mutation,
   MutationUpdateDocumentArgs,
 } from "./schema";
 
@@ -39,18 +37,31 @@ const UPDATE_DOCUMENT = `
   }
 `;
 
+const DELETE_DOCUMENT = `
+  mutation($id: ID!) {
+    deleteDocument(id: $id) {
+      success
+    }
+  }
+`;
+
 export class Document {
   constructor(protected client: GraphQLClient) {}
 
   public async fetch(): Promise<DocumentModel[]> {
-    const result: Query = await this.client.rawQuery(FETCH_DOCUMENTS);
+    const result = await this.client.rawQuery(FETCH_DOCUMENTS);
     return result.viewer?.documents ?? [];
   }
 
   public async update(
     args: MutationUpdateDocumentArgs
   ): Promise<DocumentModel> {
-    const result: Mutation = await this.client.rawQuery(UPDATE_DOCUMENT, args);
+    const result = await this.client.rawQuery(UPDATE_DOCUMENT, args);
     return result.updateDocument;
+  }
+
+  public async delete(id: string): Promise<boolean> {
+    const result = await this.client.rawQuery(DELETE_DOCUMENT, { id });
+    return result.deleteDocument.success;
   }
 }
