@@ -38,7 +38,8 @@ describe("Document", () => {
       const response: DocumentModel[] = [
         {
           id: "1",
-          name: "test.jpg",
+          name: "test",
+          type: "jpg",
           note: null,
           createdAt: "2021-07-01",
           url: "http://url.com",
@@ -62,12 +63,13 @@ describe("Document", () => {
   describe("#update", () => {
     it("should call rawQuery and return updated document", async () => {
       const id = "1";
-      const name = "newName.jpg";
+      const name = "newName";
 
       // arrange
       const response: DocumentModel = {
         id,
         name,
+        type: "jpg",
         note: null,
         createdAt: "2021-07-01",
         url: "http://url.com",

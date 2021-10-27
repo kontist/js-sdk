@@ -8,6 +8,7 @@ import {
 const DOCUMENT_FIELDS = `
 id
 name
+type
 url
 note
 createdAt

@@ -545,6 +545,7 @@ export type Document = {
   __typename?: 'Document';
   id: Scalars['ID'];
   name: Scalars['String'];
+  type: Scalars['String'];
   note?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   url: Scalars['String'];
