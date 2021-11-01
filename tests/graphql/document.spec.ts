@@ -58,6 +58,43 @@ describe("Document", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(response);
     });
+
+    describe("when called with custom set of fields", () => {
+      it("should call rawQuery and return documents array", async () => {
+        // arrange
+        const response: DocumentModel[] = [
+          {
+            id: "1",
+            name: "test",
+            type: "jpg",
+            note: null,
+            createdAt: "2021-07-01",
+            url: "http://url.com",
+          },
+        ];
+        const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+          viewer: {
+            documents: response,
+          },
+        } as any);
+  
+        // act
+        const result = await document.fetch(["id"]);
+  
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+        expect(spyOnRawQuery.getCall(0).args[0]).equals(`
+  query {
+    viewer {
+      documents {
+        id
+      }
+    }
+  }
+`);
+        expect(result).to.deep.eq(response);
+      });
+    })
   });
 
   describe("#update", () => {
