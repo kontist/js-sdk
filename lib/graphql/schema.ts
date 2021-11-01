@@ -541,6 +541,16 @@ export type Discount = {
   description?: Maybe<Scalars['String']>;
 };
 
+export type Document = {
+  __typename?: 'Document';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  note?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  url: Scalars['String'];
+};
+
 export enum DocumentType {
   Voucher = 'VOUCHER',
   Invoice = 'INVOICE'
@@ -873,6 +883,10 @@ export type Mutation = {
   connectIntegration: MutationResult;
   /** Update user's tax details */
   updateUserTaxDetails: MutationResult;
+  /** Updates document meta */
+  updateDocument: Document;
+  /** Deletes document */
+  deleteDocument: MutationResult;
   /** Create a new identification if applicable */
   requestIdentification: IdentificationDetails;
   /** Update user signup information */
@@ -1144,6 +1158,17 @@ export type MutationConnectIntegrationArgs = {
 
 export type MutationUpdateUserTaxDetailsArgs = {
   payload: UserTaxDetailsInput;
+};
+
+
+export type MutationUpdateDocumentArgs = {
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationDeleteDocumentArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -2322,6 +2347,8 @@ export type User = {
   taxDetails: UserTaxDetails;
   /** Active user features */
   features: Array<Scalars['String']>;
+  /** User's documents */
+  documents: Array<Document>;
   /** Referral details for user */
   referral: ReferralDetails;
   /** IDNow identification details for user */
