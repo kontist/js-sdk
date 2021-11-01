@@ -5,6 +5,8 @@ import {
   MutationUpdateDocumentArgs,
 } from "./schema";
 
+type DocumentProps = keyof DocumentModel;
+
 const DEFAULT_DOCUMENT_FIELDS = [
   "id",
   "name",
@@ -13,8 +15,6 @@ const DEFAULT_DOCUMENT_FIELDS = [
   "note",
   "createdAt",
 ] as DocumentProps[];
-
-type DocumentProps = keyof DocumentModel;
 
 const FETCH_DOCUMENTS_QUERY = (fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS) => `
   query {
