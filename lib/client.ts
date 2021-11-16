@@ -15,6 +15,7 @@ export class Client<T extends Partial<ClientOpts> = ClientOpts> {
       auth,
       endpoint: `${baseUrl}/api/graphql`,
       subscriptionEndpoint: `${baseSubscriptionUrl}/api/graphql`,
+      platform: opts.platform,
     }),
     public models = getModels(graphQL),
   ) { }

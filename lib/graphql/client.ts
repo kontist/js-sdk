@@ -29,9 +29,10 @@ export class GraphQLClient {
   private subscriptionId: number = 0;
   private createClient = createClient;
 
-  constructor({ auth, endpoint, subscriptionEndpoint }: GraphQLClientOpts) {
+  constructor({ auth, endpoint, subscriptionEndpoint, platform }: GraphQLClientOpts) {
     this.auth = auth;
-    this.client = new GQLClient(endpoint);
+    const options = platform ? { headers: { "x-platform": platform } } : undefined
+    this.client = new GQLClient(endpoint, options);
     this.subscriptionEndpoint = subscriptionEndpoint;
   }
 

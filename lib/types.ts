@@ -12,10 +12,13 @@ export enum HttpMethod {
   DELETE = "DELETE",
 }
 
+export type Platform = "mobile" | "web";
+
 export type GraphQLClientOpts = {
   endpoint: string;
   subscriptionEndpoint: string;
   auth?: Auth;
+  platform?: Platform;
 };
 
 export type ClientOpts = {
@@ -28,6 +31,7 @@ export type ClientOpts = {
   scopes: string[];
   state?: string;
   verifier?: string;
+  platform?: Platform;
 };
 
 export type TokenManagerOpts = {
