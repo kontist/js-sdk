@@ -12,7 +12,7 @@ export enum HttpMethod {
   DELETE = "DELETE",
 }
 
-export type Platform = "mobile" | "web";
+export type Platform = "mobile" | "web" | "giovanni" | "backoffice";
 
 export type GraphQLClientOpts = {
   endpoint: string;
