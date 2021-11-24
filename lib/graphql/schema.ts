@@ -891,6 +891,7 @@ export type Mutation = {
   requestIdentification: IdentificationDetails;
   /** Update user signup information */
   updateUserSignupInformation: MutationResult;
+  createUserEmailAlias: MutationResult;
   /** Create a new user */
   createUser: PublicMutationResult;
   /** Update the push-notifications a user should receive */
@@ -1174,6 +1175,12 @@ export type MutationDeleteDocumentArgs = {
 
 export type MutationUpdateUserSignupInformationArgs = {
   payload: UserUpdateInput;
+};
+
+
+export type MutationCreateUserEmailAliasArgs = {
+  hash: Scalars['String'];
+  alias: Scalars['String'];
 };
 
 
