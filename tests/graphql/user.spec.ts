@@ -64,4 +64,22 @@ describe("User", () => {
     });
 
   });
+
+  describe("#createEmailAlias", () => {
+    it("should call rawQuery and return success", async () => {
+      // arrange
+      const alias = "tester@kontist.com";
+      const hash = "12345678";
+      const user = new User(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ createUserEmailAlias: { success: true } } as any);
+
+      // act
+      const result = await user.createEmailAlias(alias, hash);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(true);
+    });
+
+  });
 });

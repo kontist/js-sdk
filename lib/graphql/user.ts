@@ -38,6 +38,12 @@ const GET_USER = `query {
   }
 }`;
 
+const CREATE_ALIAS = `mutation($alias: String!, $hash: String!) {
+  createUserEmailAlias(alias: $alias, hash: $hash) {
+    success
+  }
+}`;
+
 export class User extends Model<UserModel> {
   public async fetch(): Promise<ResultPage<UserModel>> {
     throw new KontistSDKError({ message: "You are allowed only to fetch your details." });
@@ -51,5 +57,15 @@ export class User extends Model<UserModel> {
   public async get(): Promise<UserModel | undefined | null> {
     const result: Query = await this.client.rawQuery(GET_USER);
     return result.viewer;
+  }
+
+  /**
+   * Creates an email alias
+   *
+   * @returns boolean success value
+   */
+  public async createEmailAlias(alias: string, hash: string): Promise<boolean> {
+    const result = await this.client.rawQuery(CREATE_ALIAS, { alias, hash });
+    return result.createUserEmailAlias.success;
   }
 }
