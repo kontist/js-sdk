@@ -515,7 +515,8 @@ export type DeclarationStats = {
 };
 
 export enum DeclarationType {
-  UStVa = 'UStVA'
+  UStVa = 'UStVA',
+  Euer = 'EUER'
 }
 
 export type DependentsTaxIds = {
@@ -2033,7 +2034,7 @@ export type TransactionForAccountingView = {
   __typename?: 'TransactionForAccountingView';
   id: Scalars['ID'];
   amount: Scalars['Int'];
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   purpose?: Maybe<Scalars['String']>;
   valutaDate: Scalars['DateTime'];
   selectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -2045,8 +2046,10 @@ export type TransactionForAccountingView = {
 };
 
 export enum TransactionProjectionType {
-  CreditPresentment = 'CREDIT_PRESENTMENT',
+  CardUsage = 'CARD_USAGE',
+  Atm = 'ATM',
   CashManual = 'CASH_MANUAL',
+  CreditPresentment = 'CREDIT_PRESENTMENT',
   CashAtmReversal = 'CASH_ATM_REVERSAL',
   CashManualReversal = 'CASH_MANUAL_REVERSAL',
   PurchaseReversal = 'PURCHASE_REVERSAL',
@@ -2054,9 +2057,7 @@ export enum TransactionProjectionType {
   ForcePostTransaction = 'FORCE_POST_TRANSACTION',
   DebitPresentment = 'DEBIT_PRESENTMENT',
   DisputeTransaction = 'DISPUTE_TRANSACTION',
-  Atm = 'ATM',
   CancelManualLoad = 'CANCEL_MANUAL_LOAD',
-  CardUsage = 'CARD_USAGE',
   DirectDebitAutomaticTopup = 'DIRECT_DEBIT_AUTOMATIC_TOPUP',
   DirectDebitReturn = 'DIRECT_DEBIT_RETURN',
   DisputeClearing = 'DISPUTE_CLEARING',
@@ -2099,7 +2100,8 @@ export enum TransactionProjectionType {
   InterestExcessDeposit = 'InterestExcessDeposit',
   InterestOverdraft = 'InterestOverdraft',
   InterestOverdraftExceeded = 'InterestOverdraftExceeded',
-  ReimbursementCustomer = 'ReimbursementCustomer'
+  ReimbursementCustomer = 'ReimbursementCustomer',
+  ExternalTransaction = 'EXTERNAL_TRANSACTION'
 }
 
 export type TransactionSplit = {
@@ -2182,7 +2184,8 @@ export type TransferSuggestion = {
 export enum TransferType {
   SepaTransfer = 'SEPA_TRANSFER',
   StandingOrder = 'STANDING_ORDER',
-  TimedOrder = 'TIMED_ORDER'
+  TimedOrder = 'TIMED_ORDER',
+  VirtualBooking = 'VIRTUAL_BOOKING'
 }
 
 export type TransfersConnection = {
