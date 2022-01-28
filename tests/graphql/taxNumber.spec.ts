@@ -39,6 +39,7 @@ describe("TaxNumber", () => {
 
   describe("#fetch", () => {
     it("should call rawQuery and return all tax numbers details", async () => {
+      // arrange
       const taxNumbersData = [
         taxNumberData,
         { ... taxNumberData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
@@ -53,8 +54,10 @@ describe("TaxNumber", () => {
         }
       } as any);
       
+      // act
       const result = await taxNumber.fetch();
 
+      // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq({
         items: taxNumbersData,
@@ -68,11 +71,13 @@ describe("TaxNumber", () => {
 
   describe("#create", () => {
     it("should call rawQuery and return newly created tax number details", async () => {
+      // arrange
       const taxNumber = new TaxNumber(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         createTaxNumber: taxNumberData,
       } as any);
 
+      // act
       const result = await taxNumber.create({
         payload: {
           type: TaxNumberType.Personal,
@@ -82,13 +87,15 @@ describe("TaxNumber", () => {
         }
       });
 
+      // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(taxNumberData);
     });
   });
 
   describe("#update", () => {
-    it("should call rawQuery and return updated tax number details", async () => {
+    it("should call rawQuery and return the updated tax number details", async () => {
+      // arrange
       const updatedTaxNumberData = {
         ...taxNumberData,
         taxNumber: "5600081508154",
@@ -100,6 +107,7 @@ describe("TaxNumber", () => {
         updateTaxNumber: updatedTaxNumberData,
       } as any);
       
+      // act
       const result = await taxNumber.update({
         id: taxNumberData.id,
         payload: {
@@ -109,6 +117,7 @@ describe("TaxNumber", () => {
         }
       });
 
+      // result
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(updatedTaxNumberData);
     });

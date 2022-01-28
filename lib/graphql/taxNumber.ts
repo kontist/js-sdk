@@ -81,7 +81,7 @@ export class TaxNumber extends Model<TaxNumberModel | null> {
   }
 
   /**
-   * Create a tax number
+   * Creates a tax number
    *
    * @param args query parameters
    * @returns the newly created tax number
@@ -92,7 +92,7 @@ export class TaxNumber extends Model<TaxNumberModel | null> {
   }
 
   /**
-   * Update a tax number
+   * Updates a tax number
    * @param args query parameter including tax number ID
    * @returns update tax number details
    */
@@ -102,7 +102,7 @@ export class TaxNumber extends Model<TaxNumberModel | null> {
   }
 
   /**
-   * Delete a tax number
+   * Deletes a tax number
    *
    * @param args tax number ID
    * @returns a MutationResult
