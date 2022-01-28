@@ -42,14 +42,14 @@ describe("TaxNumber", () => {
       // arrange
       const taxNumbersData = [
         taxNumberData,
-        { ... taxNumberData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
+        { ...taxNumberData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
       ];
       const taxNumber = new TaxNumber(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           taxNumbers: [
             taxNumberData,
-            { ... taxNumberData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
+            { ...taxNumberData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
           ],
         }
       } as any);
