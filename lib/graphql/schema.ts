@@ -431,6 +431,13 @@ export type CreateSepaTransferInput = {
   e2eId?: Maybe<Scalars['String']>;
 };
 
+export type CreateTaxNumberInput = {
+  taxNumber: Scalars['String'];
+  type: TaxNumberType;
+  description: Scalars['String'];
+  modificationDate?: Maybe<Scalars['DateTime']>;
+};
+
 export type CreateTransactionSplitsInput = {
   amount: Scalars['Int'];
   category: TransactionCategory;
@@ -921,6 +928,12 @@ export type Mutation = {
   categorizeTransactionForDeclaration: CategorizeTransactionForDeclarationResponse;
   /** Submits UStVA declaration */
   submitDeclaration: Declaration;
+  /** Updates user's taxNumber */
+  updateTaxNumber: TaxNumber;
+  /** Create user's taxNumber */
+  createTaxNumber: TaxNumber;
+  /** Delete user's taxNumber */
+  deleteTaxNumber: MutationResult;
 };
 
 
@@ -1266,6 +1279,22 @@ export type MutationCategorizeTransactionForDeclarationArgs = {
 export type MutationSubmitDeclarationArgs = {
   year: Scalars['Int'];
   period: Scalars['String'];
+};
+
+
+export type MutationUpdateTaxNumberArgs = {
+  payload: UpdateTaxNumberInput;
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateTaxNumberArgs = {
+  payload: CreateTaxNumberInput;
+};
+
+
+export type MutationDeleteTaxNumberArgs = {
+  id: Scalars['ID'];
 };
 
 export type MutationResult = {
@@ -1809,6 +1838,21 @@ export type SystemStatus = {
   message?: Maybe<Scalars['String']>;
 };
 
+/** Tax numbers of users */
+export type TaxNumber = {
+  __typename?: 'TaxNumber';
+  id: Scalars['ID'];
+  taxNumber: Scalars['String'];
+  type: TaxNumberType;
+  description: Scalars['String'];
+  modificationDate?: Maybe<Scalars['DateTime']>;
+};
+
+export enum TaxNumberType {
+  Personal = 'PERSONAL',
+  Business = 'BUSINESS'
+}
+
 export enum TaxPaymentFrequency {
   Quarterly = 'QUARTERLY'
 }
@@ -2034,7 +2078,7 @@ export type TransactionForAccountingView = {
   __typename?: 'TransactionForAccountingView';
   id: Scalars['ID'];
   amount: Scalars['Int'];
-  name?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
   purpose?: Maybe<Scalars['String']>;
   valutaDate: Scalars['DateTime'];
   selectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -2100,8 +2144,7 @@ export enum TransactionProjectionType {
   InterestExcessDeposit = 'InterestExcessDeposit',
   InterestOverdraft = 'InterestOverdraft',
   InterestOverdraftExceeded = 'InterestOverdraftExceeded',
-  ReimbursementCustomer = 'ReimbursementCustomer',
-  ExternalTransaction = 'EXTERNAL_TRANSACTION'
+  ReimbursementCustomer = 'ReimbursementCustomer'
 }
 
 export type TransactionSplit = {
@@ -2236,6 +2279,13 @@ export type UpdateSubscriptionPlanResult = {
   updateActiveAt: Scalars['String'];
   hasCanceledDowngrade: Scalars['Boolean'];
   couponCode?: Maybe<Scalars['String']>;
+};
+
+export type UpdateTaxNumberInput = {
+  taxNumber: Scalars['String'];
+  type: TaxNumberType;
+  description: Scalars['String'];
+  modificationDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type UpdateTransactionSplitsInput = {
@@ -2378,6 +2428,8 @@ export type User = {
   invoices: InvoicingDashboardData;
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
+  /** User's tax numbers */
+  taxNumbers: Array<TaxNumber>;
 };
 
 
