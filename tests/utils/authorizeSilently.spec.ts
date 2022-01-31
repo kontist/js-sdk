@@ -1,8 +1,9 @@
-import { expect } from "chai";
-import { JSDOM } from "jsdom";
 import * as sinon from "sinon";
+
+import { JSDOM } from "jsdom";
 import { RenewTokenError } from "../../lib/errors";
-import { authorizeSilently } from "../../lib/utils";
+import { authorizeSilently } from "../../lib/utils/authorizeSilently";
+import { expect } from "chai";
 
 describe("authorizeSilently", () => {
   let addEventListenerSpy: any;

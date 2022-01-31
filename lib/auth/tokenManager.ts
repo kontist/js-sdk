@@ -3,9 +3,9 @@ import * as ClientOAuth2 from "client-oauth2";
 import { GetAuthUriOpts, TokenManagerOpts } from "../types";
 import { RenewTokenError, UserUnauthorizedError } from "../errors";
 
-import { authorizeSilently } from "../utils";
 import { btoa } from "abab";
 import { sha256 } from "js-sha256";
+import { utils } from "../utils";
 
 const DEFAULT_TOKEN_REFRESH_TIMEOUT = 10000;
 
@@ -227,7 +227,7 @@ export class TokenManager {
     });
 
     try {
-      const code = await authorizeSilently(iframeUri, this.baseUrl, timeout);
+      const code = await utils.authorizeSilently(iframeUri, this.baseUrl, timeout);
       const fetchTokenUri = `${
         document.location.origin
       }?code=${code}&state=${encodeURIComponent(this.state || "")}`;

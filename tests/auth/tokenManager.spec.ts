@@ -1,10 +1,13 @@
-import { expect } from "chai";
-import ClientOAuth2 = require("client-oauth2");
 import * as sinon from "sinon";
-import { Client, Constants } from "../../lib";
-import * as utils from "../../lib/utils";
 
+import { Client, Constants } from "../../lib";
 import { clientId, createClient, redirectUri } from "../helpers";
+
+import { expect } from "chai";
+import { utils } from "../../lib/utils";
+
+import ClientOAuth2 = require("client-oauth2");
+
 
 describe("Auth: TokenManager", () => {
   const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";

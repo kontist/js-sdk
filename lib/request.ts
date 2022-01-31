@@ -53,8 +53,8 @@ export class HttpRequest {
       return response.json();
     } catch (e) {
       throw new KontistSDKError({
-        message: (e as Error).message,
-        status: 500,
+        message: (e as KontistSDKError).message,
+        status: (e as KontistSDKError).status,
       });
     }
   };
