@@ -21,7 +21,7 @@ describe("rawQuery", () => {
       const client = createClient();
       client.auth.tokenManager.setToken("dummy-access-token");
 
-      let error;
+      let error: any;
       try {
         await client.graphQL.rawQuery(``);
       } catch (err) {

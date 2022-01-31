@@ -1,10 +1,11 @@
-import { btoa } from "abab";
 import * as ClientOAuth2 from "client-oauth2";
-import { sha256 } from "js-sha256";
 
-import { RenewTokenError, UserUnauthorizedError } from "../errors";
 import { GetAuthUriOpts, TokenManagerOpts } from "../types";
+import { RenewTokenError, UserUnauthorizedError } from "../errors";
+
 import { authorizeSilently } from "../utils";
+import { btoa } from "abab";
+import { sha256 } from "js-sha256";
 
 const DEFAULT_TOKEN_REFRESH_TIMEOUT = 10000;
 
@@ -191,7 +192,7 @@ export class TokenManager {
       } catch (error) {
         return reject(
           new RenewTokenError({
-            message: error.message,
+            message: (error as Error).message,
           }),
         );
       }
@@ -235,7 +236,7 @@ export class TokenManager {
       return token;
     } catch (error) {
       throw new RenewTokenError({
-        message: error.message,
+        message: (error as Error).message,
       });
     }
   }

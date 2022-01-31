@@ -1,7 +1,7 @@
+import { FetchOptions } from "./types";
 import { GraphQLClient } from "./client";
 import { IFetch } from "./interfaces";
 import { ResultPage } from "./resultPage";
-import { FetchOptions } from "./types";
 
 export abstract class Model<ModelType, FetchOptionsType = FetchOptions>
   implements IFetch<ModelType, FetchOptionsType> {
@@ -11,7 +11,7 @@ export abstract class Model<ModelType, FetchOptionsType = FetchOptions>
     this.client = graphqlClient;
   }
 
-  public abstract async fetch(
+  public abstract fetch(
     args?: FetchOptionsType,
   ): Promise<ResultPage<ModelType, FetchOptionsType>>;
 }
