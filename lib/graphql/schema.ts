@@ -2078,7 +2078,7 @@ export type TransactionForAccountingView = {
   __typename?: 'TransactionForAccountingView';
   id: Scalars['ID'];
   amount: Scalars['Int'];
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   purpose?: Maybe<Scalars['String']>;
   valutaDate: Scalars['DateTime'];
   selectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -2144,7 +2144,8 @@ export enum TransactionProjectionType {
   InterestExcessDeposit = 'InterestExcessDeposit',
   InterestOverdraft = 'InterestOverdraft',
   InterestOverdraftExceeded = 'InterestOverdraftExceeded',
-  ReimbursementCustomer = 'ReimbursementCustomer'
+  ReimbursementCustomer = 'ReimbursementCustomer',
+  ExternalTransaction = 'EXTERNAL_TRANSACTION'
 }
 
 export type TransactionSplit = {
