@@ -1,11 +1,9 @@
-import { Token } from "client-oauth2";
 import {
   ChallengeDeniedError,
   ChallengeExpiredError,
   KontistSDKError,
   MFAConfirmationCanceledError,
 } from "../errors";
-import { HttpRequest } from "../request";
 import {
   HttpMethod,
   MfaResult,
@@ -13,6 +11,9 @@ import {
   PushChallengeStatus,
   TimeoutID,
 } from "../types";
+
+import { HttpRequest } from "../request";
+import { Token } from "client-oauth2";
 import { TokenManager } from "./tokenManager";
 
 export const PUSH_CHALLENGE_PATH = "/api/user/mfa/challenges";
@@ -76,7 +77,7 @@ export class PushNotificationMFA {
         HttpMethod.GET,
       );
     } catch (error) {
-      return reject(error);
+      return reject(error as Error);
     }
 
     this.rejectConfirmation = null;

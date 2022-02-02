@@ -1,8 +1,8 @@
-import { expect } from "chai";
 import * as sinon from "sinon";
-import { ClientOpts } from "../../lib/types";
 
+import { ClientOpts } from "../../lib/types";
 import { createClient } from "../helpers";
+import { expect } from "chai";
 
 describe("Auth", () => {
   const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
@@ -20,7 +20,7 @@ describe("Auth", () => {
   describe("#constructor", () => {
     describe("when both code verifier and code secret are provided", () => {
       it("should throw an error", () => {
-        let error;
+        let error: any;
         try {
           createClient({ verifier, clientSecret });
         } catch (err) {
@@ -35,7 +35,7 @@ describe("Auth", () => {
 
     describe("when code verifier is provided but state or redirectUri are missing", () => {
       const assertMissingOptionError = (option: keyof ClientOpts) => {
-        let error;
+        let error: any;
         try {
           createClient({ verifier, [option]: undefined });
         } catch (err) {

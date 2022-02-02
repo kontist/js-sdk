@@ -1,9 +1,9 @@
-import { expect } from "chai";
 import * as sinon from "sinon";
 
 import { Client } from "../../lib";
 import { KontistSDKError } from "../../lib/errors";
 import { User } from "../../lib/graphql/user";
+import { expect } from "chai";
 
 describe("User", () => {
   let sandbox: sinon.SinonSandbox;
@@ -35,7 +35,7 @@ describe("User", () => {
       const user = new User(client.graphQL);
 
       // act
-      let error;
+      let error: any;
       try {
         await user.fetch();
       } catch (e) {

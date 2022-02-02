@@ -3,6 +3,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: "./dist/lib/index.js",
+  mode: "production",
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },

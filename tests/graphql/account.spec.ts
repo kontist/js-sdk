@@ -1,9 +1,9 @@
-import { expect } from "chai";
 import * as sinon from "sinon";
 
+import { Account } from "../../lib/graphql/account";
 import { Client } from "../../lib";
 import { KontistSDKError } from "../../lib/errors";
-import { Account } from "../../lib/graphql/account";
+import { expect } from "chai";
 
 const accountStatsData = {
   accountBalance: 1378096,
@@ -49,7 +49,7 @@ describe("Account", () => {
       const account = new Account(client.graphQL);
 
       // act
-      let error;
+      let error: any;
       try {
         await account.fetch();
       } catch (e) {

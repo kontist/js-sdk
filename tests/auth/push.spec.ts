@@ -1,10 +1,11 @@
-import { expect } from "chai";
 import * as moment from "moment";
 import * as sinon from "sinon";
-import { PUSH_CHALLENGE_PATH } from "../../lib/auth/push";
+
 import { HttpMethod, PushChallengeStatus } from "../../lib/types";
 
+import { PUSH_CHALLENGE_PATH } from "../../lib/auth/push";
 import { createClient } from "../helpers";
+import { expect } from "chai";
 
 interface TokenResponse {
   confirmedAccessToken?: string;
@@ -109,7 +110,7 @@ describe("Auth: PushNotificationMFA", () => {
         const { requestStub, client } = setup({
           status: PushChallengeStatus.DENIED,
         });
-        let error;
+        let error: any;
 
         try {
           await client.auth.push.getConfirmedToken();
@@ -130,7 +131,7 @@ describe("Auth: PushNotificationMFA", () => {
         const { requestStub, client } = setup({
           expiresAt: moment().subtract(2, "minutes"),
         });
-        let error;
+        let error: any;
 
         try {
           await client.auth.push.getConfirmedToken();
@@ -159,7 +160,7 @@ describe("Auth: PushNotificationMFA", () => {
         });
       const clearTimeoutSpy = sinon.spy(global, "clearTimeout");
 
-      let error;
+      let error: any;
       try {
         setTimeout(() => {
           client.auth.push.cancelConfirmation();

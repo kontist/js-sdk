@@ -1,8 +1,8 @@
-import fetch from 'cross-fetch';
-
-import { TokenManager } from "./auth/tokenManager";
 import { KontistSDKError, UserUnauthorizedError } from "./errors";
+
 import { HttpMethod } from "./types";
+import { TokenManager } from "./auth/tokenManager";
+import fetch from 'cross-fetch';
 
 const HTTP_STATUS_NO_CONTENT = 204;
 
@@ -53,8 +53,8 @@ export class HttpRequest {
       return response.json();
     } catch (e) {
       throw new KontistSDKError({
-        message: e.message,
-        status: e.status,
+        message: (e as KontistSDKError).message,
+        status: (e as KontistSDKError).status,
       });
     }
   };

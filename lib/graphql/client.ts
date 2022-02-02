@@ -63,7 +63,7 @@ export class GraphQLClient {
       const { data } = await this.client.rawRequest(query, variables);
       return data;
     } catch (error) {
-      throw new GraphQLError(serializeGraphQLError(error));
+      throw new GraphQLError(serializeGraphQLError(error as any));
     }
   }
 

@@ -1,11 +1,12 @@
-import { expect } from "chai";
-import * as sinon from "sinon";
 import * as crossFetch from 'cross-fetch';
+import * as sinon from "sinon";
 
-import { TokenManager } from "../lib/auth/tokenManager";
 import { KontistSDKError, UserUnauthorizedError } from "../lib/errors";
-import { HttpRequest } from "../lib/request";
+
 import { HttpMethod } from "../lib/types";
+import { HttpRequest } from "../lib/request";
+import { TokenManager } from "../lib/auth/tokenManager";
+import { expect } from "chai";
 
 describe("HttpRequest", () => {
   let sandbox: sinon.SinonSandbox;
@@ -55,7 +56,7 @@ describe("HttpRequest", () => {
       } as Response);
 
       // act
-      let error;
+      let error: any;
       try {
         await request.fetch("", HttpMethod.POST);
       } catch (e) {

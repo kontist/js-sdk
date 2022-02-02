@@ -1,10 +1,11 @@
-import { btoa } from "abab";
 import * as ClientOAuth2 from "client-oauth2";
-import { sha256 } from "js-sha256";
 
-import { RenewTokenError, UserUnauthorizedError } from "../errors";
 import { GetAuthUriOpts, TokenManagerOpts } from "../types";
-import { authorizeSilently } from "../utils";
+import { RenewTokenError, UserUnauthorizedError } from "../errors";
+
+import { btoa } from "abab";
+import { sha256 } from "js-sha256";
+import { utils } from "../utils";
 
 const DEFAULT_TOKEN_REFRESH_TIMEOUT = 10000;
 
@@ -191,7 +192,7 @@ export class TokenManager {
       } catch (error) {
         return reject(
           new RenewTokenError({
-            message: error.message,
+            message: (error as Error).message,
           }),
         );
       }
@@ -226,7 +227,7 @@ export class TokenManager {
     });
 
     try {
-      const code = await authorizeSilently(iframeUri, this.baseUrl, timeout);
+      const code = await utils.authorizeSilently(iframeUri, this.baseUrl, timeout);
       const fetchTokenUri = `${
         document.location.origin
       }?code=${code}&state=${encodeURIComponent(this.state || "")}`;
@@ -235,7 +236,7 @@ export class TokenManager {
       return token;
     } catch (error) {
       throw new RenewTokenError({
-        message: error.message,
+        message: (error as Error).message,
       });
     }
   }
