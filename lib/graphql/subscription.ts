@@ -25,6 +25,7 @@ const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
   viewer {
     subscriptionPlans (couponCode: $couponCode) {
       couponCode
+      couponValidFor
       plans {
         type
         title
@@ -40,6 +41,7 @@ const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
         }
         fee {
           amount
+          discountAmount
           fullAmount
           discountPercentage
         }
