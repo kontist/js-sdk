@@ -51,9 +51,9 @@ describe("TaxNumber", () => {
             taxNumberData,
             { ...taxNumberData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
           ],
-        }
+        },
       } as any);
-      
+
       // act
       const result = await taxNumber.fetch();
 
@@ -65,7 +65,7 @@ describe("TaxNumber", () => {
           hasNextPage: false,
           hasPreviousPage: false,
         },
-      });    
+      });
     });
   });
 
@@ -81,10 +81,11 @@ describe("TaxNumber", () => {
       const result = await taxNumber.create({
         payload: {
           type: TaxNumberType.Personal,
+          isMainBusinessTaxNumber: false,
           taxNumber: "2388081508158",
           modificationDate: new Date("2022-01-01"),
           description: "personal tax number",
-        }
+        },
       });
 
       // assert
@@ -106,15 +107,16 @@ describe("TaxNumber", () => {
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         updateTaxNumber: updatedTaxNumberData,
       } as any);
-      
+
       // act
       const result = await taxNumber.update({
         id: taxNumberData.id,
         payload: {
           taxNumber: "5600081508154",
+          isMainBusinessTaxNumber: false,
           type: TaxNumberType.Business,
           description: "updated tax number",
-        }
+        },
       });
 
       // result

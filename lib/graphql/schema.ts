@@ -165,6 +165,7 @@ export type Asset = {
 };
 
 export type AttributionData = {
+  irclickid?: InputMaybe<Scalars['String']>;
   /** Platform used for signup */
   platform?: InputMaybe<Platform>;
   preselected_plan?: InputMaybe<Scalars['String']>;
@@ -434,6 +435,7 @@ export type CreateSepaTransferInput = {
 
 export type CreateTaxNumberInput = {
   description: Scalars['String'];
+  isMainBusinessTaxNumber: Scalars['Boolean'];
   modificationDate?: InputMaybe<Scalars['DateTime']>;
   taxNumber: Scalars['String'];
   type: TaxNumberType;
@@ -475,6 +477,7 @@ export type CreateUserInput = {
   attribution?: InputMaybe<AttributionData>;
   /** User's email. This will be used as their username. */
   email: Scalars['String'];
+  impactAttribution?: InputMaybe<AttributionData>;
   language?: InputMaybe<Scalars['String']>;
   marketingConsentAccepted?: InputMaybe<Scalars['Boolean']>;
   password: Scalars['String'];
@@ -523,6 +526,7 @@ export type DeclarationStats = {
 
 export enum DeclarationType {
   Euer = 'EUER',
+  USt = 'USt',
   UStVa = 'UStVA'
 }
 
@@ -560,6 +564,7 @@ export type Document = {
 };
 
 export enum DocumentType {
+  Expense = 'EXPENSE',
   Invoice = 'INVOICE',
   Voucher = 'VOUCHER'
 }
@@ -800,8 +805,13 @@ export enum MaximumCashTransactionsPercentage {
 
 export type Money = {
   __typename?: 'Money';
+  /** The amount the user pays */
   amount: Scalars['Int'];
+  /** The amount the user saves */
+  discountAmount: Scalars['Int'];
+  /** The amount the user saves in percentage */
   discountPercentage?: Maybe<Scalars['Int']>;
+  /** The amount plus discount amount */
   fullAmount?: Maybe<Scalars['Int']>;
 };
 
@@ -1609,6 +1619,7 @@ export type PageInfo = {
 export enum PaymentFrequency {
   Monthly = 'MONTHLY',
   None = 'NONE',
+  NoneQuarterly = 'NONE_QUARTERLY',
   Quarterly = 'QUARTERLY',
   Yearly = 'YEARLY'
 }
@@ -1829,6 +1840,7 @@ export type SubscriptionPlan = {
 export type SubscriptionPlansResponse = {
   __typename?: 'SubscriptionPlansResponse';
   couponCode?: Maybe<Scalars['String']>;
+  couponValidFor?: Maybe<Array<PurchaseType>>;
   plans: Array<SubscriptionPlan>;
 };
 
@@ -1843,6 +1855,7 @@ export type TaxNumber = {
   __typename?: 'TaxNumber';
   description: Scalars['String'];
   id: Scalars['ID'];
+  isMainBusinessTaxNumber: Scalars['Boolean'];
   modificationDate?: Maybe<Scalars['DateTime']>;
   taxNumber: Scalars['String'];
   type: TaxNumberType;
@@ -1919,6 +1932,7 @@ export type Transaction = {
   /** Date predicted for tax/vat payment/refund predicted category */
   predictedUserSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   purpose?: Maybe<Scalars['String']>;
+  receiptName?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
@@ -2284,6 +2298,7 @@ export type UpdateSubscriptionPlanResult = {
 
 export type UpdateTaxNumberInput = {
   description: Scalars['String'];
+  isMainBusinessTaxNumber: Scalars['Boolean'];
   modificationDate?: InputMaybe<Scalars['DateTime']>;
   taxNumber: Scalars['String'];
   type: TaxNumberType;
@@ -2519,6 +2534,8 @@ export type UserMetadata = {
   currentTermsAccepted: Scalars['Boolean'];
   currentTermsVersion: Scalars['String'];
   directDebitMandateAccepted: Scalars['Boolean'];
+  emailConnections: Array<Scalars['String']>;
+  emailFetchSetupUrl?: Maybe<Scalars['String']>;
   intercomDigest?: Maybe<Scalars['String']>;
   /** Is user's Kontist account closed */
   isAccountClosed: Scalars['Boolean'];
