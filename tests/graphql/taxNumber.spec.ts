@@ -80,6 +80,7 @@ describe("TaxNumber", () => {
       // act
       const result = await taxNumber.create({
         payload: {
+          isMainBusinessTaxNumber: true,
           type: TaxNumberType.Personal,
           taxNumber: "2388081508158",
           modificationDate: new Date("2022-01-01"),
@@ -111,6 +112,7 @@ describe("TaxNumber", () => {
       const result = await taxNumber.update({
         id: taxNumberData.id,
         payload: {
+          isMainBusinessTaxNumber: true,
           taxNumber: "5600081508154",
           type: TaxNumberType.Business,
           description: "updated tax number",
