@@ -1945,6 +1945,7 @@ export type Transaction = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  verified?: Maybe<Scalars['Boolean']>;
 };
 
 
