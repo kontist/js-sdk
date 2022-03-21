@@ -220,6 +220,16 @@ export enum BatchTransferStatus {
   Successful = 'SUCCESSFUL'
 }
 
+/** Business Address of a Kontax User */
+export type BusinessAddress = {
+  __typename?: 'BusinessAddress';
+  city: Scalars['String'];
+  id: Scalars['ID'];
+  movingDate: Scalars['DateTime'];
+  postCode: Scalars['String'];
+  street: Scalars['String'];
+};
+
 export type Card = {
   __typename?: 'Card';
   addedToApplePay: Scalars['Boolean'];
@@ -392,6 +402,13 @@ export type CreateAssetResponse = {
   url: Scalars['String'];
 };
 
+export type CreateBusinessAddressInput = {
+  city: Scalars['String'];
+  movingDate: Scalars['DateTime'];
+  postCode: Scalars['String'];
+  street: Scalars['String'];
+};
+
 /** The available fields to create an OAuth2 client */
 export type CreateClientInput = {
   /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
@@ -414,7 +431,8 @@ export type CreateInvoiceLogoResponse = {
 
 export type CreateReviewResponse = {
   __typename?: 'CreateReviewResponse';
-  id: Scalars['String'];
+  error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Float']>;
 };
 
 /** The available fields to create a SEPA Transfer */
@@ -850,6 +868,8 @@ export type Mutation = {
   confirmTransfers: BatchTransfer;
   /** Connect user to a bookkeeping partner */
   connectIntegration: MutationResult;
+  /** Creates an user's business address */
+  createBusinessAddress: BusinessAddress;
   /** Create a new card */
   createCard: Card;
   /** Create an OAuth2 client */
@@ -1036,6 +1056,11 @@ export type MutationConfirmTransfersArgs = {
 export type MutationConnectIntegrationArgs = {
   authorizationData: Scalars['String'];
   type: IntegrationType;
+};
+
+
+export type MutationCreateBusinessAddressArgs = {
+  payload: CreateBusinessAddressInput;
 };
 
 
@@ -1945,6 +1970,7 @@ export type Transaction = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  verified?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -2345,6 +2371,8 @@ export type User = {
   banners?: Maybe<Array<Banner>>;
   birthDate?: Maybe<Scalars['DateTime']>;
   birthPlace?: Maybe<Scalars['String']>;
+  /** User's business addresses */
+  businessAddresses: Array<BusinessAddress>;
   /** Business description provided by the user */
   businessPurpose?: Maybe<Scalars['String']>;
   businessTradingName?: Maybe<Scalars['String']>;
@@ -2394,6 +2422,8 @@ export type User = {
   /** Indicates whether the user pays taxes in the US */
   isUSPerson?: Maybe<Scalars['Boolean']>;
   language?: Maybe<Scalars['String']>;
+  /** User's last business address before a specific date */
+  lastBusinessAddress: BusinessAddress;
   lastName?: Maybe<Scalars['String']>;
   mainAccount?: Maybe<Account>;
   /** User metadata. These fields are likely to get frequently updated or changed. */
@@ -2477,6 +2507,11 @@ export type UserInvoiceAssetArgs = {
 
 export type UserInvoicesArgs = {
   pageNumber: Scalars['Int'];
+};
+
+
+export type UserLastBusinessAddressArgs = {
+  date: Scalars['DateTime'];
 };
 
 
