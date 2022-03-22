@@ -4,7 +4,6 @@ import {
   BusinessAddress as BusinessAddressModel,
   Query,
   MutationCreateBusinessAddressArgs,
-  UserLastBusinessAddressArgs,
  } from "./schema";
 
 const GET_BUSINESS_ADDRESSES_QUERY = `
@@ -22,9 +21,9 @@ const GET_BUSINESS_ADDRESSES_QUERY = `
 `;
 
 const GET_LAST_BUSINESS_ADDRESS_QUERY = `
-  query($date: DateTime!) {
+  {
     viewer {
-      lastBusinessAddress(date: $date) {
+      lastBusinessAddress {
         id
         street
         postCode
@@ -72,8 +71,8 @@ export class BusinessAddress extends Model<BusinessAddressModel | null> {
    *
    * @returns result page
    */
-  public async lastBusinessAddress(args: UserLastBusinessAddressArgs): Promise<BusinessAddressModel | null> {
-      const result: Query = await this.client.rawQuery(GET_LAST_BUSINESS_ADDRESS_QUERY, args);
+  public async lastBusinessAddress(): Promise<BusinessAddressModel | null> {
+      const result: Query = await this.client.rawQuery(GET_LAST_BUSINESS_ADDRESS_QUERY);
       const businessAddress = result.viewer?.lastBusinessAddress ?? null;
 
       return businessAddress;

@@ -2510,11 +2510,6 @@ export type UserInvoicesArgs = {
 };
 
 
-export type UserLastBusinessAddressArgs = {
-  date: Scalars['DateTime'];
-};
-
-
 export type UserMetadataArgs = {
   platform?: InputMaybe<Platform>;
 };

@@ -79,7 +79,7 @@ describe("BusinessAddress", () => {
       } as any);
 
       // act
-      const result = await businessAddress.lastBusinessAddress({ date: new Date()});
+      const result = await businessAddress.lastBusinessAddress();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
