@@ -98,10 +98,10 @@ describe("BusinessAddress", () => {
       // act
       const result = await businessAddress.create({
         payload: {
-					street: "Riccarton Av. 1212",
-					postCode: "RD88990",
-					city: "Christpost",
-					movingDate: new Date("2019-01-01"),
+          street: "Riccarton Av. 1212",
+          postCode: "RD88990",
+          city: "Christpost",
+          movingDate: new Date("2019-01-01"),
         },
       });
 
