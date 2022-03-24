@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.43.0] - 2022-03-24
+
+- Downgrades `client-oauth2` to `4.3.0` for compatibility reasons
 ## [0.38.0] - 2022-03-15
 ### Added
 - Added `discountAmount` field to `Money` type
