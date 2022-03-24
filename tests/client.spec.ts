@@ -42,6 +42,8 @@ describe("Client", () => {
         changeRequest: {} as any,
         declaration: {} as any,
         document: {} as any,
+        taxNumber: {} as any,
+        businessAddress: {} as any,
       };
 
       // act
