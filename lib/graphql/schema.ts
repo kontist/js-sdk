@@ -1950,7 +1950,7 @@ export type Transaction = {
   merchantCategoryCode?: Maybe<Scalars['String']>;
   merchantCountryCode?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  originalAmount?: Maybe<Scalars['Int']>;
+  originalAmount?: Maybe<Scalars['Float']>;
   paymentMethod: Scalars['String'];
   personalNote?: Maybe<Scalars['String']>;
   predictedCategory?: Maybe<TransactionCategory>;
@@ -2397,6 +2397,8 @@ export type User = {
   features: Array<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   gender?: Maybe<Gender>;
+  hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
+  hasBusinessTaxNumberUpdatedAt?: Maybe<Scalars['DateTime']>;
   /** IDNow identification details for user */
   identification: IdentificationDetails;
   /**
@@ -2604,6 +2606,7 @@ export type UserTaxDetails = {
   adjustAdvancePayments: Scalars['Boolean'];
   deTaxId?: Maybe<Scalars['String']>;
   dependents?: Maybe<Array<UserDependent>>;
+  hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
   lastTaxPaymentDate?: Maybe<Scalars['DateTime']>;
   lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
@@ -2620,6 +2623,7 @@ export type UserTaxDetails = {
 export type UserTaxDetailsInput = {
   deTaxId?: InputMaybe<Scalars['String']>;
   dependentsTaxIds?: InputMaybe<Array<DependentsTaxIds>>;
+  hasBusinessTaxNumber?: InputMaybe<Scalars['Boolean']>;
   permanentExtensionStatus?: InputMaybe<PermanentExtensionStatus>;
   taxNumber?: InputMaybe<Scalars['String']>;
   vatNumber?: InputMaybe<Scalars['String']>;
