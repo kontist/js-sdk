@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.44.0] - 2022-04-06
+### Added
+- Added `hasBusinessTaxNumber` field to `User` type
+- Added `hasBusinessTaxNumberUpdatedAt` field to `User` type
 ## [0.43.0] - 2022-03-24
 
 - Downgrades `client-oauth2` to `4.3.0` for compatibility reasons
