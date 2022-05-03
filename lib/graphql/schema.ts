@@ -581,11 +581,46 @@ export type Document = {
   url: Scalars['String'];
 };
 
+export enum DocumentMatchStatus {
+  AlreadyHasAsset = 'ALREADY_HAS_ASSET',
+  LaterMatch = 'LATER_MATCH',
+  ManualMatch = 'MANUAL_MATCH',
+  ManualMatchUser = 'MANUAL_MATCH_USER',
+  NoMatches = 'NO_MATCHES',
+  OtherProviderMatch = 'OTHER_PROVIDER_MATCH',
+  TooManyMatches = 'TOO_MANY_MATCHES',
+  WrongMatch = 'WRONG_MATCH'
+}
+
 export enum DocumentType {
   Expense = 'EXPENSE',
   Invoice = 'INVOICE',
   Voucher = 'VOUCHER'
 }
+
+export enum DocumentUploadSource {
+  Backoffice = 'BACKOFFICE',
+  Email = 'EMAIL',
+  EmailFetch = 'EMAIL_FETCH'
+}
+
+export type EmailDocument = {
+  __typename?: 'EmailDocument';
+  amount?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['DateTime'];
+  currency?: Maybe<Scalars['String']>;
+  date?: Maybe<Scalars['DateTime']>;
+  documentNumber?: Maybe<Scalars['String']>;
+  filename: Scalars['String'];
+  iban?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  matchStatus?: Maybe<DocumentMatchStatus>;
+  matches: Array<Transaction>;
+  name?: Maybe<Scalars['String']>;
+  transactionId?: Maybe<Scalars['ID']>;
+  transactionMatches: Array<KontaxTransaction>;
+  url: Scalars['String'];
+};
 
 export type FormDataPair = {
   __typename?: 'FormDataPair';
@@ -815,6 +850,43 @@ export type Jwk = {
   n: Scalars['String'];
 };
 
+export type KontaxTransaction = {
+  __typename?: 'KontaxTransaction';
+  amount: Scalars['Float'];
+  assets: Array<AssetData>;
+  businessAssets: Array<BusinessAsset>;
+  businessTypeComment?: Maybe<Scalars['String']>;
+  categoryCode?: Maybe<Scalars['String']>;
+  categoryCodeMeta?: Maybe<ValueMeta>;
+  description?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  escalated?: Maybe<Scalars['Boolean']>;
+  escalationNote?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  foreignCurrency?: Maybe<Scalars['String']>;
+  hasIntegrationDocument?: Maybe<Scalars['Boolean']>;
+  iban?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  internalNote?: Maybe<Scalars['String']>;
+  invoiceRequestedAt?: Maybe<Scalars['String']>;
+  isSplitCategorized?: Maybe<Scalars['Boolean']>;
+  lastName: Scalars['String'];
+  merchantCategoryCode?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  personalNote?: Maybe<Scalars['String']>;
+  purpose?: Maybe<Scalars['String']>;
+  reverseCharge?: Maybe<Scalars['Boolean']>;
+  source: Scalars['String'];
+  splits: Array<Split>;
+  valutaDate: Scalars['String'];
+  vatCategoryCode?: Maybe<Scalars['String']>;
+  vatCategoryCodeMeta?: Maybe<ValueMeta>;
+  vatRate?: Maybe<Scalars['String']>;
+  vatRateMeta?: Maybe<ValueMeta>;
+  vatYearPaymentFrequency?: Maybe<PaymentFrequency>;
+  verified: Scalars['Boolean'];
+};
+
 export enum MaximumCashTransactionsPercentage {
   Hundred = 'HUNDRED',
   Null = 'NULL',
@@ -890,7 +962,7 @@ export type Mutation = {
   /** Create a new user */
   createUser: PublicMutationResult;
   createUserEmailAlias: MutationResult;
-  /** Remove an Asset from the db and storage */
+  /** Remove an Asset */
   deleteAsset: MutationResult;
   /** Delete an OAuth2 client */
   deleteClient: Client;
@@ -903,7 +975,7 @@ export type Mutation = {
   deleteInvoiceLogo: MutationResult;
   /** Delete user's taxNumber */
   deleteTaxNumber: MutationResult;
-  /** Remove an Asset from the Transaction and storage */
+  /** Remove an Asset from the Transaction */
   deleteTransactionAsset: MutationResult;
   /** Delete transaction splits */
   deleteTransactionSplits: Transaction;
@@ -913,6 +985,7 @@ export type Mutation = {
   finalizeAssetUpload: Asset;
   /** Confirm and validate an Asset upload as completed */
   finalizeTransactionAssetUpload: TransactionAsset;
+  matchEmailDocumentToTransaction: MutationResult;
   refundDirectDebit: MutationResult;
   /** Close and order new card. Call when customer's card is damaged */
   reorderCard: Card;
@@ -1185,6 +1258,12 @@ export type MutationFinalizeAssetUploadArgs = {
 
 export type MutationFinalizeTransactionAssetUploadArgs = {
   assetId: Scalars['ID'];
+};
+
+
+export type MutationMatchEmailDocumentToTransactionArgs = {
+  emailDocumentId: Scalars['ID'];
+  transactionId: Scalars['ID'];
 };
 
 
@@ -1821,6 +1900,17 @@ export enum SepaTransferStatus {
   Confirmed = 'CONFIRMED'
 }
 
+export type Split = {
+  __typename?: 'Split';
+  amount: Scalars['Int'];
+  categorizationType?: Maybe<CategorizationType>;
+  category: TransactionCategory;
+  categoryCode: Scalars['String'];
+  id: Scalars['Int'];
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  uuid: Scalars['ID'];
+};
+
 export enum StandingOrderReoccurrenceType {
   Annually = 'ANNUALLY',
   EverySixMonths = 'EVERY_SIX_MONTHS',
@@ -1936,6 +2026,7 @@ export type Transaction = {
   categoryCode?: Maybe<Scalars['String']>;
   categoryCodeTranslation?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
+  description: Scalars['String'];
   directDebitFees: Array<DirectDebitFee>;
   documentDownloadUrl?: Maybe<Scalars['String']>;
   documentNumber?: Maybe<Scalars['String']>;
@@ -2393,6 +2484,8 @@ export type User = {
   /** The economic sector of the user's business */
   economicSector?: Maybe<Scalars['String']>;
   email: Scalars['String'];
+  emailDocument: EmailDocument;
+  emailDocuments: Array<EmailDocument>;
   /** Active user features */
   features: Array<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
@@ -2493,6 +2586,17 @@ export type UserBannersArgs = {
 
 export type UserClientArgs = {
   id: Scalars['String'];
+};
+
+
+export type UserEmailDocumentArgs = {
+  id?: InputMaybe<Scalars['String']>;
+};
+
+
+export type UserEmailDocumentsArgs = {
+  filterByUnmatched?: InputMaybe<Scalars['Boolean']>;
+  uploadSources?: InputMaybe<Array<DocumentUploadSource>>;
 };
 
 
