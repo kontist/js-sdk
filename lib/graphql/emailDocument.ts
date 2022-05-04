@@ -1,6 +1,8 @@
 import { GraphQLClient } from "./client";
 import {
   EmailDocument as EmailDocumentModel,
+  MutationMatchEmailDocumentToTransactionArgs,
+  MutationResult,
   Query,
   Transaction as TransactionModel,
   UserEmailDocumentArgs,
@@ -28,7 +30,7 @@ const DEFAULT_EMAIL_DOCUMENT_MATCH_FIELDS = [
   "description",
   "valutaDate",
   "personalNote",
-  "type"
+  "type",
 ] as TransactionProps[];
 
 const DEFAULT_EMAIL_DOCUMENT_FIELDS = ["id"] as EmailDocumentProps[];
@@ -61,6 +63,17 @@ ${matchFields ? `matches {${matchFields.join("\n")}}` : ""}
 }
 `;
 
+const MATCH_DOCUMENT_TO_TRANSACTION_QUERY = `
+mutation MatchEmailDocumentToTransaction($emailDocumentId: ID!, $transactionId: ID!) {
+    matchEmailDocumentToTransaction(
+      emailDocumentId: $emailDocumentId,
+      transactionId: $transactionId
+    ) {
+      success
+    }
+}
+`;
+
 export class EmailDocument {
   constructor(protected client: GraphQLClient) {}
 
@@ -88,5 +101,15 @@ export class EmailDocument {
     );
 
     return result.viewer?.emailDocument;
+  }
+
+  public async matchEmailDocumentToTransaction(
+    args: MutationMatchEmailDocumentToTransactionArgs
+  ): Promise<MutationResult> {
+    const result = await this.client.rawQuery(
+      MATCH_DOCUMENT_TO_TRANSACTION_QUERY,
+      args
+    );
+    return result.matchEmailDocumentToTransaction;
   }
 }

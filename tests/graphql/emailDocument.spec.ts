@@ -64,7 +64,7 @@ describe("Document", () => {
         paymentMethod: "",
         splits: [],
         transactionAssets: [],
-        personalNote: "Some note"
+        personalNote: "Some note",
       },
     ],
   };
@@ -170,7 +170,6 @@ type}
       expect(result).to.deep.eq(exampleEmailDocument);
     });
 
-
     describe("when called with custom set of fields", () => {
       it("should call rawQuery and return emailDocument", async () => {
         const spyOnRawQuery = sandbox
@@ -224,6 +223,28 @@ type}
 `);
         expect(result).to.equal(exampleEmailDocument);
       });
+    });
+  });
+
+  describe("#matchEmailDocumentToTransaction", () => {
+    it("should call rawQuery and return result", async () => {
+      // arrange
+      const response = {
+        success: true,
+      };
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        matchEmailDocumentToTransaction: response,
+      } as any);
+
+      // act
+      const result = await emailDocument.matchEmailDocumentToTransaction({
+        transactionId: "02384af9-5a39-4af2-8174-59125ccb1a3d",
+        emailDocumentId: "12384af9-5a39-4af2-8174-59125ccb1a3d",
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(response);
     });
   });
 });
