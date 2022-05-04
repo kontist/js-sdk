@@ -164,6 +164,13 @@ export type Asset = {
   thumbnail: Scalars['String'];
 };
 
+export type AssetData = {
+  __typename?: 'AssetData';
+  filetype: Scalars['String'];
+  fullsize: Scalars['String'];
+  id: Scalars['String'];
+};
+
 export type AttributionData = {
   irclickid?: InputMaybe<Scalars['String']>;
   /** Platform used for signup */
@@ -228,6 +235,15 @@ export type BusinessAddress = {
   movingDate: Scalars['DateTime'];
   postCode: Scalars['String'];
   street: Scalars['String'];
+};
+
+export type BusinessAsset = {
+  __typename?: 'BusinessAsset';
+  amount: Scalars['Float'];
+  assetClass: Scalars['String'];
+  businessAssetableId: Scalars['String'];
+  businessAssetableType: Scalars['String'];
+  purchaseDate: Scalars['DateTime'];
 };
 
 export type Card = {
@@ -2794,6 +2810,14 @@ export enum UserVatRate {
   Vat_0 = 'VAT_0',
   Vat_19 = 'VAT_19'
 }
+
+export type ValueMeta = {
+  __typename?: 'ValueMeta';
+  categorizationType?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  suggestionSource?: Maybe<Scalars['String']>;
+};
 
 export type VirtualCardDetailsArgs = {
   deviceId: Scalars['String'];
