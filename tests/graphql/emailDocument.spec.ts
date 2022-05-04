@@ -10,7 +10,7 @@ import {
   TransactionProjectionType,
 } from "../../lib/graphql/schema";
 
-describe("Document", () => {
+describe("EmailDocument", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
   let emailDocument: EmailDocument;

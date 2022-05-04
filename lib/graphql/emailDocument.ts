@@ -86,7 +86,6 @@ export class EmailDocument {
       FETCH_EMAIL_DOCUMENTS_QUERY(fields, matchFields),
       args
     );
-
     return result.viewer?.emailDocuments ?? [];
   }
 
@@ -99,7 +98,6 @@ export class EmailDocument {
       FETCH_EMAIL_DOCUMENT_QUERY(fields, matchFields),
       args
     );
-
     return result.viewer?.emailDocument;
   }
 
