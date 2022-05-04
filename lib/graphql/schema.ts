@@ -164,13 +164,6 @@ export type Asset = {
   thumbnail: Scalars['String'];
 };
 
-export type AssetData = {
-  __typename?: 'AssetData';
-  filetype: Scalars['String'];
-  fullsize: Scalars['String'];
-  id: Scalars['String'];
-};
-
 export type AttributionData = {
   irclickid?: InputMaybe<Scalars['String']>;
   /** Platform used for signup */
@@ -235,15 +228,6 @@ export type BusinessAddress = {
   movingDate: Scalars['DateTime'];
   postCode: Scalars['String'];
   street: Scalars['String'];
-};
-
-export type BusinessAsset = {
-  __typename?: 'BusinessAsset';
-  amount: Scalars['Float'];
-  assetClass: Scalars['String'];
-  businessAssetableId: Scalars['String'];
-  businessAssetableType: Scalars['String'];
-  purchaseDate: Scalars['DateTime'];
 };
 
 export type Card = {
@@ -634,7 +618,6 @@ export type EmailDocument = {
   matches: Array<Transaction>;
   name?: Maybe<Scalars['String']>;
   transactionId?: Maybe<Scalars['ID']>;
-  transactionMatches: Array<KontaxTransaction>;
   url: Scalars['String'];
 };
 
@@ -864,43 +847,6 @@ export type Jwk = {
   e: Scalars['String'];
   kty: Scalars['String'];
   n: Scalars['String'];
-};
-
-export type KontaxTransaction = {
-  __typename?: 'KontaxTransaction';
-  amount: Scalars['Float'];
-  assets: Array<AssetData>;
-  businessAssets: Array<BusinessAsset>;
-  businessTypeComment?: Maybe<Scalars['String']>;
-  categoryCode?: Maybe<Scalars['String']>;
-  categoryCodeMeta?: Maybe<ValueMeta>;
-  description?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  escalated?: Maybe<Scalars['Boolean']>;
-  escalationNote?: Maybe<Scalars['String']>;
-  firstName: Scalars['String'];
-  foreignCurrency?: Maybe<Scalars['String']>;
-  hasIntegrationDocument?: Maybe<Scalars['Boolean']>;
-  iban?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
-  internalNote?: Maybe<Scalars['String']>;
-  invoiceRequestedAt?: Maybe<Scalars['String']>;
-  isSplitCategorized?: Maybe<Scalars['Boolean']>;
-  lastName: Scalars['String'];
-  merchantCategoryCode?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  personalNote?: Maybe<Scalars['String']>;
-  purpose?: Maybe<Scalars['String']>;
-  reverseCharge?: Maybe<Scalars['Boolean']>;
-  source: Scalars['String'];
-  splits: Array<Split>;
-  valutaDate: Scalars['String'];
-  vatCategoryCode?: Maybe<Scalars['String']>;
-  vatCategoryCodeMeta?: Maybe<ValueMeta>;
-  vatRate?: Maybe<Scalars['String']>;
-  vatRateMeta?: Maybe<ValueMeta>;
-  vatYearPaymentFrequency?: Maybe<PaymentFrequency>;
-  verified: Scalars['Boolean'];
 };
 
 export enum MaximumCashTransactionsPercentage {
@@ -1916,17 +1862,6 @@ export enum SepaTransferStatus {
   Confirmed = 'CONFIRMED'
 }
 
-export type Split = {
-  __typename?: 'Split';
-  amount: Scalars['Int'];
-  categorizationType?: Maybe<CategorizationType>;
-  category: TransactionCategory;
-  categoryCode: Scalars['String'];
-  id: Scalars['Int'];
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
-  uuid: Scalars['ID'];
-};
-
 export enum StandingOrderReoccurrenceType {
   Annually = 'ANNUALLY',
   EverySixMonths = 'EVERY_SIX_MONTHS',
@@ -2810,14 +2745,6 @@ export enum UserVatRate {
   Vat_0 = 'VAT_0',
   Vat_19 = 'VAT_19'
 }
-
-export type ValueMeta = {
-  __typename?: 'ValueMeta';
-  categorizationType?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  label?: Maybe<Scalars['String']>;
-  suggestionSource?: Maybe<Scalars['String']>;
-};
 
 export type VirtualCardDetailsArgs = {
   deviceId: Scalars['String'];

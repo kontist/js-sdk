@@ -45,7 +45,6 @@ describe("EmailDocument", () => {
     matchStatus: DocumentMatchStatus.TooManyMatches,
     filename: "file2.pdf",
     url: "http://url.com",
-    transactionMatches: [],
     matches: [
       {
         id: "99384af9-5a39-4af2-8174-59125ccb1a99",
