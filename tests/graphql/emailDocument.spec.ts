@@ -33,86 +33,93 @@ describe("Document", () => {
     emailDocument = new EmailDocument(client.graphQL);
   });
 
-  const response: EmailDocumentModel[] = [
-    {
-      id: "02384af9-5a39-4af2-8174-59125ccb1a32",
-      amount: 10,
-      currency: null,
-      date: "2021-08-05",
-      name: "Amazon",
-      iban: "DE124567",
-      documentNumber: "AB20205",
-      createdAt: "2021-08-05",
-      matchStatus: DocumentMatchStatus.TooManyMatches,
-      filename: "file2.pdf",
-      url: "http://url.com",
-      transactionMatches: [],
-      matches: [
-        {
-          id: "99384af9-5a39-4af2-8174-59125ccb1a99",
-          name: "Some name",
-          iban: "DE505050",
-          amount: 100,
-          description: "Some description",
-          createdAt: "2022-07-06",
-          valutaDate: "2022-06-06",
-          bookingDate: "2022-06-06",
-          type: TransactionProjectionType.SepaCreditTransfer,
-          assets: [],
-          canBeRecategorized: true,
-          directDebitFees: [],
-          fees: [],
-          paymentMethod: "",
-          splits: [],
-          transactionAssets: [],
-        },
-      ],
-    },
-  ];
+  const exampleEmailDocument: EmailDocumentModel = {
+    id: "02384af9-5a39-4af2-8174-59125ccb1a32",
+    amount: 10,
+    currency: null,
+    date: "2021-08-05",
+    name: "Amazon",
+    iban: "DE124567",
+    documentNumber: "AB20205",
+    createdAt: "2021-08-05",
+    matchStatus: DocumentMatchStatus.TooManyMatches,
+    filename: "file2.pdf",
+    url: "http://url.com",
+    transactionMatches: [],
+    matches: [
+      {
+        id: "99384af9-5a39-4af2-8174-59125ccb1a99",
+        name: "Some name",
+        iban: "DE505050",
+        amount: 100,
+        description: "Some description",
+        createdAt: "2022-07-06",
+        valutaDate: "2022-06-06",
+        bookingDate: "2022-06-06",
+        type: TransactionProjectionType.SepaCreditTransfer,
+        assets: [],
+        canBeRecategorized: true,
+        directDebitFees: [],
+        fees: [],
+        paymentMethod: "",
+        splits: [],
+        transactionAssets: [],
+        personalNote: "Some note"
+      },
+    ],
+  };
 
   afterEach(() => {
     sandbox.restore();
   });
 
-  describe("#fetch", () => {
+  describe("#fetchAll", () => {
     it("should call rawQuery and return documents array", async () => {
       // arrange
-
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
-          emailDocuments: response,
+          emailDocuments: [exampleEmailDocument],
         },
       } as any);
 
       // act
-      const result = await emailDocument.fetch({
+      const result = await emailDocument.fetchAll({
         filterByUnmatched: true,
         uploadSources: [DocumentUploadSource.Email],
       });
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      expect(result).to.deep.eq(response);
+      expect(result).to.deep.eq([exampleEmailDocument]);
     });
 
     describe("when called with custom set of fields", () => {
-      it("should call rawQuery and return documents array", async () => {
+      it("should call rawQuery and return emailDocument array", async () => {
         const spyOnRawQuery = sandbox
           .stub(client.graphQL, "rawQuery")
           .resolves({
             viewer: {
-              emailDocuments: response,
+              emailDocuments: [exampleEmailDocument],
             },
           } as any);
 
         // act
-        const result = await emailDocument.fetch(
+        const result = await emailDocument.fetchAll(
           {
             filterByUnmatched: true,
             uploadSources: [DocumentUploadSource.Email],
           },
           ["id", "filename", "url", "matchStatus"],
-          ["id", "name", "iban", "amount", "description", "valutaDate", "personalNote", "type"]
+          [
+            "id",
+            "name",
+            "iban",
+            "amount",
+            "description",
+            "valutaDate",
+            "personalNote",
+            "type",
+          ]
         );
 
         // assert
@@ -138,7 +145,84 @@ type}
   }
 }
 `);
-        expect(result).to.eq(response);
+
+        expect(result[0]).to.eq(exampleEmailDocument);
+      });
+    });
+  });
+
+  describe("#fetchOne", () => {
+    it("should call rawQuery and return email documents array", async () => {
+      // arrange
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          emailDocument: exampleEmailDocument,
+        },
+      } as any);
+
+      // act
+      const result = await emailDocument.fetchOne({
+        id: "02384af9-5a39-4af2-8174-59125ccb1a32",
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(exampleEmailDocument);
+    });
+
+
+    describe("when called with custom set of fields", () => {
+      it("should call rawQuery and return emailDocument", async () => {
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              emailDocument: exampleEmailDocument,
+            },
+          } as any);
+
+        // act
+        const result = await emailDocument.fetchOne(
+          {
+            id: "02384af9-5a39-4af2-8174-59125ccb1a32",
+          },
+          ["id", "filename", "url", "matchStatus"],
+          [
+            "id",
+            "name",
+            "iban",
+            "amount",
+            "description",
+            "valutaDate",
+            "personalNote",
+            "type",
+          ]
+        );
+
+        // assert
+        sinon.assert.calledOnce(spyOnRawQuery);
+
+        expect(spyOnRawQuery.getCall(0).args[0]).equals(`
+query emailDocument($id: String!) {
+  viewer {
+    emailDocument(id: $id) {
+id
+filename
+url
+matchStatus
+matches {id
+name
+iban
+amount
+description
+valutaDate
+personalNote
+type}
+    }
+  }
+}
+`);
+        expect(result).to.equal(exampleEmailDocument);
       });
     });
   });
