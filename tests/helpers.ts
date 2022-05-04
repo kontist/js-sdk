@@ -41,6 +41,7 @@ export const createTransaction = (
     createdAt: new Date(0).toISOString(),
     categorizationType: null,
     canBeRecategorized: true,
+    description: "",
     ...override,
   };
 };
