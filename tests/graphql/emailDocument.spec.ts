@@ -148,6 +148,22 @@ type}
         expect(result[0]).to.eq(exampleEmailDocument);
       });
     });
+
+    describe("error case", () => {
+      it("should fail", async () => {
+        sandbox.stub(client.graphQL, "rawQuery").resolves({
+          error: {
+            message: "Some error message",
+          },
+        } as any);
+        // act
+
+        const result = await emailDocument.fetchAll();
+
+        // assert
+        expect(result).to.deep.equal([]);
+      });
+    });
   });
 
   describe("#fetchOne", () => {
