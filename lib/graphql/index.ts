@@ -8,6 +8,7 @@ import { User } from "./user";
 import { ChangeRequest } from "./changeRequest";
 import { Declaration } from "./declaration";
 import { Document } from "./document";
+import { EmailDocument } from "./emailDocument";
 import { TaxNumber } from "./taxNumber";
 import { BusinessAddress } from "./businessAddress";
 
@@ -21,6 +22,7 @@ export const getModels = (graphQLClient: GraphQLClient) => ({
   changeRequest: new ChangeRequest(graphQLClient),
   declaration: new Declaration(graphQLClient),
   document: new Document(graphQLClient),
+  emailDocument: new EmailDocument(graphQLClient),
   taxNumber: new TaxNumber(graphQLClient),
   businessAddress: new BusinessAddress(graphQLClient),
 });
