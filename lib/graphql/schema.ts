@@ -615,7 +615,8 @@ export type EmailDocument = {
   iban?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   matchStatus?: Maybe<DocumentMatchStatus>;
-  matches: Array<Transaction>;
+  /** Returns an array of transactions which potential match with an email document. Note that just a subset of transaction fields gets returned */
+  matches?: Maybe<Array<Transaction>>;
   name?: Maybe<Scalars['String']>;
   transactionId?: Maybe<Scalars['ID']>;
   url: Scalars['String'];
