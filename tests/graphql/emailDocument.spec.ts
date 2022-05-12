@@ -276,7 +276,7 @@ type}
       } as any);
 
       // act
-      const result = await emailDocument.delete(id);
+      const result = await emailDocument.delete({ emailDocumentId: id });
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
