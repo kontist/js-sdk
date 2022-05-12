@@ -931,6 +931,7 @@ export type Mutation = {
   deleteClient: Client;
   /** Deletes document */
   deleteDocument: MutationResult;
+  deleteEmailDocument: MutationResult;
   /** Deletes Google Pay card token reference id for given wallet id */
   deleteGooglePayCardToken: GooglePayCardToken;
   deleteInvoice: MutationResult;
@@ -1174,6 +1175,11 @@ export type MutationDeleteClientArgs = {
 
 export type MutationDeleteDocumentArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationDeleteEmailDocumentArgs = {
+  emailDocumentId: Scalars['ID'];
 };
 
 

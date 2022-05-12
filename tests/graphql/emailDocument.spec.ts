@@ -262,4 +262,25 @@ type}
       expect(result).to.deep.eq(response);
     });
   });
+
+  describe("#delete", () => {
+    it("should call rawQuery and return result", async () => {
+      const id = "1";
+
+      // arrange
+      const response = {
+        success: true,
+      };
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        deleteEmailDocument: response,
+      } as any);
+
+      // act
+      const result = await emailDocument.delete(id);
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(response.success);
+    });
+  });
 });

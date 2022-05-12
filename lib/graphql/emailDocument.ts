@@ -74,6 +74,16 @@ mutation MatchEmailDocumentToTransaction($emailDocumentId: ID!, $transactionId: 
 }
 `;
 
+const DELETE_EMAIL_DOCUMENT_QUERY = `
+mutation DeleteEmailDocument($emailDocumentId: ID!) {
+  deleteEmailDocument(
+    emailDocumentId: $emailDocumentId,
+  ) {
+    success
+  }
+}
+`;
+
 export class EmailDocument {
   constructor(protected client: GraphQLClient) {}
 
@@ -109,5 +119,12 @@ export class EmailDocument {
       args
     );
     return result.matchEmailDocumentToTransaction;
+  }
+
+  public async delete(id: string): Promise<boolean> {
+    const result = await this.client.rawQuery(DELETE_EMAIL_DOCUMENT_QUERY, {
+      id,
+    });
+    return result.deleteEmailDocument.success;
   }
 }
