@@ -1,6 +1,7 @@
 import { GraphQLClient } from "./client";
 import {
   EmailDocument as EmailDocumentModel,
+  MutationDeleteEmailDocumentArgs,
   MutationMatchEmailDocumentToTransactionArgs,
   MutationResult,
   Query,
@@ -121,10 +122,13 @@ export class EmailDocument {
     return result.matchEmailDocumentToTransaction;
   }
 
-  public async delete(id: string): Promise<boolean> {
-    const result = await this.client.rawQuery(DELETE_EMAIL_DOCUMENT_QUERY, {
-      id,
-    });
-    return result.deleteEmailDocument.success;
+  public async delete(
+    args: MutationDeleteEmailDocumentArgs
+  ): Promise<MutationResult> {
+    const result = await this.client.rawQuery(
+      DELETE_EMAIL_DOCUMENT_QUERY,
+      args
+    );
+    return result.deleteEmailDocument;
   }
 }

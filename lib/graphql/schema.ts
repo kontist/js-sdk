@@ -1179,7 +1179,7 @@ export type MutationDeleteDocumentArgs = {
 
 
 export type MutationDeleteEmailDocumentArgs = {
-  emailDocumentId: Scalars['ID'];
+  id: Scalars['ID'];
 };
 
 
