@@ -276,11 +276,11 @@ type}
       } as any);
 
       // act
-      const result = await emailDocument.delete({ emailDocumentId: id });
+      const result = await emailDocument.delete({ id });
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      expect(result).to.deep.eq(response.success);
+      expect(result).to.deep.eq(response);
     });
   });
 });

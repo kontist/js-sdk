@@ -122,11 +122,13 @@ export class EmailDocument {
     return result.matchEmailDocumentToTransaction;
   }
 
-  public async delete(args: MutationDeleteEmailDocumentArgs): Promise<boolean> {
+  public async delete(
+    args: MutationDeleteEmailDocumentArgs
+  ): Promise<MutationResult> {
     const result = await this.client.rawQuery(
       DELETE_EMAIL_DOCUMENT_QUERY,
       args
     );
-    return result.deleteEmailDocument.success;
+    return result.deleteEmailDocument;
   }
 }
