@@ -76,10 +76,8 @@ mutation MatchEmailDocumentToTransaction($emailDocumentId: ID!, $transactionId: 
 `;
 
 const DELETE_EMAIL_DOCUMENT_QUERY = `
-mutation DeleteEmailDocument($emailDocumentId: ID!) {
-  deleteEmailDocument(
-    emailDocumentId: $emailDocumentId,
-  ) {
+mutation DeleteEmailDocument($id: ID!) {
+  deleteEmailDocument(id: $id) {
     success
   }
 }
