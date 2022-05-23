@@ -196,6 +196,7 @@ export enum BannerName {
   FriendReferral = 'FRIEND_REFERRAL',
   Overdraft = 'OVERDRAFT',
   PrimaryWebapp = 'PRIMARY_WEBAPP',
+  ReceiptMatching = 'RECEIPT_MATCHING',
   TaxService = 'TAX_SERVICE',
   VatDeclaration = 'VAT_DECLARATION'
 }
@@ -2495,6 +2496,7 @@ export type User = {
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
   publicId: Scalars['ID'];
+  receiptMatchingIntroDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The user's associated Recurly Account */
   recurlyAccount?: Maybe<RecurlyAccount>;
   /** Referral details for user */
