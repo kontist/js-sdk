@@ -323,6 +323,7 @@ export enum CategorizationType {
   BookkeepingPartner = 'BOOKKEEPING_PARTNER',
   Invoicing = 'INVOICING',
   Kontax = 'KONTAX',
+  Script = 'SCRIPT',
   User = 'USER',
   UserOverwrite = 'USER_OVERWRITE'
 }
@@ -602,7 +603,9 @@ export enum DocumentType {
 export enum DocumentUploadSource {
   Backoffice = 'BACKOFFICE',
   Email = 'EMAIL',
-  EmailFetch = 'EMAIL_FETCH'
+  EmailFetch = 'EMAIL_FETCH',
+  Mobile = 'MOBILE',
+  Web = 'WEB'
 }
 
 export type EmailDocument = {
