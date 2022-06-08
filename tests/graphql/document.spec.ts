@@ -57,7 +57,6 @@ describe("Document", () => {
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      console.log(result, response);
       expect(result).to.deep.eq(response);
     });
 
