@@ -83,7 +83,6 @@ describe("TaxNumber", () => {
           type: TaxNumberType.Personal,
           isMainBusinessTaxNumber: false,
           taxNumber: "2388081508158",
-          modificationDate: new Date("2022-01-01"),
           description: "personal tax number",
         },
       });

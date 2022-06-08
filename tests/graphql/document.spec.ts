@@ -43,6 +43,7 @@ describe("Document", () => {
           note: null,
           createdAt: "2021-07-01",
           url: "http://url.com",
+          metadata: null,
         },
       ];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
@@ -56,6 +57,7 @@ describe("Document", () => {
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
+      console.log(result, response);
       expect(result).to.deep.eq(response);
     });
 
@@ -72,15 +74,17 @@ describe("Document", () => {
             url: "http://url.com",
           },
         ];
-        const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-          viewer: {
-            documents: response,
-          },
-        } as any);
-  
+        const spyOnRawQuery = sandbox
+          .stub(client.graphQL, "rawQuery")
+          .resolves({
+            viewer: {
+              documents: response,
+            },
+          } as any);
+
         // act
         const result = await document.fetch(["id"]);
-  
+
         // assert
         sinon.assert.calledOnce(spyOnRawQuery);
         expect(spyOnRawQuery.getCall(0).args[0]).equals(`
@@ -94,11 +98,40 @@ describe("Document", () => {
 `);
         expect(result).to.deep.eq(response);
       });
-    })
+    });
   });
 
   describe("#update", () => {
     it("should call rawQuery and return updated document", async () => {
+      const id = "1";
+      const name = "newName";
+
+      // arrange
+      const response: DocumentModel = {
+        id,
+        name,
+        type: "jpg",
+        note: null,
+        createdAt: "2021-07-01",
+        url: "http://url.com",
+        metadata: null,
+      };
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        updateDocument: response,
+      } as any);
+
+      // act
+      const result = await document.update({
+        id,
+        name,
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(response);
+    });
+
+    it("should call rawQuery and return updated document with metadata", async () => {
       const id = "1";
       const name = "newName";
 
@@ -119,6 +152,9 @@ describe("Document", () => {
       const result = await document.update({
         id,
         name,
+        metadata: {
+          documentCategoryId: "8f534c7a-d126-45ff-9ed7-d6c528f39cb8",
+        },
       });
 
       // assert
