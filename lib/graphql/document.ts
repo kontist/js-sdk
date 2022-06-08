@@ -7,6 +7,15 @@ import {
 
 type DocumentProps = keyof DocumentModel;
 
+const DOCUMENT_METADATA = `
+  metadata {
+    category {
+      categoryName
+      folderName
+    }
+  }
+`;
+
 const DEFAULT_DOCUMENT_FIELDS = [
   "id",
   "name",
@@ -14,6 +23,7 @@ const DEFAULT_DOCUMENT_FIELDS = [
   "url",
   "note",
   "createdAt",
+  DOCUMENT_METADATA,
 ] as DocumentProps[];
 
 const FETCH_DOCUMENTS_QUERY = (fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS) => `
