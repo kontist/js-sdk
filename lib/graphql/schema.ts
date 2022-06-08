@@ -17,6 +17,10 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSONObject: any;
 };
 
 /** The bank account of the current user */
@@ -225,6 +229,7 @@ export enum BatchTransferStatus {
 export type BusinessAddress = {
   __typename?: 'BusinessAddress';
   city: Scalars['String'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   movingDate: Scalars['DateTime'];
   postCode: Scalars['String'];
@@ -307,7 +312,8 @@ export enum CardType {
   VirtualMastercardBusinessDebit = 'VIRTUAL_MASTERCARD_BUSINESS_DEBIT',
   VirtualVisaBusinessDebit = 'VIRTUAL_VISA_BUSINESS_DEBIT',
   VirtualVisaFreelanceDebit = 'VIRTUAL_VISA_FREELANCE_DEBIT',
-  VisaBusinessDebit = 'VISA_BUSINESS_DEBIT'
+  VisaBusinessDebit = 'VISA_BUSINESS_DEBIT',
+  VisaBusinessDebit_2 = 'VISA_BUSINESS_DEBIT_2'
 }
 
 export enum CaseResolution {
@@ -456,9 +462,9 @@ export type CreateSepaTransferInput = {
 export type CreateTaxNumberInput = {
   description: Scalars['String'];
   isMainBusinessTaxNumber: Scalars['Boolean'];
-  modificationDate?: InputMaybe<Scalars['DateTime']>;
   taxNumber: Scalars['String'];
   type: TaxNumberType;
+  validFrom?: InputMaybe<Scalars['DateTime']>;
 };
 
 export type CreateTransactionSplitsInput = {
@@ -546,6 +552,7 @@ export type DeclarationStats = {
 
 export enum DeclarationType {
   Euer = 'EUER',
+  GewSt = 'GewSt',
   USt = 'USt',
   UStVa = 'UStVA'
 }
@@ -577,10 +584,18 @@ export type Document = {
   __typename?: 'Document';
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  metadata?: Maybe<DocumentMetadata>;
   name: Scalars['String'];
   note?: Maybe<Scalars['String']>;
   type: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type DocumentCategory = {
+  __typename?: 'DocumentCategory';
+  categoryName: Scalars['String'];
+  folderName: Scalars['String'];
+  id: Scalars['ID'];
 };
 
 export enum DocumentMatchStatus {
@@ -593,6 +608,11 @@ export enum DocumentMatchStatus {
   TooManyMatches = 'TOO_MANY_MATCHES',
   WrongMatch = 'WRONG_MATCH'
 }
+
+export type DocumentMetadata = {
+  __typename?: 'DocumentMetadata';
+  category: DocumentCategory;
+};
 
 export enum DocumentType {
   Expense = 'EXPENSE',
@@ -954,6 +974,7 @@ export type Mutation = {
   /** Confirm and validate an Asset upload as completed */
   finalizeTransactionAssetUpload: TransactionAsset;
   matchEmailDocumentToTransaction: MutationResult;
+  postponeQuestionnaireAnswer: Questionnaire;
   refundDirectDebit: MutationResult;
   /** Close and order new card. Call when customer's card is damaged */
   reorderCard: Card;
@@ -967,8 +988,10 @@ export type Mutation = {
   setCardHolderRepresentation: Scalars['String'];
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
+  startQuestionnaire: Questionnaire;
   /** Submits UStVA declaration */
   submitDeclaration: Declaration;
+  submitQuestionnaireAnswer: Questionnaire;
   /** Subscribe user to a plan */
   subscribeToPlan: UserSubscription;
   /** Update settings (e.g. limits) */
@@ -1240,6 +1263,12 @@ export type MutationMatchEmailDocumentToTransactionArgs = {
 };
 
 
+export type MutationPostponeQuestionnaireAnswerArgs = {
+  questionName: Scalars['String'];
+  questionnaireId: Scalars['ID'];
+};
+
+
 export type MutationRefundDirectDebitArgs = {
   transactionId: Scalars['String'];
 };
@@ -1266,9 +1295,22 @@ export type MutationSignPoaArgs = {
 };
 
 
+export type MutationStartQuestionnaireArgs = {
+  type: QuestionnaireType;
+  year: Scalars['Int'];
+};
+
+
 export type MutationSubmitDeclarationArgs = {
   period: Scalars['String'];
   year: Scalars['Int'];
+};
+
+
+export type MutationSubmitQuestionnaireAnswerArgs = {
+  questionName: Scalars['String'];
+  questionnaireId: Scalars['ID'];
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 
@@ -1291,6 +1333,7 @@ export type MutationUpdateClientArgs = {
 
 export type MutationUpdateDocumentArgs = {
   id: Scalars['ID'];
+  metadata?: InputMaybe<UpdateDocumentMetadata>;
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -1790,6 +1833,37 @@ export type Query = {
   viewer?: Maybe<User>;
 };
 
+export type Questionnaire = {
+  __typename?: 'Questionnaire';
+  completedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  nextQuestion?: Maybe<QuestionnaireQuestion>;
+  startedAt: Scalars['DateTime'];
+  type: QuestionnaireType;
+  year: Scalars['Int'];
+};
+
+
+export type QuestionnaireNextQuestionArgs = {
+  includePostponed?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type QuestionnaireQuestion = {
+  __typename?: 'QuestionnaireQuestion';
+  inputConfig?: Maybe<Scalars['JSONObject']>;
+  name: Scalars['String'];
+  postponable?: Maybe<Scalars['Boolean']>;
+  topic: Scalars['String'];
+};
+
+export enum QuestionnaireType {
+  EoyBasicData = 'EOY_BASIC_DATA',
+  EoyCarUsage = 'EOY_CAR_USAGE',
+  EoyOfficeUsage = 'EOY_OFFICE_USAGE',
+  EoyTravelExpenses = 'EOY_TRAVEL_EXPENSES',
+  StartOfTheYear = 'START_OF_THE_YEAR'
+}
+
 export type RecurlyAccount = {
   __typename?: 'RecurlyAccount';
   accountManagementUrl: Scalars['String'];
@@ -1930,12 +2004,13 @@ export type SystemStatus = {
 /** Tax numbers of users */
 export type TaxNumber = {
   __typename?: 'TaxNumber';
+  deletedAt?: Maybe<Scalars['DateTime']>;
   description: Scalars['String'];
   id: Scalars['ID'];
   isMainBusinessTaxNumber: Scalars['Boolean'];
-  modificationDate?: Maybe<Scalars['DateTime']>;
   taxNumber: Scalars['String'];
   type: TaxNumberType;
+  validFrom?: Maybe<Scalars['DateTime']>;
 };
 
 export enum TaxNumberType {
@@ -2365,6 +2440,11 @@ export type UpdateClientInput = {
   secret?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateDocumentMetadata = {
+  /** Document's category Id */
+  documentCategoryId?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateSubscriptionPlanResult = {
   __typename?: 'UpdateSubscriptionPlanResult';
   couponCode?: Maybe<Scalars['String']>;
@@ -2378,9 +2458,9 @@ export type UpdateSubscriptionPlanResult = {
 export type UpdateTaxNumberInput = {
   description: Scalars['String'];
   isMainBusinessTaxNumber: Scalars['Boolean'];
-  modificationDate?: InputMaybe<Scalars['DateTime']>;
   taxNumber: Scalars['String'];
   type: TaxNumberType;
+  validFrom?: InputMaybe<Scalars['DateTime']>;
 };
 
 export type UpdateTransactionSplitsInput = {
@@ -2442,6 +2522,8 @@ export type User = {
   /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
   /** User's documents */
+  documentCategories: Array<DocumentCategory>;
+  /** User's documents */
   documents: Array<Document>;
   /** The economic sector of the user's business */
   economicSector?: Maybe<Scalars['String']>;
@@ -2499,6 +2581,7 @@ export type User = {
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
   publicId: Scalars['ID'];
+  questionnaire?: Maybe<Questionnaire>;
   receiptMatchingIntroDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The user's associated Recurly Account */
   recurlyAccount?: Maybe<RecurlyAccount>;
@@ -2586,6 +2669,12 @@ export type UserMetadataArgs = {
 
 export type UserPremiumSubscriptionDiscountArgs = {
   couponCode?: InputMaybe<Scalars['String']>;
+};
+
+
+export type UserQuestionnaireArgs = {
+  type: QuestionnaireType;
+  year: Scalars['Int'];
 };
 
 
