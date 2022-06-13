@@ -10,6 +10,7 @@ type DocumentProps = keyof DocumentModel;
 const DOCUMENT_METADATA = `
   metadata {
     category {
+      id
       categoryName
       folderName
     }
