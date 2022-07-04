@@ -935,6 +935,7 @@ export type Mutation = {
   createClient: Client;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
   createInvoiceLogo: CreateInvoiceLogoResponse;
+  createQuestionnaireDocumentAsset: CreateAssetResponse;
   createReview: CreateReviewResponse;
   /** Create user's taxNumber */
   createTaxNumber: TaxNumber;
@@ -961,6 +962,7 @@ export type Mutation = {
   deleteInvoice: MutationResult;
   /** Deletes the logo of a user's settings entry */
   deleteInvoiceLogo: MutationResult;
+  deleteQuestionnaireDocument: MutationResult;
   /** Delete user's taxNumber */
   deleteTaxNumber: MutationResult;
   /** Remove an Asset from the Transaction */
@@ -984,6 +986,7 @@ export type Mutation = {
   requestIdentification: IdentificationDetails;
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
+  resetLastQuestionnaireAnswer: Questionnaire;
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
   /** Allow user to sign Power of Attorney */
@@ -1025,6 +1028,7 @@ export type Mutation = {
   updateUserTaxDetails: MutationResult;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
+  upsertQuestionnaireDocument: QuestionnaireDocument;
   /** Returns encrypted card details for virtual card */
   virtualCardDetails: Scalars['String'];
   whitelistCard: WhitelistCardResponse;
@@ -1144,6 +1148,13 @@ export type MutationCreateInvoiceLogoArgs = {
 };
 
 
+export type MutationCreateQuestionnaireDocumentAssetArgs = {
+  filetype: Scalars['String'];
+  name: Scalars['String'];
+  questionnaireDocumentId: Scalars['ID'];
+};
+
+
 export type MutationCreateReviewArgs = {
   platform: ReviewTriggerPlatform;
   triggerName: ReviewTriggerName;
@@ -1222,6 +1233,11 @@ export type MutationDeleteInvoiceArgs = {
 };
 
 
+export type MutationDeleteQuestionnaireDocumentArgs = {
+  questionnaireDocumentId: Scalars['ID'];
+};
+
+
 export type MutationDeleteTaxNumberArgs = {
   id: Scalars['ID'];
 };
@@ -1281,6 +1297,11 @@ export type MutationReorderCardArgs = {
 
 export type MutationReplaceCardArgs = {
   id: Scalars['String'];
+};
+
+
+export type MutationResetLastQuestionnaireAnswerArgs = {
+  questionnaireId: Scalars['ID'];
 };
 
 
@@ -1419,6 +1440,12 @@ export type MutationUpdateUserTaxDetailsArgs = {
 
 export type MutationUpsertProductsArgs = {
   payload: Array<UserProductInput>;
+};
+
+
+export type MutationUpsertQuestionnaireDocumentArgs = {
+  payload: QuestionnaireDocumentInput;
+  questionnaireId: Scalars['ID'];
 };
 
 
@@ -1836,7 +1863,9 @@ export type Query = {
 export type Questionnaire = {
   __typename?: 'Questionnaire';
   completedAt?: Maybe<Scalars['DateTime']>;
+  documents: Array<QuestionnaireDocument>;
   id: Scalars['ID'];
+  lastAnswer?: Maybe<QuestionnaireAnswer>;
   nextQuestion?: Maybe<QuestionnaireQuestion>;
   startedAt: Scalars['DateTime'];
   type: QuestionnaireType;
@@ -1848,12 +1877,63 @@ export type QuestionnaireNextQuestionArgs = {
   includePostponed?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type QuestionnaireAnswer = {
+  __typename?: 'QuestionnaireAnswer';
+  documentsStatus: QuestionnaireAnswerDocumentsStatus;
+  postponedAt?: Maybe<Scalars['DateTime']>;
+  questionName: Scalars['String'];
+  submittedAt?: Maybe<Scalars['DateTime']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  value?: Maybe<Scalars['JSON']>;
+};
+
+export enum QuestionnaireAnswerDocumentsStatus {
+  Deleted = 'DELETED',
+  NotRequired = 'NOT_REQUIRED',
+  Pending = 'PENDING',
+  Uploaded = 'UPLOADED'
+}
+
+export type QuestionnaireDocument = {
+  __typename?: 'QuestionnaireDocument';
+  assets: Array<Asset>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  inputs?: Maybe<Scalars['JSON']>;
+  type: QuestionnaireDocumentType;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type QuestionnaireDocumentInput = {
+  id?: InputMaybe<Scalars['ID']>;
+  inputs: Scalars['JSONObject'];
+  type: QuestionnaireDocumentType;
+};
+
+export enum QuestionnaireDocumentType {
+  EoyCarUsageLogbook = 'EOY_CAR_USAGE_LOGBOOK',
+  EoyCarUsageOther = 'EOY_CAR_USAGE_OTHER',
+  EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
+  EoyCarUsagePurchaseContract = 'EOY_CAR_USAGE_PURCHASE_CONTRACT',
+  EoyCarUsageTraveledKmWithPrivateCar = 'EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
+  EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
+  EoyOfficeUsageHeating = 'EOY_OFFICE_USAGE_HEATING',
+  EoyOfficeUsageOther = 'EOY_OFFICE_USAGE_OTHER',
+  EoyOfficeUsagePhoneOrInternet = 'EOY_OFFICE_USAGE_PHONE_OR_INTERNET',
+  EoyOfficeUsageRentOrInterest = 'EOY_OFFICE_USAGE_RENT_OR_INTEREST',
+  EoyOfficeUsageUtility = 'EOY_OFFICE_USAGE_UTILITY',
+  EoyOfficeUsageUtilityAfterPayment = 'EOY_OFFICE_USAGE_UTILITY_AFTER_PAYMENT',
+  EoyTravelExpensesBusinessTrips = 'EOY_TRAVEL_EXPENSES_BUSINESS_TRIPS',
+  EoyTravelExpensesOther = 'EOY_TRAVEL_EXPENSES_OTHER',
+  EoyTravelExpensesTraveledKmWithPrivateCar = 'EOY_TRAVEL_EXPENSES_TRAVELED_KM_WITH_PRIVATE_CAR'
+}
+
 export type QuestionnaireQuestion = {
   __typename?: 'QuestionnaireQuestion';
   inputConfig?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
   postponable?: Maybe<Scalars['Boolean']>;
-  topic: Scalars['String'];
+  topic?: Maybe<Scalars['String']>;
 };
 
 export enum QuestionnaireType {
@@ -2635,6 +2715,11 @@ export type UserClientArgs = {
 };
 
 
+export type UserDocumentsArgs = {
+  documentCategoryId?: InputMaybe<Scalars['String']>;
+};
+
+
 export type UserEmailDocumentArgs = {
   id?: InputMaybe<Scalars['String']>;
 };
@@ -2727,7 +2812,11 @@ export type UserMetadata = {
   intercomDigest?: Maybe<Scalars['String']>;
   /** Is user's Kontist account closed */
   isAccountClosed: Scalars['Boolean'];
+  lastTermsVersionAcceptedAt?: Maybe<Scalars['DateTime']>;
+  lastTermsVersionRejectedAt?: Maybe<Scalars['DateTime']>;
+  lastTermsVersionSkippedAt?: Maybe<Scalars['DateTime']>;
   marketingConsentAccepted: Scalars['Boolean'];
+  newTermsDeadlineDate: Scalars['String'];
   phoneNumberVerificationRequired: Scalars['Boolean'];
   signupCompleted: Scalars['Boolean'];
   taxAdvisoryTermsVersionAccepted: Scalars['Boolean'];
