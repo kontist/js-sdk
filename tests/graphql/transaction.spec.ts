@@ -512,12 +512,13 @@ describe("Transaction", () => {
         transactionId: transaction.id,
         name: "test",
         filetype: "jpg",
+        uploadPlatform: "native_share"
       });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
       expect(stub.args[0][0]).to.eq(CREATE_TRANSACTION_ASSET);
-      expect(stub.args[0][1]).to.deep.eq({ transactionId: transaction.id, name: "test", filetype: "jpg" });
+      expect(stub.args[0][1]).to.deep.eq({ transactionId: transaction.id, name: "test", filetype: "jpg", uploadPlatform: "native_share" });
       expect(result).to.deep.eq(expectedResult);
     });
   });
