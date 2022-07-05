@@ -1171,6 +1171,7 @@ export type MutationCreateTransactionAssetArgs = {
   filetype: Scalars['String'];
   name: Scalars['String'];
   transactionId: Scalars['ID'];
+  uploadPlatform?: InputMaybe<Scalars['String']>;
 };
 
 
