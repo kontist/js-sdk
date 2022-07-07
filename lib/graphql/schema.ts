@@ -2702,6 +2702,11 @@ export type User = {
   riskClassificationStatus?: Maybe<RiskClassificationStatus>;
   /** The user's Solaris screening progress */
   screeningProgress?: Maybe<ScreeningProgress>;
+  /**
+   * The user's Solaris screening status
+   * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
+   */
+  screeningStatus?: Maybe<ScreeningProgress>;
   street?: Maybe<Scalars['String']>;
   /** The available subscription plans */
   subscriptionPlans: SubscriptionPlansResponse;
