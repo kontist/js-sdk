@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { Client } from "../../lib";
-import { Transaction, TransactionCategory, BaseOperator } from "../../lib/graphql/schema";
+import { Transaction, TransactionCategory, BaseOperator, RequestPlatform } from "../../lib/graphql/schema";
 import {
   NEW_TRANSACTION_SUBSCRIPTION,
   CREATE_SPLIT_TRANSACTION,
@@ -512,13 +512,13 @@ describe("Transaction", () => {
         transactionId: transaction.id,
         name: "test",
         filetype: "jpg",
-        uploadPlatform: "native_share"
+        uploadPlatform: RequestPlatform.NativeShare
       });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
       expect(stub.args[0][0]).to.eq(CREATE_TRANSACTION_ASSET);
-      expect(stub.args[0][1]).to.deep.eq({ transactionId: transaction.id, name: "test", filetype: "jpg", uploadPlatform: "native_share" });
+      expect(stub.args[0][1]).to.deep.eq({ transactionId: transaction.id, name: "test", filetype: "jpg", uploadPlatform: RequestPlatform.NativeShare });
       expect(result).to.deep.eq(expectedResult);
     });
   });
