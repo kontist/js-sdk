@@ -21,7 +21,7 @@ const GET_USER = `query {
     identificationStatus
     screeningStatus
     screeningProgress
-    riskClarificationStatus
+    riskClassificationStatus
     customerVettingStatus
     isUSPerson
     lastName
