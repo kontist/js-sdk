@@ -19,6 +19,7 @@ const GET_USER = `query {
     gender
     identificationLink
     identificationStatus
+    screeningStatus
     screeningProgress
     riskClarificationStatus
     customerVettingStatus
