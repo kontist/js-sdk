@@ -2026,6 +2026,13 @@ export enum ScreeningProgress {
   ScreenedDeclined = 'SCREENED_DECLINED'
 }
 
+export enum ScreeningStatus {
+  NotScreened = 'NOT_SCREENED',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  ScreenedAccepted = 'SCREENED_ACCEPTED',
+  ScreenedDeclined = 'SCREENED_DECLINED'
+}
+
 export type SepaTransfer = {
   __typename?: 'SepaTransfer';
   /** The amount of the SEPA Transfer in cents */
@@ -2706,7 +2713,7 @@ export type User = {
    * The user's Solaris screening status
    * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
    */
-  screeningStatus?: Maybe<ScreeningProgress>;
+  screeningStatus?: Maybe<ScreeningStatus>;
   street?: Maybe<Scalars['String']>;
   /** The available subscription plans */
   subscriptionPlans: SubscriptionPlansResponse;
