@@ -522,6 +522,18 @@ export type Customer = {
   vatNumber?: Maybe<Scalars['String']>;
 };
 
+export enum CustomerVettingStatus {
+  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
+  InformationReceived = 'INFORMATION_RECEIVED',
+  InformationRequested = 'INFORMATION_REQUESTED',
+  NotVetted = 'NOT_VETTED',
+  NoMatch = 'NO_MATCH',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  RiskAccepted = 'RISK_ACCEPTED',
+  RiskRejected = 'RISK_REJECTED',
+  VettingNotRequired = 'VETTING_NOT_REQUIRED'
+}
+
 export type DashboardInvoice = {
   __typename?: 'DashboardInvoice';
   amount?: Maybe<Scalars['Int']>;
@@ -1978,6 +1990,18 @@ export enum ReviewTriggerPlatform {
   Webapp = 'WEBAPP'
 }
 
+export enum RiskClassificationStatus {
+  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
+  InformationReceived = 'INFORMATION_RECEIVED',
+  InformationRequested = 'INFORMATION_REQUESTED',
+  NormalRisk = 'NORMAL_RISK',
+  NotScored = 'NOT_SCORED',
+  PotentialRisk = 'POTENTIAL_RISK',
+  RiskAccepted = 'RISK_ACCEPTED',
+  RiskRejected = 'RISK_REJECTED',
+  ScoringNotRequired = 'SCORING_NOT_REQUIRED'
+}
+
 export enum ScopeType {
   Accounts = 'ACCOUNTS',
   Admin = 'ADMIN',
@@ -1993,6 +2017,13 @@ export enum ScopeType {
   Transactions = 'TRANSACTIONS',
   Transfers = 'TRANSFERS',
   Users = 'USERS'
+}
+
+export enum ScreeningProgress {
+  NotScreened = 'NOT_SCREENED',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  ScreenedAccepted = 'SCREENED_ACCEPTED',
+  ScreenedDeclined = 'SCREENED_DECLINED'
 }
 
 export enum ScreeningStatus {
@@ -2601,6 +2632,8 @@ export type User = {
   couponCodeOffer?: Maybe<Scalars['String']>;
   /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
+  /** The user's Solaris customer vetting status */
+  customerVettingStatus?: Maybe<CustomerVettingStatus>;
   /** User's documents */
   documentCategories: Array<DocumentCategory>;
   /** User's documents */
@@ -2672,7 +2705,14 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.referral.code"
    */
   referralCode?: Maybe<Scalars['String']>;
-  /** The user's Solaris screening status */
+  /** The user's Solaris risk clarification status */
+  riskClassificationStatus?: Maybe<RiskClassificationStatus>;
+  /** The user's Solaris screening progress */
+  screeningProgress?: Maybe<ScreeningProgress>;
+  /**
+   * The user's Solaris screening status
+   * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
+   */
   screeningStatus?: Maybe<ScreeningStatus>;
   street?: Maybe<Scalars['String']>;
   /** The available subscription plans */

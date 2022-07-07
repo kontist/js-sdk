@@ -20,6 +20,9 @@ const GET_USER = `query {
     identificationLink
     identificationStatus
     screeningStatus
+    screeningProgress
+    riskClarificationStatus
+    customerVettingStatus
     isUSPerson
     lastName
     mobileNumber
