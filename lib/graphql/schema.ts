@@ -1183,6 +1183,7 @@ export type MutationCreateTransactionAssetArgs = {
   filetype: Scalars['String'];
   name: Scalars['String'];
   transactionId: Scalars['ID'];
+  uploadPlatform?: InputMaybe<RequestPlatform>;
 };
 
 
@@ -1973,6 +1974,17 @@ export type ReferralDetails = {
   copy: Scalars['String'];
   link?: Maybe<Scalars['String']>;
 };
+
+export enum RequestPlatform {
+  Backend = 'BACKEND',
+  Backoffice = 'BACKOFFICE',
+  Email = 'EMAIL',
+  Giovanni = 'GIOVANNI',
+  Invoicing = 'INVOICING',
+  Mobile = 'MOBILE',
+  NativeShare = 'NATIVE_SHARE',
+  Web = 'WEB'
+}
 
 export enum ReviewTriggerName {
   BatchTransfers = 'BATCH_TRANSFERS',
