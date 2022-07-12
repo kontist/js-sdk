@@ -196,7 +196,7 @@ export const CREATE_TRANSACTION_ASSET = `mutation createTransactionAsset(
   $name: String!
   $filetype: String!
   $assetableType: String
-  $uploadPlatform: String
+  $uploadPlatform: RequestPlatform
 ) {
   createTransactionAsset(
     transactionId: $transactionId
