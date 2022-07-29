@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -48,6 +45,7 @@ export type Account = {
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>;
   transaction?: Maybe<Transaction>;
+  transactionFilterPresets: Array<IFilterPreset>;
   transactions: TransactionsConnection;
   transactionsCSV: Scalars['String'];
   transfer?: Maybe<Transfer>;
@@ -522,18 +520,6 @@ export type Customer = {
   vatNumber?: Maybe<Scalars['String']>;
 };
 
-export enum CustomerVettingStatus {
-  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
-  InformationReceived = 'INFORMATION_RECEIVED',
-  InformationRequested = 'INFORMATION_REQUESTED',
-  NotVetted = 'NOT_VETTED',
-  NoMatch = 'NO_MATCH',
-  PotentialMatch = 'POTENTIAL_MATCH',
-  RiskAccepted = 'RISK_ACCEPTED',
-  RiskRejected = 'RISK_REJECTED',
-  VettingNotRequired = 'VETTING_NOT_REQUIRED'
-}
-
 export type DashboardInvoice = {
   __typename?: 'DashboardInvoice';
   amount?: Maybe<Scalars['Int']>;
@@ -658,6 +644,11 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
+export type FilterPreset = IFilterPreset & {
+  __typename?: 'FilterPreset';
+  value: Scalars['String'];
+};
+
 export type FormDataPair = {
   __typename?: 'FormDataPair';
   key: Scalars['String'];
@@ -686,6 +677,10 @@ export enum GrantType {
   Password = 'PASSWORD',
   RefreshToken = 'REFRESH_TOKEN'
 }
+
+export type IFilterPreset = {
+  value: Scalars['String'];
+};
 
 export type Icon = {
   __typename?: 'Icon';
@@ -891,6 +886,12 @@ export enum MaximumCashTransactionsPercentage {
   Null = 'NULL',
   Ten = 'TEN'
 }
+
+export type MissingTaxAssetsFilterPreset = IFilterPreset & {
+  __typename?: 'MissingTaxAssetsFilterPreset';
+  value: Scalars['String'];
+  year: Scalars['Int'];
+};
 
 export type Money = {
   __typename?: 'Money';
@@ -1881,6 +1882,7 @@ export type Questionnaire = {
   lastAnswer?: Maybe<QuestionnaireAnswer>;
   nextQuestion?: Maybe<QuestionnaireQuestion>;
   startedAt: Scalars['DateTime'];
+  status: QuestionnaireStatus;
   type: QuestionnaireType;
   year: Scalars['Int'];
 };
@@ -1943,15 +1945,23 @@ export enum QuestionnaireDocumentType {
 
 export type QuestionnaireQuestion = {
   __typename?: 'QuestionnaireQuestion';
+  allowExit?: Maybe<Scalars['Boolean']>;
   inputConfig?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
   postponable?: Maybe<Scalars['Boolean']>;
   topic?: Maybe<Scalars['String']>;
 };
 
+export enum QuestionnaireStatus {
+  Completed = 'COMPLETED',
+  DocumentsUploaded = 'DOCUMENTS_UPLOADED',
+  Started = 'STARTED'
+}
+
 export enum QuestionnaireType {
   EoyBasicData = 'EOY_BASIC_DATA',
   EoyCarUsage = 'EOY_CAR_USAGE',
+  EoyIncomeTax = 'EOY_INCOME_TAX',
   EoyOfficeUsage = 'EOY_OFFICE_USAGE',
   EoyTravelExpenses = 'EOY_TRAVEL_EXPENSES',
   StartOfTheYear = 'START_OF_THE_YEAR'
@@ -2002,18 +2012,6 @@ export enum ReviewTriggerPlatform {
   Webapp = 'WEBAPP'
 }
 
-export enum RiskClassificationStatus {
-  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
-  InformationReceived = 'INFORMATION_RECEIVED',
-  InformationRequested = 'INFORMATION_REQUESTED',
-  NormalRisk = 'NORMAL_RISK',
-  NotScored = 'NOT_SCORED',
-  PotentialRisk = 'POTENTIAL_RISK',
-  RiskAccepted = 'RISK_ACCEPTED',
-  RiskRejected = 'RISK_REJECTED',
-  ScoringNotRequired = 'SCORING_NOT_REQUIRED'
-}
-
 export enum ScopeType {
   Accounts = 'ACCOUNTS',
   Admin = 'ADMIN',
@@ -2029,13 +2027,6 @@ export enum ScopeType {
   Transactions = 'TRANSACTIONS',
   Transfers = 'TRANSFERS',
   Users = 'USERS'
-}
-
-export enum ScreeningProgress {
-  NotScreened = 'NOT_SCREENED',
-  PotentialMatch = 'POTENTIAL_MATCH',
-  ScreenedAccepted = 'SCREENED_ACCEPTED',
-  ScreenedDeclined = 'SCREENED_DECLINED'
 }
 
 export enum ScreeningStatus {
@@ -2122,6 +2113,14 @@ export type SystemStatus = {
   __typename?: 'SystemStatus';
   message?: Maybe<Scalars['String']>;
   type?: Maybe<Status>;
+};
+
+export type TaxCase = {
+  __typename?: 'TaxCase';
+  deadline: Scalars['DateTime'];
+  finalizedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  year: Scalars['Int'];
 };
 
 /** Tax numbers of users */
@@ -2519,8 +2518,7 @@ export type TransferSuggestion = {
 export enum TransferType {
   SepaTransfer = 'SEPA_TRANSFER',
   StandingOrder = 'STANDING_ORDER',
-  TimedOrder = 'TIMED_ORDER',
-  VirtualBooking = 'VIRTUAL_BOOKING'
+  TimedOrder = 'TIMED_ORDER'
 }
 
 export type TransfersConnection = {
@@ -2644,8 +2642,6 @@ export type User = {
   couponCodeOffer?: Maybe<Scalars['String']>;
   /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
-  /** The user's Solaris customer vetting status */
-  customerVettingStatus?: Maybe<CustomerVettingStatus>;
   /** User's documents */
   documentCategories: Array<DocumentCategory>;
   /** User's documents */
@@ -2717,20 +2713,14 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.referral.code"
    */
   referralCode?: Maybe<Scalars['String']>;
-  /** The user's Solaris risk clarification status */
-  riskClassificationStatus?: Maybe<RiskClassificationStatus>;
-  /** The user's Solaris screening progress */
-  screeningProgress?: Maybe<ScreeningProgress>;
-  /**
-   * The user's Solaris screening status
-   * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
-   */
+  /** The user's Solaris screening status */
   screeningStatus?: Maybe<ScreeningStatus>;
   street?: Maybe<Scalars['String']>;
   /** The available subscription plans */
   subscriptionPlans: SubscriptionPlansResponse;
   /** The plans a user has subscribed to */
   subscriptions: Array<UserSubscription>;
+  taxCase?: Maybe<TaxCase>;
   /** Tax details for user */
   taxDetails: UserTaxDetails;
   /** User's tax numbers */
@@ -2817,6 +2807,11 @@ export type UserQuestionnaireArgs = {
 
 export type UserSubscriptionPlansArgs = {
   couponCode?: InputMaybe<Scalars['String']>;
+};
+
+
+export type UserTaxCaseArgs = {
+  year: Scalars['Int'];
 };
 
 export type UserDependent = {

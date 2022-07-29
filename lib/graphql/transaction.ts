@@ -16,6 +16,7 @@ import {
   TransactionFilter,
   TransactionsConnectionEdge,
   AccountTransactionsCsvArgs,
+  FilterPreset,
 } from "./schema";
 import {
   FetchOptions,
@@ -239,6 +240,23 @@ const FETCH_TRANSACTIONS_CSV = `
     viewer {
       mainAccount {
         transactionsCSV(from: $from, to: $to)
+      }
+    }
+  }
+`;
+
+const FETCH_TRANSACTION_FILTER_PRESETS = `
+  query fetchTransactionFilterPresets {
+    viewer {
+      mainAccount {
+        transactionFilterPresets {
+          __typename
+          value
+      
+          ... on MissingTaxAssetsFilterPreset {
+            year
+          }
+        }
       }
     }
   }
@@ -500,5 +518,10 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async fetchCSV(args?: AccountTransactionsCsvArgs): Promise<string> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS_CSV, args);
     return result.viewer?.mainAccount?.transactionsCSV ?? "";
+  }
+
+  public async fetchFilterPresets(): Promise<FilterPreset[]> {
+    const result: Query = await this.client.rawQuery(FETCH_TRANSACTION_FILTER_PRESETS);
+    return result.viewer?.mainAccount?.transactionFilterPresets ?? [];
   }
 }
