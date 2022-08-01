@@ -17,6 +17,7 @@ import {
   TransactionsConnectionEdge,
   AccountTransactionsCsvArgs,
   FilterPreset,
+  FilterPresetArg,
 } from "./schema";
 import {
   FetchOptions,
@@ -97,10 +98,10 @@ const TRANSACTION_DETAILS = `
 `;
 
 const FETCH_TRANSACTIONS = `
-  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter) {
+  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter, $filterPreset: FilterPresetArg) {
     viewer {
       mainAccount {
-        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter) {
+        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter, filterPreset: $filterPreset) {
           edges {
             node {
               ${TRANSACTION_FIELDS}
@@ -294,10 +295,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public async search(
     searchQuery: string,
-    searchFilter?: SearchFilter
+    searchFilter?: SearchFilter,
+    filterPreset?: FilterPresetArg,
   ): Promise<ResultPage<TransactionModel>> {
     const filter = this.parseSearchQuery(searchQuery, searchFilter);
-    return this.fetch({ filter });
+    return this.fetch({ filter, filterPreset });
   }
 
   /**

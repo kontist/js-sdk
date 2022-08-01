@@ -91,6 +91,7 @@ export type AccountTransactionsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   filter?: InputMaybe<TransactionFilter>;
+  filterPreset?: InputMaybe<FilterPresetArg>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 };
@@ -647,6 +648,11 @@ export type EmailDocument = {
 export type FilterPreset = IFilterPreset & {
   __typename?: 'FilterPreset';
   value: Scalars['String'];
+};
+
+export type FilterPresetArg = {
+  value: Scalars['String'];
+  year?: InputMaybe<Scalars['Int']>;
 };
 
 export type FormDataPair = {
