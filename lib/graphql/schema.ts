@@ -45,7 +45,7 @@ export type Account = {
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>;
   transaction?: Maybe<Transaction>;
-  transactionFilterPresets: Array<IFilterPreset>;
+  transactionFilterPresets: Array<FilterPreset>;
   transactions: TransactionsConnection;
   transactionsCSV: Scalars['String'];
   transfer?: Maybe<Transfer>;
@@ -91,9 +91,9 @@ export type AccountTransactionsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   filter?: InputMaybe<TransactionFilter>;
-  filterPreset?: InputMaybe<FilterPresetArg>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  preset?: InputMaybe<FilterPresetInput>;
 };
 
 
@@ -645,12 +645,11 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
-export type FilterPreset = IFilterPreset & {
-  __typename?: 'FilterPreset';
+export type FilterPreset = {
   value: Scalars['String'];
 };
 
-export type FilterPresetArg = {
+export type FilterPresetInput = {
   value: Scalars['String'];
   year?: InputMaybe<Scalars['Int']>;
 };
@@ -671,6 +670,11 @@ export type GenericFeature = {
   name: Scalars['String'];
 };
 
+export type GenericFilterPreset = FilterPreset & {
+  __typename?: 'GenericFilterPreset';
+  value: Scalars['String'];
+};
+
 export type GooglePayCardToken = {
   __typename?: 'GooglePayCardToken';
   tokenRefId: Scalars['String'];
@@ -683,10 +687,6 @@ export enum GrantType {
   Password = 'PASSWORD',
   RefreshToken = 'REFRESH_TOKEN'
 }
-
-export type IFilterPreset = {
-  value: Scalars['String'];
-};
 
 export type Icon = {
   __typename?: 'Icon';
@@ -893,7 +893,7 @@ export enum MaximumCashTransactionsPercentage {
   Ten = 'TEN'
 }
 
-export type MissingTaxAssetsFilterPreset = IFilterPreset & {
+export type MissingTaxAssetsFilterPreset = FilterPreset & {
   __typename?: 'MissingTaxAssetsFilterPreset';
   value: Scalars['String'];
   year: Scalars['Int'];
@@ -992,6 +992,7 @@ export type Mutation = {
   duplicateInvoice: InvoiceOutput;
   /** Confirm and validate an Asset upload as completed */
   finalizeAssetUpload: Asset;
+  finalizeTaxCase: TaxCase;
   /** Confirm and validate an Asset upload as completed */
   finalizeTransactionAssetUpload: TransactionAsset;
   matchEmailDocumentToTransaction: MutationResult;
@@ -1285,6 +1286,11 @@ export type MutationDuplicateInvoiceArgs = {
 
 export type MutationFinalizeAssetUploadArgs = {
   assetId: Scalars['ID'];
+};
+
+
+export type MutationFinalizeTaxCaseArgs = {
+  taxCaseId: Scalars['ID'];
 };
 
 
