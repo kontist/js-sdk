@@ -979,4 +979,33 @@ describe("Transaction", () => {
       });
     });
   });
+
+  describe("#fetchFilterPresets", () => {
+    let stub: any;
+    let client: Client;
+    const preset = { value: "MISSING_TAX_TRANSACTIONS" };
+
+    beforeEach(() => {
+      client = createClient();
+      stub = sinon.stub(client.graphQL, "rawQuery");
+    });
+
+    afterEach(() => {
+      stub.restore();
+    });
+
+    describe("when presets are found", () => {
+      beforeEach(async () => {
+        stub.resolves({
+          viewer: { mainAccount: { transactionFilterPresets: [preset] } },
+        });
+      });
+
+      it("should return transaction filter presets", async () => {
+        const result = await client.models.transaction.fetchFilterPresets();
+        expect(stub.callCount).to.equal(1);
+        expect(result).to.eql([preset]);
+      });
+    });
+  });
 });
