@@ -624,7 +624,8 @@ describe("Transaction", () => {
             name_likeAny: ["hello", "world"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["hello", "world"],
-          }
+          },
+          preset: undefined,
         });
       });
     });
@@ -667,7 +668,8 @@ describe("Transaction", () => {
                 operator: BaseOperator.And
               }
             ]
-          }
+          },
+          preset: undefined
         });
       });
     });
@@ -689,7 +691,8 @@ describe("Transaction", () => {
             name_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
-          }
+          },
+          preset: undefined
         });
       });
     });
@@ -709,7 +712,8 @@ describe("Transaction", () => {
             name_likeAny: ["1.123", "-234,", ".10"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["1.123", "-234,", ".10"],
-          }
+          },
+          preset: undefined,
         });
       });
     });
@@ -743,7 +747,8 @@ describe("Transaction", () => {
                 operator: BaseOperator.And
               }
             ]
-          }
+          },
+          preset: undefined
         });
       });
     });
@@ -776,7 +781,8 @@ describe("Transaction", () => {
                 operator: BaseOperator.And
               }
             ]
-          }
+          },
+          preset: undefined
         });
       });
     });
@@ -796,7 +802,8 @@ describe("Transaction", () => {
             name_likeAny: ["hello", "world"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["hello", "world"]
-          }
+          },
+          preset: undefined
         });
       });
     });
@@ -815,7 +822,8 @@ describe("Transaction", () => {
           expect(fetchStub.getCall(0).args[0]).to.deep.eq({
             filter: {
               assets_exist: false,
-            }
+            },
+            preset: undefined
           });
         });
       });
@@ -846,7 +854,8 @@ describe("Transaction", () => {
                   ]
                 }
               ]
-            }
+            },
+            preset: undefined
           });
         });
       });
@@ -888,7 +897,33 @@ describe("Transaction", () => {
                   operator: "AND"
                 }
               ]
-            }
+            },
+            preset: undefined
+          });
+        });
+      });
+    });
+
+    describe("when user provides transaction filter preset", () => {
+      const preset = { value: "MISSING_TAX_TRANSACTIONS" };
+
+      describe("and input is empty", () => {
+        it("should call fetch event", async () => {
+          // arrange
+          const filterQuery = undefined;
+
+          // act
+          await client.models.transaction.search("", filterQuery, preset);
+
+          // assert
+          expect(fetchStub.callCount).to.eq(1);
+          expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+            filter: {
+              name_likeAny: [],
+              operator: "OR",
+              purpose_likeAny: [],
+            },
+            preset,
           });
         });
       });
