@@ -15,8 +15,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -1951,8 +1954,7 @@ export enum QuestionnaireDocumentType {
   EoyOfficeUsageUtility = 'EOY_OFFICE_USAGE_UTILITY',
   EoyOfficeUsageUtilityAfterPayment = 'EOY_OFFICE_USAGE_UTILITY_AFTER_PAYMENT',
   EoyTravelExpensesBusinessTrips = 'EOY_TRAVEL_EXPENSES_BUSINESS_TRIPS',
-  EoyTravelExpensesOther = 'EOY_TRAVEL_EXPENSES_OTHER',
-  EoyTravelExpensesTraveledKmWithPrivateCar = 'EOY_TRAVEL_EXPENSES_TRAVELED_KM_WITH_PRIVATE_CAR'
+  EoyTravelExpensesOther = 'EOY_TRAVEL_EXPENSES_OTHER'
 }
 
 export type QuestionnaireQuestion = {
