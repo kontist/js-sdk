@@ -16,6 +16,9 @@ import {
   TransactionFilter,
   TransactionsConnectionEdge,
   AccountTransactionsCsvArgs,
+  FilterPresetInput,
+  GenericFilterPreset,
+  MissingTaxAssetsFilterPreset,
 } from "./schema";
 import {
   FetchOptions,
@@ -30,16 +33,18 @@ const MAX_SEARCH_AMOUNT_IN_CENTS = 2000000000;
 type PositiveAmountFilter = {
   amount_gte: number;
   amount_lt: number;
-}
+};
 
 type NegativeAmountFilter = {
   amount_lte: number;
   amount_gt: number;
-}
+};
 
-type AmountBetweenFilter = {
-  operator: BaseOperator.And;
-} & PositiveAmountFilter | NegativeAmountFilter;
+type AmountBetweenFilter =
+  | ({
+      operator: BaseOperator.And;
+    } & PositiveAmountFilter)
+  | NegativeAmountFilter;
 
 type AmountSearchFilter = {
   amount_in: number[];
@@ -96,10 +101,10 @@ const TRANSACTION_DETAILS = `
 `;
 
 const FETCH_TRANSACTIONS = `
-  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter) {
+  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter, $preset: FilterPresetInput) {
     viewer {
       mainAccount {
-        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter) {
+        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter, preset: $preset) {
           edges {
             node {
               ${TRANSACTION_FIELDS}
@@ -244,6 +249,23 @@ const FETCH_TRANSACTIONS_CSV = `
   }
 `;
 
+const FETCH_TRANSACTION_FILTER_PRESETS = `
+  query fetchTransactionFilterPresets {
+    viewer {
+      mainAccount {
+        transactionFilterPresets {
+          __typename
+          value
+
+          ... on MissingTaxAssetsFilterPreset {
+            year
+          }
+        }
+      }
+    }
+  }
+`;
+
 export class Transaction extends IterableModel<TransactionModel> {
   /**
    * Fetches first 50 transactions which match the query
@@ -252,7 +274,9 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args  query parameters
    * @returns     result page
    */
-  public async fetch(args?: AccountTransactionsArgs): Promise<ResultPage<TransactionModel>> {
+  public async fetch(
+    args?: AccountTransactionsArgs
+  ): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
 
     const transactions = (
@@ -276,10 +300,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public async search(
     searchQuery: string,
-    searchFilter?: SearchFilter
+    searchFilter?: SearchFilter,
+    preset?: FilterPresetInput
   ): Promise<ResultPage<TransactionModel>> {
     const filter = this.parseSearchQuery(searchQuery, searchFilter);
-    return this.fetch({ filter });
+    return this.fetch({ filter, preset });
   }
 
   /**
@@ -304,7 +329,7 @@ export class Transaction extends IterableModel<TransactionModel> {
 
   public subscribe(
     onNext: (event: TransactionModel) => any,
-    onError?: (error: Error) => any,
+    onError?: (error: Error) => any
   ): Subscription {
     return this.client.subscribe({
       onError,
@@ -364,7 +389,9 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args   transaction ID, name, and filetype
    * @returns      the required data to upload a file
    */
-  public async createTransactionAsset(args: MutationCreateTransactionAssetArgs) {
+  public async createTransactionAsset(
+    args: MutationCreateTransactionAssetArgs
+  ) {
     const result = await this.client.rawQuery(CREATE_TRANSACTION_ASSET, args);
     return result.createTransactionAsset;
   }
@@ -375,7 +402,9 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args   asset ID
    * @returns      the finalized TransactionAsset information
    */
-  public async finalizeTransactionAssetUpload(args: MutationFinalizeTransactionAssetUploadArgs) {
+  public async finalizeTransactionAssetUpload(
+    args: MutationFinalizeTransactionAssetUploadArgs
+  ) {
     const result = await this.client.rawQuery(FINALIZE_TRANSACTION_ASSET, args);
     return result.finalizeTransactionAssetUpload;
   }
@@ -386,7 +415,9 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @param args   asset ID
    * @returns      a MutationResult
    */
-  public async deleteTransactionAsset(args: MutationDeleteTransactionAssetArgs) {
+  public async deleteTransactionAsset(
+    args: MutationDeleteTransactionAssetArgs
+  ) {
     const result = await this.client.rawQuery(DELETE_TRANSACTION_ASSET, args);
     return result.deleteTransactionAsset;
   }
@@ -402,8 +433,10 @@ export class Transaction extends IterableModel<TransactionModel> {
     }
 
     const invertedAmountInCents = amountInCents * -1;
-    const positiveAmountInCents = amountInCents > 0 ? amountInCents : invertedAmountInCents;
-    const negativeAmountInCents = amountInCents > 0 ? invertedAmountInCents : amountInCents;
+    const positiveAmountInCents =
+      amountInCents > 0 ? amountInCents : invertedAmountInCents;
+    const negativeAmountInCents =
+      amountInCents > 0 ? invertedAmountInCents : amountInCents;
 
     return {
       amount_in: [amountInCents, invertedAmountInCents],
@@ -412,19 +445,22 @@ export class Transaction extends IterableModel<TransactionModel> {
             {
               operator: BaseOperator.And,
               amount_gte: positiveAmountInCents,
-              amount_lt: positiveAmountInCents + 100
+              amount_lt: positiveAmountInCents + 100,
             },
             {
               operator: BaseOperator.And,
               amount_gt: negativeAmountInCents - 100,
-              amount_lte: negativeAmountInCents
-            }
+              amount_lte: negativeAmountInCents,
+            },
           ]
-        : []
+        : [],
     };
   }
 
-  private parseSearchQuery(searchQuery: string, searchFilter?: SearchFilter): TransactionFilter {
+  private parseSearchQuery(
+    searchQuery: string,
+    searchFilter?: SearchFilter
+  ): TransactionFilter {
     if (!searchQuery && searchFilter) {
       return searchFilter;
     }
@@ -432,17 +468,17 @@ export class Transaction extends IterableModel<TransactionModel> {
     const searchTerms = searchQuery
       .slice(0, MAX_SEARCH_QUERY_LENGTH)
       .split(" ")
-      .filter(term => term.length > 0);
+      .filter((term) => term.length > 0);
 
     const filter: TransactionFilter = {
       name_likeAny: searchTerms,
       operator: BaseOperator.Or,
-      purpose_likeAny: searchTerms
+      purpose_likeAny: searchTerms,
     };
 
     const amountRegex = /^-?\d+([,.]\d{1,2})?$/;
     const amountFilter = searchTerms
-      .filter(term => amountRegex.test(term))
+      .filter((term) => amountRegex.test(term))
       .reduce(
         (
           partialAmountFilter: AmountSearchFilter,
@@ -453,12 +489,12 @@ export class Transaction extends IterableModel<TransactionModel> {
           return {
             amount_in: [
               ...partialAmountFilter.amount_in,
-              ...parsedAmountSearchTerm.amount_in
+              ...parsedAmountSearchTerm.amount_in,
             ],
             conditions: [
               ...partialAmountFilter.conditions,
-              ...parsedAmountSearchTerm.conditions
-            ]
+              ...parsedAmountSearchTerm.conditions,
+            ],
           };
         },
         { amount_in: [], conditions: [] }
@@ -473,7 +509,7 @@ export class Transaction extends IterableModel<TransactionModel> {
     }
 
     const ibanRegex = /^[A-Za-z]{2}\d{2,36}$/;
-    const ibanTerms = searchTerms.filter(term => ibanRegex.test(term));
+    const ibanTerms = searchTerms.filter((term) => ibanRegex.test(term));
 
     if (ibanTerms.length > 0) {
       filter.iban_likeAny = ibanTerms;
@@ -498,7 +534,19 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @returns     result page
    */
   public async fetchCSV(args?: AccountTransactionsCsvArgs): Promise<string> {
-    const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS_CSV, args);
+    const result: Query = await this.client.rawQuery(
+      FETCH_TRANSACTIONS_CSV,
+      args
+    );
     return result.viewer?.mainAccount?.transactionsCSV ?? "";
+  }
+
+  public async fetchFilterPresets(): Promise<
+    (GenericFilterPreset | MissingTaxAssetsFilterPreset)[]
+  > {
+    const result: Query = await this.client.rawQuery(
+      FETCH_TRANSACTION_FILTER_PRESETS
+    );
+    return result.viewer?.mainAccount?.transactionFilterPresets ?? [];
   }
 }
