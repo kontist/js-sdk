@@ -522,7 +522,7 @@ export class Transaction extends IterableModel<TransactionModel> {
     return result.viewer?.mainAccount?.transactionsCSV ?? "";
   }
 
-  public async fetchFilterPresets(): Promise<FilterPreset[]> {
+  public async fetchFilterPresets(): Promise<(GenericFilterPreset | MissingTaxAssetsFilterPreset)[]> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSACTION_FILTER_PRESETS);
     return result.viewer?.mainAccount?.transactionFilterPresets ?? [];
   }
