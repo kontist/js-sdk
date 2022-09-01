@@ -37,6 +37,8 @@ export type Account = {
   declarationPdfUrl?: Maybe<Scalars['String']>;
   declarationStats: DeclarationStats;
   declarations: Array<Declaration>;
+  /** Retrieve account balance from Solaris */
+  getAccountBalance: AccountBalanceResponse;
   hasPendingCardFraudCase: Scalars['Boolean'];
   iban: Scalars['String'];
   /** Overdraft Application - only available for Kontist Application */
@@ -122,6 +124,13 @@ export type AccountTransfersArgs = {
   last?: InputMaybe<Scalars['Int']>;
   type: TransferType;
   where?: InputMaybe<TransfersConnectionFilter>;
+};
+
+export type AccountBalanceResponse = {
+  __typename?: 'AccountBalanceResponse';
+  available_balance?: Maybe<SolarisBalance>;
+  balance?: Maybe<SolarisBalance>;
+  seizure_protection?: Maybe<SeizureProtection>;
 };
 
 export enum AccountState {
@@ -523,6 +532,18 @@ export type Customer = {
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
 };
+
+export enum CustomerVettingStatus {
+  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
+  InformationReceived = 'INFORMATION_RECEIVED',
+  InformationRequested = 'INFORMATION_REQUESTED',
+  NotVetted = 'NOT_VETTED',
+  NoMatch = 'NO_MATCH',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  RiskAccepted = 'RISK_ACCEPTED',
+  RiskRejected = 'RISK_REJECTED',
+  VettingNotRequired = 'VETTING_NOT_REQUIRED'
+}
 
 export type DashboardInvoice = {
   __typename?: 'DashboardInvoice';
@@ -1972,8 +1993,23 @@ export enum QuestionnaireStatus {
   Started = 'STARTED'
 }
 
+export type QuestionnaireTask = {
+  __typename?: 'QuestionnaireTask';
+  status: QuestionnaireTaskStatus;
+  type: QuestionnaireType;
+  year: Scalars['Int'];
+};
+
+export enum QuestionnaireTaskStatus {
+  Completed = 'COMPLETED',
+  InProgress = 'IN_PROGRESS',
+  InReview = 'IN_REVIEW',
+  ToDo = 'TO_DO'
+}
+
 export enum QuestionnaireType {
   EoyBasicData = 'EOY_BASIC_DATA',
+  EoyBookkeeping = 'EOY_BOOKKEEPING',
   EoyCarUsage = 'EOY_CAR_USAGE',
   EoyIncomeTax = 'EOY_INCOME_TAX',
   EoyOfficeUsage = 'EOY_OFFICE_USAGE',
@@ -2026,6 +2062,18 @@ export enum ReviewTriggerPlatform {
   Webapp = 'WEBAPP'
 }
 
+export enum RiskClassificationStatus {
+  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
+  InformationReceived = 'INFORMATION_RECEIVED',
+  InformationRequested = 'INFORMATION_REQUESTED',
+  NormalRisk = 'NORMAL_RISK',
+  NotScored = 'NOT_SCORED',
+  PotentialRisk = 'POTENTIAL_RISK',
+  RiskAccepted = 'RISK_ACCEPTED',
+  RiskRejected = 'RISK_REJECTED',
+  ScoringNotRequired = 'SCORING_NOT_REQUIRED'
+}
+
 export enum ScopeType {
   Accounts = 'ACCOUNTS',
   Admin = 'ADMIN',
@@ -2043,12 +2091,27 @@ export enum ScopeType {
   Users = 'USERS'
 }
 
+export enum ScreeningProgress {
+  NotScreened = 'NOT_SCREENED',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  ScreenedAccepted = 'SCREENED_ACCEPTED',
+  ScreenedDeclined = 'SCREENED_DECLINED'
+}
+
 export enum ScreeningStatus {
   NotScreened = 'NOT_SCREENED',
   PotentialMatch = 'POTENTIAL_MATCH',
   ScreenedAccepted = 'SCREENED_ACCEPTED',
   ScreenedDeclined = 'SCREENED_DECLINED'
 }
+
+export type SeizureProtection = {
+  __typename?: 'SeizureProtection';
+  current_blocked_amount: SolarisBalance;
+  protected_amount: SolarisBalance;
+  protected_amount_expiring: SolarisBalance;
+  protected_amount_expiring_date: Scalars['String'];
+};
 
 export type SepaTransfer = {
   __typename?: 'SepaTransfer';
@@ -2074,6 +2137,13 @@ export enum SepaTransferStatus {
   Booked = 'BOOKED',
   Confirmed = 'CONFIRMED'
 }
+
+export type SolarisBalance = {
+  __typename?: 'SolarisBalance';
+  currency?: Maybe<Scalars['String']>;
+  unit?: Maybe<Scalars['String']>;
+  value: Scalars['Float'];
+};
 
 export enum StandingOrderReoccurrenceType {
   Annually = 'ANNUALLY',
@@ -2656,6 +2726,8 @@ export type User = {
   couponCodeOffer?: Maybe<Scalars['String']>;
   /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
+  /** The user's Solaris customer vetting status */
+  customerVettingStatus?: Maybe<CustomerVettingStatus>;
   /** User's documents */
   documentCategories: Array<DocumentCategory>;
   /** User's documents */
@@ -2671,6 +2743,8 @@ export type User = {
   gender?: Maybe<Gender>;
   hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
   hasBusinessTaxNumberUpdatedAt?: Maybe<Scalars['DateTime']>;
+  hasPersonalTaxNumber?: Maybe<Scalars['Boolean']>;
+  hasPersonalTaxNumberUpdatedAt?: Maybe<Scalars['DateTime']>;
   /** IDNow identification details for user */
   identification: IdentificationDetails;
   /**
@@ -2717,6 +2791,7 @@ export type User = {
   premiumSubscriptionDiscount: Discount;
   publicId: Scalars['ID'];
   questionnaire?: Maybe<Questionnaire>;
+  questionnaireTasks: Array<QuestionnaireTask>;
   receiptMatchingIntroDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The user's associated Recurly Account */
   recurlyAccount?: Maybe<RecurlyAccount>;
@@ -2727,7 +2802,14 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.referral.code"
    */
   referralCode?: Maybe<Scalars['String']>;
-  /** The user's Solaris screening status */
+  /** The user's Solaris risk clarification status */
+  riskClassificationStatus?: Maybe<RiskClassificationStatus>;
+  /** The user's Solaris screening progress */
+  screeningProgress?: Maybe<ScreeningProgress>;
+  /**
+   * The user's Solaris screening status
+   * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
+   */
   screeningStatus?: Maybe<ScreeningStatus>;
   street?: Maybe<Scalars['String']>;
   /** The available subscription plans */
@@ -2917,6 +2999,7 @@ export type UserTaxDetails = {
   lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
+  personalTaxNumber?: Maybe<Scalars['String']>;
   taxNumber?: Maybe<Scalars['String']>;
   /** @deprecated This field will be removed in an upcoming release. Do not rely on it for any new features */
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
@@ -2930,7 +3013,9 @@ export type UserTaxDetailsInput = {
   deTaxId?: InputMaybe<Scalars['String']>;
   dependentsTaxIds?: InputMaybe<Array<DependentsTaxIds>>;
   hasBusinessTaxNumber?: InputMaybe<Scalars['Boolean']>;
+  hasPersonalTaxNumber?: InputMaybe<Scalars['Boolean']>;
   permanentExtensionStatus?: InputMaybe<PermanentExtensionStatus>;
+  personalTaxNumber?: InputMaybe<Scalars['String']>;
   taxNumber?: InputMaybe<Scalars['String']>;
   vatNumber?: InputMaybe<Scalars['String']>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
