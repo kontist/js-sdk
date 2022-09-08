@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -38,7 +35,7 @@ export type Account = {
   declarationStats: DeclarationStats;
   declarations: Array<Declaration>;
   /** Retrieve account balance from Solaris */
-  getAccountBalance: AccountBalanceResponse;
+  getSolarisBalance: AccountBalanceResponse;
   hasPendingCardFraudCase: Scalars['Boolean'];
   iban: Scalars['String'];
   /** Overdraft Application - only available for Kontist Application */
@@ -669,6 +666,33 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
+export enum ExternalBookkeepingDocumentType {
+  Advisor = 'ADVISOR',
+  Manual = 'MANUAL',
+  Tool = 'TOOL'
+}
+
+export type FibuFinalCheckDocumentTask = FibuFinalCheckTask & {
+  __typename?: 'FibuFinalCheckDocumentTask';
+  documentTypes: Array<ExternalBookkeepingDocumentType>;
+  status: FibuFinalCheckTaskStatus;
+  type: FibuFinalCheckTaskType;
+};
+
+export type FibuFinalCheckTask = {
+  type: FibuFinalCheckTaskType;
+};
+
+export enum FibuFinalCheckTaskStatus {
+  Completed = 'COMPLETED',
+  Todo = 'TODO'
+}
+
+export enum FibuFinalCheckTaskType {
+  ExternalBookkeepingDocuments = 'EXTERNAL_BOOKKEEPING_DOCUMENTS',
+  TaxReceipts = 'TAX_RECEIPTS'
+}
+
 export type FilterPreset = {
   value: Scalars['String'];
 };
@@ -692,6 +716,12 @@ export enum Gender {
 export type GenericFeature = {
   __typename?: 'GenericFeature';
   name: Scalars['String'];
+};
+
+export type GenericFibuFinalCheckTask = FibuFinalCheckTask & {
+  __typename?: 'GenericFibuFinalCheckTask';
+  status: FibuFinalCheckTaskStatus;
+  type: FibuFinalCheckTaskType;
 };
 
 export type GenericFilterPreset = FilterPreset & {
@@ -1036,6 +1066,7 @@ export type Mutation = {
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
   startQuestionnaire: Questionnaire;
+  submitBookkeepingQuestionnaire: Questionnaire;
   /** Submits UStVA declaration */
   submitDeclaration: Declaration;
   submitQuestionnaireAnswer: Questionnaire;
@@ -1073,6 +1104,7 @@ export type Mutation = {
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
   upsertQuestionnaireDocument: QuestionnaireDocument;
+  userConfirmation: MutationResult;
   /** Returns encrypted card details for virtual card */
   virtualCardDetails: Scalars['String'];
   whitelistCard: WhitelistCardResponse;
@@ -1372,6 +1404,11 @@ export type MutationStartQuestionnaireArgs = {
 };
 
 
+export type MutationSubmitBookkeepingQuestionnaireArgs = {
+  questionnaireId: Scalars['ID'];
+};
+
+
 export type MutationSubmitDeclarationArgs = {
   period: Scalars['String'];
   year: Scalars['Int'];
@@ -1496,6 +1533,11 @@ export type MutationUpsertProductsArgs = {
 export type MutationUpsertQuestionnaireDocumentArgs = {
   payload: QuestionnaireDocumentInput;
   questionnaireId: Scalars['ID'];
+};
+
+
+export type MutationUserConfirmationArgs = {
+  confirmation: UserConfirmation;
 };
 
 
@@ -2201,6 +2243,7 @@ export type SystemStatus = {
 
 export type TaxCase = {
   __typename?: 'TaxCase';
+  assignee?: Maybe<Scalars['String']>;
   deadline: Scalars['DateTime'];
   finalizedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
@@ -2739,6 +2782,7 @@ export type User = {
   emailDocuments: Array<EmailDocument>;
   /** Active user features */
   features: Array<Scalars['String']>;
+  fibuFinalCheckTasks: Array<FibuFinalCheckTask>;
   firstName?: Maybe<Scalars['String']>;
   gender?: Maybe<Gender>;
   hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
@@ -2869,6 +2913,11 @@ export type UserEmailDocumentsArgs = {
 };
 
 
+export type UserFibuFinalCheckTasksArgs = {
+  year: Scalars['Int'];
+};
+
+
 export type UserInvoiceArgs = {
   id: Scalars['String'];
 };
@@ -2909,6 +2958,10 @@ export type UserSubscriptionPlansArgs = {
 export type UserTaxCaseArgs = {
   year: Scalars['Int'];
 };
+
+export enum UserConfirmation {
+  BookkeepingDocumentsUploaded = 'BOOKKEEPING_DOCUMENTS_UPLOADED'
+}
 
 export type UserDependent = {
   __typename?: 'UserDependent';
