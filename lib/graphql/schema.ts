@@ -648,6 +648,33 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
+export enum ExternalBookkeepingDocumentType {
+  Advisor = 'ADVISOR',
+  Manual = 'MANUAL',
+  Tool = 'TOOL'
+}
+
+export type FibuFinalCheckDocumentTask = FibuFinalCheckTask & {
+  __typename?: 'FibuFinalCheckDocumentTask';
+  documentTypes: Array<ExternalBookkeepingDocumentType>;
+  status: FibuFinalCheckTaskStatus;
+  type: FibuFinalCheckTaskType;
+};
+
+export type FibuFinalCheckTask = {
+  type: FibuFinalCheckTaskType;
+};
+
+export enum FibuFinalCheckTaskStatus {
+  Completed = 'COMPLETED',
+  Todo = 'TODO'
+}
+
+export enum FibuFinalCheckTaskType {
+  ExternalBookkeepingDocuments = 'EXTERNAL_BOOKKEEPING_DOCUMENTS',
+  TaxReceipts = 'TAX_RECEIPTS'
+}
+
 export type FilterPreset = {
   value: Scalars['String'];
 };
@@ -671,6 +698,12 @@ export enum Gender {
 export type GenericFeature = {
   __typename?: 'GenericFeature';
   name: Scalars['String'];
+};
+
+export type GenericFibuFinalCheckTask = FibuFinalCheckTask & {
+  __typename?: 'GenericFibuFinalCheckTask';
+  status: FibuFinalCheckTaskStatus;
+  type: FibuFinalCheckTaskType;
 };
 
 export type GenericFilterPreset = FilterPreset & {
@@ -1015,6 +1048,7 @@ export type Mutation = {
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
   startQuestionnaire: Questionnaire;
+  submitBookkeepingQuestionnaire: Questionnaire;
   /** Submits UStVA declaration */
   submitDeclaration: Declaration;
   submitQuestionnaireAnswer: Questionnaire;
@@ -1052,6 +1086,7 @@ export type Mutation = {
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
   upsertQuestionnaireDocument: QuestionnaireDocument;
+  userConfirmation: MutationResult;
   /** Returns encrypted card details for virtual card */
   virtualCardDetails: Scalars['String'];
   whitelistCard: WhitelistCardResponse;
@@ -1351,6 +1386,11 @@ export type MutationStartQuestionnaireArgs = {
 };
 
 
+export type MutationSubmitBookkeepingQuestionnaireArgs = {
+  questionnaireId: Scalars['ID'];
+};
+
+
 export type MutationSubmitDeclarationArgs = {
   period: Scalars['String'];
   year: Scalars['Int'];
@@ -1475,6 +1515,11 @@ export type MutationUpsertProductsArgs = {
 export type MutationUpsertQuestionnaireDocumentArgs = {
   payload: QuestionnaireDocumentInput;
   questionnaireId: Scalars['ID'];
+};
+
+
+export type MutationUserConfirmationArgs = {
+  confirmation: UserConfirmation;
 };
 
 
@@ -1972,8 +2017,23 @@ export enum QuestionnaireStatus {
   Started = 'STARTED'
 }
 
+export type QuestionnaireTask = {
+  __typename?: 'QuestionnaireTask';
+  status: QuestionnaireTaskStatus;
+  type: QuestionnaireType;
+  year: Scalars['Int'];
+};
+
+export enum QuestionnaireTaskStatus {
+  Completed = 'COMPLETED',
+  InProgress = 'IN_PROGRESS',
+  InReview = 'IN_REVIEW',
+  ToDo = 'TO_DO'
+}
+
 export enum QuestionnaireType {
   EoyBasicData = 'EOY_BASIC_DATA',
+  EoyBookkeeping = 'EOY_BOOKKEEPING',
   EoyCarUsage = 'EOY_CAR_USAGE',
   EoyIncomeTax = 'EOY_INCOME_TAX',
   EoyOfficeUsage = 'EOY_OFFICE_USAGE',
@@ -2667,6 +2727,7 @@ export type User = {
   emailDocuments: Array<EmailDocument>;
   /** Active user features */
   features: Array<Scalars['String']>;
+  fibuFinalCheckTasks: Array<FibuFinalCheckTask>;
   firstName?: Maybe<Scalars['String']>;
   gender?: Maybe<Gender>;
   hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
@@ -2717,6 +2778,7 @@ export type User = {
   premiumSubscriptionDiscount: Discount;
   publicId: Scalars['ID'];
   questionnaire?: Maybe<Questionnaire>;
+  questionnaireTasks: Array<QuestionnaireTask>;
   receiptMatchingIntroDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The user's associated Recurly Account */
   recurlyAccount?: Maybe<RecurlyAccount>;
@@ -2787,6 +2849,11 @@ export type UserEmailDocumentsArgs = {
 };
 
 
+export type UserFibuFinalCheckTasksArgs = {
+  year: Scalars['Int'];
+};
+
+
 export type UserInvoiceArgs = {
   id: Scalars['String'];
 };
@@ -2827,6 +2894,10 @@ export type UserSubscriptionPlansArgs = {
 export type UserTaxCaseArgs = {
   year: Scalars['Int'];
 };
+
+export enum UserConfirmation {
+  BookkeepingDocumentsUploaded = 'BOOKKEEPING_DOCUMENTS_UPLOADED'
+}
 
 export type UserDependent = {
   __typename?: 'UserDependent';
