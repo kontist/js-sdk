@@ -2896,7 +2896,8 @@ export type UserTaxCaseArgs = {
 };
 
 export enum UserConfirmation {
-  BookkeepingDocumentsUploaded = 'BOOKKEEPING_DOCUMENTS_UPLOADED'
+  BookkeepingDocumentsUploaded = 'BOOKKEEPING_DOCUMENTS_UPLOADED',
+  TaxDeclarationNotNeeded = 'TAX_DECLARATION_NOT_NEEDED'
 }
 
 export type UserDependent = {
