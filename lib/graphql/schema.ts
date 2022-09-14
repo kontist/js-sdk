@@ -1520,6 +1520,7 @@ export type MutationUpsertQuestionnaireDocumentArgs = {
 
 export type MutationUserConfirmationArgs = {
   confirmation: UserConfirmation;
+  year?: InputMaybe<Scalars['Float']>;
 };
 
 
