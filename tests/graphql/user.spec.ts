@@ -1,9 +1,10 @@
 import * as sinon from "sinon";
+import { expect } from "chai";
 
 import { Client } from "../../lib";
 import { KontistSDKError } from "../../lib/errors";
 import { User } from "../../lib/graphql/user";
-import { expect } from "chai";
+import { UserConfirmation } from "../../lib/graphql/schema";
 
 describe("User", () => {
   let sandbox: sinon.SinonSandbox;
@@ -81,5 +82,24 @@ describe("User", () => {
       expect(result).to.eq(true);
     });
 
+  });
+
+  describe("#confirm", () => {
+    Object.values(UserConfirmation).forEach(confirmation => {
+      describe(`for ${confirmation}`, () => {  
+        it("should call rawQuery and return success", async () => {
+          // arrange
+          const user = new User(client.graphQL);
+          const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ userConfirmation: { success: true } } as any);
+    
+          // act
+          const result = await user.confirm({ confirmation, year: 2021 });
+    
+          // assert
+          sinon.assert.calledOnce(spyOnRawQuery);
+          expect(result).to.eq(true);
+        });
+      })
+    })
   });
 });
