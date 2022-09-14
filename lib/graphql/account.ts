@@ -107,7 +107,7 @@ export class Account extends Model<AccountModel> {
    *
    * @returns main account balance from solaris, including seizure_protection if exists
    */
-   public async getSolarisBalance(): Promise<SolarisBalance | null> {
+  public async getSolarisBalance(): Promise<SolarisBalance | null> {
     const result: Query = await this.client.rawQuery(GET_SOLARIS_BALANCE);
     return result.viewer?.mainAccount?.solarisBalance ?? null;
   }
