@@ -1,7 +1,7 @@
 import { KontistSDKError } from "../errors";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { Account as AccountModel, Query, AccountStats } from "./schema";
+import { Account as AccountModel, Query, AccountStats, SolarisBalance } from "./schema";
 
 const GET_ACCOUNT = `query {
   viewer {
@@ -37,6 +37,44 @@ const GET_ACCOUNT_STATS = `query {
   }
 }`;
 
+const GET_SOLARIS_BALANCE = `query {
+  viewer {
+    mainAccount {
+      solarisBalance {
+          balance {
+            value,
+            currency,
+            unit
+          },
+          availableBalance {
+            value,
+            currency,
+            unit,
+          },
+          seizureProtection {
+            currentBlockedAmount  {
+              value,
+              currency,
+              unit
+            },
+            protectedAmount  {
+              value,
+              currency,
+              unit
+            },
+            protectedAmountExpiring  {
+              value,
+              currency,
+              unit
+            },
+            protectedAmountExpiringDate
+          }
+        }
+      }
+    }
+  }
+`;
+
 export class Account extends Model<AccountModel> {
   public async fetch(): Promise<ResultPage<AccountModel>> {
     throw new KontistSDKError({
@@ -62,5 +100,15 @@ export class Account extends Model<AccountModel> {
   public async getStats(): Promise<AccountStats | null> {
     const result: Query = await this.client.rawQuery(GET_ACCOUNT_STATS);
     return result.viewer?.mainAccount?.stats ?? null;
+  }
+
+  /**
+   * Returns account balance from solaris, including seizure_protection if exists
+   *
+   * @returns main account balance from solaris, including seizure_protection if exists
+   */
+   public async getSolarisBalance(): Promise<SolarisBalance | null> {
+    const result: Query = await this.client.rawQuery(GET_SOLARIS_BALANCE);
+    return result.viewer?.mainAccount?.solarisBalance ?? null;
   }
 }

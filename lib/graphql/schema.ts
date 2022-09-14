@@ -34,14 +34,14 @@ export type Account = {
   declarationPdfUrl?: Maybe<Scalars['String']>;
   declarationStats: DeclarationStats;
   declarations: Array<Declaration>;
-  /** Retrieve account balance from Solaris */
-  getSolarisBalance: AccountBalanceResponse;
   hasPendingCardFraudCase: Scalars['Boolean'];
   iban: Scalars['String'];
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
   pendingTransactionVerification: PendingTransactionVerification;
   publicId: Scalars['ID'];
+  /** Retrieve account balance from Solaris */
+  solarisBalance: SolarisBalance;
   /** Different information about account balances, e.g. taxes, VAT, ... */
   stats: AccountStats;
   /** Individual tax-related settings per year */
@@ -123,11 +123,11 @@ export type AccountTransfersArgs = {
   where?: InputMaybe<TransfersConnectionFilter>;
 };
 
-export type AccountBalanceResponse = {
-  __typename?: 'AccountBalanceResponse';
-  available_balance?: Maybe<SolarisBalance>;
-  balance?: Maybe<SolarisBalance>;
-  seizure_protection?: Maybe<SeizureProtection>;
+export type AccountBalance = {
+  __typename?: 'AccountBalance';
+  currency?: Maybe<Scalars['String']>;
+  unit?: Maybe<Scalars['String']>;
+  value: Scalars['Float'];
 };
 
 export enum AccountState {
@@ -2149,10 +2149,10 @@ export enum ScreeningStatus {
 
 export type SeizureProtection = {
   __typename?: 'SeizureProtection';
-  current_blocked_amount: SolarisBalance;
-  protected_amount: SolarisBalance;
-  protected_amount_expiring: SolarisBalance;
-  protected_amount_expiring_date: Scalars['String'];
+  currentBlockedAmount: AccountBalance;
+  protectedAmount: AccountBalance;
+  protectedAmountExpiring: AccountBalance;
+  protectedAmountExpiringDate: Scalars['String'];
 };
 
 export type SepaTransfer = {
@@ -2182,9 +2182,9 @@ export enum SepaTransferStatus {
 
 export type SolarisBalance = {
   __typename?: 'SolarisBalance';
-  currency?: Maybe<Scalars['String']>;
-  unit?: Maybe<Scalars['String']>;
-  value: Scalars['Float'];
+  availableBalance?: Maybe<AccountBalance>;
+  balance?: Maybe<AccountBalance>;
+  seizureProtection?: Maybe<SeizureProtection>;
 };
 
 export enum StandingOrderReoccurrenceType {
