@@ -19,6 +19,37 @@ const accountStatsData = {
   taxMissing: 0,
 }
 
+const solarisBalanceData = {
+  balance: {
+    value: 1000,
+    currency: "EUR",
+    unit: "cents"
+  },
+  availableBalance: {
+    value: 1000,
+    currency: "EUR",
+    unit: "cents"
+  },
+  seizureProtection: {
+    currentBlockedAmount: {
+      value: 1000,
+      currency: "EUR",
+      unit: "cents"
+    },
+    protectedAmount: {
+      value: 1000,
+      currency: "EUR",
+      unit: "cents"
+    },
+    protectedAmountExpiring: {
+      value: 1000,
+      currency: "EUR",
+      unit: "cents"
+    },
+    protectedAmountExpiringDate: "30-09-2022",
+  },
+}
+
 describe("Account", () => {
   let sandbox: sinon.SinonSandbox;
   let client: Client;
@@ -142,6 +173,42 @@ describe("Account", () => {
 
       // act
       const result = await account.getStats();
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(null);
+    });
+  });
+
+  describe("#getSolarisBalance", () => {
+    it("should call rawQuery and return correct solaris balance", async () => {
+      // arrange
+      const account = new Account(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {
+            solarisBalance: solarisBalanceData,
+          },
+        },
+      } as any);
+
+      // act
+      const result = await account.getSolarisBalance();
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(solarisBalanceData);
+    });
+
+    it("should call rawQuery and return null for missing account", async () => {
+      // arrange
+      const account = new Account(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      // act
+      const result = await account.getSolarisBalance();
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);

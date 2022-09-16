@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -43,6 +40,8 @@ export type Account = {
   overdraft?: Maybe<Overdraft>;
   pendingTransactionVerification: PendingTransactionVerification;
   publicId: Scalars['ID'];
+  /** Retrieve account balance from Solaris */
+  solarisBalance: SolarisAccountBalance;
   /** Different information about account balances, e.g. taxes, VAT, ... */
   stats: AccountStats;
   /** Individual tax-related settings per year */
@@ -122,6 +121,13 @@ export type AccountTransfersArgs = {
   last?: InputMaybe<Scalars['Int']>;
   type: TransferType;
   where?: InputMaybe<TransfersConnectionFilter>;
+};
+
+export type AccountBalance = {
+  __typename?: 'AccountBalance';
+  currency?: Maybe<Scalars['String']>;
+  unit?: Maybe<Scalars['String']>;
+  value: Scalars['Float'];
 };
 
 export enum AccountState {
@@ -523,6 +529,18 @@ export type Customer = {
   taxNumber?: Maybe<Scalars['String']>;
   vatNumber?: Maybe<Scalars['String']>;
 };
+
+export enum CustomerVettingStatus {
+  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
+  InformationReceived = 'INFORMATION_RECEIVED',
+  InformationRequested = 'INFORMATION_REQUESTED',
+  NotVetted = 'NOT_VETTED',
+  NoMatch = 'NO_MATCH',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  RiskAccepted = 'RISK_ACCEPTED',
+  RiskRejected = 'RISK_REJECTED',
+  VettingNotRequired = 'VETTING_NOT_REQUIRED'
+}
 
 export type DashboardInvoice = {
   __typename?: 'DashboardInvoice';
@@ -1520,7 +1538,7 @@ export type MutationUpsertQuestionnaireDocumentArgs = {
 
 export type MutationUserConfirmationArgs = {
   confirmation: UserConfirmation;
-  year?: InputMaybe<Scalars['Float']>;
+  year?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -2087,6 +2105,18 @@ export enum ReviewTriggerPlatform {
   Webapp = 'WEBAPP'
 }
 
+export enum RiskClassificationStatus {
+  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
+  InformationReceived = 'INFORMATION_RECEIVED',
+  InformationRequested = 'INFORMATION_REQUESTED',
+  NormalRisk = 'NORMAL_RISK',
+  NotScored = 'NOT_SCORED',
+  PotentialRisk = 'POTENTIAL_RISK',
+  RiskAccepted = 'RISK_ACCEPTED',
+  RiskRejected = 'RISK_REJECTED',
+  ScoringNotRequired = 'SCORING_NOT_REQUIRED'
+}
+
 export enum ScopeType {
   Accounts = 'ACCOUNTS',
   Admin = 'ADMIN',
@@ -2104,12 +2134,27 @@ export enum ScopeType {
   Users = 'USERS'
 }
 
+export enum ScreeningProgress {
+  NotScreened = 'NOT_SCREENED',
+  PotentialMatch = 'POTENTIAL_MATCH',
+  ScreenedAccepted = 'SCREENED_ACCEPTED',
+  ScreenedDeclined = 'SCREENED_DECLINED'
+}
+
 export enum ScreeningStatus {
   NotScreened = 'NOT_SCREENED',
   PotentialMatch = 'POTENTIAL_MATCH',
   ScreenedAccepted = 'SCREENED_ACCEPTED',
   ScreenedDeclined = 'SCREENED_DECLINED'
 }
+
+export type SeizureProtection = {
+  __typename?: 'SeizureProtection';
+  currentBlockedAmount: AccountBalance;
+  protectedAmount: AccountBalance;
+  protectedAmountExpiring: AccountBalance;
+  protectedAmountExpiringDate: Scalars['String'];
+};
 
 export type SepaTransfer = {
   __typename?: 'SepaTransfer';
@@ -2135,6 +2180,13 @@ export enum SepaTransferStatus {
   Booked = 'BOOKED',
   Confirmed = 'CONFIRMED'
 }
+
+export type SolarisAccountBalance = {
+  __typename?: 'SolarisAccountBalance';
+  availableBalance?: Maybe<AccountBalance>;
+  balance?: Maybe<AccountBalance>;
+  seizureProtection?: Maybe<SeizureProtection>;
+};
 
 export enum StandingOrderReoccurrenceType {
   Annually = 'ANNUALLY',
@@ -2192,6 +2244,7 @@ export type SystemStatus = {
 
 export type TaxCase = {
   __typename?: 'TaxCase';
+  assignee?: Maybe<Scalars['String']>;
   deadline: Scalars['DateTime'];
   finalizedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
@@ -2717,6 +2770,8 @@ export type User = {
   couponCodeOffer?: Maybe<Scalars['String']>;
   /** @deprecated This field will be removed in an upcoming release */
   createdAt: Scalars['DateTime'];
+  /** The user's Solaris customer vetting status */
+  customerVettingStatus?: Maybe<CustomerVettingStatus>;
   /** User's documents */
   documentCategories: Array<DocumentCategory>;
   /** User's documents */
@@ -2733,6 +2788,8 @@ export type User = {
   gender?: Maybe<Gender>;
   hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
   hasBusinessTaxNumberUpdatedAt?: Maybe<Scalars['DateTime']>;
+  hasPersonalTaxNumber?: Maybe<Scalars['Boolean']>;
+  hasPersonalTaxNumberUpdatedAt?: Maybe<Scalars['DateTime']>;
   /** IDNow identification details for user */
   identification: IdentificationDetails;
   /**
@@ -2764,6 +2821,8 @@ export type User = {
   mainAccount?: Maybe<Account>;
   /** User metadata. These fields are likely to get frequently updated or changed. */
   metadata: UserMetadata;
+  missingBusinessTaxNumberNote?: Maybe<Scalars['String']>;
+  missingPersonalTaxNumberNote?: Maybe<Scalars['String']>;
   mobileNumber?: Maybe<Scalars['String']>;
   nationality?: Maybe<Nationality>;
   /** All push-notification types and their state */
@@ -2790,7 +2849,14 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.referral.code"
    */
   referralCode?: Maybe<Scalars['String']>;
-  /** The user's Solaris screening status */
+  /** The user's Solaris risk clarification status */
+  riskClassificationStatus?: Maybe<RiskClassificationStatus>;
+  /** The user's Solaris screening progress */
+  screeningProgress?: Maybe<ScreeningProgress>;
+  /**
+   * The user's Solaris screening status
+   * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
+   */
   screeningStatus?: Maybe<ScreeningStatus>;
   street?: Maybe<Scalars['String']>;
   /** The available subscription plans */
@@ -2988,8 +3054,11 @@ export type UserTaxDetails = {
   hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
   lastTaxPaymentDate?: Maybe<Scalars['DateTime']>;
   lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
+  missingBusinessTaxNumberNote?: Maybe<Scalars['String']>;
+  missingPersonalTaxNumberNote?: Maybe<Scalars['String']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
+  personalTaxNumber?: Maybe<Scalars['String']>;
   taxNumber?: Maybe<Scalars['String']>;
   /** @deprecated This field will be removed in an upcoming release. Do not rely on it for any new features */
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
@@ -3003,7 +3072,11 @@ export type UserTaxDetailsInput = {
   deTaxId?: InputMaybe<Scalars['String']>;
   dependentsTaxIds?: InputMaybe<Array<DependentsTaxIds>>;
   hasBusinessTaxNumber?: InputMaybe<Scalars['Boolean']>;
+  hasPersonalTaxNumber?: InputMaybe<Scalars['Boolean']>;
+  missingBusinessTaxNumberNote?: InputMaybe<Scalars['String']>;
+  missingPersonalTaxNumberNote?: InputMaybe<Scalars['String']>;
   permanentExtensionStatus?: InputMaybe<PermanentExtensionStatus>;
+  personalTaxNumber?: InputMaybe<Scalars['String']>;
   taxNumber?: InputMaybe<Scalars['String']>;
   vatNumber?: InputMaybe<Scalars['String']>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
