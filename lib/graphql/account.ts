@@ -42,31 +42,31 @@ const GET_SOLARIS_BALANCE = `query {
     mainAccount {
       solarisBalance {
           balance {
-            value,
-            currency,
+            value
+            currency
             unit
-          },
+          }
           availableBalance {
-            value,
-            currency,
-            unit,
-          },
+            value
+            currency
+            unit
+          }
           seizureProtection {
             currentBlockedAmount  {
-              value,
-              currency,
+              value
+              currency
               unit
-            },
+            }
             protectedAmount  {
-              value,
-              currency,
+              value
+              currency
               unit
-            },
+            }
             protectedAmountExpiring  {
-              value,
-              currency,
+              value
+              currency
               unit
-            },
+            }
             protectedAmountExpiringDate
           }
         }
