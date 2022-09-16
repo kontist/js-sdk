@@ -1538,7 +1538,7 @@ export type MutationUpsertQuestionnaireDocumentArgs = {
 
 export type MutationUserConfirmationArgs = {
   confirmation: UserConfirmation;
-  year?: InputMaybe<Scalars['Float']>;
+  year?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -2821,6 +2821,8 @@ export type User = {
   mainAccount?: Maybe<Account>;
   /** User metadata. These fields are likely to get frequently updated or changed. */
   metadata: UserMetadata;
+  missingBusinessTaxNumberNote?: Maybe<Scalars['String']>;
+  missingPersonalTaxNumberNote?: Maybe<Scalars['String']>;
   mobileNumber?: Maybe<Scalars['String']>;
   nationality?: Maybe<Nationality>;
   /** All push-notification types and their state */
@@ -3052,6 +3054,8 @@ export type UserTaxDetails = {
   hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
   lastTaxPaymentDate?: Maybe<Scalars['DateTime']>;
   lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
+  missingBusinessTaxNumberNote?: Maybe<Scalars['String']>;
+  missingPersonalTaxNumberNote?: Maybe<Scalars['String']>;
   needsToProvideTaxIdentification: Scalars['Boolean'];
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
   personalTaxNumber?: Maybe<Scalars['String']>;
@@ -3069,6 +3073,8 @@ export type UserTaxDetailsInput = {
   dependentsTaxIds?: InputMaybe<Array<DependentsTaxIds>>;
   hasBusinessTaxNumber?: InputMaybe<Scalars['Boolean']>;
   hasPersonalTaxNumber?: InputMaybe<Scalars['Boolean']>;
+  missingBusinessTaxNumberNote?: InputMaybe<Scalars['String']>;
+  missingPersonalTaxNumberNote?: InputMaybe<Scalars['String']>;
   permanentExtensionStatus?: InputMaybe<PermanentExtensionStatus>;
   personalTaxNumber?: InputMaybe<Scalars['String']>;
   taxNumber?: InputMaybe<Scalars['String']>;
