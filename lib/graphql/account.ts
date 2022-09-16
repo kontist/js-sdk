@@ -1,7 +1,7 @@
 import { KontistSDKError } from "../errors";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { Account as AccountModel, Query, AccountStats, SolarisBalance } from "./schema";
+import { Account as AccountModel, Query, AccountStats, SolarisAccountBalance } from "./schema";
 
 const GET_ACCOUNT = `query {
   viewer {
@@ -107,7 +107,7 @@ export class Account extends Model<AccountModel> {
    *
    * @returns main account balance from solaris, including seizure_protection if exists
    */
-  public async getSolarisBalance(): Promise<SolarisBalance | null> {
+  public async getSolarisBalance(): Promise<SolarisAccountBalance | null> {
     const result: Query = await this.client.rawQuery(GET_SOLARIS_BALANCE);
     return result.viewer?.mainAccount?.solarisBalance ?? null;
   }

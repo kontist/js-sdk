@@ -41,7 +41,7 @@ export type Account = {
   pendingTransactionVerification: PendingTransactionVerification;
   publicId: Scalars['ID'];
   /** Retrieve account balance from Solaris */
-  solarisBalance: SolarisBalance;
+  solarisBalance: SolarisAccountBalance;
   /** Different information about account balances, e.g. taxes, VAT, ... */
   stats: AccountStats;
   /** Individual tax-related settings per year */
@@ -2180,8 +2180,8 @@ export enum SepaTransferStatus {
   Confirmed = 'CONFIRMED'
 }
 
-export type SolarisBalance = {
-  __typename?: 'SolarisBalance';
+export type SolarisAccountBalance = {
+  __typename?: 'SolarisAccountBalance';
   availableBalance?: Maybe<AccountBalance>;
   balance?: Maybe<AccountBalance>;
   seizureProtection?: Maybe<SeizureProtection>;
