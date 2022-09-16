@@ -1,4 +1,4 @@
-import { Query, User as UserModel } from "./schema";
+import { MutationUserConfirmationArgs, Query, User as UserModel } from "./schema";
 
 import { KontistSDKError } from "../errors";
 import { Model } from "./model";
@@ -47,6 +47,18 @@ const CREATE_ALIAS = `mutation($alias: String!, $hash: String!) {
   }
 }`;
 
+const USER_CONFIRMATION = `mutation userConfirmation(
+  $confirmation: UserConfirmation!
+  $year: Int
+) {
+ userConfirmation(
+   confirmation: $confirmation
+   year: $year
+  ) {
+    success
+  }
+}`
+
 export class User extends Model<UserModel> {
   public async fetch(): Promise<ResultPage<UserModel>> {
     throw new KontistSDKError({ message: "You are allowed only to fetch your details." });
@@ -71,4 +83,14 @@ export class User extends Model<UserModel> {
     const result = await this.client.rawQuery(CREATE_ALIAS, { alias, hash });
     return result.createUserEmailAlias.success;
   }
+
+  /**
+   * Confirms user decision
+   *
+   * @returns boolean success value
+   */
+  public async confirm(args: MutationUserConfirmationArgs): Promise<boolean> {
+      const result = await this.client.rawQuery(USER_CONFIRMATION, args);
+      return result.userConfirmation.success;
+    }
 }
