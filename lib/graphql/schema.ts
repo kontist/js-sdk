@@ -15,8 +15,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -666,20 +669,9 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
-export enum ExternalBookkeepingDocumentType {
-  Advisor = 'ADVISOR',
-  Manual = 'MANUAL',
-  Tool = 'TOOL'
-}
-
-export type FibuFinalCheckDocumentTask = FibuFinalCheckTask & {
-  __typename?: 'FibuFinalCheckDocumentTask';
-  documentTypes: Array<ExternalBookkeepingDocumentType>;
-  status: FibuFinalCheckTaskStatus;
-  type: FibuFinalCheckTaskType;
-};
-
 export type FibuFinalCheckTask = {
+  __typename?: 'FibuFinalCheckTask';
+  status: FibuFinalCheckTaskStatus;
   type: FibuFinalCheckTaskType;
 };
 
@@ -689,8 +681,10 @@ export enum FibuFinalCheckTaskStatus {
 }
 
 export enum FibuFinalCheckTaskType {
-  ExternalBookkeepingDocuments = 'EXTERNAL_BOOKKEEPING_DOCUMENTS',
-  TaxReceipts = 'TAX_RECEIPTS'
+  TaxReceipts = 'TAX_RECEIPTS',
+  UploadAdvisor = 'UPLOAD_ADVISOR',
+  UploadManual = 'UPLOAD_MANUAL',
+  UploadTool = 'UPLOAD_TOOL'
 }
 
 export type FilterPreset = {
@@ -716,12 +710,6 @@ export enum Gender {
 export type GenericFeature = {
   __typename?: 'GenericFeature';
   name: Scalars['String'];
-};
-
-export type GenericFibuFinalCheckTask = FibuFinalCheckTask & {
-  __typename?: 'GenericFibuFinalCheckTask';
-  status: FibuFinalCheckTaskStatus;
-  type: FibuFinalCheckTaskType;
 };
 
 export type GenericFilterPreset = FilterPreset & {
@@ -2900,6 +2888,11 @@ export type UserClientArgs = {
 };
 
 
+export type UserDocumentCategoriesArgs = {
+  categoryNames?: InputMaybe<Array<Scalars['String']>>;
+};
+
+
 export type UserDocumentsArgs = {
   documentCategoryId?: InputMaybe<Scalars['String']>;
 };
@@ -2963,8 +2956,10 @@ export type UserTaxCaseArgs = {
 };
 
 export enum UserConfirmation {
-  BookkeepingDocumentsUploaded = 'BOOKKEEPING_DOCUMENTS_UPLOADED',
-  TaxDeclarationNotNeeded = 'TAX_DECLARATION_NOT_NEEDED'
+  AdvisorDocumentsUploaded = 'ADVISOR_DOCUMENTS_UPLOADED',
+  ManualDocumentsUploaded = 'MANUAL_DOCUMENTS_UPLOADED',
+  TaxDeclarationNotNeeded = 'TAX_DECLARATION_NOT_NEEDED',
+  ToolsDocumentsUploaded = 'TOOLS_DOCUMENTS_UPLOADED'
 }
 
 export type UserDependent = {
