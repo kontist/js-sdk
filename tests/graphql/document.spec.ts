@@ -84,7 +84,7 @@ describe("Document", () => {
         // act
         const result = await document.fetch(
           {
-            documentCategoryId: "abcd",
+            categoryIds: ["abcd"],
           },
           ["id"]
         );
@@ -92,9 +92,9 @@ describe("Document", () => {
         // assert
         sinon.assert.calledOnce(spyOnRawQuery);
         expect(spyOnRawQuery.getCall(0).args[0]).equals(`
-  query FetchDocuments ($documentCategoryId: String, year: Int) {
+  query FetchDocuments ($categoryIds: [String!], $year: Int) {
     viewer {
-      documents (documentCategoryId: $documentCategoryId, year: $year) {
+      documents (categoryIds: $categoryIds, year: $year) {
         id
       }
     }
@@ -104,7 +104,7 @@ describe("Document", () => {
       });
     });
 
-    describe("when called with documentCategoryId and year", () => {
+    describe("when called with categoryIds and year", () => {
       it("should call rawQuery and return documents array", async () => {
         // arrange
         const response: DocumentModel[] = [
@@ -127,16 +127,16 @@ describe("Document", () => {
 
         // act
         const result = await document.fetch(
-          { documentCategoryId: "abcd", year: 2021 },
+          { categoryIds: ["abcd"], year: 2021 },
           ["id"]
         );
 
         // assert
         sinon.assert.calledOnce(spyOnRawQuery);
         expect(spyOnRawQuery.getCall(0).args[0]).equals(`
-  query FetchDocuments ($documentCategoryId: String, year: Int) {
+  query FetchDocuments ($categoryIds: [String!], $year: Int) {
     viewer {
-      documents (documentCategoryId: $documentCategoryId, year: $year) {
+      documents (categoryIds: $categoryIds, year: $year) {
         id
       }
     }

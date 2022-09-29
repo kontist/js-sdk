@@ -30,9 +30,9 @@ const DEFAULT_DOCUMENT_FIELDS = [
 const FETCH_DOCUMENTS_QUERY = (
   fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS
 ) => `
-  query FetchDocuments ($documentCategoryId: String, $year: Int) {
+  query FetchDocuments ($categoryIds: [String!], $year: Int) {
     viewer {
-      documents (documentCategoryId: $documentCategoryId, year: $year) {
+      documents (categoryIds: $categoryIds, year: $year) {
         ${fields.join("\n")}
       }
     }
@@ -68,7 +68,7 @@ export class Document {
 
   public async fetch(
     filter?: {
-      documentCategoryId?: string;
+      categoryIds?: string[];
       year?: number;
     },
     fields?: DocumentProps[]
