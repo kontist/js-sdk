@@ -2895,6 +2895,7 @@ export type UserDocumentCategoriesArgs = {
 
 export type UserDocumentsArgs = {
   documentCategoryId?: InputMaybe<Scalars['String']>;
+  year?: InputMaybe<Scalars['Int']>;
 };
 
 
