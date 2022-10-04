@@ -27,17 +27,21 @@ const DEFAULT_DOCUMENT_FIELDS = [
   DOCUMENT_METADATA,
 ] as DocumentProps[];
 
-const FETCH_DOCUMENTS_QUERY = (fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS) => `
-  query {
+const FETCH_DOCUMENTS_QUERY = (
+  fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS
+) => `
+  query FetchDocuments ($categoryIds: [String!], $year: Int) {
     viewer {
-      documents {
+      documents (categoryIds: $categoryIds, year: $year) {
         ${fields.join("\n")}
       }
     }
   }
 `;
 
-const UPDATE_DOCUMENT_QUERY = (fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS) => `
+const UPDATE_DOCUMENT_QUERY = (
+  fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS
+) => `
   mutation(
     $id: ID!,
     $name: String
@@ -62,9 +66,16 @@ const DELETE_DOCUMENT_QUERY = `
 export class Document {
   constructor(protected client: GraphQLClient) {}
 
-  public async fetch(fields?: DocumentProps[]): Promise<DocumentModel[]> {
+  public async fetch(
+    filter?: {
+      categoryIds?: string[];
+      year?: number;
+    },
+    fields?: DocumentProps[]
+  ): Promise<DocumentModel[]> {
     const result = await this.client.rawQuery(
-      FETCH_DOCUMENTS_QUERY(fields)
+      FETCH_DOCUMENTS_QUERY(fields),
+      filter
     );
     return result.viewer?.documents ?? [];
   }
