@@ -168,6 +168,20 @@ export type AccountStats = {
   yours: Scalars['Int'];
 };
 
+export enum ActionReason {
+  IncomingAmountWrong = 'INCOMING_AMOUNT_WRONG',
+  InvalidReceipt = 'INVALID_RECEIPT',
+  MissingTaxExemptSales = 'MISSING_TAX_EXEMPT_SALES',
+  NoHospitalityReceipt = 'NO_HOSPITALITY_RECEIPT',
+  NoReducedTax = 'NO_REDUCED_TAX',
+  ObligedTaxes = 'OBLIGED_TAXES',
+  OutgoingAmountWrong = 'OUTGOING_AMOUNT_WRONG',
+  ReverseChargeInformation = 'REVERSE_CHARGE_INFORMATION',
+  ReverseChargeMissing = 'REVERSE_CHARGE_MISSING',
+  SmallBusinessMissing = 'SMALL_BUSINESS_MISSING',
+  WrongTaxrateAncillaryService = 'WRONG_TAXRATE_ANCILLARY_SERVICE'
+}
+
 export type Asset = {
   __typename?: 'Asset';
   assetableId: Scalars['ID'];
@@ -341,6 +355,7 @@ export enum CategorizationType {
   Invoicing = 'INVOICING',
   Kontax = 'KONTAX',
   Script = 'SCRIPT',
+  SuggestedByMl = 'SUGGESTED_BY_ML',
   User = 'USER',
   UserOverwrite = 'USER_OVERWRITE'
 }
@@ -440,6 +455,19 @@ export type CreateClientInput = {
   scopes: Array<ScopeType>;
   /** The OAuth2 client secret */
   secret?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateDeclarationApprovalInput = {
+  declarationId: Scalars['ID'];
+  declarationType: TaxDeclarationType;
+  delaySubmission?: InputMaybe<Scalars['Boolean']>;
+  jointDeclaration?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type CreateDeclarationDeclineInput = {
+  declarationId: Scalars['ID'];
+  declarationType: TaxDeclarationType;
+  reason: Scalars['String'];
 };
 
 export type CreateInvoiceLogoResponse = {
@@ -566,6 +594,23 @@ export type Declaration = {
   year: Scalars['Int'];
 };
 
+export type DeclarationApproval = {
+  __typename?: 'DeclarationApproval';
+  createdAt: Scalars['DateTime'];
+  delaySubmission?: Maybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+  jointDeclaration?: Maybe<Scalars['Boolean']>;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type DeclarationDecline = {
+  __typename?: 'DeclarationDecline';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  reason: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+};
+
 export type DeclarationStats = {
   __typename?: 'DeclarationStats';
   amount: Scalars['Int'];
@@ -590,7 +635,7 @@ export type DirectDebitFee = {
   amount: Scalars['Int'];
   id: Scalars['Int'];
   invoiceStatus: InvoiceStatus;
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   type: TransactionFeeType;
   usedAt?: Maybe<Scalars['DateTime']>;
 };
@@ -606,6 +651,7 @@ export type Discount = {
 export type Document = {
   __typename?: 'Document';
   createdAt: Scalars['DateTime'];
+  downloadUrl: Scalars['String'];
   id: Scalars['ID'];
   metadata?: Maybe<DocumentMetadata>;
   name: Scalars['String'];
@@ -961,6 +1007,9 @@ export type Mutation = {
   activateOverdraft?: Maybe<Overdraft>;
   /** Adds Google Pay card token reference id for given wallet id */
   addGooglePayCardToken: GooglePayCardToken;
+  /** Send Lead data to designated Zap to redirect lead to Agreas */
+  agerasLeadRedirect: MutationResult;
+  approveDeclaration: DeclarationApproval;
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
   authorizeChangeRequest: AuthorizeChangeRequestRespone;
@@ -1011,6 +1060,7 @@ export type Mutation = {
   /** Create a new user */
   createUser: PublicMutationResult;
   createUserEmailAlias: MutationResult;
+  declineDeclaration: DeclarationDecline;
   /** Remove an Asset */
   deleteAsset: MutationResult;
   /** Delete an OAuth2 client */
@@ -1109,6 +1159,11 @@ export type MutationAddGooglePayCardTokenArgs = {
   id: Scalars['String'];
   tokenRefId: Scalars['String'];
   walletId: Scalars['String'];
+};
+
+
+export type MutationApproveDeclarationArgs = {
+  payload: CreateDeclarationApprovalInput;
 };
 
 
@@ -1263,6 +1318,11 @@ export type MutationCreateUserArgs = {
 export type MutationCreateUserEmailAliasArgs = {
   alias: Scalars['String'];
   hash: Scalars['String'];
+};
+
+
+export type MutationDeclineDeclarationArgs = {
+  payload: CreateDeclarationDeclineInput;
 };
 
 
@@ -2232,12 +2292,82 @@ export type SystemStatus = {
 
 export type TaxCase = {
   __typename?: 'TaxCase';
-  assignee?: Maybe<Scalars['String']>;
   deadline: Scalars['DateTime'];
   finalizedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
+  status: TaxCaseStatus;
+  taxOfficeDeadline?: Maybe<Scalars['DateTime']>;
   year: Scalars['Int'];
 };
+
+export enum TaxCaseStatus {
+  Done = 'DONE',
+  InProgress = 'IN_PROGRESS',
+  NotStarted = 'NOT_STARTED'
+}
+
+export type TaxDeclaration = {
+  __typename?: 'TaxDeclaration';
+  declarationApproval?: Maybe<DeclarationApproval>;
+  declarationType: TaxDeclarationType;
+  finalForms?: Maybe<TaxDeclarationSubmissionInfo>;
+  id: Scalars['ID'];
+  previewForms?: Maybe<TaxDeclarationSavedDraftInfo>;
+  status: TaxDeclarationStatus;
+  statusUpdatedAt?: Maybe<Scalars['DateTime']>;
+  year: Scalars['Int'];
+};
+
+export type TaxDeclarationExternalAsset = {
+  __typename?: 'TaxDeclarationExternalAsset';
+  filetype: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type TaxDeclarationSavedDraftInfo = {
+  __typename?: 'TaxDeclarationSavedDraftInfo';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  createdBy?: Maybe<Scalars['String']>;
+  externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
+  pdfUrl?: Maybe<Scalars['String']>;
+};
+
+export enum TaxDeclarationStatus {
+  AppealProcessCompleted = 'APPEAL_PROCESS_COMPLETED',
+  AppealProcessStarted = 'APPEAL_PROCESS_STARTED',
+  ApprovedByTaxConsultant = 'APPROVED_BY_TAX_CONSULTANT',
+  ApprovedByUser = 'APPROVED_BY_USER',
+  Closed = 'CLOSED',
+  CompletedByData = 'COMPLETED_BY_DATA',
+  CompletedByOps = 'COMPLETED_BY_OPS',
+  ConsultationData = 'CONSULTATION_DATA',
+  InProgressData = 'IN_PROGRESS_DATA',
+  InProgressOps = 'IN_PROGRESS_OPS',
+  InProgressTaxConsultant = 'IN_PROGRESS_TAX_CONSULTANT',
+  NotRelevant = 'NOT_RELEVANT',
+  ObjectedByFinanzamt = 'OBJECTED_BY_FINANZAMT',
+  ObjectedByTaxConsultant = 'OBJECTED_BY_TAX_CONSULTANT',
+  ObjectedByUser = 'OBJECTED_BY_USER',
+  Open = 'OPEN',
+  ReceivedTaxBill = 'RECEIVED_TAX_BILL',
+  Submitted = 'SUBMITTED',
+  WaitingForUserApproval = 'WAITING_FOR_USER_APPROVAL'
+}
+
+export type TaxDeclarationSubmissionInfo = {
+  __typename?: 'TaxDeclarationSubmissionInfo';
+  externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
+  pdfUrl?: Maybe<Scalars['String']>;
+  submissionAgent?: Maybe<Scalars['String']>;
+  submissionDate?: Maybe<Scalars['DateTime']>;
+};
+
+export enum TaxDeclarationType {
+  Euer = 'EUER',
+  IncomeTax = 'INCOME_TAX',
+  TradeTax = 'TRADE_TAX',
+  VatAnnual = 'VAT_ANNUAL'
+}
 
 /** Tax numbers of users */
 export type TaxNumber = {
@@ -2287,6 +2417,7 @@ export enum ThreeStateAnswer {
 
 export type Transaction = {
   __typename?: 'Transaction';
+  actionReason?: Maybe<ActionReason>;
   /** The amount of the transaction in cents */
   amount: Scalars['Int'];
   /** View a single Asset for a transaction */
@@ -2301,7 +2432,7 @@ export type Transaction = {
   categoryCode?: Maybe<Scalars['String']>;
   categoryCodeTranslation?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
-  description: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
   directDebitFees: Array<DirectDebitFee>;
   documentDownloadUrl?: Maybe<Scalars['String']>;
   documentNumber?: Maybe<Scalars['String']>;
@@ -2437,6 +2568,8 @@ export enum TransactionFeeType {
   CardReplacement = 'CARD_REPLACEMENT',
   DirectDebitReturn = 'DIRECT_DEBIT_RETURN',
   ForeignTransaction = 'FOREIGN_TRANSACTION',
+  FreeKontistTransaction = 'FREE_KONTIST_TRANSACTION',
+  KontistTransaction = 'KONTIST_TRANSACTION',
   SecondReminderEmail = 'SECOND_REMINDER_EMAIL'
 }
 
@@ -2769,9 +2902,10 @@ export type User = {
   email: Scalars['String'];
   emailDocument: EmailDocument;
   emailDocuments: Array<EmailDocument>;
+  euerDeclaration?: Maybe<TaxDeclaration>;
   /** Active user features */
   features: Array<Scalars['String']>;
-  fibuFinalCheckTasks: Array<FibuFinalCheckTask>;
+  fibuFinalCheckTasks?: Maybe<Array<FibuFinalCheckTask>>;
   firstName?: Maybe<Scalars['String']>;
   gender?: Maybe<Gender>;
   hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
@@ -2790,6 +2924,7 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.identification.status"
    */
   identificationStatus?: Maybe<IdentificationStatus>;
+  incomeTaxDeclaration?: Maybe<TaxDeclaration>;
   /** Bookkeeping partners information for user */
   integrations: Array<UserIntegration>;
   invoice?: Maybe<Invoice>;
@@ -2861,8 +2996,10 @@ export type User = {
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxRate" */
   taxRate?: Maybe<Scalars['Int']>;
   taxServiceOnboardingCompletedAt?: Maybe<Scalars['DateTime']>;
+  tradeTaxDeclaration?: Maybe<TaxDeclaration>;
   unfinishedTransfers: Array<UnfinishedTransfer>;
   untrustedPhoneNumber?: Maybe<Scalars['String']>;
+  vatAnnualDeclaration?: Maybe<TaxDeclaration>;
   vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatNumber" */
   vatNumber?: Maybe<Scalars['String']>;
@@ -2910,7 +3047,17 @@ export type UserEmailDocumentsArgs = {
 };
 
 
+export type UserEuerDeclarationArgs = {
+  year: Scalars['Int'];
+};
+
+
 export type UserFibuFinalCheckTasksArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type UserIncomeTaxDeclarationArgs = {
   year: Scalars['Int'];
 };
 
@@ -2953,6 +3100,16 @@ export type UserSubscriptionPlansArgs = {
 
 
 export type UserTaxCaseArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type UserTradeTaxDeclarationArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type UserVatAnnualDeclarationArgs = {
   year: Scalars['Int'];
 };
 
