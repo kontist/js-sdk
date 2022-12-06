@@ -32,20 +32,21 @@ describe("Document", () => {
     sandbox.restore();
   });
 
+  const doc: DocumentModel = {
+    id: "1",
+    name: "test",
+    type: "jpg",
+    note: null,
+    createdAt: "2021-07-01",
+    url: "http://url.com",
+    metadata: null,
+    downloadUrl: "http://dummy_url.com",
+  };
+
   describe("#fetch", () => {
     it("should call rawQuery and return documents array", async () => {
       // arrange
-      const response: DocumentModel[] = [
-        {
-          id: "1",
-          name: "test",
-          type: "jpg",
-          note: null,
-          createdAt: "2021-07-01",
-          url: "http://url.com",
-          metadata: null,
-        },
-      ];
+      const response = [doc];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         viewer: {
           documents: response,
@@ -63,16 +64,7 @@ describe("Document", () => {
     describe("when called with custom set of fields", () => {
       it("should call rawQuery and return documents array", async () => {
         // arrange
-        const response: DocumentModel[] = [
-          {
-            id: "1",
-            name: "test",
-            type: "jpg",
-            note: null,
-            createdAt: "2021-07-01",
-            url: "http://url.com",
-          },
-        ];
+        const response = [doc];
         const spyOnRawQuery = sandbox
           .stub(client.graphQL, "rawQuery")
           .resolves({
@@ -107,16 +99,7 @@ describe("Document", () => {
     describe("when called with categoryIds and year", () => {
       it("should call rawQuery and return documents array", async () => {
         // arrange
-        const response: DocumentModel[] = [
-          {
-            id: "1",
-            name: "test",
-            type: "jpg",
-            note: null,
-            createdAt: "2021-07-01",
-            url: "http://url.com",
-          },
-        ];
+        const response = [doc];
         const spyOnRawQuery = sandbox
           .stub(client.graphQL, "rawQuery")
           .resolves({
@@ -153,15 +136,7 @@ describe("Document", () => {
       const name = "newName";
 
       // arrange
-      const response: DocumentModel = {
-        id,
-        name,
-        type: "jpg",
-        note: null,
-        createdAt: "2021-07-01",
-        url: "http://url.com",
-        metadata: null,
-      };
+      const response = [doc];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         updateDocument: response,
       } as any);
@@ -182,14 +157,7 @@ describe("Document", () => {
       const name = "newName";
 
       // arrange
-      const response: DocumentModel = {
-        id,
-        name,
-        type: "jpg",
-        note: null,
-        createdAt: "2021-07-01",
-        url: "http://url.com",
-      };
+      const response = [doc];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
         updateDocument: response,
       } as any);
