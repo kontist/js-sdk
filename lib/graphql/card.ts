@@ -50,7 +50,7 @@ const CARD_LIMITS_FIELDS = `
   }
 `;
 
-const GET_CARDS = `query {
+const GET_CARDS = `query getCards {
   viewer {
     mainAccount {
       cards {

@@ -3,7 +3,7 @@ import { Model } from "./model";
 import { ResultPage } from "./resultPage";
 import { Account as AccountModel, Query, AccountStats, SolarisAccountBalance } from "./schema";
 
-const GET_ACCOUNT = `query {
+const GET_ACCOUNT = `query getAccount {
   viewer {
     mainAccount {
       iban
@@ -17,7 +17,7 @@ const GET_ACCOUNT = `query {
     }
   }
 }`;
-const GET_ACCOUNT_STATS = `query {
+const GET_ACCOUNT_STATS = `query getAccountStats {
   viewer {
     mainAccount {
       stats {
@@ -37,7 +37,7 @@ const GET_ACCOUNT_STATS = `query {
   }
 }`;
 
-const GET_SOLARIS_BALANCE = `query {
+const GET_SOLARIS_BALANCE = `query getSolarisBalance {
   viewer {
     mainAccount {
       solarisBalance {

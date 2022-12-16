@@ -84,7 +84,7 @@ describe("Document", () => {
         // assert
         sinon.assert.calledOnce(spyOnRawQuery);
         expect(spyOnRawQuery.getCall(0).args[0]).equals(`
-  query FetchDocuments ($categoryIds: [String!], $year: Int) {
+  query fetchDocuments ($categoryIds: [String!], $year: Int) {
     viewer {
       documents (categoryIds: $categoryIds, year: $year) {
         id
@@ -117,7 +117,7 @@ describe("Document", () => {
         // assert
         sinon.assert.calledOnce(spyOnRawQuery);
         expect(spyOnRawQuery.getCall(0).args[0]).equals(`
-  query FetchDocuments ($categoryIds: [String!], $year: Int) {
+  query fetchDocuments ($categoryIds: [String!], $year: Int) {
     viewer {
       documents (categoryIds: $categoryIds, year: $year) {
         id

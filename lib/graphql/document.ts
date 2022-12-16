@@ -30,7 +30,7 @@ const DEFAULT_DOCUMENT_FIELDS = [
 const FETCH_DOCUMENTS_QUERY = (
   fields: DocumentProps[] = DEFAULT_DOCUMENT_FIELDS
 ) => `
-  query FetchDocuments ($categoryIds: [String!], $year: Int) {
+  query fetchDocuments ($categoryIds: [String!], $year: Int) {
     viewer {
       documents (categoryIds: $categoryIds, year: $year) {
         ${fields.join("\n")}
