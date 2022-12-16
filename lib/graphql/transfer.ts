@@ -142,7 +142,7 @@ const FETCH_TRANSFERS = `
 `;
 
 const GET_TRANSFER_SUGGESTIONS = `
-  query {
+  query getTransferSuggestions {
     viewer {
       mainAccount {
         transferSuggestions {
@@ -155,7 +155,7 @@ const GET_TRANSFER_SUGGESTIONS = `
 `;
 
 const GET_UNFINISHED_TRANSFERS = `
-  query {
+  query getUnfinishedTransfers {
     viewer {
       unfinishedTransfers {
         amount

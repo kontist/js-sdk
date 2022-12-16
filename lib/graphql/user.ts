@@ -4,7 +4,7 @@ import { KontistSDKError } from "../errors";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
 
-const GET_USER = `query {
+const GET_USER = `query getUser {
   viewer {
     birthDate
     birthPlace

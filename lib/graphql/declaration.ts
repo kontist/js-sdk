@@ -13,7 +13,7 @@ import {
 } from "./schema";
 
 const FETCH_DECLARATIONS = `
-  query FetchDeclarations ($type: DeclarationType!) {
+  query fetchDeclarations ($type: DeclarationType!) {
     viewer {
       mainAccount {
         declarations (type: $type) {
@@ -29,7 +29,7 @@ const FETCH_DECLARATIONS = `
 `;
 
 const GET_DECLARATION_PDF = `
-  query GetDeclarationPdf ($id: Int!) {
+  query getDeclarationPdf ($id: Int!) {
     viewer {
       mainAccount {
         declarationPdfUrl(id: $id)
@@ -57,7 +57,7 @@ const SUBMIT_DECLARATION = `
 `;
 
 const GET_DECLARATION_STATS = `
-  query GetDeclarationStats($period: String!, $year: Int!) {
+  query getDeclarationStats($period: String!, $year: Int!) {
     viewer {
       mainAccount {
         declarationStats(

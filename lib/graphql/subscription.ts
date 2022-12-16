@@ -21,7 +21,7 @@ const UPDATE_PLAN = `mutation updatePlan(
   }
 }`;
 
-const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
+const FETCH_PLANS = `query fetchPlans ($couponCode: String) {
   viewer {
     subscriptionPlans (couponCode: $couponCode) {
       couponCode
@@ -50,7 +50,7 @@ const FETCH_PLANS = `query FetchPlans ($couponCode: String) {
   }
 }`;
 
-const FETCH_PURCHASES = `query FetchUserPlans {
+const FETCH_PURCHASES = `query fetchUserPlans {
   viewer {
     subscriptions {
       type
