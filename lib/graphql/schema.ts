@@ -630,6 +630,11 @@ export type DependentsTaxIds = {
   id: Scalars['ID'];
 };
 
+export enum DeviceConsentEventType {
+  Approved = 'APPROVED',
+  Rejected = 'REJECTED'
+}
+
 export type DirectDebitFee = {
   __typename?: 'DirectDebitFee';
   amount: Scalars['Int'];
@@ -1043,6 +1048,8 @@ export type Mutation = {
   createCard: Card;
   /** Create an OAuth2 client */
   createClient: Client;
+  /** Records consent from the given person to collect device fingerprints on their registered device */
+  createConsentForDeviceMonitoring?: Maybe<Scalars['String']>;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
   createInvoiceLogo: CreateInvoiceLogoResponse;
   createQuestionnaireDocumentAsset: CreateAssetResponse;
@@ -1259,6 +1266,11 @@ export type MutationCreateCardArgs = {
 
 export type MutationCreateClientArgs = {
   client: CreateClientInput;
+};
+
+
+export type MutationCreateConsentForDeviceMonitoringArgs = {
+  eventType: DeviceConsentEventType;
 };
 
 
@@ -2042,6 +2054,7 @@ export type QuestionnaireDocument = {
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   inputs?: Maybe<Scalars['JSON']>;
+  isLastYearSuggestion: Scalars['Boolean'];
   type: QuestionnaireDocumentType;
   updatedAt: Scalars['DateTime'];
 };
@@ -2059,6 +2072,7 @@ export enum QuestionnaireDocumentType {
   EoyCarUsagePurchaseContract = 'EOY_CAR_USAGE_PURCHASE_CONTRACT',
   EoyCarUsageTraveledKmWithPrivateCar = 'EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
   EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
+  EoyOfficeUsageFloorPlan = 'EOY_OFFICE_USAGE_FLOOR_PLAN',
   EoyOfficeUsageHeating = 'EOY_OFFICE_USAGE_HEATING',
   EoyOfficeUsageOther = 'EOY_OFFICE_USAGE_OTHER',
   EoyOfficeUsagePhoneOrInternet = 'EOY_OFFICE_USAGE_PHONE_OR_INTERNET',
@@ -2320,6 +2334,7 @@ export type TaxDeclaration = {
 
 export type TaxDeclarationExternalAsset = {
   __typename?: 'TaxDeclarationExternalAsset';
+  createdAt: Scalars['DateTime'];
   filetype: Scalars['String'];
   url: Scalars['String'];
 };
@@ -2523,6 +2538,8 @@ export type TransactionCondition = {
   bookingDate_lt?: InputMaybe<Scalars['DateTime']>;
   bookingDate_lte?: InputMaybe<Scalars['DateTime']>;
   bookingDate_ne?: InputMaybe<Scalars['DateTime']>;
+  category_eq?: InputMaybe<TransactionCategory>;
+  category_in?: InputMaybe<Array<TransactionCategory>>;
   iban_eq?: InputMaybe<Scalars['String']>;
   iban_in?: InputMaybe<Array<Scalars['String']>>;
   iban_like?: InputMaybe<Scalars['String']>;
@@ -2588,6 +2605,8 @@ export type TransactionFilter = {
   bookingDate_lt?: InputMaybe<Scalars['DateTime']>;
   bookingDate_lte?: InputMaybe<Scalars['DateTime']>;
   bookingDate_ne?: InputMaybe<Scalars['DateTime']>;
+  category_eq?: InputMaybe<TransactionCategory>;
+  category_in?: InputMaybe<Array<TransactionCategory>>;
   conditions?: InputMaybe<Array<TransactionCondition>>;
   iban_eq?: InputMaybe<Scalars['String']>;
   iban_in?: InputMaybe<Array<Scalars['String']>>;
@@ -2676,6 +2695,7 @@ export enum TransactionProjectionType {
   RebookedSepaCreditTransferReturn = 'RebookedSEPACreditTransferReturn',
   RebookedSepaDirectDebitCoreReturn = 'RebookedSEPADirectDebitCoreReturn',
   ReimbursementCustomer = 'ReimbursementCustomer',
+  SepaInstantCreditTransfer = 'SEPAInstantCreditTransfer',
   SepaCreditTransfer = 'SEPA_CREDIT_TRANSFER',
   SepaCreditTransferReturn = 'SEPA_CREDIT_TRANSFER_RETURN',
   SepaDirectDebit = 'SEPA_DIRECT_DEBIT',
