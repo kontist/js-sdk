@@ -183,6 +183,23 @@ describe("Transaction", () => {
         expect(result.pageInfo.hasPreviousPage).to.eql(false);
       });
     });
+
+    describe("when fetching with custom fields", () => {
+      const customFields = `id category`;
+      
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({});
+        result = await transactionInstance.fetch(undefined, customFields);
+      });
+
+      it("should query with custom fields", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
+          customFields
+        );
+      });
+    });
   });
 
   describe("#fetchOne", () => {

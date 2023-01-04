@@ -100,14 +100,14 @@ const TRANSACTION_DETAILS = `
   mandateNumber
 `;
 
-const FETCH_TRANSACTIONS = `
+const getFetchTransactionsQuery = (fields: string) => `
   query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter, $preset: FilterPresetInput) {
     viewer {
       mainAccount {
         transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter, preset: $preset) {
           edges {
             node {
-              ${TRANSACTION_FIELDS}
+              ${fields}
             }
           }
           pageInfo {
@@ -122,13 +122,12 @@ const FETCH_TRANSACTIONS = `
   }
 `;
 
-const FETCH_TRANSACTION = `
+const getFetchTransactionQuery = (fields: string) => `
   query fetchTransaction ($id: ID!) {
     viewer {
       mainAccount {
         transaction(id: $id) {
-          ${TRANSACTION_FIELDS}
-          ${TRANSACTION_DETAILS}
+          ${fields}
         }
       }
     }
@@ -142,7 +141,9 @@ export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
   }
 }`;
 
-export const UPDATE_TRANSACTION = `mutation updateTransaction(
+export const getUpdateTransactionMutation = (
+  fields: string
+) => `mutation updateTransaction(
   $id: String!
   $category: TransactionCategory,
   $userSelectedBookingDate: DateTime,
@@ -154,8 +155,7 @@ export const UPDATE_TRANSACTION = `mutation updateTransaction(
     userSelectedBookingDate: $userSelectedBookingDate
     personalNote: $personalNote
   ) {
-    ${TRANSACTION_FIELDS}
-    ${TRANSACTION_DETAILS}
+    ${fields}
   }
 }`;
 
@@ -272,12 +272,17 @@ export class Transaction extends IterableModel<TransactionModel> {
    * Only the main transaction fields will be included in the results
    *
    * @param args  query parameters
+   * @param fields  optional custom transaction fields
    * @returns     result page
    */
   public async fetch(
-    args?: AccountTransactionsArgs
+    args?: AccountTransactionsArgs,
+    fields = TRANSACTION_FIELDS
   ): Promise<ResultPage<TransactionModel>> {
-    const result: Query = await this.client.rawQuery(FETCH_TRANSACTIONS, args);
+    const result: Query = await this.client.rawQuery(
+      getFetchTransactionsQuery(fields),
+      args
+    );
 
     const transactions = (
       result.viewer?.mainAccount?.transactions?.edges ?? []
@@ -295,16 +300,20 @@ export class Transaction extends IterableModel<TransactionModel> {
    * It will consider case insensitive like matches for amount,
    * iban, description, and name
    *
-   * @param searchQuery  input query from user
+   * @param searchQuery  input query
+   * @param searchQuery  optional input filter
+   * @param searchQuery  optional transaction preset
+   * @param fields  optional custom transaction fields
    * @returns
    */
   public async search(
     searchQuery: string,
     searchFilter?: SearchFilter,
-    preset?: FilterPresetInput
+    preset?: FilterPresetInput,
+    fields?: string
   ): Promise<ResultPage<TransactionModel>> {
     const filter = this.parseSearchQuery(searchQuery, searchFilter);
-    return this.fetch({ filter, preset });
+    return this.fetch({ filter, preset }, fields);
   }
 
   /**
@@ -316,13 +325,21 @@ export class Transaction extends IterableModel<TransactionModel> {
 
   /**
    * Fetches the transaction with the provided ID
-   * All transaction fields will be included in the result
+   * By default, all transaction fields will be included in the result
    *
    * @param args  transaction ID
+   * @param fields  optional custom transaction fields
    * @returns     Transaction
    */
-  public async fetchOne(args: AccountTransactionArgs) {
-    const result: Query = await this.client.rawQuery(FETCH_TRANSACTION, args);
+  public async fetchOne(
+    args: AccountTransactionArgs,
+    fields = `${TRANSACTION_FIELDS}
+              ${TRANSACTION_DETAILS}`
+  ) {
+    const result: Query = await this.client.rawQuery(
+      getFetchTransactionQuery(fields),
+      args
+    );
 
     return result.viewer?.mainAccount?.transaction;
   }
@@ -343,10 +360,18 @@ export class Transaction extends IterableModel<TransactionModel> {
    * Updates a transaction
    *
    * @param args   query parameters including category, userSelectedBookingDate and personalNote
+   * @param fields  optional custom transaction fields
    * @returns      the transaction with updated categorization data and updated personalNote
    */
-  public async update(args: MutationUpdateTransactionArgs) {
-    const result = await this.client.rawQuery(UPDATE_TRANSACTION, args);
+  public async update(
+    args: MutationUpdateTransactionArgs,
+    fields = `${TRANSACTION_FIELDS}
+  ${TRANSACTION_DETAILS}`
+  ) {
+    const result = await this.client.rawQuery(
+      getUpdateTransactionMutation(fields),
+      args
+    );
     return result.updateTransaction;
   }
 
