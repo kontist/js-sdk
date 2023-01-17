@@ -15,6 +15,7 @@ import {
   MutationDeleteGooglePayCardTokenArgs,
   WhitelistCardResponse,
   ConfirmFraudResponse,
+  CardPinKey,
 } from "./schema";
 
 import { Model } from "./model";
@@ -100,6 +101,33 @@ const GET_CARD_LIMITS = `
             cardNotPresentLimits {
               ${CARD_LIMITS_FIELDS}
             }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const GET_CARD_PIN_KEY = `
+  query getCardPinKey (
+    $id: String,
+    $type: CardType
+  ) {
+    viewer {
+      mainAccount {
+        card(
+          filter: {
+            id: $id,
+            type: $type
+          }
+        ) {
+          pinKey {
+            kid
+            kty
+            use
+            alg
+            n
+            e
           }
         }
       }
@@ -212,7 +240,6 @@ const REORDER_CARD = `mutation reorderCard(
     ${CARD_FIELDS}
   }
 }`;
-
 
 export const SET_CARD_HOLDER_REPRESENTATION = `mutation setCardHolderRepresentation(
   $cardHolderRepresentation: String!
@@ -333,6 +360,17 @@ export class Card extends Model<CardModel> {
   }
 
   /**
+   * Returns PIN key of a card to use during encrypted PIN change
+   *
+   * @param args  query parameters including card id and / or type
+   * @returns     PIN key of the card
+   */
+  public async getPinKey(args: GetCardOptions): Promise<CardPinKey | null> {
+    const result: Query = await this.client.rawQuery(GET_CARD_PIN_KEY, args);
+    return result.viewer?.mainAccount?.card?.pinKey ?? null;
+  }
+
+  /**
    * Initiates a change of PIN number for a given card
    *
    * @param args   query parameters including card id and PIN number
@@ -349,7 +387,9 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and PIN number
    * @returns      PIN number change status
    */
-  public async confirmChangePIN(args: MutationConfirmChangeCardPinArgs): Promise<string> {
+  public async confirmChangePIN(
+    args: MutationConfirmChangeCardPinArgs
+  ): Promise<string> {
     const result = await this.client.rawQuery(CONFIRM_CHANGE_CARD_PIN, args);
     return result.confirmChangeCardPIN.status;
   }
@@ -360,7 +400,9 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id and action
    * @returns      updated card details
    */
-  public async changeStatus(args: MutationChangeCardStatusArgs): Promise<CardModel> {
+  public async changeStatus(
+    args: MutationChangeCardStatusArgs
+  ): Promise<CardModel> {
     const result = await this.client.rawQuery(CHANGE_CARD_STATUS, args);
     return result.changeCardStatus;
   }
@@ -371,7 +413,10 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id, contactlessEnabled, cardPresentLimits and cardNotPresentLimits
    * @returns      updated card settings
    */
-  public async updateSettings(args: MutationUpdateCardSettingsArgs["settings"] & Pick<MutationUpdateCardSettingsArgs, "id">): Promise<CardSettings> {
+  public async updateSettings(
+    args: MutationUpdateCardSettingsArgs["settings"] &
+      Pick<MutationUpdateCardSettingsArgs, "id">
+  ): Promise<CardSettings> {
     const result = await this.client.rawQuery(UPDATE_CARD_SETTINGS, args);
     return result.updateCardSettings;
   }
@@ -408,7 +453,7 @@ export class Card extends Model<CardModel> {
     cardHolderRepresentation: string
   ): Promise<string> {
     const result = await this.client.rawQuery(SET_CARD_HOLDER_REPRESENTATION, {
-      cardHolderRepresentation
+      cardHolderRepresentation,
     });
     return result.setCardHolderRepresentation;
   }
@@ -419,7 +464,9 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id, Google Pay card token ref id and active wallet id
    * @returns      combination of Google Pay card token ref id and active wallet id
    */
-  public async addGooglePayCardToken(args: MutationAddGooglePayCardTokenArgs): Promise<GooglePayCardToken> {
+  public async addGooglePayCardToken(
+    args: MutationAddGooglePayCardTokenArgs
+  ): Promise<GooglePayCardToken> {
     const result = await this.client.rawQuery(ADD_GOOGLE_PAY_CARD_TOKEN, args);
     return result.addGooglePayCardToken;
   }
@@ -430,8 +477,13 @@ export class Card extends Model<CardModel> {
    * @param args   query parameters including card id, Google Pay card token ref id and active wallet id
    * @returns      combination of removed Google Pay card token ref id and active wallet id
    */
-  public async deleteGooglePayCardToken(args: MutationDeleteGooglePayCardTokenArgs): Promise<GooglePayCardToken> {
-    const result = await this.client.rawQuery(DELETE_GOOGLE_PAY_CARD_TOKEN, args);
+  public async deleteGooglePayCardToken(
+    args: MutationDeleteGooglePayCardTokenArgs
+  ): Promise<GooglePayCardToken> {
+    const result = await this.client.rawQuery(
+      DELETE_GOOGLE_PAY_CARD_TOKEN,
+      args
+    );
     return result.deleteGooglePayCardToken;
   }
 

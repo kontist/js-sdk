@@ -269,6 +269,7 @@ export type Card = {
   holder?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   maskedPan?: Maybe<Scalars['String']>;
+  pinKey: CardPinKey;
   pinSet: Scalars['Boolean'];
   settings: CardSettings;
   status: CardStatus;
@@ -306,6 +307,16 @@ export type CardLimits = {
 export type CardLimitsInput = {
   daily: CardLimitInput;
   monthly: CardLimitInput;
+};
+
+export type CardPinKey = {
+  __typename?: 'CardPINKey';
+  alg: Scalars['String'];
+  e: Scalars['String'];
+  kid: Scalars['String'];
+  kty: Scalars['String'];
+  n: Scalars['String'];
+  use: Scalars['String'];
 };
 
 export type CardSettings = {
@@ -814,7 +825,6 @@ export enum IdnowReminderType {
 }
 
 export enum IntegrationType {
-  Debitoor = 'DEBITOOR',
   Fastbill = 'FASTBILL',
   Lexoffice = 'LEXOFFICE'
 }
@@ -2087,8 +2097,10 @@ export type QuestionnaireQuestion = {
   __typename?: 'QuestionnaireQuestion';
   allowExit?: Maybe<Scalars['Boolean']>;
   inputConfig?: Maybe<Scalars['JSONObject']>;
+  lastYearAnswer?: Maybe<QuestionnaireAnswer>;
   name: Scalars['String'];
   postponable?: Maybe<Scalars['Boolean']>;
+  suggestLastYearAnswer?: Maybe<Scalars['Boolean']>;
   topic?: Maybe<Scalars['String']>;
 };
 
@@ -2345,6 +2357,7 @@ export type TaxDeclarationSavedDraftInfo = {
   createdBy?: Maybe<Scalars['String']>;
   externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
   pdfUrl?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export enum TaxDeclarationStatus {

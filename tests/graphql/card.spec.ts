@@ -22,7 +22,7 @@ const cardData = {
     contactlessEnabled: true,
   },
   googlePayTokens: [],
-  addedToApplePay: true
+  addedToApplePay: true,
 };
 
 const cardLimitsData = {
@@ -46,6 +46,15 @@ const cardLimitsData = {
       maxTransactions: 468,
     },
   },
+};
+
+const cardPinKeyData = {
+  kid: "0dce6f4d-b5d0-4c7b-a7d8-cfe231a1f385",
+  kty: "RSA",
+  use: "enc",
+  alg: "RS256",
+  n: "ielfymjYSKEeeai7pFBhJrr0aR-B5_T0snVgQSm8K-SsFv3MFofkeWxWT3PCBId8kovdI-gfKabCyhuQDaYbXP1opyEkB9-gyG4zqmWoW9ddmWo-wxaW08KiruNl09IjWJR0w93tM0i8Pn2qpCSM3h0CdgfO9-VjLn1BpYFKjuJ1apZQ3TG1YYIfGSymghUl0JWLu0s5J2BrvEz91E0K4aF-VY4oSnlrTilq3FrCOgF8IopUvqJWIsz-hKagNAP1K4AXoSVX7Kc4MxUcZEIlkeMKj05YF3zoFhOzfQCa5kcYdPFNlEOpuZwuMidYw8LNBFdvV4VeKYUXZrvaW-SKUQ",
+  e: "AQAB",
 };
 
 describe("Card", () => {
@@ -172,6 +181,50 @@ describe("Card", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(cardLimitsData);
+    });
+
+    it("should call rawQuery and return null for missing account", async () => {
+      // arrange
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      // act
+      const result = await card.get({
+        id: cardData.id,
+        type: CardType.MastercardBusinessDebit,
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(null);
+    });
+  });
+
+  describe("#getPinKey", () => {
+    it("should call rawQuery and return PIN key", async () => {
+      // arrange
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {
+            card: {
+              pinKey: cardPinKeyData,
+            },
+          },
+        },
+      } as any);
+
+      // act
+      const result = await card.getPinKey({
+        id: cardData.id,
+        type: CardType.VisaBusinessDebit,
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(cardPinKeyData);
     });
 
     it("should call rawQuery and return null for missing account", async () => {
@@ -336,16 +389,16 @@ describe("Card", () => {
       // arrange;
       const newCardData = {
         ...cardData,
-        status: CardStatus.Processing
+        status: CardStatus.Processing,
       };
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        replaceCard: newCardData
+        replaceCard: newCardData,
       } as any);
 
       // act
       const result = await card.replace({
-        id: cardData.id
+        id: cardData.id,
       });
 
       // assert
@@ -359,16 +412,16 @@ describe("Card", () => {
       // arrange;
       const newCardData = {
         ...cardData,
-        status: CardStatus.Processing
+        status: CardStatus.Processing,
       };
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        reorderCard: newCardData
+        reorderCard: newCardData,
       } as any);
 
       // act
       const result = await card.reorder({
-        id: cardData.id
+        id: cardData.id,
       });
 
       // assert
@@ -383,15 +436,19 @@ describe("Card", () => {
       const cardHolderRepresentation = "JOHN/LENNON";
       const card = new Card(client.graphQL);
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
-        setCardHolderRepresentation: cardHolderRepresentation
+        setCardHolderRepresentation: cardHolderRepresentation,
       } as any);
 
       // act
-      const result = await card.setCardHolderRepresentation(cardHolderRepresentation);
+      const result = await card.setCardHolderRepresentation(
+        cardHolderRepresentation
+      );
 
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
-      expect(spyOnRawQuery.getCall(0).args[1]).to.eql({ cardHolderRepresentation });
+      expect(spyOnRawQuery.getCall(0).args[1]).to.eql({
+        cardHolderRepresentation,
+      });
       expect(result).to.eq(cardHolderRepresentation);
     });
   });
