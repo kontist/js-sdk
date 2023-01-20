@@ -386,6 +386,14 @@ export type CategoryGroup = {
   transactions: Array<TransactionForAccountingView>;
 };
 
+export type ChangeCardPinEncryptedInput = {
+  deviceData: Scalars['String'];
+  deviceId: Scalars['String'];
+  encryptedPin: Scalars['String'];
+  keyId: Scalars['String'];
+  signature: Scalars['String'];
+};
+
 export type Client = {
   __typename?: 'Client';
   /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
@@ -1036,6 +1044,8 @@ export type Mutation = {
   categorizeTransactionForDeclaration: CategorizeTransactionForDeclarationResponse;
   /** Set a new PIN, needs to be confirmed */
   changeCardPIN: ConfirmationRequest;
+  /** Encrypted card PIN change */
+  changeCardPINEncrypted: Card;
   /** Block or unblock or close a card */
   changeCardStatus: Card;
   /** Clear preselected plan */
@@ -1215,6 +1225,12 @@ export type MutationCategorizeTransactionForDeclarationArgs = {
 export type MutationChangeCardPinArgs = {
   id: Scalars['String'];
   pin: Scalars['String'];
+};
+
+
+export type MutationChangeCardPinEncryptedArgs = {
+  id: Scalars['String'];
+  payload: ChangeCardPinEncryptedInput;
 };
 
 

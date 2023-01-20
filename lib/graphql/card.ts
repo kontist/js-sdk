@@ -16,6 +16,7 @@ import {
   WhitelistCardResponse,
   ConfirmFraudResponse,
   CardPinKey,
+  MutationChangeCardPinEncryptedArgs,
 } from "./schema";
 
 import { Model } from "./model";
@@ -134,6 +135,18 @@ const GET_CARD_PIN_KEY = `
     }
   }
 `;
+
+const CHANGE_CARD_PIN_ENCRYPTED = `mutation changeCardPINEncrypted(
+  $id: String!
+  $payload: ChangeCardPINEncryptedInput!
+) {
+  changeCardPINEncrypted(
+    id: $id
+    payload: $payload
+  ) {
+    ${CARD_FIELDS}
+  }
+}`;
 
 const CREATE_CARD = `mutation createCard(
   $type: CardType!,
@@ -368,6 +381,19 @@ export class Card extends Model<CardModel> {
   public async getPinKey(args: GetCardOptions): Promise<CardPinKey | null> {
     const result: Query = await this.client.rawQuery(GET_CARD_PIN_KEY, args);
     return result.viewer?.mainAccount?.card?.pinKey ?? null;
+  }
+
+  /**
+   * Encrypted change PIN number for a given card
+   *
+   * @param args   query parameters including card id and encrypted PIN number
+   * @returns      updated card details
+   */
+  public async changePINEncrypted(
+    args: MutationChangeCardPinEncryptedArgs
+  ): Promise<CardModel> {
+    const result = await this.client.rawQuery(CHANGE_CARD_PIN_ENCRYPTED, args);
+    return result.changeCardPINEncrypted;
   }
 
   /**
