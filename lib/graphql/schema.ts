@@ -387,7 +387,6 @@ export type CategoryGroup = {
 };
 
 export type ChangeCardPinEncryptedInput = {
-  deviceData: Scalars['String'];
   deviceId: Scalars['String'];
   encryptedPin: Scalars['String'];
   keyId: Scalars['String'];
