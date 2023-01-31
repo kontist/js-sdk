@@ -269,6 +269,7 @@ export type Card = {
   holder?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   maskedPan?: Maybe<Scalars['String']>;
+  pinKey: CardPinKey;
   pinSet: Scalars['Boolean'];
   settings: CardSettings;
   status: CardStatus;
@@ -306,6 +307,16 @@ export type CardLimits = {
 export type CardLimitsInput = {
   daily: CardLimitInput;
   monthly: CardLimitInput;
+};
+
+export type CardPinKey = {
+  __typename?: 'CardPINKey';
+  alg: Scalars['String'];
+  e: Scalars['String'];
+  kid: Scalars['String'];
+  kty: Scalars['String'];
+  n: Scalars['String'];
+  use: Scalars['String'];
 };
 
 export type CardSettings = {
@@ -373,6 +384,13 @@ export type CategoryGroup = {
   categoryCode: Scalars['String'];
   categoryCodeTranslation: Scalars['String'];
   transactions: Array<TransactionForAccountingView>;
+};
+
+export type ChangeCardPinEncryptedInput = {
+  deviceId: Scalars['String'];
+  encryptedPin: Scalars['String'];
+  keyId: Scalars['String'];
+  signature: Scalars['String'];
 };
 
 export type Client = {
@@ -814,7 +832,6 @@ export enum IdnowReminderType {
 }
 
 export enum IntegrationType {
-  Debitoor = 'DEBITOOR',
   Fastbill = 'FASTBILL',
   Lexoffice = 'LEXOFFICE'
 }
@@ -1026,6 +1043,8 @@ export type Mutation = {
   categorizeTransactionForDeclaration: CategorizeTransactionForDeclarationResponse;
   /** Set a new PIN, needs to be confirmed */
   changeCardPIN: ConfirmationRequest;
+  /** Encrypted card PIN change */
+  changeCardPINEncrypted: Card;
   /** Block or unblock or close a card */
   changeCardStatus: Card;
   /** Clear preselected plan */
@@ -1205,6 +1224,12 @@ export type MutationCategorizeTransactionForDeclarationArgs = {
 export type MutationChangeCardPinArgs = {
   id: Scalars['String'];
   pin: Scalars['String'];
+};
+
+
+export type MutationChangeCardPinEncryptedArgs = {
+  id: Scalars['String'];
+  payload: ChangeCardPinEncryptedInput;
 };
 
 
@@ -2087,8 +2112,10 @@ export type QuestionnaireQuestion = {
   __typename?: 'QuestionnaireQuestion';
   allowExit?: Maybe<Scalars['Boolean']>;
   inputConfig?: Maybe<Scalars['JSONObject']>;
+  lastYearAnswer?: Maybe<QuestionnaireAnswer>;
   name: Scalars['String'];
   postponable?: Maybe<Scalars['Boolean']>;
+  suggestLastYearAnswer?: Maybe<Scalars['Boolean']>;
   topic?: Maybe<Scalars['String']>;
 };
 
@@ -2345,6 +2372,7 @@ export type TaxDeclarationSavedDraftInfo = {
   createdBy?: Maybe<Scalars['String']>;
   externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
   pdfUrl?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export enum TaxDeclarationStatus {
