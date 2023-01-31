@@ -235,7 +235,7 @@ describe("Card", () => {
       } as any);
 
       // act
-      const result = await card.get({
+      const result = await card.getPinKey({
         id: cardData.id,
         type: CardType.MastercardBusinessDebit,
       });
