@@ -119,6 +119,13 @@ export class GraphQLClient {
   }
 
   /**
+   * Set custom request headers
+   */
+  public setHeaders = (headers: HeadersInit | undefined) => {
+    this.client.setHeaders(headers);
+  }
+
+  /**
    * Create a subscription client
    */
   private createSubscriptionClient = (): Client => {
