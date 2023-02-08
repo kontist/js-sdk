@@ -296,6 +296,28 @@ describe("subscribe", () => {
   });
 });
 
+describe("setHeaders", () => {
+  let gqlClientSpy: sinon.SinonSpy;
+
+  before(() => {
+    gqlClientSpy = sinon.spy(GQLClient.prototype, "setHeaders")
+  });
+
+  after(() => {
+    gqlClientSpy.restore();
+  })
+
+  it("should set custom headers", () => {
+    const client = createClient();
+    const headers = {
+      dummy: "test",
+    };
+    client.graphQL.setHeaders(headers);
+
+    expect(gqlClientSpy.calledOnceWithExactly(headers)).to.equal(true);
+  })
+})
+
 describe("createUnsubscriber", () => {
   let client: any;
   let firstUnsubscribeStub: any;
