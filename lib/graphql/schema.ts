@@ -269,6 +269,7 @@ export type Card = {
   holder?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   maskedPan?: Maybe<Scalars['String']>;
+  newCardOrdered: Scalars['Boolean'];
   pinKey: CardPinKey;
   pinSet: Scalars['Boolean'];
   settings: CardSettings;

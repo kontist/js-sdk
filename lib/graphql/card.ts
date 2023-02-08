@@ -32,6 +32,7 @@ const CARD_FIELDS = `
   maskedPan
   pinSet
   addedToApplePay
+  newCardOrdered
   settings {
     contactlessEnabled
   }
