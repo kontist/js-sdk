@@ -394,6 +394,11 @@ export type ChangeCardPinEncryptedInput = {
   signature: Scalars['String'];
 };
 
+export type ChangeCardPinWithChangeRequestInput = {
+  encryptedPin: Scalars['String'];
+  keyId: Scalars['String'];
+};
+
 export type Client = {
   __typename?: 'Client';
   /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
@@ -648,6 +653,12 @@ export type DependentsTaxIds = {
   deTaxId: Scalars['String'];
   id: Scalars['ID'];
 };
+
+export enum DeviceActivityType {
+  AppStart = 'APP_START',
+  ConsentProvided = 'CONSENT_PROVIDED',
+  PasswordReset = 'PASSWORD_RESET'
+}
 
 export enum DeviceConsentEventType {
   Approved = 'APPROVED',
@@ -1046,6 +1057,8 @@ export type Mutation = {
   changeCardPIN: ConfirmationRequest;
   /** Encrypted card PIN change */
   changeCardPINEncrypted: Card;
+  /** Encrypted card PIN change with Change Request */
+  changeCardPINWithChangeRequest: ConfirmationRequest;
   /** Block or unblock or close a card */
   changeCardStatus: Card;
   /** Clear preselected plan */
@@ -1062,6 +1075,8 @@ export type Mutation = {
   confirmTransfers: BatchTransfer;
   /** Connect user to a bookkeeping partner */
   connectIntegration: MutationResult;
+  /** Creates user activity for device monitoring */
+  createActivityForDeviceMonitoring: MutationResult;
   /** Creates an user's business address */
   createBusinessAddress: BusinessAddress;
   /** Create a new card */
@@ -1141,6 +1156,8 @@ export type Mutation = {
   updateCardSettings: CardSettings;
   /** Update an OAuth2 client */
   updateClient: Client;
+  /** Records change of consent to collect device fingerprints on their registered device */
+  updateConsentForDeviceMonitoring?: Maybe<MutationResult>;
   /** Updates document meta */
   updateDocument: Document;
   updateInvoice: InvoiceOutput;
@@ -1178,7 +1195,7 @@ export type Mutation = {
 
 export type MutationActivateCardArgs = {
   id: Scalars['String'];
-  verificationToken: Scalars['String'];
+  verificationToken?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1234,6 +1251,12 @@ export type MutationChangeCardPinEncryptedArgs = {
 };
 
 
+export type MutationChangeCardPinWithChangeRequestArgs = {
+  id: Scalars['String'];
+  payload: ChangeCardPinWithChangeRequestInput;
+};
+
+
 export type MutationChangeCardStatusArgs = {
   action: CardAction;
   id: Scalars['String'];
@@ -1276,6 +1299,11 @@ export type MutationConfirmTransfersArgs = {
 export type MutationConnectIntegrationArgs = {
   authorizationData: Scalars['String'];
   type: IntegrationType;
+};
+
+
+export type MutationCreateActivityForDeviceMonitoringArgs = {
+  activityType: DeviceActivityType;
 };
 
 
@@ -1522,6 +1550,12 @@ export type MutationUpdateCardSettingsArgs = {
 
 export type MutationUpdateClientArgs = {
   client: UpdateClientInput;
+};
+
+
+export type MutationUpdateConsentForDeviceMonitoringArgs = {
+  deviceConsentId: Scalars['String'];
+  eventType: DeviceConsentEventType;
 };
 
 
@@ -2097,6 +2131,7 @@ export enum QuestionnaireDocumentType {
   EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
   EoyCarUsagePurchaseContract = 'EOY_CAR_USAGE_PURCHASE_CONTRACT',
   EoyCarUsageTraveledKmWithPrivateCar = 'EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
+  EoyIncomeTaxBasicDataProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PROOF_OF_DISABILITY',
   EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
   EoyOfficeUsageFloorPlan = 'EOY_OFFICE_USAGE_FLOOR_PLAN',
   EoyOfficeUsageHeating = 'EOY_OFFICE_USAGE_HEATING',
@@ -2116,6 +2151,7 @@ export type QuestionnaireQuestion = {
   lastYearAnswer?: Maybe<QuestionnaireAnswer>;
   name: Scalars['String'];
   postponable?: Maybe<Scalars['Boolean']>;
+  previousQuestionsAnswers?: Maybe<Array<QuestionnaireAnswer>>;
   suggestLastYearAnswer?: Maybe<Scalars['Boolean']>;
   topic?: Maybe<Scalars['String']>;
 };
@@ -2145,6 +2181,14 @@ export enum QuestionnaireType {
   EoyBookkeeping = 'EOY_BOOKKEEPING',
   EoyCarUsage = 'EOY_CAR_USAGE',
   EoyIncomeTax = 'EOY_INCOME_TAX',
+  EoyIncomeTaxAdditionalIncome = 'EOY_INCOME_TAX_ADDITIONAL_INCOME',
+  EoyIncomeTaxAdditionalIncomePartner = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER',
+  EoyIncomeTaxBasicData = 'EOY_INCOME_TAX_BASIC_DATA',
+  EoyIncomeTaxBasicDataPartner = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER',
+  EoyIncomeTaxChild = 'EOY_INCOME_TAX_CHILD',
+  EoyIncomeTaxPrivateExpenses = 'EOY_INCOME_TAX_PRIVATE_EXPENSES',
+  EoyIncomeTaxPrivateExpensesPartner = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER',
+  EoyIncomeTaxRentingLeasing = 'EOY_INCOME_TAX_RENTING_LEASING',
   EoyOfficeUsage = 'EOY_OFFICE_USAGE',
   EoyTravelExpenses = 'EOY_TRAVEL_EXPENSES',
   StartOfTheYear = 'START_OF_THE_YEAR'
@@ -3056,6 +3100,7 @@ export type User = {
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatRate" */
   vatRate?: Maybe<UserVatRate>;
+  workAsHandyman?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -3337,6 +3382,7 @@ export type UserUpdateInput = {
   vatNumber?: InputMaybe<Scalars['String']>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
   vatRate?: InputMaybe<Scalars['Int']>;
+  workAsHandyman?: InputMaybe<Scalars['Boolean']>;
   workingInEcommerce?: InputMaybe<Scalars['Boolean']>;
 };
 

@@ -17,6 +17,7 @@ import {
   ConfirmFraudResponse,
   CardPinKey,
   MutationChangeCardPinEncryptedArgs,
+  MutationChangeCardPinWithChangeRequestArgs,
 } from "./schema";
 
 import { Model } from "./model";
@@ -146,6 +147,18 @@ const CHANGE_CARD_PIN_ENCRYPTED = `mutation changeCardPINEncrypted(
     payload: $payload
   ) {
     ${CARD_FIELDS}
+  }
+}`;
+
+const CHANGE_CARD_PIN_WITH_CHANGE_REQUEST = `mutation changeCardPINWithChangeRequest(
+  $id: String!,
+  $payload: ChangeCardPINWithChangeRequestInput!
+) {
+  changeCardPINWithChangeRequest(
+    id: $id,
+    payload: $payload
+  ) {
+    confirmationId
   }
 }`;
 
@@ -395,6 +408,22 @@ export class Card extends Model<CardModel> {
   ): Promise<CardModel> {
     const result = await this.client.rawQuery(CHANGE_CARD_PIN_ENCRYPTED, args);
     return result.changeCardPINEncrypted;
+  }
+
+  /**
+   * Encrypted change PIN number for a given card with Change Request
+   *
+   * @param args   query parameters including card id and encrypted PIN number
+   * @returns      confirmation id used to confirm the PIN change
+   */
+  public async changePINWithChangeRequest(
+    args: MutationChangeCardPinWithChangeRequestArgs
+  ): Promise<string> {
+    const result = await this.client.rawQuery(
+      CHANGE_CARD_PIN_WITH_CHANGE_REQUEST,
+      args
+    );
+    return result.changeCardPINWithChangeRequest.confirmationId;
   }
 
   /**
