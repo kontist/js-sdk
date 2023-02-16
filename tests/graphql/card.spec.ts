@@ -273,6 +273,30 @@ describe("Card", () => {
     });
   });
 
+  describe("#changePINWithChangeRequest", () => {
+    it("should call rawQuery and return card details", async () => {
+      // arrange
+      const card = new Card(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        changeCardPINWithChangeRequest: { confirmationId },
+      } as any);
+
+      // act
+      const result = await card.changePINWithChangeRequest({
+        id: cardData.id,
+        payload: {
+          encryptedPin:
+            "eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkExMjhDQkMtSFMyNTYiLCJ0eXAiOiJKV1QiLCJhbHBoYSI6dHJ1ZX0.ESmAsi_RKsvRnGdlXxGcRZ-ZZc-BTsiKelWb2IvR4p630N2-mefal4LQAy-Fb1QqhmXDaR_uo0IwAbLDOPDH4oDYF-VjbzDsYyG_hjP9Qx6HIdAThuCS1NP8T_7ktT8XNTiS43i3RKEfajbaJS6EM9coV7nBNf--wJz_IpEKLzSPF0nwdljTZzdrl7-o8TWvkzI2edJx4053iIQ3rnfkV0nV2MW1ozWykBk_-53b9u-rew-EHRQI79TVvzR7L0E8Xi8NOaj5jOi-fnMQbW20sv0ATZQ3vptFdarRZcVKRMe2s9ZCIaN0al4-DHWvbnl6uIncxObbeKM923X_KaQ-LQ.lacxJCgDnYUOtHzfe4StBw.-LWGcrFLoCJmurDcFa470VmS_VYC12dPne1c2jpsvuHXR3zmFPRz7_o5k1BPeiYf4nlWWK2OP4gYyv10lcLCyoSTh_t_kL7mS-ZkEjzccz5USFL8FxbOtSpmhyajGgvDQhCNteTFwkETF0KX-EyoauVhz-d1ZO1V-RP-maIAeiUDAEVOv3ZbMSoDl0PoTg7jhVswEgLuCNMrQI8Chzu0AxEYwRWeV3xUBbtieEIGeA1orp4eWbVWgKnnlF5Xhm2L.EGX9RuRsUBEZM6U5ZHZyCg",
+          keyId: "0dce6f4d-b5d0-4c7b-a7d8-cfe231a1f385",
+        },
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(confirmationId);
+    });
+  });
+
   describe("#create", () => {
     it("should call rawQuery and return newly created card details", async () => {
       // arrange
