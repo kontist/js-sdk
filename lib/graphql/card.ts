@@ -104,6 +104,12 @@ const GET_CARD_LIMITS = `
             cardNotPresentLimits {
               ${CARD_LIMITS_FIELDS}
             }
+            atmWithdrawalLimits {
+              ${CARD_LIMITS_FIELDS}
+            }
+            purchaseLimits {
+              ${CARD_LIMITS_FIELDS}
+            }
           }
         }
       }
@@ -235,10 +241,20 @@ const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
       contactlessEnabled: $contactlessEnabled
       cardPresentLimits: $cardPresentLimits
       cardNotPresentLimits: $cardNotPresentLimits
+      atmWithdrawalLimits: $atmWithdrawalLimits
+      purchaseLimits: $purchaseLimits
     }
     id: $id
   ) {
     contactlessEnabled
+    cardSpendingLimits {
+      atm {
+        ${CARD_LIMITS_FIELDS}
+      }
+      purchase {
+        ${CARD_LIMITS_FIELDS}
+      }
+    }
     cardNotPresentLimits {
       ${CARD_LIMITS_FIELDS}
     }
