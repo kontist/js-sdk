@@ -295,8 +295,8 @@ export type CardLimit = {
 };
 
 export type CardLimitInput = {
-  maxAmountCents: Scalars['Float'];
-  maxTransactions: Scalars['Float'];
+  maxAmountCents?: InputMaybe<Scalars['Float']>;
+  maxTransactions?: InputMaybe<Scalars['Float']>;
 };
 
 export type CardLimits = {
@@ -306,8 +306,8 @@ export type CardLimits = {
 };
 
 export type CardLimitsInput = {
-  daily: CardLimitInput;
-  monthly: CardLimitInput;
+  daily?: InputMaybe<CardLimitInput>;
+  monthly?: InputMaybe<CardLimitInput>;
 };
 
 export type CardPinKey = {
@@ -324,13 +324,22 @@ export type CardSettings = {
   __typename?: 'CardSettings';
   cardNotPresentLimits?: Maybe<CardLimits>;
   cardPresentLimits?: Maybe<CardLimits>;
+  cardSpendingLimits?: Maybe<CardSpendingLimits>;
   contactlessEnabled: Scalars['Boolean'];
 };
 
 export type CardSettingsInput = {
+  atmWithdrawalLimits?: InputMaybe<CardLimitsInput>;
   cardNotPresentLimits?: InputMaybe<CardLimitsInput>;
   cardPresentLimits?: InputMaybe<CardLimitsInput>;
   contactlessEnabled?: InputMaybe<Scalars['Boolean']>;
+  purchaseLimits?: InputMaybe<CardLimitsInput>;
+};
+
+export type CardSpendingLimits = {
+  __typename?: 'CardSpendingLimits';
+  atm: CardLimits;
+  purchase: CardLimits;
 };
 
 export enum CardStatus {
@@ -2080,7 +2089,7 @@ export type Questionnaire = {
   id: Scalars['ID'];
   lastAnswer?: Maybe<QuestionnaireAnswer>;
   nextQuestion?: Maybe<QuestionnaireQuestion>;
-  startedAt: Scalars['DateTime'];
+  startedAt?: Maybe<Scalars['DateTime']>;
   status: QuestionnaireStatus;
   type: QuestionnaireType;
   year: Scalars['Int'];
@@ -2159,6 +2168,7 @@ export type QuestionnaireQuestion = {
 export enum QuestionnaireStatus {
   Completed = 'COMPLETED',
   DocumentsUploaded = 'DOCUMENTS_UPLOADED',
+  NotStarted = 'NOT_STARTED',
   Started = 'STARTED'
 }
 
@@ -3055,6 +3065,7 @@ export type User = {
   publicId: Scalars['ID'];
   questionnaire?: Maybe<Questionnaire>;
   questionnaireTasks: Array<QuestionnaireTask>;
+  questionnaires?: Maybe<Array<Questionnaire>>;
   receiptMatchingIntroDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The user's associated Recurly Account */
   recurlyAccount?: Maybe<RecurlyAccount>;
@@ -3184,6 +3195,11 @@ export type UserPremiumSubscriptionDiscountArgs = {
 
 export type UserQuestionnaireArgs = {
   type: QuestionnaireType;
+  year: Scalars['Int'];
+};
+
+
+export type UserQuestionnairesArgs = {
   year: Scalars['Int'];
 };
 
