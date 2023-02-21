@@ -329,7 +329,7 @@ export type CardSettings = {
 };
 
 export type CardSettingsInput = {
-  atmWithdrawalLimits?: InputMaybe<CardLimitsInput>;
+  atmLimits?: InputMaybe<CardLimitsInput>;
   cardNotPresentLimits?: InputMaybe<CardLimitsInput>;
   cardPresentLimits?: InputMaybe<CardLimitsInput>;
   contactlessEnabled?: InputMaybe<Scalars['Boolean']>;
@@ -2156,6 +2156,7 @@ export enum QuestionnaireDocumentType {
 export type QuestionnaireQuestion = {
   __typename?: 'QuestionnaireQuestion';
   allowExit?: Maybe<Scalars['Boolean']>;
+  defaultAnswer?: Maybe<Scalars['JSON']>;
   inputConfig?: Maybe<Scalars['JSONObject']>;
   lastYearAnswer?: Maybe<QuestionnaireAnswer>;
   name: Scalars['String'];
@@ -3237,6 +3238,8 @@ export type UserDependent = {
   firstName: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
+  marriageEndDate?: Maybe<Scalars['DateTime']>;
+  marriageStartDate?: Maybe<Scalars['DateTime']>;
   type: UserDependentType;
 };
 
@@ -3246,6 +3249,8 @@ export type UserDependentInput = {
   firstName: Scalars['String'];
   id?: InputMaybe<Scalars['ID']>;
   lastName: Scalars['String'];
+  marriageEndDate?: InputMaybe<Scalars['String']>;
+  marriageStartDate?: InputMaybe<Scalars['String']>;
   type: UserDependentType;
 };
 
