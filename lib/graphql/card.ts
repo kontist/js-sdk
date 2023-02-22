@@ -104,11 +104,13 @@ const GET_CARD_LIMITS = `
             cardNotPresentLimits {
               ${CARD_LIMITS_FIELDS}
             }
-            atmLimits {
-              ${CARD_LIMITS_FIELDS}
-            }
-            purchaseLimits {
-              ${CARD_LIMITS_FIELDS}
+            cardSpendingLimits {
+              atm {
+                ${CARD_LIMITS_FIELDS}
+              }
+              purchase {
+                ${CARD_LIMITS_FIELDS}
+              }
             }
           }
         }

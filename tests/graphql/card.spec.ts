@@ -46,6 +46,28 @@ const cardLimitsData = {
       maxTransactions: 468,
     },
   },
+  cardSpendingLimits: {
+    atm: {
+      daily: {
+        maxAmountCents: 440000,
+        maxTransactions: 14,
+      },
+      monthly: {
+        maxAmountCents: 2600000,
+        maxTransactions: 468,
+      },
+    },
+    purchase: {
+      daily: {
+        maxAmountCents: 440000,
+        maxTransactions: 14,
+      },
+      monthly: {
+        maxAmountCents: 2600000,
+        maxTransactions: 468,
+      },
+    },
+  },
 };
 
 const cardPinKeyData = {
