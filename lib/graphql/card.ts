@@ -237,6 +237,8 @@ const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
   $contactlessEnabled: Boolean
   $cardPresentLimits: CardLimitsInput
   $cardNotPresentLimits: CardLimitsInput
+  $atmLimits: CardLimitsInput
+  $purchaseLimits: CardLimitsInput
 ) {
   updateCardSettings(
     settings: {
