@@ -322,16 +322,12 @@ export type CardPinKey = {
 
 export type CardSettings = {
   __typename?: 'CardSettings';
-  cardNotPresentLimits?: Maybe<CardLimits>;
-  cardPresentLimits?: Maybe<CardLimits>;
   cardSpendingLimits?: Maybe<CardSpendingLimits>;
   contactlessEnabled: Scalars['Boolean'];
 };
 
 export type CardSettingsInput = {
   atmLimits?: InputMaybe<CardLimitsInput>;
-  cardNotPresentLimits?: InputMaybe<CardLimitsInput>;
-  cardPresentLimits?: InputMaybe<CardLimitsInput>;
   contactlessEnabled?: InputMaybe<Scalars['Boolean']>;
   purchaseLimits?: InputMaybe<CardLimitsInput>;
 };

@@ -26,26 +26,6 @@ const cardData = {
 };
 
 const cardLimitsData = {
-  cardNotPresentLimits: {
-    daily: {
-      maxAmountCents: 350000,
-      maxTransactions: 34,
-    },
-    monthly: {
-      maxAmountCents: 2000000,
-      maxTransactions: 777,
-    },
-  },
-  cardPresentLimits: {
-    daily: {
-      maxAmountCents: 440000,
-      maxTransactions: 14,
-    },
-    monthly: {
-      maxAmountCents: 2600000,
-      maxTransactions: 468,
-    },
-  },
   cardSpendingLimits: {
     atm: {
       daily: {
