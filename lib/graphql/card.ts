@@ -98,12 +98,6 @@ const GET_CARD_LIMITS = `
           }
         ) {
           settings {
-            cardPresentLimits {
-              ${CARD_LIMITS_FIELDS}
-            }
-            cardNotPresentLimits {
-              ${CARD_LIMITS_FIELDS}
-            }
             cardSpendingLimits {
               atm {
                 ${CARD_LIMITS_FIELDS}
@@ -235,16 +229,12 @@ const CHANGE_CARD_STATUS = `mutation changeCardStatus(
 const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
   $id: String!
   $contactlessEnabled: Boolean
-  $cardPresentLimits: CardLimitsInput
-  $cardNotPresentLimits: CardLimitsInput
   $atmLimits: CardLimitsInput
   $purchaseLimits: CardLimitsInput
 ) {
   updateCardSettings(
     settings: {
       contactlessEnabled: $contactlessEnabled
-      cardPresentLimits: $cardPresentLimits
-      cardNotPresentLimits: $cardNotPresentLimits
       atmLimits: $atmLimits
       purchaseLimits: $purchaseLimits
     }
@@ -258,12 +248,6 @@ const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
       purchase {
         ${CARD_LIMITS_FIELDS}
       }
-    }
-    cardNotPresentLimits {
-      ${CARD_LIMITS_FIELDS}
-    }
-    cardPresentLimits {
-      ${CARD_LIMITS_FIELDS}
     }
   }
 }`;
@@ -486,7 +470,7 @@ export class Card extends Model<CardModel> {
   /**
    * Update settings for a card
    *
-   * @param args   query parameters including card id, contactlessEnabled, cardPresentLimits and cardNotPresentLimits
+   * @param args   query parameters including card id, contactlessEnabled, atm and purchase card limits
    * @returns      updated card settings
    */
   public async updateSettings(
