@@ -202,8 +202,9 @@ export type AttributionData = {
   utm_source?: InputMaybe<Scalars['String']>;
 };
 
-export type AuthorizeChangeRequestRespone = {
-  __typename?: 'AuthorizeChangeRequestRespone';
+export type AuthorizeChangeRequestResponse = {
+  __typename?: 'AuthorizeChangeRequestResponse';
+  changeRequestId?: Maybe<Scalars['String']>;
   stringToSign: Scalars['String'];
 };
 
@@ -434,8 +435,14 @@ export enum CompanyType {
   Ug = 'UG'
 }
 
-export type ConfirmChangeRequestRespone = {
-  __typename?: 'ConfirmChangeRequestRespone';
+export type ConfirmChangeRequestArgs = {
+  changeRequestId: Scalars['String'];
+  deviceId: Scalars['String'];
+  signature: Scalars['String'];
+};
+
+export type ConfirmChangeRequestResponse = {
+  __typename?: 'ConfirmChangeRequestResponse';
   success: Scalars['Boolean'];
 };
 
@@ -1044,6 +1051,8 @@ export type Mutation = {
   activateCard: Card;
   /** Activate Overdraft Application  - only available for Kontist Application */
   activateOverdraft?: Maybe<Overdraft>;
+  /** Add restricted key to selected device */
+  addDeviceKey: Scalars['String'];
   /** Adds Google Pay card token reference id for given wallet id */
   addGooglePayCardToken: GooglePayCardToken;
   /** Send Lead data to designated Zap to redirect lead to Agreas */
@@ -1051,10 +1060,13 @@ export type Mutation = {
   approveDeclaration: DeclarationApproval;
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
-  authorizeChangeRequest: AuthorizeChangeRequestRespone;
+  authorizeChangeRequest: AuthorizeChangeRequestResponse;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
-  /** Adds card to given wallet */
+  /**
+   * Adds card to given wallet
+   * @deprecated Please use more secure requestCardPushProvisioning and confirmCardPushProvisioning
+   */
   cardPushProvisioning: PushProvisioningOutput;
   /** Categorize transaction for VAT declaration */
   categorizeTransactionForDeclaration: CategorizeTransactionForDeclarationResponse;
@@ -1070,14 +1082,18 @@ export type Mutation = {
   clearPreselectedPlan: MutationResult;
   /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
+  /** Confirms adding card to Apple/Google Pay wallet */
+  confirmCardPushProvisioning: PushProvisioningOutput;
   /** Confirm a PIN change request */
   confirmChangeCardPIN: ConfirmationStatus;
-  confirmChangeRequest: ConfirmChangeRequestRespone;
+  confirmChangeRequest: ConfirmChangeRequestResponse;
   confirmFraud: ConfirmFraudResponse;
   /** Confirm a transfer creation */
   confirmTransfer: Transfer;
   /** Confirm the transfers creation */
   confirmTransfers: BatchTransfer;
+  /** Confirms update of user fields on solaris */
+  confirmUpdateSolarisUser: User;
   /** Connect user to a bookkeeping partner */
   connectIntegration: MutationResult;
   /** Creates user activity for device monitoring */
@@ -1141,6 +1157,8 @@ export type Mutation = {
   reorderCard: Card;
   /** Call when customer's card is lost or stolen */
   replaceCard: Card;
+  /** Adds card to Apple/Google Pay wallet */
+  requestCardPushProvisioning: AuthorizeChangeRequestResponse;
   /** Create a new identification if applicable */
   requestIdentification: IdentificationDetails;
   /** Create Overdraft Application  - only available for Kontist Application */
@@ -1171,6 +1189,8 @@ export type Mutation = {
   /** Updates overdraft application timestamps for rejected and offered overdraft screens - only available for Kontist Application */
   updateOverdraft?: Maybe<Overdraft>;
   updateReview: MutationResult;
+  /** Update user fields on solaris */
+  updateSolarisUser: AuthorizeChangeRequestResponse;
   /** Update user's subscription plan */
   updateSubscriptionPlan: UpdateSubscriptionPlanResult;
   /** Updates user's taxNumber */
@@ -1201,6 +1221,13 @@ export type Mutation = {
 export type MutationActivateCardArgs = {
   id: Scalars['String'];
   verificationToken?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationAddDeviceKeyArgs = {
+  deviceId: Scalars['String'];
+  key: Scalars['String'];
+  signature: Scalars['String'];
 };
 
 
@@ -1275,6 +1302,12 @@ export type MutationConfirmCancelTransferArgs = {
 };
 
 
+export type MutationConfirmCardPushProvisioningArgs = {
+  cardId: Scalars['String'];
+  payload: ConfirmChangeRequestArgs;
+};
+
+
 export type MutationConfirmChangeCardPinArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
@@ -1298,6 +1331,11 @@ export type MutationConfirmTransferArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
+};
+
+
+export type MutationConfirmUpdateSolarisUserArgs = {
+  payload: ConfirmChangeRequestArgs;
 };
 
 
@@ -1465,6 +1503,8 @@ export type MutationFinalizeAssetUploadArgs = {
 
 
 export type MutationFinalizeTaxCaseArgs = {
+  shouldFinalizeBusinessTax?: InputMaybe<Scalars['Boolean']>;
+  shouldFinalizeIncomeTax?: InputMaybe<Scalars['Boolean']>;
   taxCaseId: Scalars['ID'];
 };
 
@@ -1501,6 +1541,14 @@ export type MutationReplaceCardArgs = {
 };
 
 
+export type MutationRequestCardPushProvisioningArgs = {
+  android?: InputMaybe<PushProvisioningAndroidInput>;
+  cardId: Scalars['String'];
+  deviceId: Scalars['String'];
+  ios?: InputMaybe<PushProvisioningIosInput>;
+};
+
+
 export type MutationResetLastQuestionnaireAnswerArgs = {
   questionnaireId: Scalars['ID'];
 };
@@ -1518,6 +1566,7 @@ export type MutationSignPoaArgs = {
 
 
 export type MutationStartQuestionnaireArgs = {
+  questionnaireId?: InputMaybe<Scalars['ID']>;
   type: QuestionnaireType;
   year: Scalars['Int'];
 };
@@ -1595,6 +1644,12 @@ export type MutationUpdateOverdraftArgs = {
 export type MutationUpdateReviewArgs = {
   reviewId: Scalars['Int'];
   status: UserReviewStatus;
+};
+
+
+export type MutationUpdateSolarisUserArgs = {
+  deviceId: Scalars['String'];
+  payload: UpdateSolarisUserInput;
 };
 
 
@@ -2073,14 +2128,22 @@ export type Query = {
   __typename?: 'Query';
   /** Get all released generic features, that are needed before user creation */
   genericFeatures: Array<GenericFeature>;
+  /** Determines if user device has restricted key added */
+  hasDeviceRestrictedKey: Scalars['Boolean'];
   status: SystemStatus;
   /** The current user information */
   viewer?: Maybe<User>;
 };
 
+
+export type QueryHasDeviceRestrictedKeyArgs = {
+  deviceId: Scalars['String'];
+};
+
 export type Questionnaire = {
   __typename?: 'Questionnaire';
   completedAt?: Maybe<Scalars['DateTime']>;
+  context?: Maybe<Scalars['JSON']>;
   documents: Array<QuestionnaireDocument>;
   id: Scalars['ID'];
   lastAnswer?: Maybe<QuestionnaireAnswer>;
@@ -2136,6 +2199,9 @@ export enum QuestionnaireDocumentType {
   EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
   EoyCarUsagePurchaseContract = 'EOY_CAR_USAGE_PURCHASE_CONTRACT',
   EoyCarUsageTraveledKmWithPrivateCar = 'EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
+  EoyIncomeTaxBasicDataOther = 'EOY_INCOME_TAX_BASIC_DATA_OTHER',
+  EoyIncomeTaxBasicDataPartnerOther = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_OTHER',
+  EoyIncomeTaxBasicDataPartnerProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_PROOF_OF_DISABILITY',
   EoyIncomeTaxBasicDataProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PROOF_OF_DISABILITY',
   EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
   EoyOfficeUsageFloorPlan = 'EOY_OFFICE_USAGE_FLOOR_PLAN',
@@ -2385,9 +2451,11 @@ export type SystemStatus = {
 
 export type TaxCase = {
   __typename?: 'TaxCase';
+  businessTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
   deadline: Scalars['DateTime'];
   finalizedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
+  incomeTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
   status: TaxCaseStatus;
   taxOfficeDeadline?: Maybe<Scalars['DateTime']>;
   year: Scalars['Int'];
@@ -2551,6 +2619,7 @@ export type Transaction = {
   purpose?: Maybe<Scalars['String']>;
   receiptName?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** View a single Asset for a transaction */
@@ -2635,6 +2704,9 @@ export type TransactionCondition = {
   purpose_like?: InputMaybe<Scalars['String']>;
   purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
   purpose_ne?: InputMaybe<Scalars['String']>;
+  source_eq?: InputMaybe<Scalars['String']>;
+  source_in?: InputMaybe<Array<Scalars['String']>>;
+  source_ne?: InputMaybe<Scalars['String']>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
@@ -2703,6 +2775,9 @@ export type TransactionFilter = {
   purpose_like?: InputMaybe<Scalars['String']>;
   purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
   purpose_ne?: InputMaybe<Scalars['String']>;
+  source_eq?: InputMaybe<Scalars['String']>;
+  source_in?: InputMaybe<Array<Scalars['String']>>;
+  source_ne?: InputMaybe<Scalars['String']>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
@@ -2915,6 +2990,10 @@ export type UpdateDocumentMetadata = {
   documentCategoryId?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateSolarisUserInput = {
+  amlConfirmed?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type UpdateSubscriptionPlanResult = {
   __typename?: 'UpdateSubscriptionPlanResult';
   couponCode?: Maybe<Scalars['String']>;
@@ -2968,6 +3047,8 @@ export type User = {
   __typename?: 'User';
   /** The current state of user's Kontist account based on his subscription plan */
   accountState?: Maybe<AccountState>;
+  amlConfirmedOn?: Maybe<Scalars['DateTime']>;
+  amlFollowUpDate?: Maybe<Scalars['DateTime']>;
   /** Information about the plans a user can subscribe to */
   availablePlans: Array<SubscriptionPlan>;
   /** The state of banners in mobile or web app for the user */
@@ -3191,6 +3272,7 @@ export type UserPremiumSubscriptionDiscountArgs = {
 
 
 export type UserQuestionnaireArgs = {
+  questionnaireId?: InputMaybe<Scalars['ID']>;
   type: QuestionnaireType;
   year: Scalars['Int'];
 };
