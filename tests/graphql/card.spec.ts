@@ -18,9 +18,6 @@ const cardData = {
   formattedExpirationDate: "12/22",
   maskedPan: "6802********5119",
   pinSet: false,
-  settings: {
-    contactlessEnabled: true,
-  },
   googlePayTokens: [],
   addedToApplePay: true,
 };
@@ -417,7 +414,6 @@ describe("Card", () => {
     it("should call rawQuery and return updated card details", async () => {
       // arrange
       const updatedCardSettings = {
-        contactlessEnabled: false,
         ...cardLimitsData,
       };
       const card = new Card(client.graphQL);

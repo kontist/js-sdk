@@ -34,9 +34,6 @@ const CARD_FIELDS = `
   pinSet
   addedToApplePay
   newCardOrdered
-  settings {
-    contactlessEnabled
-  }
   googlePayTokens {
     walletId
     tokenRefId
@@ -228,19 +225,16 @@ const CHANGE_CARD_STATUS = `mutation changeCardStatus(
 
 const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
   $id: String!
-  $contactlessEnabled: Boolean
   $atmLimits: CardLimitsInput
   $purchaseLimits: CardLimitsInput
 ) {
   updateCardSettings(
     settings: {
-      contactlessEnabled: $contactlessEnabled
       atmLimits: $atmLimits
       purchaseLimits: $purchaseLimits
     }
     id: $id
   ) {
-    contactlessEnabled
     cardSpendingLimits {
       atm {
         ${CARD_LIMITS_FIELDS}
@@ -470,7 +464,7 @@ export class Card extends Model<CardModel> {
   /**
    * Update settings for a card
    *
-   * @param args   query parameters including card id, contactlessEnabled, atm and purchase card limits
+   * @param args   query parameters including card id, atm and purchase card limits
    * @returns      updated card settings
    */
   public async updateSettings(
