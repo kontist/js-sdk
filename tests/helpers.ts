@@ -14,7 +14,6 @@ export const scopes = ["transactions"];
 export const state = "25843739712322056";
 
 export const createClient = (opts: Partial<ClientOpts> = {}) => {
-
   return new Client({
     clientId,
     redirectUri,
@@ -25,7 +24,7 @@ export const createClient = (opts: Partial<ClientOpts> = {}) => {
 };
 
 export const createTransaction = (
-  override: Record<string, any> = {},
+  override: Record<string, any> = {}
 ): Transaction => {
   return {
     amount: parseInt((Math.random() * 100).toString(), 10),
@@ -42,12 +41,13 @@ export const createTransaction = (
     categorizationType: null,
     canBeRecategorized: true,
     description: "",
+    source: "SOLARIS",
     ...override,
   };
 };
 
 export const createTransfer = (
-  override: Record<string, any> = {},
+  override: Record<string, any> = {}
 ): Transfer => {
   return {
     amount: parseInt((Math.random() * 100).toString(), 10),
