@@ -1,9 +1,9 @@
 import { GraphQLClient } from "./client";
 import {
-  AuthorizeChangeRequestRespone,
+  AuthorizeChangeRequestResponse,
   MutationAuthorizeChangeRequestArgs,
   MutationConfirmChangeRequestArgs,
-  ConfirmChangeRequestRespone,
+  ConfirmChangeRequestResponse,
 } from "./schema";
 
 const AUTHORIZE_CHANGE_REQUEST = `mutation(
@@ -43,7 +43,7 @@ export class ChangeRequest {
    */
   public async authorize(
     args: MutationAuthorizeChangeRequestArgs
-  ): Promise<AuthorizeChangeRequestRespone> {
+  ): Promise<AuthorizeChangeRequestResponse> {
     const result = await this.client.rawQuery(AUTHORIZE_CHANGE_REQUEST, args);
     return result.authorizeChangeRequest;
   }
@@ -56,7 +56,7 @@ export class ChangeRequest {
    */
   public async confirm(
     args: MutationConfirmChangeRequestArgs
-  ): Promise<ConfirmChangeRequestRespone> {
+  ): Promise<ConfirmChangeRequestResponse> {
     const result = await this.client.rawQuery(CONFIRM_CHANGE_REQUEST, args);
     return result.confirmChangeRequest;
   }
