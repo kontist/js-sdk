@@ -202,8 +202,9 @@ export type AttributionData = {
   utm_source?: InputMaybe<Scalars['String']>;
 };
 
-export type AuthorizeChangeRequestRespone = {
-  __typename?: 'AuthorizeChangeRequestRespone';
+export type AuthorizeChangeRequestResponse = {
+  __typename?: 'AuthorizeChangeRequestResponse';
+  changeRequestId?: Maybe<Scalars['String']>;
   stringToSign: Scalars['String'];
 };
 
@@ -382,6 +383,67 @@ export type CategorizeTransactionForDeclarationResponse = {
   date?: Maybe<Scalars['String']>;
 };
 
+export enum CategoryCode {
+  Accommodation = 'ACCOMMODATION',
+  Advertising = 'ADVERTISING',
+  AssetsGreaterThanEur_250 = 'ASSETS_GREATER_THAN_EUR_250',
+  AssetsGreaterThanEur_800 = 'ASSETS_GREATER_THAN_EUR_800',
+  AssetsLessThanEur_250 = 'ASSETS_LESS_THAN_EUR_250',
+  BankFees = 'BANK_FEES',
+  Books = 'BOOKS',
+  CarCosts = 'CAR_COSTS',
+  CarFees = 'CAR_FEES',
+  ConstructionRevenue = 'CONSTRUCTION_REVENUE',
+  CoronaHelp = 'CORONA_HELP',
+  DailyAllowance = 'DAILY_ALLOWANCE',
+  Deposit = 'DEPOSIT',
+  DownPayment = 'DOWN_PAYMENT',
+  Education = 'EDUCATION',
+  Entertainment = 'ENTERTAINMENT',
+  ExternalFreelancer = 'EXTERNAL_FREELANCER',
+  Fees = 'FEES',
+  Gifts = 'GIFTS',
+  Goods = 'GOODS',
+  ImportVat = 'IMPORT_VAT',
+  IncomeEu = 'INCOME_EU',
+  IncomeGermany = 'INCOME_GERMANY',
+  IncomeIntl = 'INCOME_INTL',
+  Insurances = 'INSURANCES',
+  InterestsAssets = 'INTERESTS_ASSETS',
+  InterestsCarAssets = 'INTERESTS_CAR_ASSETS',
+  InterestsOther = 'INTERESTS_OTHER',
+  ItCosts = 'IT_COSTS',
+  LeasingCar = 'LEASING_CAR',
+  LeasingMovables = 'LEASING_MOVABLES',
+  LegalTaxConsulting = 'LEGAL_TAX_CONSULTING',
+  LimitedDeductibleExpenses = 'LIMITED_DEDUCTIBLE_EXPENSES',
+  LimitedNotDeductibleExpenses = 'LIMITED_NOT_DEDUCTIBLE_EXPENSES',
+  MaintenanceCosts = 'MAINTENANCE_COSTS',
+  OfficeCosts = 'OFFICE_COSTS',
+  OtherExpenses = 'OTHER_EXPENSES',
+  OtherUsageAndServiceWithdrawals = 'OTHER_USAGE_AND_SERVICE_WITHDRAWALS',
+  Payroll = 'PAYROLL',
+  PrivateIn = 'PRIVATE_IN',
+  PrivateOut = 'PRIVATE_OUT',
+  PrivateWithdrawal = 'PRIVATE_WITHDRAWAL',
+  PublicTransport = 'PUBLIC_TRANSPORT',
+  Rent = 'RENT',
+  RevenueSb = 'REVENUE_SB',
+  ShippingCosts = 'SHIPPING_COSTS',
+  SoftwareAndLicenses = 'SOFTWARE_AND_LICENSES',
+  TaxPayment = 'TAX_PAYMENT',
+  TaxRefund = 'TAX_REFUND',
+  Telecommunication = 'TELECOMMUNICATION',
+  TradeTaxPayment = 'TRADE_TAX_PAYMENT',
+  TradeTaxRefund = 'TRADE_TAX_REFUND',
+  TravelCosts = 'TRAVEL_COSTS',
+  Vat = 'VAT',
+  VatOnUnpaidItems = 'VAT_ON_UNPAID_ITEMS',
+  VatPayment = 'VAT_PAYMENT',
+  VatRefund = 'VAT_REFUND',
+  WasteDisposals = 'WASTE_DISPOSALS'
+}
+
 export type CategoryGroup = {
   __typename?: 'CategoryGroup';
   amount: Scalars['Int'];
@@ -432,8 +494,14 @@ export enum CompanyType {
   Ug = 'UG'
 }
 
-export type ConfirmChangeRequestRespone = {
-  __typename?: 'ConfirmChangeRequestRespone';
+export type ConfirmChangeRequestArgs = {
+  changeRequestId: Scalars['String'];
+  deviceId: Scalars['String'];
+  signature: Scalars['String'];
+};
+
+export type ConfirmChangeRequestResponse = {
+  __typename?: 'ConfirmChangeRequestResponse';
   success: Scalars['Boolean'];
 };
 
@@ -495,6 +563,12 @@ export type CreateDeclarationDeclineInput = {
   declarationId: Scalars['ID'];
   declarationType: TaxDeclarationType;
   reason: Scalars['String'];
+};
+
+export type CreateDraftTransactionResponse = {
+  __typename?: 'CreateDraftTransactionResponse';
+  assetData: CreateAssetResponse;
+  id: Scalars['ID'];
 };
 
 export type CreateInvoiceLogoResponse = {
@@ -734,6 +808,18 @@ export enum DocumentUploadSource {
   Mobile = 'MOBILE',
   Web = 'WEB'
 }
+
+export type DraftTransaction = {
+  __typename?: 'DraftTransaction';
+  amount?: Maybe<Scalars['Int']>;
+  assets: Array<Asset>;
+  categoryCode?: Maybe<CategoryCode>;
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
+  paymentDate?: Maybe<Scalars['DateTime']>;
+  vatRate?: Maybe<VatRate>;
+};
 
 export type EmailDocument = {
   __typename?: 'EmailDocument';
@@ -1042,6 +1128,8 @@ export type Mutation = {
   activateCard: Card;
   /** Activate Overdraft Application  - only available for Kontist Application */
   activateOverdraft?: Maybe<Overdraft>;
+  /** Add restricted key to selected device */
+  addDeviceKey: Scalars['String'];
   /** Adds Google Pay card token reference id for given wallet id */
   addGooglePayCardToken: GooglePayCardToken;
   /** Send Lead data to designated Zap to redirect lead to Agreas */
@@ -1049,10 +1137,13 @@ export type Mutation = {
   approveDeclaration: DeclarationApproval;
   /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
   assignKontaxCouponCodeToDeclinedUser: MutationResult;
-  authorizeChangeRequest: AuthorizeChangeRequestRespone;
+  authorizeChangeRequest: AuthorizeChangeRequestResponse;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
-  /** Adds card to given wallet */
+  /**
+   * Adds card to given wallet
+   * @deprecated Please use more secure requestCardPushProvisioning and confirmCardPushProvisioning
+   */
   cardPushProvisioning: PushProvisioningOutput;
   /** Categorize transaction for VAT declaration */
   categorizeTransactionForDeclaration: CategorizeTransactionForDeclarationResponse;
@@ -1068,14 +1159,18 @@ export type Mutation = {
   clearPreselectedPlan: MutationResult;
   /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
+  /** Confirms adding card to Apple/Google Pay wallet */
+  confirmCardPushProvisioning: PushProvisioningOutput;
   /** Confirm a PIN change request */
   confirmChangeCardPIN: ConfirmationStatus;
-  confirmChangeRequest: ConfirmChangeRequestRespone;
+  confirmChangeRequest: ConfirmChangeRequestResponse;
   confirmFraud: ConfirmFraudResponse;
   /** Confirm a transfer creation */
   confirmTransfer: Transfer;
   /** Confirm the transfers creation */
   confirmTransfers: BatchTransfer;
+  /** Confirms update of user fields on solaris */
+  confirmUpdateSolarisUser: User;
   /** Connect user to a bookkeeping partner */
   connectIntegration: MutationResult;
   /** Creates user activity for device monitoring */
@@ -1088,6 +1183,8 @@ export type Mutation = {
   createClient: Client;
   /** Records consent from the given person to collect device fingerprints on their registered device */
   createConsentForDeviceMonitoring?: Maybe<Scalars['String']>;
+  /** Creates a draft external transaction entry */
+  createDraftTransaction: CreateDraftTransactionResponse;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
   createInvoiceLogo: CreateInvoiceLogoResponse;
   createQuestionnaireDocumentAsset: CreateAssetResponse;
@@ -1139,6 +1236,8 @@ export type Mutation = {
   reorderCard: Card;
   /** Call when customer's card is lost or stolen */
   replaceCard: Card;
+  /** Adds card to Apple/Google Pay wallet */
+  requestCardPushProvisioning: AuthorizeChangeRequestResponse;
   /** Create a new identification if applicable */
   requestIdentification: IdentificationDetails;
   /** Create Overdraft Application  - only available for Kontist Application */
@@ -1163,12 +1262,16 @@ export type Mutation = {
   updateConsentForDeviceMonitoring?: Maybe<MutationResult>;
   /** Updates document meta */
   updateDocument: Document;
+  /** Updates draft external transaction entry. Returns null if finalized transaction was created */
+  updateDraftTransaction?: Maybe<DraftTransaction>;
   updateInvoice: InvoiceOutput;
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoiceSettings: InvoiceSettingsOutput;
   /** Updates overdraft application timestamps for rejected and offered overdraft screens - only available for Kontist Application */
   updateOverdraft?: Maybe<Overdraft>;
   updateReview: MutationResult;
+  /** Update user fields on solaris */
+  updateSolarisUser: AuthorizeChangeRequestResponse;
   /** Update user's subscription plan */
   updateSubscriptionPlan: UpdateSubscriptionPlanResult;
   /** Updates user's taxNumber */
@@ -1199,6 +1302,13 @@ export type Mutation = {
 export type MutationActivateCardArgs = {
   id: Scalars['String'];
   verificationToken?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationAddDeviceKeyArgs = {
+  deviceId: Scalars['String'];
+  key: Scalars['String'];
+  signature: Scalars['String'];
 };
 
 
@@ -1273,6 +1383,12 @@ export type MutationConfirmCancelTransferArgs = {
 };
 
 
+export type MutationConfirmCardPushProvisioningArgs = {
+  cardId: Scalars['String'];
+  payload: ConfirmChangeRequestArgs;
+};
+
+
 export type MutationConfirmChangeCardPinArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
@@ -1296,6 +1412,11 @@ export type MutationConfirmTransferArgs = {
 export type MutationConfirmTransfersArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
+};
+
+
+export type MutationConfirmUpdateSolarisUserArgs = {
+  payload: ConfirmChangeRequestArgs;
 };
 
 
@@ -1328,6 +1449,11 @@ export type MutationCreateClientArgs = {
 
 export type MutationCreateConsentForDeviceMonitoringArgs = {
   eventType: DeviceConsentEventType;
+};
+
+
+export type MutationCreateDraftTransactionArgs = {
+  fileName: Scalars['String'];
 };
 
 
@@ -1463,6 +1589,8 @@ export type MutationFinalizeAssetUploadArgs = {
 
 
 export type MutationFinalizeTaxCaseArgs = {
+  shouldFinalizeBusinessTax?: InputMaybe<Scalars['Boolean']>;
+  shouldFinalizeIncomeTax?: InputMaybe<Scalars['Boolean']>;
   taxCaseId: Scalars['ID'];
 };
 
@@ -1499,6 +1627,14 @@ export type MutationReplaceCardArgs = {
 };
 
 
+export type MutationRequestCardPushProvisioningArgs = {
+  android?: InputMaybe<PushProvisioningAndroidInput>;
+  cardId: Scalars['String'];
+  deviceId: Scalars['String'];
+  ios?: InputMaybe<PushProvisioningIosInput>;
+};
+
+
 export type MutationResetLastQuestionnaireAnswerArgs = {
   questionnaireId: Scalars['ID'];
 };
@@ -1516,6 +1652,7 @@ export type MutationSignPoaArgs = {
 
 
 export type MutationStartQuestionnaireArgs = {
+  questionnaireId?: InputMaybe<Scalars['ID']>;
   type: QuestionnaireType;
   year: Scalars['Int'];
 };
@@ -1569,6 +1706,11 @@ export type MutationUpdateDocumentArgs = {
 };
 
 
+export type MutationUpdateDraftTransactionArgs = {
+  payload: UpdateDraftTransactionInput;
+};
+
+
 export type MutationUpdateInvoiceArgs = {
   payload: InvoiceInput;
 };
@@ -1593,6 +1735,12 @@ export type MutationUpdateOverdraftArgs = {
 export type MutationUpdateReviewArgs = {
   reviewId: Scalars['Int'];
   status: UserReviewStatus;
+};
+
+
+export type MutationUpdateSolarisUserArgs = {
+  deviceId: Scalars['String'];
+  payload: UpdateSolarisUserInput;
 };
 
 
@@ -2069,22 +2217,32 @@ export type PushProvisioningOutput = {
 
 export type Query = {
   __typename?: 'Query';
+  draftTransactions: Array<DraftTransaction>;
   /** Get all released generic features, that are needed before user creation */
   genericFeatures: Array<GenericFeature>;
+  /** Determines if user device has restricted key added */
+  hasDeviceRestrictedKey: Scalars['Boolean'];
   status: SystemStatus;
   /** The current user information */
   viewer?: Maybe<User>;
 };
 
+
+export type QueryHasDeviceRestrictedKeyArgs = {
+  deviceId: Scalars['String'];
+};
+
 export type Questionnaire = {
   __typename?: 'Questionnaire';
   completedAt?: Maybe<Scalars['DateTime']>;
+  context?: Maybe<Scalars['JSON']>;
   documents: Array<QuestionnaireDocument>;
   id: Scalars['ID'];
   lastAnswer?: Maybe<QuestionnaireAnswer>;
   nextQuestion?: Maybe<QuestionnaireQuestion>;
   startedAt?: Maybe<Scalars['DateTime']>;
   status: QuestionnaireStatus;
+  syncedAt?: Maybe<Scalars['DateTime']>;
   type: QuestionnaireType;
   year: Scalars['Int'];
 };
@@ -2100,6 +2258,7 @@ export type QuestionnaireAnswer = {
   postponedAt?: Maybe<Scalars['DateTime']>;
   questionName: Scalars['String'];
   submittedAt?: Maybe<Scalars['DateTime']>;
+  syncedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   value?: Maybe<Scalars['JSON']>;
 };
@@ -2118,6 +2277,7 @@ export type QuestionnaireDocument = {
   id: Scalars['ID'];
   inputs?: Maybe<Scalars['JSON']>;
   isLastYearSuggestion: Scalars['Boolean'];
+  syncedAt?: Maybe<Scalars['DateTime']>;
   type: QuestionnaireDocumentType;
   updatedAt: Scalars['DateTime'];
 };
@@ -2134,7 +2294,18 @@ export enum QuestionnaireDocumentType {
   EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
   EoyCarUsagePurchaseContract = 'EOY_CAR_USAGE_PURCHASE_CONTRACT',
   EoyCarUsageTraveledKmWithPrivateCar = 'EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
+  EoyIncomeTaxBasicDataOther = 'EOY_INCOME_TAX_BASIC_DATA_OTHER',
+  EoyIncomeTaxBasicDataPartnerOther = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_OTHER',
+  EoyIncomeTaxBasicDataPartnerProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_PROOF_OF_DISABILITY',
   EoyIncomeTaxBasicDataProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PROOF_OF_DISABILITY',
+  EoyIncomeTaxChildAdditionalHealthInsurance = 'EOY_INCOME_TAX_CHILD_ADDITIONAL_HEALTH_INSURANCE',
+  EoyIncomeTaxChildChildcare = 'EOY_INCOME_TAX_CHILD_CHILDCARE',
+  EoyIncomeTaxChildDisabilityCosts = 'EOY_INCOME_TAX_CHILD_DISABILITY_COSTS',
+  EoyIncomeTaxChildExtensiveMedicalExpenses = 'EOY_INCOME_TAX_CHILD_EXTENSIVE_MEDICAL_EXPENSES',
+  EoyIncomeTaxChildOther = 'EOY_INCOME_TAX_CHILD_OTHER',
+  EoyIncomeTaxChildProofOfDisability = 'EOY_INCOME_TAX_CHILD_PROOF_OF_DISABILITY',
+  EoyIncomeTaxChildSchoolFees = 'EOY_INCOME_TAX_CHILD_SCHOOL_FEES',
+  EoyIncomeTaxChildUniversityFees = 'EOY_INCOME_TAX_CHILD_UNIVERSITY_FEES',
   EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
   EoyOfficeUsageFloorPlan = 'EOY_OFFICE_USAGE_FLOOR_PLAN',
   EoyOfficeUsageHeating = 'EOY_OFFICE_USAGE_HEATING',
@@ -2383,9 +2554,11 @@ export type SystemStatus = {
 
 export type TaxCase = {
   __typename?: 'TaxCase';
+  businessTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
   deadline: Scalars['DateTime'];
   finalizedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
+  incomeTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
   status: TaxCaseStatus;
   taxOfficeDeadline?: Maybe<Scalars['DateTime']>;
   year: Scalars['Int'];
@@ -2549,6 +2722,7 @@ export type Transaction = {
   purpose?: Maybe<Scalars['String']>;
   receiptName?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** View a single Asset for a transaction */
@@ -2633,6 +2807,9 @@ export type TransactionCondition = {
   purpose_like?: InputMaybe<Scalars['String']>;
   purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
   purpose_ne?: InputMaybe<Scalars['String']>;
+  source_eq?: InputMaybe<Scalars['String']>;
+  source_in?: InputMaybe<Array<Scalars['String']>>;
+  source_ne?: InputMaybe<Scalars['String']>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
@@ -2701,6 +2878,9 @@ export type TransactionFilter = {
   purpose_like?: InputMaybe<Scalars['String']>;
   purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
   purpose_ne?: InputMaybe<Scalars['String']>;
+  source_eq?: InputMaybe<Scalars['String']>;
+  source_in?: InputMaybe<Array<Scalars['String']>>;
+  source_ne?: InputMaybe<Scalars['String']>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
@@ -2913,6 +3093,21 @@ export type UpdateDocumentMetadata = {
   documentCategoryId?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateDraftTransactionInput = {
+  amount?: InputMaybe<Scalars['Int']>;
+  assetUploaded?: InputMaybe<Scalars['Boolean']>;
+  categoryCode?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']>;
+  paymentDate?: InputMaybe<Scalars['DateTime']>;
+  vatCategoryCode?: InputMaybe<VatCategoryCode>;
+};
+
+export type UpdateSolarisUserInput = {
+  amlConfirmed?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type UpdateSubscriptionPlanResult = {
   __typename?: 'UpdateSubscriptionPlanResult';
   couponCode?: Maybe<Scalars['String']>;
@@ -2966,6 +3161,8 @@ export type User = {
   __typename?: 'User';
   /** The current state of user's Kontist account based on his subscription plan */
   accountState?: Maybe<AccountState>;
+  amlConfirmedOn?: Maybe<Scalars['DateTime']>;
+  amlFollowUpDate?: Maybe<Scalars['DateTime']>;
   /** Information about the plans a user can subscribe to */
   availablePlans: Array<SubscriptionPlan>;
   /** The state of banners in mobile or web app for the user */
@@ -3189,6 +3386,7 @@ export type UserPremiumSubscriptionDiscountArgs = {
 
 
 export type UserQuestionnaireArgs = {
+  questionnaireId?: InputMaybe<Scalars['ID']>;
   type: QuestionnaireType;
   year: Scalars['Int'];
 };
@@ -3403,6 +3601,46 @@ export type UserUpdateInput = {
 
 export enum UserVatRate {
   Vat_0 = 'VAT_0',
+  Vat_19 = 'VAT_19'
+}
+
+export enum VatCategoryCode {
+  Dit_5 = 'DIT_5',
+  Dit_7 = 'DIT_7',
+  Dit_16 = 'DIT_16',
+  Dit_19 = 'DIT_19',
+  ExportDelivery = 'EXPORT_DELIVERY',
+  Income_0 = 'INCOME_0',
+  Income_0Itd = 'INCOME_0_ITD',
+  Income_5 = 'INCOME_5',
+  Income_7 = 'INCOME_7',
+  Income_13B5Ustg = 'INCOME_13B5_USTG',
+  Income_16 = 'INCOME_16',
+  Income_19 = 'INCOME_19',
+  IncomeEuB2B = 'INCOME_EU_B2B',
+  IncomeEuB2C_5 = 'INCOME_EU_B2C_5',
+  IncomeEuB2C_7 = 'INCOME_EU_B2C_7',
+  IncomeEuB2C_16 = 'INCOME_EU_B2C_16',
+  IncomeEuB2C_19 = 'INCOME_EU_B2C_19',
+  IncomeEuIntraB2B = 'INCOME_EU_INTRA_B2B',
+  IncomeEuIntraB2C_5 = 'INCOME_EU_INTRA_B2C_5',
+  IncomeEuIntraB2C_7 = 'INCOME_EU_INTRA_B2C_7',
+  IncomeEuIntraB2C_16 = 'INCOME_EU_INTRA_B2C_16',
+  IncomeEuIntraB2C_19 = 'INCOME_EU_INTRA_B2C_19',
+  IntraAcquisitionIt = 'INTRA_ACQUISITION_IT',
+  NonTaxable = 'NON_TAXABLE',
+  NoItd = 'NO_ITD',
+  NoVat = 'NO_VAT',
+  ReverseCharge = 'REVERSE_CHARGE',
+  ReverseChargeIt = 'REVERSE_CHARGE_IT'
+}
+
+export enum VatRate {
+  ReverseCharge = 'REVERSE_CHARGE',
+  Vat_0 = 'VAT_0',
+  Vat_5 = 'VAT_5',
+  Vat_7 = 'VAT_7',
+  Vat_16 = 'VAT_16',
   Vat_19 = 'VAT_19'
 }
 

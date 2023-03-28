@@ -64,6 +64,7 @@ describe("EmailDocument", () => {
         splits: [],
         transactionAssets: [],
         personalNote: "Some note",
+        source: "SOLARIS",
       },
     ],
   };

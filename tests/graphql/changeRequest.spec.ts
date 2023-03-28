@@ -1,11 +1,11 @@
-import {expect} from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
 
-import {Client} from "../../lib";
-import {ChangeRequest} from "../../lib/graphql/changeRequest";
+import { Client } from "../../lib";
+import { ChangeRequest } from "../../lib/graphql/changeRequest";
 import {
-  AuthorizeChangeRequestRespone,
-  ConfirmChangeRequestRespone,
+  AuthorizeChangeRequestResponse,
+  ConfirmChangeRequestResponse,
 } from "../../lib/graphql/schema";
 
 describe("ChangeRequest", () => {
@@ -38,7 +38,7 @@ describe("ChangeRequest", () => {
   describe("#authorize", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
-      const authorizeChangeRequestRespone: AuthorizeChangeRequestRespone = {
+      const authorizeChangeRequestRespone: AuthorizeChangeRequestResponse = {
         stringToSign: Date.now().toString(),
       };
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
@@ -60,7 +60,7 @@ describe("ChangeRequest", () => {
   describe("#confirm", () => {
     it("should call rawQuery and return result", async () => {
       // arrange
-      const confirmChangeRequestRespone: ConfirmChangeRequestRespone = {
+      const confirmChangeRequestRespone: ConfirmChangeRequestResponse = {
         success: true,
       };
       const changeRequest = new ChangeRequest(client.graphQL);
