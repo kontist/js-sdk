@@ -2244,6 +2244,7 @@ export type Questionnaire = {
   nextQuestion?: Maybe<QuestionnaireQuestion>;
   startedAt?: Maybe<Scalars['DateTime']>;
   status: QuestionnaireStatus;
+  syncedAt?: Maybe<Scalars['DateTime']>;
   type: QuestionnaireType;
   year: Scalars['Int'];
 };
@@ -2259,6 +2260,7 @@ export type QuestionnaireAnswer = {
   postponedAt?: Maybe<Scalars['DateTime']>;
   questionName: Scalars['String'];
   submittedAt?: Maybe<Scalars['DateTime']>;
+  syncedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   value?: Maybe<Scalars['JSON']>;
 };
@@ -2277,6 +2279,7 @@ export type QuestionnaireDocument = {
   id: Scalars['ID'];
   inputs?: Maybe<Scalars['JSON']>;
   isLastYearSuggestion: Scalars['Boolean'];
+  syncedAt?: Maybe<Scalars['DateTime']>;
   type: QuestionnaireDocumentType;
   updatedAt: Scalars['DateTime'];
 };
@@ -2297,6 +2300,14 @@ export enum QuestionnaireDocumentType {
   EoyIncomeTaxBasicDataPartnerOther = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_OTHER',
   EoyIncomeTaxBasicDataPartnerProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_PROOF_OF_DISABILITY',
   EoyIncomeTaxBasicDataProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PROOF_OF_DISABILITY',
+  EoyIncomeTaxChildAdditionalHealthInsurance = 'EOY_INCOME_TAX_CHILD_ADDITIONAL_HEALTH_INSURANCE',
+  EoyIncomeTaxChildChildcare = 'EOY_INCOME_TAX_CHILD_CHILDCARE',
+  EoyIncomeTaxChildDisabilityCosts = 'EOY_INCOME_TAX_CHILD_DISABILITY_COSTS',
+  EoyIncomeTaxChildExtensiveMedicalExpenses = 'EOY_INCOME_TAX_CHILD_EXTENSIVE_MEDICAL_EXPENSES',
+  EoyIncomeTaxChildOther = 'EOY_INCOME_TAX_CHILD_OTHER',
+  EoyIncomeTaxChildProofOfDisability = 'EOY_INCOME_TAX_CHILD_PROOF_OF_DISABILITY',
+  EoyIncomeTaxChildSchoolFees = 'EOY_INCOME_TAX_CHILD_SCHOOL_FEES',
+  EoyIncomeTaxChildUniversityFees = 'EOY_INCOME_TAX_CHILD_UNIVERSITY_FEES',
   EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
   EoyOfficeUsageFloorPlan = 'EOY_OFFICE_USAGE_FLOOR_PLAN',
   EoyOfficeUsageHeating = 'EOY_OFFICE_USAGE_HEATING',
@@ -2713,6 +2724,7 @@ export type Transaction = {
   purpose?: Maybe<Scalars['String']>;
   receiptName?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** View a single Asset for a transaction */
@@ -2797,6 +2809,9 @@ export type TransactionCondition = {
   purpose_like?: InputMaybe<Scalars['String']>;
   purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
   purpose_ne?: InputMaybe<Scalars['String']>;
+  source_eq?: InputMaybe<Scalars['String']>;
+  source_in?: InputMaybe<Array<Scalars['String']>>;
+  source_ne?: InputMaybe<Scalars['String']>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
@@ -2865,6 +2880,9 @@ export type TransactionFilter = {
   purpose_like?: InputMaybe<Scalars['String']>;
   purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
   purpose_ne?: InputMaybe<Scalars['String']>;
+  source_eq?: InputMaybe<Scalars['String']>;
+  source_in?: InputMaybe<Array<Scalars['String']>>;
+  source_ne?: InputMaybe<Scalars['String']>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
