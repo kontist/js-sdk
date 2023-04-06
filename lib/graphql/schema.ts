@@ -817,6 +817,7 @@ export type DraftTransaction = {
   assets: Array<Asset>;
   categoryCode?: Maybe<CategoryCode>;
   id: Scalars['ID'];
+  isCashTransaction: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
   note?: Maybe<Scalars['String']>;
   paymentDate?: Maybe<Scalars['DateTime']>;
@@ -1211,6 +1212,8 @@ export type Mutation = {
   deleteClient: Client;
   /** Deletes document */
   deleteDocument: MutationResult;
+  /** Deletes draft transaction */
+  deleteDraftTransaction: MutationResult;
   deleteEmailDocument: MutationResult;
   /** Deletes Google Pay card token reference id for given wallet id */
   deleteGooglePayCardToken: GooglePayCardToken;
@@ -1535,6 +1538,11 @@ export type MutationDeleteClientArgs = {
 
 export type MutationDeleteDocumentArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationDeleteDraftTransactionArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -2296,10 +2304,29 @@ export enum QuestionnaireDocumentType {
   EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
   EoyCarUsagePurchaseContract = 'EOY_CAR_USAGE_PURCHASE_CONTRACT',
   EoyCarUsageTraveledKmWithPrivateCar = 'EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
+  EoyIncomeTaxAdditionalIncomeAddlSelfEmployment = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_ADDL_SELF_EMPLOYMENT',
+  EoyIncomeTaxAdditionalIncomeCapitalAssetsIntl = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_CAPITAL_ASSETS_INTL',
+  EoyIncomeTaxAdditionalIncomeCrypto = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_CRYPTO',
+  EoyIncomeTaxAdditionalIncomeEmployedWork = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_EMPLOYED_WORK',
+  EoyIncomeTaxAdditionalIncomeEmploymentExpenses = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_EMPLOYMENT_EXPENSES',
+  EoyIncomeTaxAdditionalIncomeInternationalIncome = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_INTERNATIONAL_INCOME',
+  EoyIncomeTaxAdditionalIncomeOther = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_OTHER',
+  EoyIncomeTaxAdditionalIncomePartnerAddlSelfEmployment = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_ADDL_SELF_EMPLOYMENT',
+  EoyIncomeTaxAdditionalIncomePartnerCapitalAssetsIntl = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_CAPITAL_ASSETS_INTL',
+  EoyIncomeTaxAdditionalIncomePartnerCrypto = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_CRYPTO',
+  EoyIncomeTaxAdditionalIncomePartnerEmployedWork = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_EMPLOYED_WORK',
+  EoyIncomeTaxAdditionalIncomePartnerEmploymentExpenses = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_EMPLOYMENT_EXPENSES',
+  EoyIncomeTaxAdditionalIncomePartnerInternationalIncome = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_INTERNATIONAL_INCOME',
+  EoyIncomeTaxAdditionalIncomePartnerOther = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_OTHER',
+  EoyIncomeTaxAdditionalIncomePartnerPensions = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_PENSIONS',
+  EoyIncomeTaxAdditionalIncomePartnerSaleOfProperty = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_SALE_OF_PROPERTY',
+  EoyIncomeTaxAdditionalIncomePensions = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PENSIONS',
+  EoyIncomeTaxAdditionalIncomeSaleOfProperty = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_SALE_OF_PROPERTY',
   EoyIncomeTaxBasicDataOther = 'EOY_INCOME_TAX_BASIC_DATA_OTHER',
   EoyIncomeTaxBasicDataPartnerOther = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_OTHER',
   EoyIncomeTaxBasicDataPartnerProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_PROOF_OF_DISABILITY',
   EoyIncomeTaxBasicDataProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PROOF_OF_DISABILITY',
+  EoyIncomeTaxBasicDataRentalAndLease = 'EOY_INCOME_TAX_BASIC_DATA_RENTAL_AND_LEASE',
   EoyIncomeTaxChildAdditionalHealthInsurance = 'EOY_INCOME_TAX_CHILD_ADDITIONAL_HEALTH_INSURANCE',
   EoyIncomeTaxChildChildcare = 'EOY_INCOME_TAX_CHILD_CHILDCARE',
   EoyIncomeTaxChildDisabilityCosts = 'EOY_INCOME_TAX_CHILD_DISABILITY_COSTS',
@@ -2308,6 +2335,36 @@ export enum QuestionnaireDocumentType {
   EoyIncomeTaxChildProofOfDisability = 'EOY_INCOME_TAX_CHILD_PROOF_OF_DISABILITY',
   EoyIncomeTaxChildSchoolFees = 'EOY_INCOME_TAX_CHILD_SCHOOL_FEES',
   EoyIncomeTaxChildUniversityFees = 'EOY_INCOME_TAX_CHILD_UNIVERSITY_FEES',
+  EoyIncomeTaxPrivateExpensesAccidentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_ACCIDENT_INSURANCE',
+  EoyIncomeTaxPrivateExpensesAliments = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_ALIMENTS',
+  EoyIncomeTaxPrivateExpensesDisabilityInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_DISABILITY_INSURANCE',
+  EoyIncomeTaxPrivateExpensesExtraordinaryBurdens = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_EXTRAORDINARY_BURDENS',
+  EoyIncomeTaxPrivateExpensesHealthInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_HEALTH_INSURANCE',
+  EoyIncomeTaxPrivateExpensesHouseholdServices = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_HOUSEHOLD_SERVICES',
+  EoyIncomeTaxPrivateExpensesLifeInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_LIFE_INSURANCE',
+  EoyIncomeTaxPrivateExpensesOther = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_OTHER',
+  EoyIncomeTaxPrivateExpensesPartnerAccidentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_ACCIDENT_INSURANCE',
+  EoyIncomeTaxPrivateExpensesPartnerAliments = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_ALIMENTS',
+  EoyIncomeTaxPrivateExpensesPartnerDisabilityInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_DISABILITY_INSURANCE',
+  EoyIncomeTaxPrivateExpensesPartnerExtraordinaryBurdens = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_EXTRAORDINARY_BURDENS',
+  EoyIncomeTaxPrivateExpensesPartnerHealthInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_HEALTH_INSURANCE',
+  EoyIncomeTaxPrivateExpensesPartnerHouseholdServices = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_HOUSEHOLD_SERVICES',
+  EoyIncomeTaxPrivateExpensesPartnerLifeInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_LIFE_INSURANCE',
+  EoyIncomeTaxPrivateExpensesPartnerOther = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_OTHER',
+  EoyIncomeTaxPrivateExpensesPartnerPensionInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_PENSION_INSURANCE',
+  EoyIncomeTaxPrivateExpensesPartnerPrivateDonations = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_PRIVATE_DONATIONS',
+  EoyIncomeTaxPrivateExpensesPartnerReister = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_REISTER',
+  EoyIncomeTaxPrivateExpensesPartnerRurup = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_RURUP',
+  EoyIncomeTaxPrivateExpensesPartnerUnemploymentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_UNEMPLOYMENT_INSURANCE',
+  EoyIncomeTaxPrivateExpensesPartnerUniversityFees = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_UNIVERSITY_FEES',
+  EoyIncomeTaxPrivateExpensesPartnerVehicleLiability = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_VEHICLE_LIABILITY',
+  EoyIncomeTaxPrivateExpensesPensionInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PENSION_INSURANCE',
+  EoyIncomeTaxPrivateExpensesPrivateDonations = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PRIVATE_DONATIONS',
+  EoyIncomeTaxPrivateExpensesReister = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_REISTER',
+  EoyIncomeTaxPrivateExpensesRurup = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_RURUP',
+  EoyIncomeTaxPrivateExpensesUnemploymentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_UNEMPLOYMENT_INSURANCE',
+  EoyIncomeTaxPrivateExpensesUniversityFees = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_UNIVERSITY_FEES',
+  EoyIncomeTaxPrivateExpensesVehicleLiability = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_VEHICLE_LIABILITY',
   EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
   EoyOfficeUsageFloorPlan = 'EOY_OFFICE_USAGE_FLOOR_PLAN',
   EoyOfficeUsageHeating = 'EOY_OFFICE_USAGE_HEATING',
@@ -2366,7 +2423,6 @@ export enum QuestionnaireType {
   EoyIncomeTaxChild = 'EOY_INCOME_TAX_CHILD',
   EoyIncomeTaxPrivateExpenses = 'EOY_INCOME_TAX_PRIVATE_EXPENSES',
   EoyIncomeTaxPrivateExpensesPartner = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER',
-  EoyIncomeTaxRentingLeasing = 'EOY_INCOME_TAX_RENTING_LEASING',
   EoyOfficeUsage = 'EOY_OFFICE_USAGE',
   EoyTravelExpenses = 'EOY_TRAVEL_EXPENSES',
   StartOfTheYear = 'START_OF_THE_YEAR'
@@ -2563,6 +2619,7 @@ export type TaxCase = {
   incomeTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
   status: TaxCaseStatus;
   taxOfficeDeadline?: Maybe<Scalars['DateTime']>;
+  userFinalizedAt?: Maybe<Scalars['DateTime']>;
   year: Scalars['Int'];
 };
 
@@ -2939,6 +2996,7 @@ export enum TransactionProjectionType {
   DisputeClearing = 'DISPUTE_CLEARING',
   DisputeTransaction = 'DISPUTE_TRANSACTION',
   ExternalTransaction = 'EXTERNAL_TRANSACTION',
+  ExternalTransactionCash = 'EXTERNAL_TRANSACTION_CASH',
   ForcePostTransaction = 'FORCE_POST_TRANSACTION',
   ForeignPayment = 'FOREIGN_PAYMENT',
   InterestAccrued = 'INTEREST_ACCRUED',
@@ -3100,10 +3158,11 @@ export type UpdateDraftTransactionInput = {
   assetUploaded?: InputMaybe<Scalars['Boolean']>;
   categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
+  isCashTransaction?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
   note?: InputMaybe<Scalars['String']>;
   paymentDate?: InputMaybe<Scalars['DateTime']>;
-  vatCategoryCode?: InputMaybe<VatCategoryCode>;
+  vatRate?: InputMaybe<VatRate>;
 };
 
 export type UpdateSolarisUserInput = {
@@ -3604,37 +3663,6 @@ export type UserUpdateInput = {
 export enum UserVatRate {
   Vat_0 = 'VAT_0',
   Vat_19 = 'VAT_19'
-}
-
-export enum VatCategoryCode {
-  Dit_5 = 'DIT_5',
-  Dit_7 = 'DIT_7',
-  Dit_16 = 'DIT_16',
-  Dit_19 = 'DIT_19',
-  ExportDelivery = 'EXPORT_DELIVERY',
-  Income_0 = 'INCOME_0',
-  Income_0Itd = 'INCOME_0_ITD',
-  Income_5 = 'INCOME_5',
-  Income_7 = 'INCOME_7',
-  Income_13B5Ustg = 'INCOME_13B5_USTG',
-  Income_16 = 'INCOME_16',
-  Income_19 = 'INCOME_19',
-  IncomeEuB2B = 'INCOME_EU_B2B',
-  IncomeEuB2C_5 = 'INCOME_EU_B2C_5',
-  IncomeEuB2C_7 = 'INCOME_EU_B2C_7',
-  IncomeEuB2C_16 = 'INCOME_EU_B2C_16',
-  IncomeEuB2C_19 = 'INCOME_EU_B2C_19',
-  IncomeEuIntraB2B = 'INCOME_EU_INTRA_B2B',
-  IncomeEuIntraB2C_5 = 'INCOME_EU_INTRA_B2C_5',
-  IncomeEuIntraB2C_7 = 'INCOME_EU_INTRA_B2C_7',
-  IncomeEuIntraB2C_16 = 'INCOME_EU_INTRA_B2C_16',
-  IncomeEuIntraB2C_19 = 'INCOME_EU_INTRA_B2C_19',
-  IntraAcquisitionIt = 'INTRA_ACQUISITION_IT',
-  NonTaxable = 'NON_TAXABLE',
-  NoItd = 'NO_ITD',
-  NoVat = 'NO_VAT',
-  ReverseCharge = 'REVERSE_CHARGE',
-  ReverseChargeIt = 'REVERSE_CHARGE_IT'
 }
 
 export enum VatRate {
