@@ -49,7 +49,7 @@ export type Account = {
   stats: AccountStats;
   /** Individual tax-related settings per year */
   taxYearSettings: Array<TaxYearSetting>;
-  transaction?: Maybe<Transaction>;
+  transaction?: Maybe<RawTransactionProjection>;
   transactionFilterPresets: Array<FilterPreset>;
   transactions: TransactionsConnection;
   transactionsCSV: Scalars['String'];
@@ -402,6 +402,9 @@ export enum CategoryCode {
   Entertainment = 'ENTERTAINMENT',
   ExternalFreelancer = 'EXTERNAL_FREELANCER',
   Fees = 'FEES',
+  FreeValueDelivery = 'FREE_VALUE_DELIVERY',
+  FreeValueDeliveryPv_19 = 'FREE_VALUE_DELIVERY_PV_19',
+  FreeValueService = 'FREE_VALUE_SERVICE',
   Gifts = 'GIFTS',
   Goods = 'GOODS',
   ImportVat = 'IMPORT_VAT',
@@ -814,6 +817,7 @@ export type DraftTransaction = {
   amount?: Maybe<Scalars['Int']>;
   assets: Array<Asset>;
   categoryCode?: Maybe<CategoryCode>;
+  createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   isCashTransaction: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
@@ -2425,6 +2429,72 @@ export enum QuestionnaireType {
   EoyTravelExpenses = 'EOY_TRAVEL_EXPENSES',
   StartOfTheYear = 'START_OF_THE_YEAR'
 }
+
+export type RawTransactionProjection = {
+  __typename?: 'RawTransactionProjection';
+  actionReason?: Maybe<ActionReason>;
+  /** The amount of the transaction in cents */
+  amount: Scalars['Int'];
+  /** View a single Asset for a transaction */
+  asset?: Maybe<TransactionAsset>;
+  /** List of uploaded Asset files for this transaction */
+  assets: Array<TransactionAsset>;
+  /** The date at which the transaction was booked (created) */
+  bookingDate: Scalars['DateTime'];
+  canBeRecategorized: Scalars['Boolean'];
+  categorizationType?: Maybe<CategorizationType>;
+  category?: Maybe<TransactionCategory>;
+  categoryCode?: Maybe<Scalars['String']>;
+  categoryCodeTranslation?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']>;
+  directDebitFees: Array<DirectDebitFee>;
+  documentDownloadUrl?: Maybe<Scalars['String']>;
+  documentNumber?: Maybe<Scalars['String']>;
+  documentPreviewUrl?: Maybe<Scalars['String']>;
+  documentType?: Maybe<DocumentType>;
+  e2eId?: Maybe<Scalars['String']>;
+  fees: Array<TransactionFee>;
+  foreignCurrency?: Maybe<Scalars['String']>;
+  iban?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  mandateNumber?: Maybe<Scalars['String']>;
+  merchantCategoryCode?: Maybe<Scalars['String']>;
+  merchantCountryCode?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  originalAmount?: Maybe<Scalars['Float']>;
+  paymentMethod: Scalars['String'];
+  personalNote?: Maybe<Scalars['String']>;
+  predictedCategory?: Maybe<TransactionCategory>;
+  /** Date predicted for tax/vat payment/refund predicted category */
+  predictedUserSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  purpose?: Maybe<Scalars['String']>;
+  receiptName?: Maybe<Scalars['String']>;
+  recurlyInvoiceNumber?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
+  /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
+  splits: Array<TransactionSplit>;
+  /** View a single Asset for a transaction */
+  transactionAsset?: Maybe<Asset>;
+  /** List Assets for a transaction */
+  transactionAssets: Array<Asset>;
+  type: TransactionProjectionType;
+  /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
+  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  /** The date at which the transaction was processed and the amount deducted from the user's account */
+  valutaDate?: Maybe<Scalars['DateTime']>;
+  verified?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type RawTransactionProjectionAssetArgs = {
+  assetId: Scalars['ID'];
+};
+
+
+export type RawTransactionProjectionTransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
 
 export type RecurlyAccount = {
   __typename?: 'RecurlyAccount';
