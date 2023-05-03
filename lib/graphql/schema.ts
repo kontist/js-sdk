@@ -399,6 +399,8 @@ export enum CategoryCode {
   Deposit = 'DEPOSIT',
   DownPayment = 'DOWN_PAYMENT',
   Education = 'EDUCATION',
+  ElectronicServiceEuB2C = 'ELECTRONIC_SERVICE_EU_B2C',
+  ElectronicServiceEuB2CKu = 'ELECTRONIC_SERVICE_EU_B2C_KU',
   Entertainment = 'ENTERTAINMENT',
   ExternalFreelancer = 'EXTERNAL_FREELANCER',
   Fees = 'FEES',
@@ -411,6 +413,7 @@ export enum CategoryCode {
   IncomeEu = 'INCOME_EU',
   IncomeGermany = 'INCOME_GERMANY',
   IncomeIntl = 'INCOME_INTL',
+  IncomeOnlyVat = 'INCOME_ONLY_VAT',
   Insurances = 'INSURANCES',
   InterestsAssets = 'INTERESTS_ASSETS',
   InterestsCarAssets = 'INTERESTS_CAR_ASSETS',
@@ -855,6 +858,8 @@ export enum FibuFinalCheckTaskStatus {
 }
 
 export enum FibuFinalCheckTaskType {
+  SubmitAssets = 'SUBMIT_ASSETS',
+  SubmitExternalTransactions = 'SUBMIT_EXTERNAL_TRANSACTIONS',
   TaxReceipts = 'TAX_RECEIPTS',
   UploadAdvisor = 'UPLOAD_ADVISOR',
   UploadManual = 'UPLOAD_MANUAL',
@@ -3550,6 +3555,8 @@ export type UserVatAnnualDeclarationArgs = {
 export enum UserConfirmation {
   AdvisorDocumentsUploaded = 'ADVISOR_DOCUMENTS_UPLOADED',
   ManualDocumentsUploaded = 'MANUAL_DOCUMENTS_UPLOADED',
+  SubmitAssets = 'SUBMIT_ASSETS',
+  SubmitExternalTransactions = 'SUBMIT_EXTERNAL_TRANSACTIONS',
   TaxDeclarationNotNeeded = 'TAX_DECLARATION_NOT_NEEDED',
   ToolsDocumentsUploaded = 'TOOLS_DOCUMENTS_UPLOADED'
 }
