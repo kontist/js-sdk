@@ -846,6 +846,18 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
+export type ExternalTransaction = {
+  __typename?: 'ExternalTransaction';
+  amount: Scalars['Float'];
+  categoryCode?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isCashTransaction: Scalars['Boolean'];
+  name?: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
+  paymentDate: Scalars['DateTime'];
+  vatRate?: Maybe<Scalars['String']>;
+};
+
 export type FibuFinalCheckTask = {
   __typename?: 'FibuFinalCheckTask';
   status: FibuFinalCheckTaskStatus;
@@ -1221,6 +1233,8 @@ export type Mutation = {
   /** Deletes draft transaction */
   deleteDraftTransaction: MutationResult;
   deleteEmailDocument: MutationResult;
+  /** Deletes external transaction */
+  deleteExternalTransaction: MutationResult;
   /** Deletes Google Pay card token reference id for given wallet id */
   deleteGooglePayCardToken: GooglePayCardToken;
   deleteInvoice: MutationResult;
@@ -1275,6 +1289,8 @@ export type Mutation = {
   updateDocument: Document;
   /** Updates draft external transaction entry. Returns null if finalized transaction was created */
   updateDraftTransaction?: Maybe<DraftTransaction>;
+  /** Updates external transaction */
+  updateExternalTransaction: ExternalTransaction;
   updateInvoice: InvoiceOutput;
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoiceSettings: InvoiceSettingsOutput;
@@ -1557,6 +1573,11 @@ export type MutationDeleteEmailDocumentArgs = {
 };
 
 
+export type MutationDeleteExternalTransactionArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationDeleteGooglePayCardTokenArgs = {
   id: Scalars['String'];
   tokenRefId: Scalars['String'];
@@ -1724,6 +1745,11 @@ export type MutationUpdateDocumentArgs = {
 
 export type MutationUpdateDraftTransactionArgs = {
   payload: UpdateDraftTransactionInput;
+};
+
+
+export type MutationUpdateExternalTransactionArgs = {
+  payload: UpdateExternalTransactionInput;
 };
 
 
@@ -2490,6 +2516,7 @@ export type RawTransactionProjection = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  vatRate?: Maybe<Scalars['String']>;
   verified?: Maybe<Scalars['Boolean']>;
 };
 
@@ -2868,6 +2895,7 @@ export type Transaction = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  vatRate?: Maybe<Scalars['String']>;
   verified?: Maybe<Scalars['Boolean']>;
 };
 
@@ -3229,6 +3257,18 @@ export type UpdateDocumentMetadata = {
 };
 
 export type UpdateDraftTransactionInput = {
+  amount?: InputMaybe<Scalars['Int']>;
+  assetUploaded?: InputMaybe<Scalars['Boolean']>;
+  categoryCode?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  isCashTransaction?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']>;
+  paymentDate?: InputMaybe<Scalars['DateTime']>;
+  vatRate?: InputMaybe<VatRate>;
+};
+
+export type UpdateExternalTransactionInput = {
   amount?: InputMaybe<Scalars['Int']>;
   assetUploaded?: InputMaybe<Scalars['Boolean']>;
   categoryCode?: InputMaybe<Scalars['String']>;
