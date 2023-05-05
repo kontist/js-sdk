@@ -2519,7 +2519,7 @@ export type RawTransactionProjection = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
-  vatRate?: Maybe<Scalars['String']>;
+  vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
 };
 
@@ -2898,7 +2898,7 @@ export type Transaction = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
-  vatRate?: Maybe<Scalars['String']>;
+  vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
 };
 
