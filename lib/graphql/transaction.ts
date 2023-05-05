@@ -70,6 +70,7 @@ const TRANSACTION_FIELDS = `
   paymentMethod
   category
   categoryCode
+  vatRate
   categorizationType
   userSelectedBookingDate
   purpose
