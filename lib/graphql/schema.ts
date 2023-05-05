@@ -193,6 +193,14 @@ export type Asset = {
   thumbnail: Scalars['String'];
 };
 
+export enum AssetType {
+  Immovable = 'IMMOVABLE',
+  Intangible = 'INTANGIBLE',
+  MovableMotorVehicles = 'MOVABLE_MOTOR_VEHICLES',
+  MovableOfficeEquipment = 'MOVABLE_OFFICE_EQUIPMENT',
+  MovableOthers = 'MOVABLE_OTHERS'
+}
+
 export type AttributionData = {
   irclickid?: InputMaybe<Scalars['String']>;
   /** Platform used for signup */
@@ -260,6 +268,13 @@ export type BusinessAddress = {
   movingDate: Scalars['DateTime'];
   postCode: Scalars['String'];
   street: Scalars['String'];
+};
+
+export type BusinessAssetForm = {
+  assetClass: Scalars['String'];
+  assetType: AssetType;
+  depreciationPeriodYears: Scalars['Int'];
+  purchaseDate: Scalars['String'];
 };
 
 export type Card = {
@@ -846,18 +861,6 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
-export type ExternalTransaction = {
-  __typename?: 'ExternalTransaction';
-  amount: Scalars['Float'];
-  categoryCode?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
-  isCashTransaction: Scalars['Boolean'];
-  name?: Maybe<Scalars['String']>;
-  note?: Maybe<Scalars['String']>;
-  paymentDate: Scalars['DateTime'];
-  vatRate?: Maybe<Scalars['String']>;
-};
-
 export type FibuFinalCheckTask = {
   __typename?: 'FibuFinalCheckTask';
   status: FibuFinalCheckTaskStatus;
@@ -1290,7 +1293,7 @@ export type Mutation = {
   /** Updates draft external transaction entry. Returns null if finalized transaction was created */
   updateDraftTransaction?: Maybe<DraftTransaction>;
   /** Updates external transaction */
-  updateExternalTransaction: ExternalTransaction;
+  updateExternalTransaction: RawTransactionProjection;
   updateInvoice: InvoiceOutput;
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoiceSettings: InvoiceSettingsOutput;
@@ -1749,7 +1752,7 @@ export type MutationUpdateDraftTransactionArgs = {
 
 
 export type MutationUpdateExternalTransactionArgs = {
-  payload: UpdateExternalTransactionInput;
+  payload: UserExternalTransactionInput;
 };
 
 
@@ -3268,18 +3271,6 @@ export type UpdateDraftTransactionInput = {
   vatRate?: InputMaybe<VatRate>;
 };
 
-export type UpdateExternalTransactionInput = {
-  amount?: InputMaybe<Scalars['Int']>;
-  assetUploaded?: InputMaybe<Scalars['Boolean']>;
-  categoryCode?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  isCashTransaction?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  note?: InputMaybe<Scalars['String']>;
-  paymentDate?: InputMaybe<Scalars['DateTime']>;
-  vatRate?: InputMaybe<VatRate>;
-};
-
 export type UpdateSolarisUserInput = {
   amlConfirmed?: InputMaybe<Scalars['Boolean']>;
 };
@@ -3628,6 +3619,21 @@ export enum UserDependentType {
   Child = 'CHILD',
   Partner = 'PARTNER'
 }
+
+export type UserExternalTransactionInput = {
+  amount: Scalars['Float'];
+  businessAssetForm?: InputMaybe<BusinessAssetForm>;
+  categoryCode?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  iban?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  isCashTransaction?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']>;
+  paymentDate: Scalars['DateTime'];
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatRate?: InputMaybe<VatRate>;
+};
 
 export type UserIntegration = {
   __typename?: 'UserIntegration';
