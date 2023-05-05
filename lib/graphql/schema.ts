@@ -193,6 +193,14 @@ export type Asset = {
   thumbnail: Scalars['String'];
 };
 
+export enum AssetType {
+  Immovable = 'IMMOVABLE',
+  Intangible = 'INTANGIBLE',
+  MovableMotorVehicles = 'MOVABLE_MOTOR_VEHICLES',
+  MovableOfficeEquipment = 'MOVABLE_OFFICE_EQUIPMENT',
+  MovableOthers = 'MOVABLE_OTHERS'
+}
+
 export type AttributionData = {
   irclickid?: InputMaybe<Scalars['String']>;
   /** Platform used for signup */
@@ -260,6 +268,13 @@ export type BusinessAddress = {
   movingDate: Scalars['DateTime'];
   postCode: Scalars['String'];
   street: Scalars['String'];
+};
+
+export type BusinessAssetForm = {
+  assetClass: Scalars['String'];
+  assetType: AssetType;
+  depreciationPeriodYears: Scalars['Int'];
+  purchaseDate: Scalars['String'];
 };
 
 export type Card = {
@@ -1221,6 +1236,8 @@ export type Mutation = {
   /** Deletes draft transaction */
   deleteDraftTransaction: MutationResult;
   deleteEmailDocument: MutationResult;
+  /** Deletes external transaction */
+  deleteExternalTransaction: MutationResult;
   /** Deletes Google Pay card token reference id for given wallet id */
   deleteGooglePayCardToken: GooglePayCardToken;
   deleteInvoice: MutationResult;
@@ -1275,6 +1292,8 @@ export type Mutation = {
   updateDocument: Document;
   /** Updates draft external transaction entry. Returns null if finalized transaction was created */
   updateDraftTransaction?: Maybe<DraftTransaction>;
+  /** Updates external transaction */
+  updateExternalTransaction: RawTransactionProjection;
   updateInvoice: InvoiceOutput;
   updateInvoiceCustomer: InvoiceCustomerOutput;
   updateInvoiceSettings: InvoiceSettingsOutput;
@@ -1557,6 +1576,11 @@ export type MutationDeleteEmailDocumentArgs = {
 };
 
 
+export type MutationDeleteExternalTransactionArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationDeleteGooglePayCardTokenArgs = {
   id: Scalars['String'];
   tokenRefId: Scalars['String'];
@@ -1724,6 +1748,11 @@ export type MutationUpdateDocumentArgs = {
 
 export type MutationUpdateDraftTransactionArgs = {
   payload: UpdateDraftTransactionInput;
+};
+
+
+export type MutationUpdateExternalTransactionArgs = {
+  payload: UserExternalTransactionInput;
 };
 
 
@@ -2490,6 +2519,7 @@ export type RawTransactionProjection = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
 };
 
@@ -2868,6 +2898,7 @@ export type Transaction = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
 };
 
@@ -3588,6 +3619,21 @@ export enum UserDependentType {
   Child = 'CHILD',
   Partner = 'PARTNER'
 }
+
+export type UserExternalTransactionInput = {
+  amount: Scalars['Float'];
+  businessAssetForm?: InputMaybe<BusinessAssetForm>;
+  categoryCode?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  iban?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  isCashTransaction?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']>;
+  paymentDate: Scalars['DateTime'];
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatRate?: InputMaybe<VatRate>;
+};
 
 export type UserIntegration = {
   __typename?: 'UserIntegration';
