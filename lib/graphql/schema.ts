@@ -2228,9 +2228,7 @@ export enum PurchaseType {
   Accounting = 'ACCOUNTING',
   Basic = 'BASIC',
   BasicInitial = 'BASIC_INITIAL',
-  BizTaxLight = 'BIZ_TAX_LIGHT',
-  BizTaxMedium = 'BIZ_TAX_MEDIUM',
-  BizTaxPlus = 'BIZ_TAX_PLUS',
+  Bookkeeping = 'BOOKKEEPING',
   Card = 'CARD',
   Kontax = 'KONTAX',
   KontaxPending = 'KONTAX_PENDING',
@@ -2755,6 +2753,7 @@ export type TaxDeclarationExternalAsset = {
 
 export type TaxDeclarationSavedDraftInfo = {
   __typename?: 'TaxDeclarationSavedDraftInfo';
+  calculationSheetUrl?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   createdBy?: Maybe<Scalars['String']>;
   externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
@@ -2786,6 +2785,7 @@ export enum TaxDeclarationStatus {
 
 export type TaxDeclarationSubmissionInfo = {
   __typename?: 'TaxDeclarationSubmissionInfo';
+  calculationSheetUrl?: Maybe<Scalars['String']>;
   externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
   pdfUrl?: Maybe<Scalars['String']>;
   submissionAgent?: Maybe<Scalars['String']>;
