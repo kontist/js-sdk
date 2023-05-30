@@ -12,16 +12,21 @@ import {
   CategorizeTransactionForDeclarationResponse,
 } from "./schema";
 
+const DECLARATION_FIELDS = `
+  id
+  amount
+  period
+  year
+  uploadedAt
+  submissionStatus
+`;
+
 const FETCH_DECLARATIONS = `
   query fetchDeclarations ($type: DeclarationType!) {
     viewer {
       mainAccount {
         declarations (type: $type) {
-          id
-          amount
-          period
-          year
-          uploadedAt
+          ${DECLARATION_FIELDS}
         }
       }
     }
@@ -47,11 +52,7 @@ const SUBMIT_DECLARATION = `
       period: $period,
       year: $year
     ) {
-      id
-      amount
-      period
-      year
-      uploadedAt
+      ${DECLARATION_FIELDS}
     }
   }
 `;

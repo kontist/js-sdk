@@ -1,14 +1,15 @@
-import {expect} from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
 
-import {Client} from "../../lib";
-import {Declaration} from "../../lib/graphql/declaration";
+import { Client } from "../../lib";
+import { Declaration } from "../../lib/graphql/declaration";
 import {
   Declaration as DeclarationModel,
   DeclarationType,
   DeclarationStats,
   TransactionCategory,
   CategorizeTransactionForDeclarationResponse,
+  SubmissionStatus,
 } from "../../lib/graphql/schema";
 
 describe("Declaration", () => {
@@ -48,6 +49,7 @@ describe("Declaration", () => {
           period: "02",
           year: 2021,
           uploadedAt: "2021-07-01",
+          submissionStatus: SubmissionStatus.AlreadySubmitted,
         },
       ];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
