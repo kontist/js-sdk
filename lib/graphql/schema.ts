@@ -2513,7 +2513,7 @@ export type RawTransactionProjection = {
   purpose?: Maybe<Scalars['String']>;
   receiptName?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
-  source: Scalars['String'];
+  source: TransactionSource;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** View a single Asset for a transaction */
@@ -2899,7 +2899,7 @@ export type Transaction = {
   purpose?: Maybe<Scalars['String']>;
   receiptName?: Maybe<Scalars['String']>;
   recurlyInvoiceNumber?: Maybe<Scalars['String']>;
-  source: Scalars['String'];
+  source: TransactionSource;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
   /** View a single Asset for a transaction */
@@ -3142,6 +3142,12 @@ export enum TransactionProjectionType {
   Target2CreditTransfer = 'Target2CreditTransfer',
   VerificationCode = 'VERIFICATION_CODE',
   WireTransferTopup = 'WIRE_TRANSFER_TOPUP'
+}
+
+export enum TransactionSource {
+  BackofficeManual = 'BACKOFFICE_MANUAL',
+  Solaris = 'SOLARIS',
+  User = 'USER'
 }
 
 export type TransactionSplit = {
