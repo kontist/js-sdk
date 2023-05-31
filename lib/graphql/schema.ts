@@ -612,7 +612,7 @@ export type CreateSepaTransferInput = {
   e2eId?: InputMaybe<Scalars['String']>;
   /** The IBAN of the SEPA Transfer recipient */
   iban: Scalars['String'];
-  /** The personal note of the SEPA Transfer - 140 max characters */
+  /** The personal note of the SEPA Transfer - 250 max characters */
   personalNote?: InputMaybe<Scalars['String']>;
   /** The purpose of the SEPA Transfer - 140 max characters */
   purpose?: InputMaybe<Scalars['String']>;
@@ -648,7 +648,7 @@ export type CreateTransferInput = {
   iban: Scalars['String'];
   /** The date at which the last payment will be executed for Standing Orders */
   lastExecutionDate?: InputMaybe<Scalars['DateTime']>;
-  /** The personal note of the transfer - 140 max characters */
+  /** The personal note of the transfer - 250 max characters */
   personalNote?: InputMaybe<Scalars['String']>;
   /** The purpose of the transfer - 140 max characters */
   purpose?: InputMaybe<Scalars['String']>;
@@ -709,10 +709,11 @@ export type DashboardInvoice = {
 
 export type Declaration = {
   __typename?: 'Declaration';
-  amount: Scalars['Int'];
+  amount?: Maybe<Scalars['Int']>;
   id: Scalars['Int'];
   period: Scalars['String'];
-  uploadedAt: Scalars['DateTime'];
+  submissionStatus?: Maybe<SubmissionStatus>;
+  uploadedAt?: Maybe<Scalars['DateTime']>;
   year: Scalars['Int'];
 };
 
@@ -1319,6 +1320,8 @@ export type Mutation = {
   updateUserSignupInformation: MutationResult;
   /** Update user's tax details */
   updateUserTaxDetails: MutationResult;
+  /** Submits UStVA declaration */
+  upsertDeclaration: Declaration;
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
   upsertQuestionnaireDocument: QuestionnaireDocument;
@@ -1838,6 +1841,11 @@ export type MutationUpdateUserSignupInformationArgs = {
 
 export type MutationUpdateUserTaxDetailsArgs = {
   payload: UserTaxDetailsInput;
+};
+
+
+export type MutationUpsertDeclarationArgs = {
+  payload: UpsertDeclarationArgs;
 };
 
 
@@ -2670,6 +2678,11 @@ export enum Status {
   Error = 'ERROR'
 }
 
+export enum SubmissionStatus {
+  AlreadySubmitted = 'ALREADY_SUBMITTED',
+  NotNeeded = 'NOT_NEEDED'
+}
+
 export type Subscription = {
   __typename?: 'Subscription';
   newTransaction: Transaction;
@@ -3172,7 +3185,7 @@ export type Transfer = {
   lastExecutionDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the next payment will be executed for Standing Orders */
   nextOccurrence?: Maybe<Scalars['DateTime']>;
-  /** The personal note of the transfer - 140 max characters */
+  /** The personal note of the transfer - 250 max characters */
   personalNote?: Maybe<Scalars['String']>;
   /** The purpose of the transfer - 140 max characters */
   purpose?: Maybe<Scalars['String']>;
@@ -3312,7 +3325,7 @@ export type UpdateTransferInput = {
   id: Scalars['String'];
   /** The date at which the last payment will be executed */
   lastExecutionDate?: InputMaybe<Scalars['DateTime']>;
-  /** The personal note of the transfer - 140 max characters */
+  /** The personal note of the transfer - 250 max characters */
   personalNote?: InputMaybe<Scalars['String']>;
   /** The purpose of the Standing Order - 140 max characters, if not specified with the update, it will be set to null */
   purpose?: InputMaybe<Scalars['String']>;
@@ -3322,6 +3335,12 @@ export type UpdateTransferInput = {
   type: TransferType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type UpsertDeclarationArgs = {
+  period: Scalars['String'];
+  submissionStatus: SubmissionStatus;
+  year: Scalars['Int'];
 };
 
 export type User = {
