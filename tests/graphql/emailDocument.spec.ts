@@ -8,6 +8,7 @@ import {
   DocumentUploadSource,
   EmailDocument as EmailDocumentModel,
   TransactionProjectionType,
+  TransactionSource,
 } from "../../lib/graphql/schema";
 
 describe("EmailDocument", () => {
@@ -64,7 +65,7 @@ describe("EmailDocument", () => {
         splits: [],
         transactionAssets: [],
         personalNote: "Some note",
-        source: "SOLARIS",
+        source: TransactionSource.Solaris,
       },
     ],
   };

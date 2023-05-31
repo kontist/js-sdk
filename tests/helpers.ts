@@ -1,6 +1,7 @@
 import {
   Transaction,
   TransactionProjectionType,
+  TransactionSource,
   Transfer,
   TransferStatus,
 } from "../lib/graphql/schema";
@@ -41,7 +42,7 @@ export const createTransaction = (
     categorizationType: null,
     canBeRecategorized: true,
     description: "",
-    source: "SOLARIS",
+    source: TransactionSource.Solaris,
     ...override,
   };
 };
