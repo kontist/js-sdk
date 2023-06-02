@@ -2498,6 +2498,7 @@ export type RawTransactionProjection = {
   e2eId?: Maybe<Scalars['String']>;
   fees: Array<TransactionFee>;
   foreignCurrency?: Maybe<Scalars['String']>;
+  hasAssets: Scalars['Boolean'];
   iban?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   mandateNumber?: Maybe<Scalars['String']>;
@@ -2884,6 +2885,7 @@ export type Transaction = {
   e2eId?: Maybe<Scalars['String']>;
   fees: Array<TransactionFee>;
   foreignCurrency?: Maybe<Scalars['String']>;
+  hasAssets: Scalars['Boolean'];
   iban?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   mandateNumber?: Maybe<Scalars['String']>;

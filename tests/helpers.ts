@@ -43,6 +43,7 @@ export const createTransaction = (
     canBeRecategorized: true,
     description: "",
     source: TransactionSource.Solaris,
+    hasAssets: false,
     ...override,
   };
 };
