@@ -88,6 +88,7 @@ const TRANSACTION_FIELDS = `
   }
   recurlyInvoiceNumber
   canBeRecategorized
+  verified
 `;
 
 const TRANSACTION_DETAILS = `
