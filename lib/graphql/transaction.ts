@@ -78,7 +78,6 @@ const TRANSACTION_FIELDS = `
   originalAmount
   foreignCurrency
   createdAt
-  source
   splits {
     id
     amount
