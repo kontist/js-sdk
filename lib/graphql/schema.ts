@@ -1811,9 +1811,11 @@ export type MutationUpdateTaxYearSettingsArgs = {
 
 export type MutationUpdateTransactionArgs = {
   category?: InputMaybe<TransactionCategory>;
+  categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   personalNote?: InputMaybe<Scalars['String']>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  vatRate?: InputMaybe<VatRate>;
 };
 
 
