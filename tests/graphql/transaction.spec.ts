@@ -1,7 +1,13 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { Client } from "../../lib";
-import { Transaction, TransactionCategory, BaseOperator, RequestPlatform } from "../../lib/graphql/schema";
+import {
+  Transaction,
+  TransactionCategory,
+  BaseOperator,
+  RequestPlatform,
+  VatRate,
+} from "../../lib/graphql/schema";
 import {
   NEW_TRANSACTION_SUBSCRIPTION,
   CREATE_SPLIT_TRANSACTION,
@@ -9,7 +15,7 @@ import {
   UPDATE_SPLIT_TRANSACTION,
   CREATE_TRANSACTION_ASSET,
   FINALIZE_TRANSACTION_ASSET,
-  DELETE_TRANSACTION_ASSET
+  DELETE_TRANSACTION_ASSET,
 } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
@@ -33,12 +39,12 @@ describe("Transaction", () => {
 
       firstTransaction = createTransaction({
         name: "Santa Claus",
-        amount: 900
+        amount: 900,
       });
       secondTransaction = createTransaction();
       thirdTransaction = createTransaction({
         name: "Willy Wonka",
-        amount: 1200
+        amount: 1200,
       });
 
       stub.onFirstCall().resolves(
@@ -46,7 +52,7 @@ describe("Transaction", () => {
           key: "transactions",
           items: [firstTransaction, secondTransaction],
           pageInfo: { hasNextPage: true, hasPreviousPage: false },
-        }),
+        })
       );
 
       stub.onSecondCall().resolves(
@@ -54,7 +60,7 @@ describe("Transaction", () => {
           key: "transactions",
           items: [thirdTransaction],
           pageInfo: { hasNextPage: false, hasPreviousPage: false },
-        }),
+        })
       );
     });
 
@@ -96,32 +102,27 @@ describe("Transaction", () => {
           key: "transactions",
           items: [firstTransaction, thirdTransaction],
           pageInfo: { hasPreviousPage: false, hasNextPage: false },
-        }),
+        })
       );
 
       const results = await client.models.transaction.fetch({
         filter: {
           operator: BaseOperator.And,
           amount_gt: 1000,
-          name_like:"SaNtA"
-        }
+          name_like: "SaNtA",
+        },
       });
 
       expect(stub.callCount).to.equal(1);
-      expect(stub.getCall(0).args[1]).to.deep.equal(
-        {
-          filter: {
-            operator: BaseOperator.And,
-            amount_gt: 1000,
-            name_like: "SaNtA"
-          }
-        }
-      );
-      expect(results.items).to.deep.equal([
-        firstTransaction,
-        thirdTransaction,
-      ]);
-    })
+      expect(stub.getCall(0).args[1]).to.deep.equal({
+        filter: {
+          operator: BaseOperator.And,
+          amount_gt: 1000,
+          name_like: "SaNtA",
+        },
+      });
+      expect(results.items).to.deep.equal([firstTransaction, thirdTransaction]);
+    });
 
     describe("when iterating backwards", () => {
       it("can fetch the previous page using the previousPage method", async () => {
@@ -130,14 +131,14 @@ describe("Transaction", () => {
             key: "transactions",
             items: [secondTransaction, thirdTransaction],
             pageInfo: { hasPreviousPage: true, hasNextPage: false },
-          }),
+          })
         );
         stub.onSecondCall().resolves(
           generatePaginatedResponse({
             key: "transactions",
             items: [firstTransaction],
             pageInfo: { hasPreviousPage: false, hasNextPage: false },
-          }),
+          })
         );
 
         const firstPage = await client.models.transaction.fetch({
@@ -186,7 +187,7 @@ describe("Transaction", () => {
 
     describe("when fetching with custom fields", () => {
       const customFields = `id category`;
-      
+
       before(async () => {
         graphqlClientStub.rawQuery.reset();
         graphqlClientStub.rawQuery.resolves({});
@@ -286,7 +287,7 @@ describe("Transaction", () => {
       const transactionData = createTransaction({
         category: TransactionCategory.VatPayment,
         userSelectedBookingDate: new Date().toISOString(),
-        personalNote: "Business lunch"
+        personalNote: "Business lunch",
       });
       stub.resolves({
         updateTransaction: transactionData,
@@ -297,7 +298,9 @@ describe("Transaction", () => {
         id: transactionData.id,
         category: TransactionCategory.VatPayment,
         userSelectedBookingDate: new Date().toISOString(),
-        personalNote: transactionData.personalNote
+        personalNote: transactionData.personalNote,
+        vatRate: VatRate.Vat_19,
+        categoryCode: "1120",
       });
 
       // assert
@@ -324,28 +327,28 @@ describe("Transaction", () => {
       const transactionDataBefore = createTransaction({
         amount: -1000,
         category: TransactionCategory.TaxPayment,
-        userSelectedBookingDate: new Date('2020-01-01').toISOString(),
-        splits: []
+        userSelectedBookingDate: new Date("2020-01-01").toISOString(),
+        splits: [],
       });
       const splitData = [
         {
           id: 1,
           amount: -500,
           category: TransactionCategory.TaxPayment,
-          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+          userSelectedBookingDate: new Date("2020-01-01").toISOString(),
         },
         {
           id: 2,
           amount: -500,
           category: TransactionCategory.VatPayment,
-          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+          userSelectedBookingDate: new Date("2020-01-01").toISOString(),
         },
       ];
       const transactionDataAfter = createTransaction({
         amount: -1000,
         category: null,
         userSelectedBookingDate: null,
-        splits: splitData
+        splits: splitData,
       });
       stub.resolves({
         createTransactionSplits: transactionDataAfter,
@@ -354,13 +357,16 @@ describe("Transaction", () => {
       // act: update transaction with prepared split data
       const result = await client.models.transaction.createSplit({
         transactionId: transactionDataBefore.id,
-        splits: splitData
+        splits: splitData,
       });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
       expect(stub.args[0][0]).to.eq(CREATE_SPLIT_TRANSACTION);
-      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionDataBefore.id, splits: splitData});
+      expect(stub.args[0][1]).to.deep.eq({
+        transactionId: transactionDataBefore.id,
+        splits: splitData,
+      });
       expect(result).to.deep.eq(transactionDataAfter);
     });
   });
@@ -389,21 +395,21 @@ describe("Transaction", () => {
             id: 1,
             amount: -500,
             category: TransactionCategory.TaxPayment,
-            userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+            userSelectedBookingDate: new Date("2020-01-01").toISOString(),
           },
           {
             id: 2,
             amount: -500,
             category: TransactionCategory.VatPayment,
-            userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+            userSelectedBookingDate: new Date("2020-01-01").toISOString(),
           },
-        ]
+        ],
       });
       const transactionDataAfter = createTransaction({
         amount: -1000,
         category: null,
         userSelectedBookingDate: null,
-        splits: []
+        splits: [],
       });
       stub.resolves({
         deleteTransactionSplits: transactionDataAfter,
@@ -411,13 +417,15 @@ describe("Transaction", () => {
 
       // act: remove splits from parent transaction
       const result = await client.models.transaction.deleteSplit({
-        transactionId: transactionDataBefore.id
+        transactionId: transactionDataBefore.id,
       });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
       expect(stub.args[0][0]).to.eq(DELETE_SPLIT_TRANSACTION);
-      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionDataBefore.id});
+      expect(stub.args[0][1]).to.deep.eq({
+        transactionId: transactionDataBefore.id,
+      });
       expect(result).to.deep.eq(transactionDataAfter);
     });
   });
@@ -442,40 +450,40 @@ describe("Transaction", () => {
           id: 1,
           amount: -500,
           category: TransactionCategory.TaxPayment,
-          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+          userSelectedBookingDate: new Date("2020-01-01").toISOString(),
         },
         {
           id: 2,
           amount: -500,
           category: TransactionCategory.VatPayment,
-          userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+          userSelectedBookingDate: new Date("2020-01-01").toISOString(),
         },
       ];
       const transactionDataBefore = createTransaction({
         amount: -1000,
         category: null,
         userSelectedBookingDate: null,
-        splits: splitDataBefore
+        splits: splitDataBefore,
       });
       const splitDataAfter = [
         {
           id: 1,
           amount: -500,
           category: TransactionCategory.Private,
-          userSelectedBookingDate: null
+          userSelectedBookingDate: null,
         },
         {
           id: 2,
           amount: -500,
           category: TransactionCategory.Vat_19,
-          userSelectedBookingDate: null
+          userSelectedBookingDate: null,
         },
       ];
       const transactionDataAfter = createTransaction({
         amount: -1000,
         category: null,
         userSelectedBookingDate: null,
-        splits: splitDataAfter
+        splits: splitDataAfter,
       });
       stub.resolves({
         updateTransactionSplits: transactionDataAfter,
@@ -484,13 +492,16 @@ describe("Transaction", () => {
       // act: update transaction splits with new split data
       const result = await client.models.transaction.updateSplit({
         transactionId: transactionDataBefore.id,
-        splits: splitDataAfter
+        splits: splitDataAfter,
       });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
       expect(stub.args[0][0]).to.eq(UPDATE_SPLIT_TRANSACTION);
-      expect(stub.args[0][1]).to.deep.eq({transactionId: transactionDataBefore.id, splits: splitDataAfter});
+      expect(stub.args[0][1]).to.deep.eq({
+        transactionId: transactionDataBefore.id,
+        splits: splitDataAfter,
+      });
       expect(result).to.deep.eq(transactionDataAfter);
     });
   });
@@ -512,7 +523,7 @@ describe("Transaction", () => {
       const transaction = createTransaction({
         amount: -1000,
         category: TransactionCategory.TaxPayment,
-        userSelectedBookingDate: new Date('2020-01-01').toISOString(),
+        userSelectedBookingDate: new Date("2020-01-01").toISOString(),
       });
 
       const expectedResult = {
@@ -529,13 +540,18 @@ describe("Transaction", () => {
         transactionId: transaction.id,
         name: "test",
         filetype: "jpg",
-        uploadPlatform: RequestPlatform.NativeShare
+        uploadPlatform: RequestPlatform.NativeShare,
       });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
       expect(stub.args[0][0]).to.eq(CREATE_TRANSACTION_ASSET);
-      expect(stub.args[0][1]).to.deep.eq({ transactionId: transaction.id, name: "test", filetype: "jpg", uploadPlatform: RequestPlatform.NativeShare });
+      expect(stub.args[0][1]).to.deep.eq({
+        transactionId: transaction.id,
+        name: "test",
+        filetype: "jpg",
+        uploadPlatform: RequestPlatform.NativeShare,
+      });
       expect(result).to.deep.eq(expectedResult);
     });
   });
@@ -566,14 +582,17 @@ describe("Transaction", () => {
         finalizeTransactionAssetUpload: asset,
       } as any);
 
-      const result = await client.models.transaction.finalizeTransactionAssetUpload({
-        assetId: asset.id
-      });
+      const result =
+        await client.models.transaction.finalizeTransactionAssetUpload({
+          assetId: asset.id,
+        });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
-      expect(stub.args[0][0]).to.eq(FINALIZE_TRANSACTION_ASSET,
-        DELETE_TRANSACTION_ASSET);
+      expect(stub.args[0][0]).to.eq(
+        FINALIZE_TRANSACTION_ASSET,
+        DELETE_TRANSACTION_ASSET
+      );
       expect(stub.args[0][1]).to.deep.eq({ assetId: asset.id });
       expect(result).to.deep.eq(asset);
     });
@@ -599,7 +618,9 @@ describe("Transaction", () => {
         deleteTransactionAsset: { success: true },
       } as any);
 
-      const result = await client.models.transaction.deleteTransactionAsset({ assetId });
+      const result = await client.models.transaction.deleteTransactionAsset({
+        assetId,
+      });
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
@@ -624,7 +645,7 @@ describe("Transaction", () => {
 
     afterEach(() => {
       fetchStub.resetHistory();
-    })
+    });
 
     describe("when user provides only text", () => {
       it("should call fetch with properly formatted filter", async () => {
@@ -659,7 +680,9 @@ describe("Transaction", () => {
         expect(fetchStub.callCount).to.eq(1);
         expect(fetchStub.getCall(0).args[0]).to.deep.eq({
           filter: {
-            amount_in: [123400, -123400, -56700, 56700, 8612, -8612, 9010, -9010],
+            amount_in: [
+              123400, -123400, -56700, 56700, 8612, -8612, 9010, -9010,
+            ],
             name_likeAny: ["1234", "-567", "86.12", "90,1"],
             operator: BaseOperator.Or,
             purpose_likeAny: ["1234", "-567", "86.12", "90,1"],
@@ -667,26 +690,26 @@ describe("Transaction", () => {
               {
                 amount_gte: 123400,
                 amount_lt: 123500,
-                operator: BaseOperator.And
+                operator: BaseOperator.And,
               },
               {
                 amount_gt: -123500,
                 amount_lte: -123400,
-                operator: BaseOperator.And
+                operator: BaseOperator.And,
               },
               {
                 amount_gte: 56700,
                 amount_lt: 56800,
-                operator: BaseOperator.And
+                operator: BaseOperator.And,
               },
               {
                 amount_gt: -56800,
                 amount_lte: -56700,
-                operator: BaseOperator.And
-              }
-            ]
+                operator: BaseOperator.And,
+              },
+            ],
           },
-          preset: undefined
+          preset: undefined,
         });
       });
     });
@@ -709,7 +732,7 @@ describe("Transaction", () => {
             operator: BaseOperator.Or,
             purpose_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
           },
-          preset: undefined
+          preset: undefined,
         });
       });
     });
@@ -756,16 +779,16 @@ describe("Transaction", () => {
               {
                 amount_gte: 123400,
                 amount_lt: 123500,
-                operator: BaseOperator.And
+                operator: BaseOperator.And,
               },
               {
                 amount_gt: -123500,
                 amount_lte: -123400,
-                operator: BaseOperator.And
-              }
-            ]
+                operator: BaseOperator.And,
+              },
+            ],
           },
-          preset: undefined
+          preset: undefined,
         });
       });
     });
@@ -790,16 +813,16 @@ describe("Transaction", () => {
               {
                 amount_gte: 1999999900,
                 amount_lt: 2000000000,
-                operator: BaseOperator.And
+                operator: BaseOperator.And,
               },
               {
                 amount_gt: -2000000000,
                 amount_lte: -1999999900,
-                operator: BaseOperator.And
-              }
-            ]
+                operator: BaseOperator.And,
+              },
+            ],
           },
-          preset: undefined
+          preset: undefined,
         });
       });
     });
@@ -818,9 +841,9 @@ describe("Transaction", () => {
           filter: {
             name_likeAny: ["hello", "world"],
             operator: BaseOperator.Or,
-            purpose_likeAny: ["hello", "world"]
+            purpose_likeAny: ["hello", "world"],
           },
-          preset: undefined
+          preset: undefined,
         });
       });
     });
@@ -840,7 +863,7 @@ describe("Transaction", () => {
             filter: {
               assets_exist: false,
             },
-            preset: undefined
+            preset: undefined,
           });
         });
       });
@@ -862,17 +885,13 @@ describe("Transaction", () => {
               operator: "AND",
               conditions: [
                 {
-                  name_likeAny: [
-                    "hello"
-                  ],
+                  name_likeAny: ["hello"],
                   operator: "OR",
-                  purpose_likeAny: [
-                    "hello"
-                  ]
-                }
-              ]
+                  purpose_likeAny: ["hello"],
+                },
+              ],
             },
-            preset: undefined
+            preset: undefined,
           });
         });
       });
@@ -894,28 +913,24 @@ describe("Transaction", () => {
               operator: "AND",
               conditions: [
                 {
-                  name_likeAny: [
-                    "5"
-                  ],
+                  name_likeAny: ["5"],
                   operator: "OR",
-                  purpose_likeAny: [
-                    "5"
-                  ],
-                  amount_in: [ 500, -500 ],
+                  purpose_likeAny: ["5"],
+                  amount_in: [500, -500],
                 },
                 {
                   amount_gte: 500,
                   amount_lt: 600,
-                  operator: "AND"
+                  operator: "AND",
                 },
                 {
                   amount_gt: -600,
                   amount_lte: -500,
-                  operator: "AND"
-                }
-              ]
+                  operator: "AND",
+                },
+              ],
             },
-            preset: undefined
+            preset: undefined,
           });
         });
       });
@@ -950,8 +965,25 @@ describe("Transaction", () => {
   describe("#fetchCSV", () => {
     let stub: any;
     let client: Client;
-    const csv = "Buchungsdatum";"Wertstellungsdatum";"Transaktionstyp";"Empfänger";"Betrag";"IBAN";"Verwendungszweck";"end_to_end_id";"Buchungsstatus";"Kategorie";"Persönliche Notiz"
-    "2021-08-23";"2021-08-23";"Überweisung";;"-12,34";"DE32110101001000000029";"transaction1";"test1";"Gebucht";;
+    const csv = "Buchungsdatum";
+    ("Wertstellungsdatum");
+    ("Transaktionstyp");
+    ("Empfänger");
+    ("Betrag");
+    ("IBAN");
+    ("Verwendungszweck");
+    ("end_to_end_id");
+    ("Buchungsstatus");
+    ("Kategorie");
+    ("Persönliche Notiz");
+    ("2021-08-23");
+    ("2021-08-23");
+    ("Überweisung");
+    ("-12,34");
+    ("DE32110101001000000029");
+    ("transaction1");
+    ("test1");
+    ("Gebucht");
 
     beforeEach(() => {
       client = createClient();

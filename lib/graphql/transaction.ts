@@ -149,12 +149,16 @@ export const getUpdateTransactionMutation = (
   $category: TransactionCategory,
   $userSelectedBookingDate: DateTime,
   $personalNote: String,
+  $vatRate: VatRate,
+  $categoryCode: String
 ) {
   updateTransaction(
     id: $id
     category: $category
     userSelectedBookingDate: $userSelectedBookingDate
     personalNote: $personalNote
+    vatRate: $vatRate
+    categoryCode: $categoryCode
   ) {
     ${fields}
   }
