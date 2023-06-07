@@ -1382,6 +1382,7 @@ export type MutationCategorizeTransactionForDeclarationArgs = {
   date?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   isSplit?: InputMaybe<Scalars['Boolean']>;
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1811,9 +1812,11 @@ export type MutationUpdateTaxYearSettingsArgs = {
 
 export type MutationUpdateTransactionArgs = {
   category?: InputMaybe<TransactionCategory>;
+  categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   personalNote?: InputMaybe<Scalars['String']>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  vatRate?: InputMaybe<VatRate>;
 };
 
 
