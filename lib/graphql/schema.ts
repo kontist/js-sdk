@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -275,6 +272,43 @@ export type BusinessAssetForm = {
   assetType: AssetType;
   depreciationPeriodYears: Scalars['Int'];
   purchaseDate: Scalars['String'];
+};
+
+export type BusinessAssetMetaData = {
+  __typename?: 'BusinessAssetMetaData';
+  amount: Scalars['Float'];
+  transactionDescription?: Maybe<Scalars['String']>;
+  transactionName?: Maybe<Scalars['String']>;
+  transactionValutaDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type BusinessAssetReceipt = {
+  __typename?: 'BusinessAssetReceipt';
+  filetype: Scalars['String'];
+  fullsize: Scalars['String'];
+  id: Scalars['String'];
+};
+
+export type BusinessAssetResponse = {
+  __typename?: 'BusinessAssetResponse';
+  amount: Scalars['Float'];
+  assetClass: Scalars['String'];
+  assetType: AssetType;
+  bookValueOnExit?: Maybe<Scalars['Int']>;
+  categoryCode: Scalars['String'];
+  depreciationPeriodYears: Scalars['Float'];
+  depreciations: Array<Depreciation>;
+  endAmount?: Maybe<Scalars['Int']>;
+  exitAmount?: Maybe<Scalars['Int']>;
+  exitDate?: Maybe<Scalars['DateTime']>;
+  exitReason?: Maybe<ExitReason>;
+  id: Scalars['String'];
+  isExitedWithVat?: Maybe<Scalars['Boolean']>;
+  metaData?: Maybe<BusinessAssetMetaData>;
+  naturallyDepreciated: Scalars['Boolean'];
+  note?: Maybe<Scalars['String']>;
+  purchaseDate: Scalars['DateTime'];
+  receipts: Array<BusinessAssetReceipt>;
 };
 
 export type Card = {
@@ -753,6 +787,14 @@ export type DependentsTaxIds = {
   id: Scalars['ID'];
 };
 
+export type Depreciation = {
+  __typename?: 'Depreciation';
+  depreciationAmount: Scalars['Float'];
+  depreciationMonths: Scalars['Float'];
+  startAmount: Scalars['Float'];
+  year: Scalars['Float'];
+};
+
 export enum DeviceActivityType {
   AppStart = 'APP_START',
   ConsentProvided = 'CONSENT_PROVIDED',
@@ -861,6 +903,13 @@ export type EmailDocument = {
   transactionId?: Maybe<Scalars['ID']>;
   url: Scalars['String'];
 };
+
+export enum ExitReason {
+  Depreciated = 'DEPRECIATED',
+  Lost = 'LOST',
+  PrivateUse = 'PRIVATE_USE',
+  Sold = 'SOLD'
+}
 
 export type FibuFinalCheckTask = {
   __typename?: 'FibuFinalCheckTask';
@@ -3367,6 +3416,8 @@ export type User = {
   birthPlace?: Maybe<Scalars['String']>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
+  /** User's business assets */
+  businessAssets?: Maybe<Array<BusinessAssetResponse>>;
   /** Business description provided by the user */
   businessPurpose?: Maybe<Scalars['String']>;
   businessTradingName?: Maybe<Scalars['String']>;
