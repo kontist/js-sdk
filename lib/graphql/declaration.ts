@@ -107,6 +107,7 @@ const CATEGORIZE_TRANSACTION_MUTATION = `mutation(
   $id: ID!,
   $category: TransactionCategory,
   $categoryCode: String,
+  $vatCategoryCode: String,
   $date: String
   $isSplit: Boolean
 ) {
@@ -114,11 +115,13 @@ const CATEGORIZE_TRANSACTION_MUTATION = `mutation(
     id: $id,
     category: $category,
     categoryCode: $categoryCode
+    vatCategoryCode: $vatCategoryCode,
     date: $date
     isSplit: $isSplit
   ) {
     category
     categoryCode
+    vatCategoryCode
     date
   }
 }`;
