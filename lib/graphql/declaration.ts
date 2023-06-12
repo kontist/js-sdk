@@ -121,6 +121,7 @@ const CATEGORIZE_TRANSACTION_MUTATION = `mutation(
   ) {
     category
     categoryCode
+    vatCategoryCode
     date
   }
 }`;

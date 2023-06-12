@@ -396,6 +396,7 @@ export type CategorizeTransactionForDeclarationResponse = {
   category?: Maybe<TransactionCategory>;
   categoryCode?: Maybe<Scalars['String']>;
   date?: Maybe<Scalars['String']>;
+  vatCategoryCode?: Maybe<Scalars['String']>;
 };
 
 export enum CategoryCode {
@@ -2529,6 +2530,7 @@ export type RawTransactionProjection = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  vatCategoryCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
 };
@@ -2916,6 +2918,7 @@ export type Transaction = {
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
   valutaDate?: Maybe<Scalars['DateTime']>;
+  vatCategoryCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
 };
