@@ -277,6 +277,43 @@ export type BusinessAssetForm = {
   purchaseDate: Scalars['String'];
 };
 
+export type BusinessAssetMetaData = {
+  __typename?: 'BusinessAssetMetaData';
+  amount: Scalars['Float'];
+  transactionDescription?: Maybe<Scalars['String']>;
+  transactionName?: Maybe<Scalars['String']>;
+  transactionValutaDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type BusinessAssetReceipt = {
+  __typename?: 'BusinessAssetReceipt';
+  filetype: Scalars['String'];
+  fullsize: Scalars['String'];
+  id: Scalars['String'];
+};
+
+export type BusinessAssetResponse = {
+  __typename?: 'BusinessAssetResponse';
+  amount: Scalars['Float'];
+  assetClass: Scalars['String'];
+  assetType: AssetType;
+  bookValueOnExit?: Maybe<Scalars['Int']>;
+  categoryCode: Scalars['String'];
+  depreciationPeriodYears: Scalars['Float'];
+  depreciations: Array<Depreciation>;
+  endAmount?: Maybe<Scalars['Int']>;
+  exitAmount?: Maybe<Scalars['Int']>;
+  exitDate?: Maybe<Scalars['DateTime']>;
+  exitReason?: Maybe<ExitReason>;
+  id: Scalars['String'];
+  isExitedWithVat?: Maybe<Scalars['Boolean']>;
+  metaData?: Maybe<BusinessAssetMetaData>;
+  naturallyDepreciated: Scalars['Boolean'];
+  note?: Maybe<Scalars['String']>;
+  purchaseDate: Scalars['DateTime'];
+  receipts: Array<BusinessAssetReceipt>;
+};
+
 export type Card = {
   __typename?: 'Card';
   addedToApplePay: Scalars['Boolean'];
@@ -754,6 +791,14 @@ export type DependentsTaxIds = {
   id: Scalars['ID'];
 };
 
+export type Depreciation = {
+  __typename?: 'Depreciation';
+  depreciationAmount: Scalars['Float'];
+  depreciationMonths: Scalars['Float'];
+  startAmount: Scalars['Float'];
+  year: Scalars['Float'];
+};
+
 export enum DeviceActivityType {
   AppStart = 'APP_START',
   ConsentProvided = 'CONSENT_PROVIDED',
@@ -862,6 +907,13 @@ export type EmailDocument = {
   transactionId?: Maybe<Scalars['ID']>;
   url: Scalars['String'];
 };
+
+export enum ExitReason {
+  Depreciated = 'DEPRECIATED',
+  Lost = 'LOST',
+  PrivateUse = 'PRIVATE_USE',
+  Sold = 'SOLD'
+}
 
 export type FibuFinalCheckTask = {
   __typename?: 'FibuFinalCheckTask';
@@ -3371,6 +3423,8 @@ export type User = {
   birthPlace?: Maybe<Scalars['String']>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
+  /** User's business assets */
+  businessAssets?: Maybe<Array<BusinessAssetResponse>>;
   /** Business description provided by the user */
   businessPurpose?: Maybe<Scalars['String']>;
   businessTradingName?: Maybe<Scalars['String']>;
