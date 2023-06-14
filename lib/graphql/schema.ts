@@ -887,6 +887,7 @@ export type DraftTransaction = {
   name?: Maybe<Scalars['String']>;
   note?: Maybe<Scalars['String']>;
   paymentDate?: Maybe<Scalars['DateTime']>;
+  vatCategoryCode?: Maybe<VatCategoryCode>;
   vatRate?: Maybe<VatRate>;
 };
 
@@ -3347,6 +3348,7 @@ export type UpdateDraftTransactionInput = {
   name?: InputMaybe<Scalars['String']>;
   note?: InputMaybe<Scalars['String']>;
   paymentDate?: InputMaybe<Scalars['DateTime']>;
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
 };
 
@@ -3873,6 +3875,37 @@ export type UserUpdateInput = {
 export enum UserVatRate {
   Vat_0 = 'VAT_0',
   Vat_19 = 'VAT_19'
+}
+
+export enum VatCategoryCode {
+  Dit_5 = 'DIT_5',
+  Dit_7 = 'DIT_7',
+  Dit_16 = 'DIT_16',
+  Dit_19 = 'DIT_19',
+  ExportDelivery = 'EXPORT_DELIVERY',
+  Income_0 = 'INCOME_0',
+  Income_0Itd = 'INCOME_0_ITD',
+  Income_5 = 'INCOME_5',
+  Income_7 = 'INCOME_7',
+  Income_13B5Ustg = 'INCOME_13B5_USTG',
+  Income_16 = 'INCOME_16',
+  Income_19 = 'INCOME_19',
+  IncomeEuB2B = 'INCOME_EU_B2B',
+  IncomeEuB2C_5 = 'INCOME_EU_B2C_5',
+  IncomeEuB2C_7 = 'INCOME_EU_B2C_7',
+  IncomeEuB2C_16 = 'INCOME_EU_B2C_16',
+  IncomeEuB2C_19 = 'INCOME_EU_B2C_19',
+  IncomeEuIntraB2B = 'INCOME_EU_INTRA_B2B',
+  IncomeEuIntraB2C_5 = 'INCOME_EU_INTRA_B2C_5',
+  IncomeEuIntraB2C_7 = 'INCOME_EU_INTRA_B2C_7',
+  IncomeEuIntraB2C_16 = 'INCOME_EU_INTRA_B2C_16',
+  IncomeEuIntraB2C_19 = 'INCOME_EU_INTRA_B2C_19',
+  IntraAcquisitionIt = 'INTRA_ACQUISITION_IT',
+  NonTaxable = 'NON_TAXABLE',
+  NoItd = 'NO_ITD',
+  NoVat = 'NO_VAT',
+  ReverseCharge = 'REVERSE_CHARGE',
+  ReverseChargeIt = 'REVERSE_CHARGE_IT'
 }
 
 export enum VatRate {
