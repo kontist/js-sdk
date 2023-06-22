@@ -3141,6 +3141,7 @@ export type TransactionForAccountingView = {
   selectedBookingDate?: Maybe<Scalars['DateTime']>;
   valutaDate: Scalars['DateTime'];
   vatAmount?: Maybe<Scalars['Int']>;
+  vatCategoryCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<Scalars['String']>;
 };
 

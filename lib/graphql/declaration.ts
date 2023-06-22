@@ -75,6 +75,7 @@ const GET_DECLARATION_STATS = `
             selectedBookingDate
             category
             categoryCode
+            vatCategoryCode
             vatRate
             vatAmount
             isSplit
@@ -92,6 +93,7 @@ const GET_DECLARATION_STATS = `
               selectedBookingDate
               category
               categoryCode
+              vatCategoryCode
               vatRate
               vatAmount
               isSplit
