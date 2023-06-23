@@ -10,9 +10,9 @@ import {
 } from "../../lib/graphql/schema";
 import {
   NEW_TRANSACTION_SUBSCRIPTION,
-  CREATE_SPLIT_TRANSACTION,
-  DELETE_SPLIT_TRANSACTION,
-  UPDATE_SPLIT_TRANSACTION,
+  getCreateSplitTransactionMutation,
+  getDeleteSplitTransactionMutation,
+  getUpdateSplitTransactionMutation,
   CREATE_TRANSACTION_ASSET,
   FINALIZE_TRANSACTION_ASSET,
   DELETE_TRANSACTION_ASSET,
@@ -362,7 +362,7 @@ describe("Transaction", () => {
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
-      expect(stub.args[0][0]).to.eq(CREATE_SPLIT_TRANSACTION);
+      expect(stub.args[0][0]).to.eq(getCreateSplitTransactionMutation());
       expect(stub.args[0][1]).to.deep.eq({
         transactionId: transactionDataBefore.id,
         splits: splitData,
@@ -422,7 +422,7 @@ describe("Transaction", () => {
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
-      expect(stub.args[0][0]).to.eq(DELETE_SPLIT_TRANSACTION);
+      expect(stub.args[0][0]).to.eq(getDeleteSplitTransactionMutation());
       expect(stub.args[0][1]).to.deep.eq({
         transactionId: transactionDataBefore.id,
       });
@@ -497,7 +497,7 @@ describe("Transaction", () => {
 
       // assert: check for valid rawQuery number of calls and proper arguments + expected result
       expect(stub.callCount).to.eq(1);
-      expect(stub.args[0][0]).to.eq(UPDATE_SPLIT_TRANSACTION);
+      expect(stub.args[0][0]).to.eq(getUpdateSplitTransactionMutation());
       expect(stub.args[0][1]).to.deep.eq({
         transactionId: transactionDataBefore.id,
         splits: splitDataAfter,

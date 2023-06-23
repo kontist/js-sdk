@@ -37,7 +37,6 @@ export const createTransaction = (
     type: TransactionProjectionType.Atm,
     splits: [],
     assets: [],
-    transactionAssets: [],
     createdAt: new Date(0).toISOString(),
     categorizationType: null,
     canBeRecategorized: true,

@@ -63,7 +63,6 @@ describe("EmailDocument", () => {
         fees: [],
         paymentMethod: "",
         splits: [],
-        transactionAssets: [],
         personalNote: "Some note",
         source: TransactionSource.Solaris,
         hasAssets: false,
