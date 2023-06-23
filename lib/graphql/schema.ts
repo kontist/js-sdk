@@ -1873,6 +1873,7 @@ export type MutationUpdateTransactionArgs = {
   id: Scalars['String'];
   personalNote?: InputMaybe<Scalars['String']>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
 };
 
