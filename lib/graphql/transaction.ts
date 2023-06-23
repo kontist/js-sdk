@@ -151,7 +151,8 @@ export const getUpdateTransactionMutation = (
   $userSelectedBookingDate: DateTime,
   $personalNote: String,
   $vatRate: VatRate,
-  $categoryCode: String
+  $categoryCode: String,
+  $vatCategoryCode: String
 ) {
   updateTransaction(
     id: $id
@@ -160,6 +161,7 @@ export const getUpdateTransactionMutation = (
     personalNote: $personalNote
     vatRate: $vatRate
     categoryCode: $categoryCode
+    vatCategoryCode: $vatCategoryCode
   ) {
     ${fields}
   }
