@@ -668,8 +668,11 @@ export type CreateTaxNumberInput = {
 
 export type CreateTransactionSplitsInput = {
   amount: Scalars['Int'];
-  category: TransactionCategory;
+  category?: InputMaybe<TransactionCategory>;
+  categoryCode?: InputMaybe<Scalars['String']>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatRate?: InputMaybe<VatRate>;
 };
 
 /** The available fields to create a transfer */
@@ -1273,7 +1276,7 @@ export type Mutation = {
   /** Create a transaction Asset and obtain an upload config */
   createTransactionAsset: CreateAssetResponse;
   /** Create transaction splits */
-  createTransactionSplits: Transaction;
+  createTransactionSplits: RawTransactionProjection;
   /** Create a transfer. The transfer's type will be determined based on the provided input */
   createTransfer: ConfirmationRequest;
   /** Create multiple transfers at once. Only regular SEPA Transfers are supported */
@@ -1304,7 +1307,7 @@ export type Mutation = {
   /** Remove an Asset from the Transaction */
   deleteTransactionAsset: MutationResult;
   /** Delete transaction splits */
-  deleteTransactionSplits: Transaction;
+  deleteTransactionSplits: RawTransactionProjection;
   dismissBanner: MutationResult;
   duplicateInvoice: InvoiceOutput;
   /** Confirm and validate an Asset upload as completed */
@@ -1366,7 +1369,7 @@ export type Mutation = {
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
   /** Update transaction splits */
-  updateTransactionSplits: Transaction;
+  updateTransactionSplits: RawTransactionProjection;
   updateTransfer: ConfirmationRequestOrTransfer;
   /** Update the push-notifications a user should receive */
   updateUserNotifications: Array<Notification>;
@@ -2536,7 +2539,7 @@ export type RawTransactionProjection = {
   amount: Scalars['Int'];
   /** View a single Asset for a transaction */
   asset?: Maybe<TransactionAsset>;
-  /** List of uploaded Asset files for this transaction */
+  /** List Assets for a transaction */
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
@@ -2922,8 +2925,6 @@ export type Transaction = {
   actionReason?: Maybe<ActionReason>;
   /** The amount of the transaction in cents */
   amount: Scalars['Int'];
-  /** View a single Asset for a transaction */
-  asset?: Maybe<TransactionAsset>;
   /** List of uploaded Asset files for this transaction */
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
@@ -2962,10 +2963,6 @@ export type Transaction = {
   source: TransactionSource;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
-  /** View a single Asset for a transaction */
-  transactionAsset?: Maybe<Asset>;
-  /** List Assets for a transaction */
-  transactionAssets: Array<Asset>;
   type: TransactionProjectionType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -2974,16 +2971,6 @@ export type Transaction = {
   vatCategoryCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
-};
-
-
-export type TransactionAssetArgs = {
-  assetId: Scalars['ID'];
-};
-
-
-export type TransactionTransactionAssetArgs = {
-  assetId: Scalars['ID'];
 };
 
 export type TransactionAsset = {
@@ -3216,10 +3203,13 @@ export type TransactionSplit = {
   __typename?: 'TransactionSplit';
   amount: Scalars['Int'];
   categorizationType?: Maybe<CategorizationType>;
-  category: TransactionCategory;
+  category?: Maybe<TransactionCategory>;
+  categoryCode?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   uuid: Scalars['ID'];
+  vatCategoryCode?: Maybe<VatCategoryCode>;
+  vatRate?: Maybe<VatRate>;
 };
 
 export type TransactionsConnection = {
@@ -3349,6 +3339,7 @@ export type UpdateDraftTransactionInput = {
   name?: InputMaybe<Scalars['String']>;
   note?: InputMaybe<Scalars['String']>;
   paymentDate?: InputMaybe<Scalars['DateTime']>;
+  splits?: InputMaybe<Array<CreateTransactionSplitsInput>>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
 };
@@ -3377,7 +3368,7 @@ export type UpdateTaxNumberInput = {
 
 export type UpdateTransactionSplitsInput = {
   amount: Scalars['Int'];
-  category: TransactionCategory;
+  category?: InputMaybe<TransactionCategory>;
   id: Scalars['Int'];
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
 };
@@ -3721,6 +3712,7 @@ export type UserExternalTransactionInput = {
   name?: InputMaybe<Scalars['String']>;
   note?: InputMaybe<Scalars['String']>;
   paymentDate: Scalars['DateTime'];
+  splits?: InputMaybe<Array<CreateTransactionSplitsInput>>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
 };
