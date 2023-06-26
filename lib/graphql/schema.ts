@@ -903,6 +903,14 @@ export type EmailDocument = {
   url: Scalars['String'];
 };
 
+export type ExitBusinessAssetPayload = {
+  exitAmount: Scalars['Float'];
+  exitDate: Scalars['String'];
+  exitReason: ExitReason;
+  isExitedWithVat: Scalars['Boolean'];
+  note: Scalars['String'];
+};
+
 export enum ExitReason {
   Depreciated = 'DEPRECIATED',
   Lost = 'LOST',
@@ -1301,6 +1309,8 @@ export type Mutation = {
   deleteTransactionSplits: RawTransactionProjection;
   dismissBanner: MutationResult;
   duplicateInvoice: InvoiceOutput;
+  /** exist business asset */
+  exitBusinessAsset: MutationResult;
   /** Confirm and validate an Asset upload as completed */
   finalizeAssetUpload: Asset;
   finalizeTaxCase: TaxCase;
@@ -1672,6 +1682,12 @@ export type MutationDismissBannerArgs = {
 
 export type MutationDuplicateInvoiceArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationExitBusinessAssetArgs = {
+  id: Scalars['ID'];
+  payload: ExitBusinessAssetPayload;
 };
 
 
