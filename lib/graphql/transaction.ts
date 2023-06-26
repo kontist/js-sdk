@@ -152,7 +152,8 @@ export const getUpdateTransactionMutation = (
   $personalNote: String,
   $vatRate: VatRate,
   $categoryCode: String,
-  $vatCategoryCode: String
+  $vatCategoryCode: String,
+  $splits: [TransactionSplitsInput!],
 ) {
   updateTransaction(
     id: $id
@@ -162,6 +163,7 @@ export const getUpdateTransactionMutation = (
     vatRate: $vatRate
     categoryCode: $categoryCode
     vatCategoryCode: $vatCategoryCode
+    splits: $splits
   ) {
     ${fields}
   }
