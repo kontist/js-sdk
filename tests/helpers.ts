@@ -43,6 +43,7 @@ export const createTransaction = (
     description: "",
     source: TransactionSource.Solaris,
     hasAssets: false,
+    transactionAssets: [],
     ...override,
   };
 };
