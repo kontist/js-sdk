@@ -153,7 +153,7 @@ export const getUpdateTransactionMutation = (
   $vatRate: VatRate,
   $categoryCode: String,
   $vatCategoryCode: String,
-  $splits: [TransactionSplitsInput!],
+  $splits: [TransactionSplitInput!],
 ) {
   updateTransaction(
     id: $id
@@ -178,7 +178,7 @@ export const getCreateSplitTransactionMutation = (
   fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
 ) => `mutation createTransactionSplits(
   $transactionId: ID!
-  $splits: [CreateTransactionSplitsInput!]!
+  $splits: [CreateTransactionSplitInput!]!
 ) {
   createTransactionSplits(
     transactionId: $transactionId
@@ -204,7 +204,7 @@ export const getUpdateSplitTransactionMutation = (
   fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
 ) => `mutation updateTransactionSplits(
   $transactionId: ID!
-  $splits: [UpdateTransactionSplitsInput!]!
+  $splits: [UpdateTransactionSplitInput!]!
 ) {
   updateTransactionSplits(
     transactionId: $transactionId
