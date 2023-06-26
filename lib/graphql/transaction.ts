@@ -151,7 +151,9 @@ export const getUpdateTransactionMutation = (
   $userSelectedBookingDate: DateTime,
   $personalNote: String,
   $vatRate: VatRate,
-  $categoryCode: String
+  $categoryCode: String,
+  $vatCategoryCode: String,
+  $splits: [TransactionSplitInput!],
 ) {
   updateTransaction(
     id: $id
@@ -160,45 +162,55 @@ export const getUpdateTransactionMutation = (
     personalNote: $personalNote
     vatRate: $vatRate
     categoryCode: $categoryCode
+    vatCategoryCode: $vatCategoryCode
+    splits: $splits
   ) {
     ${fields}
   }
 }`;
 
-export const CREATE_SPLIT_TRANSACTION = `mutation createTransactionSplits(
+const DEFAULT_SPLIT_TRANSACTION_FIELDS = `
+${TRANSACTION_FIELDS}
+${TRANSACTION_DETAILS}
+`;
+
+export const getCreateSplitTransactionMutation = (
+  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
+) => `mutation createTransactionSplits(
   $transactionId: ID!
-  $splits: [CreateTransactionSplitsInput!]!
+  $splits: [CreateTransactionSplitInput!]!
 ) {
   createTransactionSplits(
     transactionId: $transactionId
     splits: $splits
   ) {
-    ${TRANSACTION_FIELDS}
-    ${TRANSACTION_DETAILS}
+    ${fields}
   }
 }`;
 
-export const DELETE_SPLIT_TRANSACTION = `mutation deleteTransactionSplits(
+export const getDeleteSplitTransactionMutation = (
+  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
+) => `mutation deleteTransactionSplits(
   $transactionId: ID!
 ) {
   deleteTransactionSplits(
     transactionId: $transactionId
   ) {
-    ${TRANSACTION_FIELDS}
-    ${TRANSACTION_DETAILS}
+    ${fields}
   }
 }`;
 
-export const UPDATE_SPLIT_TRANSACTION = `mutation updateTransactionSplits(
+export const getUpdateSplitTransactionMutation = (
+  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
+) => `mutation updateTransactionSplits(
   $transactionId: ID!
-  $splits: [UpdateTransactionSplitsInput!]!
+  $splits: [UpdateTransactionSplitInput!]!
 ) {
   updateTransactionSplits(
     transactionId: $transactionId
     splits: $splits
   ) {
-    ${TRANSACTION_FIELDS}
-    ${TRANSACTION_DETAILS}
+    ${fields}
   }
 }`;
 
@@ -385,10 +397,17 @@ export class Transaction extends IterableModel<TransactionModel> {
    * Creates transaction splits
    *
    * @param args   transaction ID and split data
+   * @param fields  optional custom transaction fields
    * @returns      the transaction with created split data
    */
-  public async createSplit(args: MutationCreateTransactionSplitsArgs) {
-    const result = await this.client.rawQuery(CREATE_SPLIT_TRANSACTION, args);
+  public async createSplit(
+    args: MutationCreateTransactionSplitsArgs,
+    fields?: string
+  ) {
+    const result = await this.client.rawQuery(
+      getCreateSplitTransactionMutation(fields),
+      args
+    );
     return result.createTransactionSplits;
   }
 
@@ -396,10 +415,17 @@ export class Transaction extends IterableModel<TransactionModel> {
    * Removes transaction splits
    *
    * @param args   transaction ID
+   * @param fields  optional custom transaction fields
    * @returns      the transaction with emptied split data
    */
-  public async deleteSplit(args: MutationDeleteTransactionSplitsArgs) {
-    const result = await this.client.rawQuery(DELETE_SPLIT_TRANSACTION, args);
+  public async deleteSplit(
+    args: MutationDeleteTransactionSplitsArgs,
+    fields?: string
+  ) {
+    const result = await this.client.rawQuery(
+      getDeleteSplitTransactionMutation(fields),
+      args
+    );
     return result.deleteTransactionSplits;
   }
 
@@ -407,10 +433,17 @@ export class Transaction extends IterableModel<TransactionModel> {
    * Updates transaction splits
    *
    * @param args   transaction ID and split data including the splits' IDs
+   * @param fields  optional custom transaction fields
    * @returns      the transaction with updated split data
    */
-  public async updateSplit(args: MutationUpdateTransactionSplitsArgs) {
-    const result = await this.client.rawQuery(UPDATE_SPLIT_TRANSACTION, args);
+  public async updateSplit(
+    args: MutationUpdateTransactionSplitsArgs,
+    fields?: string
+  ) {
+    const result = await this.client.rawQuery(
+      getUpdateSplitTransactionMutation(fields),
+      args
+    );
     return result.updateTransactionSplits;
   }
 
