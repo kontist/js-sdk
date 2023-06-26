@@ -666,15 +666,6 @@ export type CreateTaxNumberInput = {
   validFrom?: InputMaybe<Scalars['DateTime']>;
 };
 
-export type CreateTransactionSplitsInput = {
-  amount: Scalars['Int'];
-  category?: InputMaybe<TransactionCategory>;
-  categoryCode?: InputMaybe<Scalars['String']>;
-  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
-  vatCategoryCode?: InputMaybe<Scalars['String']>;
-  vatRate?: InputMaybe<VatRate>;
-};
-
 /** The available fields to create a transfer */
 export type CreateTransferInput = {
   /** The amount of the transfer in cents */
@@ -1581,7 +1572,7 @@ export type MutationCreateTransactionAssetArgs = {
 
 
 export type MutationCreateTransactionSplitsArgs = {
-  splits: Array<CreateTransactionSplitsInput>;
+  splits: Array<TransactionSplitsInput>;
   transactionId: Scalars['ID'];
 };
 
@@ -1872,7 +1863,7 @@ export type MutationUpdateTransactionArgs = {
   categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   personalNote?: InputMaybe<Scalars['String']>;
-  splits?: InputMaybe<Array<CreateTransactionSplitsInput>>;
+  splits?: InputMaybe<Array<TransactionSplitsInput>>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
@@ -3214,6 +3205,16 @@ export type TransactionSplit = {
   vatRate?: Maybe<VatRate>;
 };
 
+export type TransactionSplitsInput = {
+  amount: Scalars['Int'];
+  category?: InputMaybe<TransactionCategory>;
+  categoryCode?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['Int']>;
+  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatRate?: InputMaybe<VatRate>;
+};
+
 export type TransactionsConnection = {
   __typename?: 'TransactionsConnection';
   edges: Array<TransactionsConnectionEdge>;
@@ -3341,7 +3342,7 @@ export type UpdateDraftTransactionInput = {
   name?: InputMaybe<Scalars['String']>;
   note?: InputMaybe<Scalars['String']>;
   paymentDate?: InputMaybe<Scalars['DateTime']>;
-  splits?: InputMaybe<Array<CreateTransactionSplitsInput>>;
+  splits?: InputMaybe<Array<TransactionSplitsInput>>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
 };
@@ -3371,8 +3372,11 @@ export type UpdateTaxNumberInput = {
 export type UpdateTransactionSplitsInput = {
   amount: Scalars['Int'];
   category?: InputMaybe<TransactionCategory>;
+  categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['Int'];
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatRate?: InputMaybe<VatRate>;
 };
 
 /** The available fields to update a transfer */
@@ -3714,7 +3718,7 @@ export type UserExternalTransactionInput = {
   name?: InputMaybe<Scalars['String']>;
   note?: InputMaybe<Scalars['String']>;
   paymentDate: Scalars['DateTime'];
-  splits?: InputMaybe<Array<CreateTransactionSplitsInput>>;
+  splits?: InputMaybe<Array<TransactionSplitsInput>>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
 };
