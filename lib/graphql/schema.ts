@@ -2532,7 +2532,7 @@ export type RawTransactionProjection = {
   amount: Scalars['Int'];
   /** View a single Asset for a transaction */
   asset?: Maybe<TransactionAsset>;
-  /** List of uploaded Asset files for this transaction */
+  /** List Assets for a transaction */
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
@@ -2918,8 +2918,6 @@ export type Transaction = {
   actionReason?: Maybe<ActionReason>;
   /** The amount of the transaction in cents */
   amount: Scalars['Int'];
-  /** View a single Asset for a transaction */
-  asset?: Maybe<TransactionAsset>;
   /** List of uploaded Asset files for this transaction */
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
@@ -2958,10 +2956,6 @@ export type Transaction = {
   source: TransactionSource;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
-  /** View a single Asset for a transaction */
-  transactionAsset?: Maybe<Asset>;
-  /** List Assets for a transaction */
-  transactionAssets: Array<Asset>;
   type: TransactionProjectionType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -2970,16 +2964,6 @@ export type Transaction = {
   vatCategoryCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
-};
-
-
-export type TransactionAssetArgs = {
-  assetId: Scalars['ID'];
-};
-
-
-export type TransactionTransactionAssetArgs = {
-  assetId: Scalars['ID'];
 };
 
 export type TransactionAsset = {

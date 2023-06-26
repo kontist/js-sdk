@@ -66,7 +66,6 @@ describe("EmailDocument", () => {
         personalNote: "Some note",
         source: TransactionSource.Solaris,
         hasAssets: false,
-        transactionAssets: [],
       },
     ],
   };
