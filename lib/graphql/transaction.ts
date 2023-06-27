@@ -59,7 +59,7 @@ const ASSET_FIELDS = `
   fullsize
 `;
 
-const TRANSACTION_FIELDS = `
+export const TRANSACTION_FIELDS = `
   id
   amount
   name
