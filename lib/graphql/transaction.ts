@@ -59,7 +59,7 @@ const ASSET_FIELDS = `
   fullsize
 `;
 
-const TRANSACTION_FIELDS = `
+export const TRANSACTION_FIELDS = `
   id
   amount
   name
@@ -310,7 +310,7 @@ export class Transaction extends IterableModel<TransactionModel> {
       hasNextPage: false,
       hasPreviousPage: false,
     };
-    return new ResultPage(this, transactions, pageInfo, args);
+    return new ResultPage(this, transactions, pageInfo, args, fields);
   }
 
   /**
