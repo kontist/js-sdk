@@ -16,6 +16,7 @@ import {
   CREATE_TRANSACTION_ASSET,
   FINALIZE_TRANSACTION_ASSET,
   DELETE_TRANSACTION_ASSET,
+  TRANSACTION_FIELDS,
 } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
@@ -31,11 +32,13 @@ describe("Transaction", () => {
     let firstTransaction: Transaction;
     let secondTransaction: Transaction;
     let thirdTransaction: Transaction;
-    let stub: any;
+    let stub: sinon.SinonStub;
+    let fetchSpy: sinon.SinonSpy;
 
     beforeEach(() => {
       client = createClient();
       stub = sinon.stub(client.graphQL, "rawQuery");
+      fetchSpy = sinon.spy(client.models.transaction, "fetch");
 
       firstTransaction = createTransaction({
         name: "Santa Claus",
@@ -66,6 +69,7 @@ describe("Transaction", () => {
 
     afterEach(() => {
       stub.restore();
+      fetchSpy.restore();
     });
 
     it("can fetch next page using the nextPage method", async () => {
@@ -79,8 +83,16 @@ describe("Transaction", () => {
         secondTransaction,
       ]);
 
+      expect(fetchSpy.callCount).to.equal(1);
+
       const secondPage = firstPage.nextPage && (await firstPage.nextPage());
       expect(secondPage?.items).to.deep.equal([thirdTransaction]);
+
+      expect(fetchSpy.callCount).to.equal(2);
+      expect(fetchSpy.lastCall.args).to.deep.eq([
+        { first: 2, after: "22222" },
+        TRANSACTION_FIELDS,
+      ]);
     });
 
     it("can iterate on all user transactions using the fetchAll iterator", async () => {
