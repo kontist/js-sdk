@@ -1888,7 +1888,7 @@ export type MutationUpdateTransactionArgs = {
   categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   personalNote?: InputMaybe<Scalars['String']>;
-  splits?: InputMaybe<Array<TransactionSplitInput>>;
+  splits?: InputMaybe<Array<UpdateTransactionSplitsInput>>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
