@@ -310,7 +310,7 @@ export class Transaction extends IterableModel<TransactionModel> {
       hasNextPage: false,
       hasPreviousPage: false,
     };
-    return new ResultPage(this, transactions, pageInfo, args);
+    return new ResultPage(this, transactions, pageInfo, args, fields);
   }
 
   /**
