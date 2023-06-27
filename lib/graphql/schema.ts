@@ -666,6 +666,15 @@ export type CreateTaxNumberInput = {
   validFrom?: InputMaybe<Scalars['DateTime']>;
 };
 
+export type CreateTransactionSplitsInput = {
+  amount: Scalars['Int'];
+  category?: InputMaybe<TransactionCategory>;
+  categoryCode?: InputMaybe<Scalars['String']>;
+  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatRate?: InputMaybe<VatRate>;
+};
+
 /** The available fields to create a transfer */
 export type CreateTransferInput = {
   /** The amount of the transfer in cents */
@@ -1309,7 +1318,7 @@ export type Mutation = {
   deleteTransactionSplits: RawTransactionProjection;
   dismissBanner: MutationResult;
   duplicateInvoice: InvoiceOutput;
-  /** exist business asset */
+  /** Exit business asset */
   exitBusinessAsset: MutationResult;
   /** Confirm and validate an Asset upload as completed */
   finalizeAssetUpload: Asset;
@@ -1582,7 +1591,7 @@ export type MutationCreateTransactionAssetArgs = {
 
 
 export type MutationCreateTransactionSplitsArgs = {
-  splits: Array<TransactionSplitInput>;
+  splits: Array<CreateTransactionSplitsInput>;
   transactionId: Scalars['ID'];
 };
 
@@ -1887,7 +1896,7 @@ export type MutationUpdateTransactionArgs = {
 
 
 export type MutationUpdateTransactionSplitsArgs = {
-  splits: Array<UpdateTransactionSplitInput>;
+  splits: Array<UpdateTransactionSplitsInput>;
   transactionId: Scalars['ID'];
 };
 
@@ -3385,7 +3394,7 @@ export type UpdateTaxNumberInput = {
   validFrom?: InputMaybe<Scalars['DateTime']>;
 };
 
-export type UpdateTransactionSplitInput = {
+export type UpdateTransactionSplitsInput = {
   amount: Scalars['Int'];
   category?: InputMaybe<TransactionCategory>;
   categoryCode?: InputMaybe<Scalars['String']>;
