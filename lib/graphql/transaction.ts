@@ -83,10 +83,8 @@ export const TRANSACTION_FIELDS = `
     id
     amount
     category
-    categoryCode
     userSelectedBookingDate
     categorizationType
-    vatCategoryCode
   }
   recurlyInvoiceNumber
   canBeRecategorized
