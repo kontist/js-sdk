@@ -216,6 +216,12 @@ export type AuthorizeChangeRequestResponse = {
   stringToSign: Scalars['String'];
 };
 
+export type AuthorizeThroughDeviceSigningOrMobileNumberResponse = {
+  __typename?: 'AuthorizeThroughDeviceSigningOrMobileNumberResponse';
+  changeRequestId: Scalars['String'];
+  stringToSign?: Maybe<Scalars['String']>;
+};
+
 export type AvailableStatements = {
   __typename?: 'AvailableStatements';
   months: Array<Scalars['Int']>;
@@ -789,6 +795,11 @@ export enum DeclarationType {
   UStVa = 'UStVA'
 }
 
+export enum DeliveryMethod {
+  DeviceSigning = 'DEVICE_SIGNING',
+  MobileNumber = 'MOBILE_NUMBER'
+}
+
 export type DependentsTaxIds = {
   deTaxId: Scalars['String'];
   id: Scalars['ID'];
@@ -913,7 +924,7 @@ export type EmailDocument = {
 };
 
 export type ExitBusinessAssetPayload = {
-  exitAmount: Scalars['Float'];
+  exitAmount?: InputMaybe<Scalars['Float']>;
   exitDate: Scalars['String'];
   exitReason: ExitReason;
   isExitedWithVat: Scalars['Boolean'];
@@ -1254,6 +1265,7 @@ export type Mutation = {
   /** Confirm a PIN change request */
   confirmChangeCardPIN: ConfirmationStatus;
   confirmChangeRequest: ConfirmChangeRequestResponse;
+  confirmDirectDebitRefund: MutationResult;
   confirmFraud: ConfirmFraudResponse;
   /** Confirm a transfer creation */
   confirmTransfer: Transfer;
@@ -1325,6 +1337,7 @@ export type Mutation = {
   finalizeTaxCase: TaxCase;
   /** Confirm and validate an Asset upload as completed */
   finalizeTransactionAssetUpload: TransactionAsset;
+  initDirectDebitRefund: AuthorizeThroughDeviceSigningOrMobileNumberResponse;
   matchEmailDocumentToTransaction: MutationResult;
   postponeQuestionnaireAnswer: Questionnaire;
   refundDirectDebit: MutationResult;
@@ -1504,6 +1517,14 @@ export type MutationConfirmChangeRequestArgs = {
 };
 
 
+export type MutationConfirmDirectDebitRefundArgs = {
+  changeRequestId: Scalars['String'];
+  deviceId: Scalars['String'];
+  signature?: InputMaybe<Scalars['String']>;
+  token?: InputMaybe<Scalars['String']>;
+};
+
+
 export type MutationConfirmTransferArgs = {
   authorizationToken: Scalars['String'];
   confirmationId: Scalars['String'];
@@ -1627,6 +1648,11 @@ export type MutationDeleteAssetArgs = {
 };
 
 
+export type MutationDeleteBusinessAssetArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationDeleteClientArgs = {
   id: Scalars['String'];
 };
@@ -1714,6 +1740,13 @@ export type MutationFinalizeTaxCaseArgs = {
 
 export type MutationFinalizeTransactionAssetUploadArgs = {
   assetId: Scalars['ID'];
+};
+
+
+export type MutationInitDirectDebitRefundArgs = {
+  deliveryMethod: DeliveryMethod;
+  deviceId: Scalars['String'];
+  transactionId: Scalars['String'];
 };
 
 
@@ -2557,7 +2590,7 @@ export type RawTransactionProjection = {
   amount: Scalars['Int'];
   /** View a single Asset for a transaction */
   asset?: Maybe<TransactionAsset>;
-  /** List Assets for a transaction */
+  /** List of uploaded Asset files for this transaction */
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
@@ -2990,6 +3023,7 @@ export type Transaction = {
   vatRate?: Maybe<VatRate>;
   verified?: Maybe<Scalars['Boolean']>;
 };
+
 
 export type TransactionAsset = {
   __typename?: 'TransactionAsset';
