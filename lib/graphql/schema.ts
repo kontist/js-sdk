@@ -3257,6 +3257,7 @@ export type TransactionSplit = {
   categorizationType?: Maybe<CategorizationType>;
   category?: Maybe<TransactionCategory>;
   categoryCode?: Maybe<Scalars['String']>;
+  categoryCodeTranslation?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   uuid: Scalars['ID'];
