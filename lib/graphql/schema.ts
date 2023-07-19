@@ -1307,6 +1307,8 @@ export type Mutation = {
   declineDeclaration: DeclarationDecline;
   /** Remove an Asset */
   deleteAsset: MutationResult;
+  /** Delete business asset */
+  deleteBusinessAsset: MutationResult;
   /** Delete an OAuth2 client */
   deleteClient: Client;
   /** Deletes document */
@@ -1356,6 +1358,7 @@ export type Mutation = {
   setCardHolderRepresentation: Scalars['String'];
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
+  skipIncomeTax: TaxCase;
   startQuestionnaire: Questionnaire;
   submitBookkeepingQuestionnaire: Questionnaire;
   /** Submits UStVA declaration */
@@ -1798,6 +1801,11 @@ export type MutationSetCardHolderRepresentationArgs = {
 export type MutationSignPoaArgs = {
   dependents?: InputMaybe<Array<UserDependentInput>>;
   signature: Scalars['String'];
+};
+
+
+export type MutationSkipIncomeTaxArgs = {
+  taxCaseId: Scalars['ID'];
 };
 
 
@@ -2846,6 +2854,7 @@ export type TaxCase = {
   finalizedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   incomeTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
+  isIncomeTaxSkipped: Scalars['Boolean'];
   status: TaxCaseStatus;
   taxOfficeDeadline?: Maybe<Scalars['DateTime']>;
   userFinalizedAt?: Maybe<Scalars['DateTime']>;
@@ -2976,6 +2985,8 @@ export type Transaction = {
   actionReason?: Maybe<ActionReason>;
   /** The amount of the transaction in cents */
   amount: Scalars['Int'];
+  /** View a single Asset for a transaction */
+  asset?: Maybe<TransactionAsset>;
   /** List of uploaded Asset files for this transaction */
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
@@ -3014,6 +3025,10 @@ export type Transaction = {
   source: TransactionSource;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
+  /** View a single Asset for a transaction */
+  transactionAsset?: Maybe<Asset>;
+  /** List Assets for a transaction */
+  transactionAssets: Array<Asset>;
   type: TransactionProjectionType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
@@ -3024,6 +3039,15 @@ export type Transaction = {
   verified?: Maybe<Scalars['Boolean']>;
 };
 
+
+export type TransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
+
+
+export type TransactionTransactionAssetArgs = {
+  assetId: Scalars['ID'];
+};
 
 export type TransactionAsset = {
   __typename?: 'TransactionAsset';
@@ -3483,6 +3507,8 @@ export type User = {
   birthPlace?: Maybe<Scalars['String']>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
+  /** Return a business asset by id */
+  businessAsset?: Maybe<BusinessAssetResponse>;
   /** User's business assets */
   businessAssets?: Maybe<Array<BusinessAssetResponse>>;
   /** Business description provided by the user */
@@ -3628,6 +3654,11 @@ export type UserAvailablePlansArgs = {
 
 export type UserBannersArgs = {
   isWebapp?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type UserBusinessAssetArgs = {
+  businessAssetId: Scalars['ID'];
 };
 
 
