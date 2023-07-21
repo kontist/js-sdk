@@ -2608,7 +2608,7 @@ export type RawTransactionProjection = {
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
-  /** View a single Asset for a transaction */
+  /** View a single Business Asset for a transaction */
   businessAsset?: Maybe<BusinessAssetResponse>;
   canBeRecategorized: Scalars['Boolean'];
   categorizationType?: Maybe<CategorizationType>;
@@ -2999,7 +2999,7 @@ export type Transaction = {
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
-  /** View a single Asset for a transaction */
+  /** View a single Business Asset for a transaction */
   businessAsset?: Maybe<BusinessAssetResponse>;
   canBeRecategorized: Scalars['Boolean'];
   categorizationType?: Maybe<CategorizationType>;
