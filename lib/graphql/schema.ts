@@ -283,6 +283,12 @@ export type BusinessAssetForm = {
   purchaseDate: Scalars['String'];
 };
 
+export type BusinessAssetInput = {
+  assetClass: Scalars['String'];
+  assetType: AssetType;
+  depreciationPeriodYears: Scalars['Int'];
+};
+
 export type BusinessAssetMetaData = {
   __typename?: 'BusinessAssetMetaData';
   amount: Scalars['Float'];
@@ -2602,6 +2608,8 @@ export type RawTransactionProjection = {
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
+  /** View a single Asset for a transaction */
+  businessAsset?: Maybe<BusinessAssetResponse>;
   canBeRecategorized: Scalars['Boolean'];
   categorizationType?: Maybe<CategorizationType>;
   category?: Maybe<TransactionCategory>;
@@ -2991,6 +2999,8 @@ export type Transaction = {
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
   bookingDate: Scalars['DateTime'];
+  /** View a single Asset for a transaction */
+  businessAsset?: Maybe<BusinessAssetResponse>;
   canBeRecategorized: Scalars['Boolean'];
   categorizationType?: Maybe<CategorizationType>;
   category?: Maybe<TransactionCategory>;
@@ -3420,6 +3430,7 @@ export type UpdateDocumentMetadata = {
 export type UpdateDraftTransactionInput = {
   amount?: InputMaybe<Scalars['Int']>;
   assetUploaded?: InputMaybe<Scalars['Boolean']>;
+  businessAsset?: InputMaybe<BusinessAssetInput>;
   categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   isCashTransaction?: InputMaybe<Scalars['Boolean']>;
@@ -3800,6 +3811,7 @@ export enum UserDependentType {
 
 export type UserExternalTransactionInput = {
   amount: Scalars['Float'];
+  businessAsset?: InputMaybe<BusinessAssetInput>;
   businessAssetForm?: InputMaybe<BusinessAssetForm>;
   categoryCode?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
