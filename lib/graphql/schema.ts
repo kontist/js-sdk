@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -1360,6 +1357,7 @@ export type Mutation = {
   /** Create Overdraft Application  - only available for Kontist Application */
   requestOverdraft?: Maybe<Overdraft>;
   resetLastQuestionnaireAnswer: Questionnaire;
+  resetQuestionnaire: MutationResult;
   /** Set the card holder representation for the customer */
   setCardHolderRepresentation: Scalars['String'];
   /** Allow user to sign Power of Attorney */
@@ -1414,6 +1412,8 @@ export type Mutation = {
   /** Create or update user products that can be linked to the user's invoice(s) */
   upsertProducts: Array<Product>;
   upsertQuestionnaireDocument: QuestionnaireDocument;
+  /** Upsert user tour */
+  upsertUserTour: UserTour;
   userConfirmation: MutationResult;
   /** Returns encrypted card details for virtual card */
   virtualCardDetails: Scalars['String'];
@@ -1799,6 +1799,11 @@ export type MutationResetLastQuestionnaireAnswerArgs = {
 };
 
 
+export type MutationResetQuestionnaireArgs = {
+  questionnaireId: Scalars['ID'];
+};
+
+
 export type MutationSetCardHolderRepresentationArgs = {
   cardHolderRepresentation: Scalars['String'];
 };
@@ -1982,6 +1987,11 @@ export type MutationUpsertProductsArgs = {
 export type MutationUpsertQuestionnaireDocumentArgs = {
   payload: QuestionnaireDocumentInput;
   questionnaireId: Scalars['ID'];
+};
+
+
+export type MutationUpsertUserTourArgs = {
+  payload: UpsertUserTourInput;
 };
 
 
@@ -2862,7 +2872,7 @@ export type TaxCase = {
   finalizedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   incomeTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
-  isIncomeTaxSkipped: Scalars['Boolean'];
+  incomeTaxSkippedAt?: Maybe<Scalars['DateTime']>;
   status: TaxCaseStatus;
   taxOfficeDeadline?: Maybe<Scalars['DateTime']>;
   userFinalizedAt?: Maybe<Scalars['DateTime']>;
@@ -2986,6 +2996,16 @@ export enum ThreeStateAnswer {
   No = 'NO',
   NotSure = 'NOT_SURE',
   Yes = 'YES'
+}
+
+export enum TourName {
+  BookkeepingOnboarding = 'BOOKKEEPING_ONBOARDING'
+}
+
+export enum TourStatus {
+  Dismissed = 'DISMISSED',
+  Finished = 'FINISHED',
+  Started = 'STARTED'
 }
 
 export type Transaction = {
@@ -3468,7 +3488,7 @@ export type UpdateTransactionSplitsInput = {
   amount: Scalars['Int'];
   category?: InputMaybe<TransactionCategory>;
   categoryCode?: InputMaybe<Scalars['String']>;
-  id: Scalars['Int'];
+  id?: InputMaybe<Scalars['Int']>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
   vatRate?: InputMaybe<VatRate>;
@@ -3502,6 +3522,11 @@ export type UpsertDeclarationArgs = {
   period: Scalars['String'];
   submissionStatus: SubmissionStatus;
   year: Scalars['Int'];
+};
+
+export type UpsertUserTourInput = {
+  name: TourName;
+  status: TourStatus;
 };
 
 export type User = {
@@ -3646,6 +3671,8 @@ export type User = {
   tradeTaxDeclaration?: Maybe<TaxDeclaration>;
   unfinishedTransfers: Array<UnfinishedTransfer>;
   untrustedPhoneNumber?: Maybe<Scalars['String']>;
+  /** User's tours */
+  userTours: Array<UserTour>;
   vatAnnualDeclaration?: Maybe<TaxDeclaration>;
   vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatNumber" */
@@ -3915,6 +3942,13 @@ export type UserTaxDetailsInput = {
   taxNumber?: InputMaybe<Scalars['String']>;
   vatNumber?: InputMaybe<Scalars['String']>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
+};
+
+/** Tours of users */
+export type UserTour = {
+  __typename?: 'UserTour';
+  name: TourName;
+  status: TourStatus;
 };
 
 export type UserUpdateInput = {
