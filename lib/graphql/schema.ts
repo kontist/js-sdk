@@ -3882,6 +3882,7 @@ export type UserMetadata = {
   phoneNumberVerificationRequired: Scalars['Boolean'];
   signupCompleted: Scalars['Boolean'];
   taxAdvisoryTermsVersionAccepted: Scalars['Boolean'];
+  isBookkeepingEntryDialogDisplayed: Scalars['Boolean'];
 };
 
 export type UserProductInput = {
