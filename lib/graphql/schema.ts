@@ -5,9 +5,13 @@
 
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -22,24 +26,24 @@ export type Scalars = {
 
 /** The bank account of the current user */
 export type Account = {
-  __typename?: 'Account';
-  availableBalance: Scalars['Int'];
-  balance: Scalars['Int'];
-  bic: Scalars['String'];
-  canCreateOverdraft: Scalars['Boolean'];
+  __typename?: "Account";
+  availableBalance: Scalars["Int"];
+  balance: Scalars["Int"];
+  bic: Scalars["String"];
+  canCreateOverdraft: Scalars["Boolean"];
   card?: Maybe<Card>;
-  cardHolderRepresentation?: Maybe<Scalars['String']>;
-  cardHolderRepresentations: Array<Scalars['String']>;
+  cardHolderRepresentation?: Maybe<Scalars["String"]>;
+  cardHolderRepresentations: Array<Scalars["String"]>;
   cards: Array<Card>;
-  declarationPdfUrl?: Maybe<Scalars['String']>;
+  declarationPdfUrl?: Maybe<Scalars["String"]>;
   declarationStats: DeclarationStats;
   declarations: Array<Declaration>;
-  hasPendingCardFraudCase: Scalars['Boolean'];
-  iban: Scalars['String'];
+  hasPendingCardFraudCase: Scalars["Boolean"];
+  iban: Scalars["String"];
   /** Overdraft Application - only available for Kontist Application */
   overdraft?: Maybe<Overdraft>;
   pendingTransactionVerification: PendingTransactionVerification;
-  publicId: Scalars['ID'];
+  publicId: Scalars["ID"];
   /** Retrieve account balance from Solaris */
   solarisBalance: SolarisAccountBalance;
   /** Different information about account balances, e.g. taxes, VAT, ... */
@@ -49,168 +53,159 @@ export type Account = {
   transaction?: Maybe<RawTransactionProjection>;
   transactionFilterPresets: Array<FilterPreset>;
   transactions: TransactionsConnection;
-  transactionsCSV: Scalars['String'];
+  transactionsCSV: Scalars["String"];
   transfer?: Maybe<Transfer>;
   /** A list of iban/name combinations based on existing user's transactions, provided to assist users when creating new transfers */
   transferSuggestions?: Maybe<Array<TransferSuggestion>>;
   transfers: TransfersConnection;
 };
 
-
 /** The bank account of the current user */
 export type AccountCardArgs = {
   filter?: InputMaybe<CardFilter>;
 };
 
-
 /** The bank account of the current user */
 export type AccountDeclarationPdfUrlArgs = {
-  id: Scalars['Int'];
+  id: Scalars["Int"];
 };
-
 
 /** The bank account of the current user */
 export type AccountDeclarationStatsArgs = {
-  period: Scalars['String'];
-  year: Scalars['Int'];
+  period: Scalars["String"];
+  year: Scalars["Int"];
 };
-
 
 /** The bank account of the current user */
 export type AccountDeclarationsArgs = {
   type: DeclarationType;
 };
 
-
 /** The bank account of the current user */
 export type AccountTransactionArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
-
 
 /** The bank account of the current user */
 export type AccountTransactionsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
   filter?: InputMaybe<TransactionFilter>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
   preset?: InputMaybe<FilterPresetInput>;
 };
 
-
 /** The bank account of the current user */
 export type AccountTransactionsCsvArgs = {
-  from?: InputMaybe<Scalars['DateTime']>;
-  to?: InputMaybe<Scalars['DateTime']>;
+  from?: InputMaybe<Scalars["DateTime"]>;
+  to?: InputMaybe<Scalars["DateTime"]>;
 };
-
 
 /** The bank account of the current user */
 export type AccountTransferArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
   type: TransferType;
 };
 
-
 /** The bank account of the current user */
 export type AccountTransfersArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
   type: TransferType;
   where?: InputMaybe<TransfersConnectionFilter>;
 };
 
 export type AccountBalance = {
-  __typename?: 'AccountBalance';
-  currency?: Maybe<Scalars['String']>;
-  unit?: Maybe<Scalars['String']>;
-  value: Scalars['Float'];
+  __typename?: "AccountBalance";
+  currency?: Maybe<Scalars["String"]>;
+  unit?: Maybe<Scalars["String"]>;
+  value: Scalars["Float"];
 };
 
 export enum AccountState {
-  Blocked = 'BLOCKED',
-  Free = 'FREE',
-  FreeOld = 'FREE_OLD',
-  Premium = 'PREMIUM',
-  PremiumOld = 'PREMIUM_OLD',
-  Trial = 'TRIAL'
+  Blocked = "BLOCKED",
+  Free = "FREE",
+  FreeOld = "FREE_OLD",
+  Premium = "PREMIUM",
+  PremiumOld = "PREMIUM_OLD",
+  Trial = "TRIAL",
 }
 
 export type AccountStats = {
-  __typename?: 'AccountStats';
+  __typename?: "AccountStats";
   /** The amount that is currently available on the bank account */
-  accountBalance: Scalars['Int'];
+  accountBalance: Scalars["Int"];
   /** The amount that can be spent plus the amount from uknown */
-  main: Scalars['Int'];
+  main: Scalars["Int"];
   /** The amount of tax that is owed in the current year */
-  taxCurrentYearAmount: Scalars['Int'];
+  taxCurrentYearAmount: Scalars["Int"];
   /** The difference between taxTotal and accountBalance, if taxTotal > accountbalance */
-  taxMissing: Scalars['Int'];
+  taxMissing: Scalars["Int"];
   /** The amount of tax that was owed for all past years combined */
-  taxPastYearsAmount?: Maybe<Scalars['Int']>;
+  taxPastYearsAmount?: Maybe<Scalars["Int"]>;
   /** The amount of tax that is owed (current + last years) */
-  taxTotal: Scalars['Int'];
+  taxTotal: Scalars["Int"];
   /** The amount that is not categorized */
-  unknown: Scalars['Int'];
+  unknown: Scalars["Int"];
   /** The amount of VAT that is owed in the current year */
-  vatAmount: Scalars['Int'];
+  vatAmount: Scalars["Int"];
   /** The difference between vatTotal and accountBalance, if vatTotal > accountBalance */
-  vatMissing: Scalars['Int'];
+  vatMissing: Scalars["Int"];
   /** The amount of VAT that is owed (current + last years) */
-  vatTotal: Scalars['Int'];
+  vatTotal: Scalars["Int"];
   /** The amount that can be spent after VAT and taxes calculation */
-  yours: Scalars['Int'];
+  yours: Scalars["Int"];
 };
 
 export enum ActionReason {
-  IncomingAmountWrong = 'INCOMING_AMOUNT_WRONG',
-  InvalidReceipt = 'INVALID_RECEIPT',
-  MissingTaxExemptSales = 'MISSING_TAX_EXEMPT_SALES',
-  NoHospitalityReceipt = 'NO_HOSPITALITY_RECEIPT',
-  NoReducedTax = 'NO_REDUCED_TAX',
-  ObligedTaxes = 'OBLIGED_TAXES',
-  OutgoingAmountWrong = 'OUTGOING_AMOUNT_WRONG',
-  ReverseChargeInformation = 'REVERSE_CHARGE_INFORMATION',
-  ReverseChargeMissing = 'REVERSE_CHARGE_MISSING',
-  SmallBusinessMissing = 'SMALL_BUSINESS_MISSING',
-  WrongTaxrateAncillaryService = 'WRONG_TAXRATE_ANCILLARY_SERVICE'
+  IncomingAmountWrong = "INCOMING_AMOUNT_WRONG",
+  InvalidReceipt = "INVALID_RECEIPT",
+  MissingTaxExemptSales = "MISSING_TAX_EXEMPT_SALES",
+  NoHospitalityReceipt = "NO_HOSPITALITY_RECEIPT",
+  NoReducedTax = "NO_REDUCED_TAX",
+  ObligedTaxes = "OBLIGED_TAXES",
+  OutgoingAmountWrong = "OUTGOING_AMOUNT_WRONG",
+  ReverseChargeInformation = "REVERSE_CHARGE_INFORMATION",
+  ReverseChargeMissing = "REVERSE_CHARGE_MISSING",
+  SmallBusinessMissing = "SMALL_BUSINESS_MISSING",
+  WrongTaxrateAncillaryService = "WRONG_TAXRATE_ANCILLARY_SERVICE",
 }
 
 export type Asset = {
-  __typename?: 'Asset';
-  assetableId: Scalars['ID'];
-  filetype: Scalars['String'];
-  fullsize: Scalars['String'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  path: Scalars['String'];
-  thumbnail: Scalars['String'];
+  __typename?: "Asset";
+  assetableId: Scalars["ID"];
+  filetype: Scalars["String"];
+  fullsize: Scalars["String"];
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  path: Scalars["String"];
+  thumbnail: Scalars["String"];
 };
 
 export enum AssetType {
-  Immovable = 'IMMOVABLE',
-  Intangible = 'INTANGIBLE',
-  MovableMotorVehicles = 'MOVABLE_MOTOR_VEHICLES',
-  MovableOfficeEquipment = 'MOVABLE_OFFICE_EQUIPMENT',
-  MovableOthers = 'MOVABLE_OTHERS'
+  Immovable = "IMMOVABLE",
+  Intangible = "INTANGIBLE",
+  MovableMotorVehicles = "MOVABLE_MOTOR_VEHICLES",
+  MovableOfficeEquipment = "MOVABLE_OFFICE_EQUIPMENT",
+  MovableOthers = "MOVABLE_OTHERS",
 }
 
 export type AttributionData = {
-  irclickid?: InputMaybe<Scalars['String']>;
+  irclickid?: InputMaybe<Scalars["String"]>;
   /** Platform used for signup */
   platform?: InputMaybe<Platform>;
-  preselected_plan?: InputMaybe<Scalars['String']>;
-  trackingId?: InputMaybe<Scalars['String']>;
-  utm_source?: InputMaybe<Scalars['String']>;
+  preselected_plan?: InputMaybe<Scalars["String"]>;
+  trackingId?: InputMaybe<Scalars["String"]>;
+  utm_source?: InputMaybe<Scalars["String"]>;
 };
 
 export type AuthorizeChangeRequestResponse = {
-  __typename?: 'AuthorizeChangeRequestResponse';
-  changeRequestId?: Maybe<Scalars['String']>;
-  stringToSign: Scalars['String'];
+  __typename?: "AuthorizeChangeRequestResponse";
+  changeRequestId?: Maybe<Scalars["String"]>;
+  stringToSign: Scalars["String"];
 };
 
 export type AuthorizeThroughDeviceSigningOrMobileNumberResponse = {
@@ -220,64 +215,64 @@ export type AuthorizeThroughDeviceSigningOrMobileNumberResponse = {
 };
 
 export type AvailableStatements = {
-  __typename?: 'AvailableStatements';
-  months: Array<Scalars['Int']>;
-  year: Scalars['Int'];
+  __typename?: "AvailableStatements";
+  months: Array<Scalars["Int"]>;
+  year: Scalars["Int"];
 };
 
 export type Banner = {
-  __typename?: 'Banner';
-  dismissedAt?: Maybe<Scalars['DateTime']>;
-  isVisible: Scalars['Boolean'];
+  __typename?: "Banner";
+  dismissedAt?: Maybe<Scalars["DateTime"]>;
+  isVisible: Scalars["Boolean"];
   name: BannerName;
 };
 
 export enum BannerName {
-  Bookkeeping = 'BOOKKEEPING',
-  FriendReferral = 'FRIEND_REFERRAL',
-  Overdraft = 'OVERDRAFT',
-  PrimaryWebapp = 'PRIMARY_WEBAPP',
-  ReceiptMatching = 'RECEIPT_MATCHING',
-  TaxService = 'TAX_SERVICE',
-  VatDeclaration = 'VAT_DECLARATION'
+  Bookkeeping = "BOOKKEEPING",
+  FriendReferral = "FRIEND_REFERRAL",
+  Overdraft = "OVERDRAFT",
+  PrimaryWebapp = "PRIMARY_WEBAPP",
+  ReceiptMatching = "RECEIPT_MATCHING",
+  TaxService = "TAX_SERVICE",
+  VatDeclaration = "VAT_DECLARATION",
 }
 
 export enum BaseOperator {
-  And = 'AND',
-  Or = 'OR'
+  And = "AND",
+  Or = "OR",
 }
 
 export type BatchTransfer = {
-  __typename?: 'BatchTransfer';
-  id: Scalars['String'];
+  __typename?: "BatchTransfer";
+  id: Scalars["String"];
   status: BatchTransferStatus;
   transfers: Array<SepaTransfer>;
 };
 
 export enum BatchTransferStatus {
-  Accepted = 'ACCEPTED',
-  AuthorizationRequired = 'AUTHORIZATION_REQUIRED',
-  ConfirmationRequired = 'CONFIRMATION_REQUIRED',
-  Failed = 'FAILED',
-  Successful = 'SUCCESSFUL'
+  Accepted = "ACCEPTED",
+  AuthorizationRequired = "AUTHORIZATION_REQUIRED",
+  ConfirmationRequired = "CONFIRMATION_REQUIRED",
+  Failed = "FAILED",
+  Successful = "SUCCESSFUL",
 }
 
 /** Business Address of a Kontax User */
 export type BusinessAddress = {
-  __typename?: 'BusinessAddress';
-  city: Scalars['String'];
-  deletedAt?: Maybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
-  movingDate: Scalars['DateTime'];
-  postCode: Scalars['String'];
-  street: Scalars['String'];
+  __typename?: "BusinessAddress";
+  city: Scalars["String"];
+  deletedAt?: Maybe<Scalars["DateTime"]>;
+  id: Scalars["ID"];
+  movingDate: Scalars["DateTime"];
+  postCode: Scalars["String"];
+  street: Scalars["String"];
 };
 
 export type BusinessAssetForm = {
-  assetClass: Scalars['String'];
+  assetClass: Scalars["String"];
   assetType: AssetType;
-  depreciationPeriodYears: Scalars['Int'];
-  purchaseDate: Scalars['String'];
+  depreciationPeriodYears: Scalars["Int"];
+  purchaseDate: Scalars["String"];
 };
 
 export type BusinessAssetInput = {
@@ -287,82 +282,82 @@ export type BusinessAssetInput = {
 };
 
 export type BusinessAssetMetaData = {
-  __typename?: 'BusinessAssetMetaData';
-  amount: Scalars['Float'];
-  transactionDescription?: Maybe<Scalars['String']>;
-  transactionName?: Maybe<Scalars['String']>;
-  transactionValutaDate?: Maybe<Scalars['DateTime']>;
+  __typename?: "BusinessAssetMetaData";
+  amount: Scalars["Float"];
+  transactionDescription?: Maybe<Scalars["String"]>;
+  transactionName?: Maybe<Scalars["String"]>;
+  transactionValutaDate?: Maybe<Scalars["DateTime"]>;
 };
 
 export type BusinessAssetReceipt = {
-  __typename?: 'BusinessAssetReceipt';
-  filetype: Scalars['String'];
-  fullsize: Scalars['String'];
-  id: Scalars['String'];
+  __typename?: "BusinessAssetReceipt";
+  filetype: Scalars["String"];
+  fullsize: Scalars["String"];
+  id: Scalars["String"];
 };
 
 export type BusinessAssetResponse = {
-  __typename?: 'BusinessAssetResponse';
-  amount: Scalars['Float'];
-  assetClass: Scalars['String'];
+  __typename?: "BusinessAssetResponse";
+  amount: Scalars["Float"];
+  assetClass: Scalars["String"];
   assetType: AssetType;
-  bookValueOnExit?: Maybe<Scalars['Int']>;
-  categoryCode: Scalars['String'];
-  depreciationPeriodYears: Scalars['Float'];
+  bookValueOnExit?: Maybe<Scalars["Int"]>;
+  categoryCode: Scalars["String"];
+  depreciationPeriodYears: Scalars["Float"];
   depreciations: Array<Depreciation>;
-  endAmount?: Maybe<Scalars['Int']>;
-  exitAmount?: Maybe<Scalars['Int']>;
-  exitDate?: Maybe<Scalars['DateTime']>;
+  endAmount?: Maybe<Scalars["Int"]>;
+  exitAmount?: Maybe<Scalars["Int"]>;
+  exitDate?: Maybe<Scalars["DateTime"]>;
   exitReason?: Maybe<ExitReason>;
-  id: Scalars['String'];
-  isExitedWithVat?: Maybe<Scalars['Boolean']>;
+  id: Scalars["String"];
+  isExitedWithVat?: Maybe<Scalars["Boolean"]>;
   metaData?: Maybe<BusinessAssetMetaData>;
-  naturallyDepreciated: Scalars['Boolean'];
-  note?: Maybe<Scalars['String']>;
-  purchaseDate: Scalars['DateTime'];
+  naturallyDepreciated: Scalars["Boolean"];
+  note?: Maybe<Scalars["String"]>;
+  purchaseDate: Scalars["DateTime"];
   receipts: Array<BusinessAssetReceipt>;
 };
 
 export type Card = {
-  __typename?: 'Card';
-  addedToApplePay: Scalars['Boolean'];
-  formattedExpirationDate?: Maybe<Scalars['String']>;
+  __typename?: "Card";
+  addedToApplePay: Scalars["Boolean"];
+  formattedExpirationDate?: Maybe<Scalars["String"]>;
   googlePayTokens: Array<GooglePayCardToken>;
-  holder?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
-  maskedPan?: Maybe<Scalars['String']>;
-  newCardOrdered: Scalars['Boolean'];
+  holder?: Maybe<Scalars["String"]>;
+  id: Scalars["String"];
+  maskedPan?: Maybe<Scalars["String"]>;
+  newCardOrdered: Scalars["Boolean"];
   pinKey: CardPinKey;
-  pinSet: Scalars['Boolean'];
+  pinSet: Scalars["Boolean"];
   settings: CardSettings;
   status: CardStatus;
   type: CardType;
 };
 
 export enum CardAction {
-  Block = 'BLOCK',
-  Close = 'CLOSE',
-  Unblock = 'UNBLOCK'
+  Block = "BLOCK",
+  Close = "CLOSE",
+  Unblock = "UNBLOCK",
 }
 
 export type CardFilter = {
-  id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars["String"]>;
   type?: InputMaybe<CardType>;
 };
 
 export type CardLimit = {
-  __typename?: 'CardLimit';
-  maxAmountCents: Scalars['Float'];
-  maxTransactions: Scalars['Float'];
+  __typename?: "CardLimit";
+  maxAmountCents: Scalars["Float"];
+  maxTransactions: Scalars["Float"];
 };
 
 export type CardLimitInput = {
-  maxAmountCents?: InputMaybe<Scalars['Float']>;
-  maxTransactions?: InputMaybe<Scalars['Float']>;
+  maxAmountCents?: InputMaybe<Scalars["Float"]>;
+  maxTransactions?: InputMaybe<Scalars["Float"]>;
 };
 
 export type CardLimits = {
-  __typename?: 'CardLimits';
+  __typename?: "CardLimits";
   daily: CardLimit;
   monthly: CardLimit;
 };
@@ -373,17 +368,17 @@ export type CardLimitsInput = {
 };
 
 export type CardPinKey = {
-  __typename?: 'CardPINKey';
-  alg: Scalars['String'];
-  e: Scalars['String'];
-  kid: Scalars['String'];
-  kty: Scalars['String'];
-  n: Scalars['String'];
-  use: Scalars['String'];
+  __typename?: "CardPINKey";
+  alg: Scalars["String"];
+  e: Scalars["String"];
+  kid: Scalars["String"];
+  kty: Scalars["String"];
+  n: Scalars["String"];
+  use: Scalars["String"];
 };
 
 export type CardSettings = {
-  __typename?: 'CardSettings';
+  __typename?: "CardSettings";
   cardSpendingLimits?: Maybe<CardSpendingLimits>;
 };
 
@@ -393,217 +388,217 @@ export type CardSettingsInput = {
 };
 
 export type CardSpendingLimits = {
-  __typename?: 'CardSpendingLimits';
+  __typename?: "CardSpendingLimits";
   atm: CardLimits;
   purchase: CardLimits;
 };
 
 export enum CardStatus {
-  ActivationBlockedBySolaris = 'ACTIVATION_BLOCKED_BY_SOLARIS',
-  Active = 'ACTIVE',
-  Blocked = 'BLOCKED',
-  BlockedBySolaris = 'BLOCKED_BY_SOLARIS',
-  Closed = 'CLOSED',
-  ClosedBySolaris = 'CLOSED_BY_SOLARIS',
-  Inactive = 'INACTIVE',
-  Processing = 'PROCESSING'
+  ActivationBlockedBySolaris = "ACTIVATION_BLOCKED_BY_SOLARIS",
+  Active = "ACTIVE",
+  Blocked = "BLOCKED",
+  BlockedBySolaris = "BLOCKED_BY_SOLARIS",
+  Closed = "CLOSED",
+  ClosedBySolaris = "CLOSED_BY_SOLARIS",
+  Inactive = "INACTIVE",
+  Processing = "PROCESSING",
 }
 
 export enum CardType {
-  MastercardBusinessDebit = 'MASTERCARD_BUSINESS_DEBIT',
-  VirtualMastercardBusinessDebit = 'VIRTUAL_MASTERCARD_BUSINESS_DEBIT',
-  VirtualVisaBusinessDebit = 'VIRTUAL_VISA_BUSINESS_DEBIT',
-  VirtualVisaFreelanceDebit = 'VIRTUAL_VISA_FREELANCE_DEBIT',
-  VisaBusinessDebit = 'VISA_BUSINESS_DEBIT',
-  VisaBusinessDebit_2 = 'VISA_BUSINESS_DEBIT_2'
+  MastercardBusinessDebit = "MASTERCARD_BUSINESS_DEBIT",
+  VirtualMastercardBusinessDebit = "VIRTUAL_MASTERCARD_BUSINESS_DEBIT",
+  VirtualVisaBusinessDebit = "VIRTUAL_VISA_BUSINESS_DEBIT",
+  VirtualVisaFreelanceDebit = "VIRTUAL_VISA_FREELANCE_DEBIT",
+  VisaBusinessDebit = "VISA_BUSINESS_DEBIT",
+  VisaBusinessDebit_2 = "VISA_BUSINESS_DEBIT_2",
 }
 
 export enum CaseResolution {
-  Confirmed = 'CONFIRMED',
-  Pending = 'PENDING',
-  TimedOut = 'TIMED_OUT',
-  Timeout = 'TIMEOUT',
-  Whitelisted = 'WHITELISTED'
+  Confirmed = "CONFIRMED",
+  Pending = "PENDING",
+  TimedOut = "TIMED_OUT",
+  Timeout = "TIMEOUT",
+  Whitelisted = "WHITELISTED",
 }
 
 export enum CategorizationType {
-  AutomaticKontistMl = 'AUTOMATIC_KONTIST_ML',
-  BookkeepingPartner = 'BOOKKEEPING_PARTNER',
-  Invoicing = 'INVOICING',
-  Kontax = 'KONTAX',
-  Script = 'SCRIPT',
-  SuggestedByMl = 'SUGGESTED_BY_ML',
-  User = 'USER',
-  UserOverwrite = 'USER_OVERWRITE'
+  AutomaticKontistMl = "AUTOMATIC_KONTIST_ML",
+  BookkeepingPartner = "BOOKKEEPING_PARTNER",
+  Invoicing = "INVOICING",
+  Kontax = "KONTAX",
+  Script = "SCRIPT",
+  SuggestedByMl = "SUGGESTED_BY_ML",
+  User = "USER",
+  UserOverwrite = "USER_OVERWRITE",
 }
 
 export type CategorizeTransactionForDeclarationResponse = {
-  __typename?: 'CategorizeTransactionForDeclarationResponse';
+  __typename?: "CategorizeTransactionForDeclarationResponse";
   category?: Maybe<TransactionCategory>;
-  categoryCode?: Maybe<Scalars['String']>;
-  date?: Maybe<Scalars['String']>;
-  vatCategoryCode?: Maybe<Scalars['String']>;
+  categoryCode?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["String"]>;
+  vatCategoryCode?: Maybe<Scalars["String"]>;
 };
 
 export enum CategoryCode {
-  Accommodation = 'ACCOMMODATION',
-  Advertising = 'ADVERTISING',
-  AssetsGreaterThanEur_250 = 'ASSETS_GREATER_THAN_EUR_250',
-  AssetsGreaterThanEur_800 = 'ASSETS_GREATER_THAN_EUR_800',
-  AssetsLessThanEur_250 = 'ASSETS_LESS_THAN_EUR_250',
-  BankFees = 'BANK_FEES',
-  Books = 'BOOKS',
-  CarCosts = 'CAR_COSTS',
-  CarFees = 'CAR_FEES',
-  ConstructionRevenue = 'CONSTRUCTION_REVENUE',
-  CoronaHelp = 'CORONA_HELP',
-  DailyAllowance = 'DAILY_ALLOWANCE',
-  Deposit = 'DEPOSIT',
-  DownPayment = 'DOWN_PAYMENT',
-  Education = 'EDUCATION',
-  ElectronicServiceEuB2C = 'ELECTRONIC_SERVICE_EU_B2C',
-  ElectronicServiceEuB2CKu = 'ELECTRONIC_SERVICE_EU_B2C_KU',
-  Entertainment = 'ENTERTAINMENT',
-  ExternalFreelancer = 'EXTERNAL_FREELANCER',
-  Fees = 'FEES',
-  FreeValueDelivery = 'FREE_VALUE_DELIVERY',
-  FreeValueDeliveryPv_19 = 'FREE_VALUE_DELIVERY_PV_19',
-  FreeValueService = 'FREE_VALUE_SERVICE',
-  Gifts = 'GIFTS',
-  Goods = 'GOODS',
-  ImportVat = 'IMPORT_VAT',
-  IncomeEu = 'INCOME_EU',
-  IncomeGermany = 'INCOME_GERMANY',
-  IncomeIntl = 'INCOME_INTL',
-  IncomeOnlyVat = 'INCOME_ONLY_VAT',
-  Insurances = 'INSURANCES',
-  InterestsAssets = 'INTERESTS_ASSETS',
-  InterestsCarAssets = 'INTERESTS_CAR_ASSETS',
-  InterestsOther = 'INTERESTS_OTHER',
-  ItCosts = 'IT_COSTS',
-  LeasingCar = 'LEASING_CAR',
-  LeasingMovables = 'LEASING_MOVABLES',
-  LegalTaxConsulting = 'LEGAL_TAX_CONSULTING',
-  LimitedDeductibleExpenses = 'LIMITED_DEDUCTIBLE_EXPENSES',
-  LimitedNotDeductibleExpenses = 'LIMITED_NOT_DEDUCTIBLE_EXPENSES',
-  MaintenanceCosts = 'MAINTENANCE_COSTS',
-  OfficeCosts = 'OFFICE_COSTS',
-  OtherExpenses = 'OTHER_EXPENSES',
-  OtherUsageAndServiceWithdrawals = 'OTHER_USAGE_AND_SERVICE_WITHDRAWALS',
-  Payroll = 'PAYROLL',
-  PrivateIn = 'PRIVATE_IN',
-  PrivateOut = 'PRIVATE_OUT',
-  PrivateWithdrawal = 'PRIVATE_WITHDRAWAL',
-  PublicTransport = 'PUBLIC_TRANSPORT',
-  Rent = 'RENT',
-  RevenueSb = 'REVENUE_SB',
-  ShippingCosts = 'SHIPPING_COSTS',
-  SoftwareAndLicenses = 'SOFTWARE_AND_LICENSES',
-  TaxPayment = 'TAX_PAYMENT',
-  TaxRefund = 'TAX_REFUND',
-  Telecommunication = 'TELECOMMUNICATION',
-  TradeTaxPayment = 'TRADE_TAX_PAYMENT',
-  TradeTaxRefund = 'TRADE_TAX_REFUND',
-  TravelCosts = 'TRAVEL_COSTS',
-  Vat = 'VAT',
-  VatOnUnpaidItems = 'VAT_ON_UNPAID_ITEMS',
-  VatPayment = 'VAT_PAYMENT',
-  VatRefund = 'VAT_REFUND',
-  WasteDisposals = 'WASTE_DISPOSALS'
+  Accommodation = "ACCOMMODATION",
+  Advertising = "ADVERTISING",
+  AssetsGreaterThanEur_250 = "ASSETS_GREATER_THAN_EUR_250",
+  AssetsGreaterThanEur_800 = "ASSETS_GREATER_THAN_EUR_800",
+  AssetsLessThanEur_250 = "ASSETS_LESS_THAN_EUR_250",
+  BankFees = "BANK_FEES",
+  Books = "BOOKS",
+  CarCosts = "CAR_COSTS",
+  CarFees = "CAR_FEES",
+  ConstructionRevenue = "CONSTRUCTION_REVENUE",
+  CoronaHelp = "CORONA_HELP",
+  DailyAllowance = "DAILY_ALLOWANCE",
+  Deposit = "DEPOSIT",
+  DownPayment = "DOWN_PAYMENT",
+  Education = "EDUCATION",
+  ElectronicServiceEuB2C = "ELECTRONIC_SERVICE_EU_B2C",
+  ElectronicServiceEuB2CKu = "ELECTRONIC_SERVICE_EU_B2C_KU",
+  Entertainment = "ENTERTAINMENT",
+  ExternalFreelancer = "EXTERNAL_FREELANCER",
+  Fees = "FEES",
+  FreeValueDelivery = "FREE_VALUE_DELIVERY",
+  FreeValueDeliveryPv_19 = "FREE_VALUE_DELIVERY_PV_19",
+  FreeValueService = "FREE_VALUE_SERVICE",
+  Gifts = "GIFTS",
+  Goods = "GOODS",
+  ImportVat = "IMPORT_VAT",
+  IncomeEu = "INCOME_EU",
+  IncomeGermany = "INCOME_GERMANY",
+  IncomeIntl = "INCOME_INTL",
+  IncomeOnlyVat = "INCOME_ONLY_VAT",
+  Insurances = "INSURANCES",
+  InterestsAssets = "INTERESTS_ASSETS",
+  InterestsCarAssets = "INTERESTS_CAR_ASSETS",
+  InterestsOther = "INTERESTS_OTHER",
+  ItCosts = "IT_COSTS",
+  LeasingCar = "LEASING_CAR",
+  LeasingMovables = "LEASING_MOVABLES",
+  LegalTaxConsulting = "LEGAL_TAX_CONSULTING",
+  LimitedDeductibleExpenses = "LIMITED_DEDUCTIBLE_EXPENSES",
+  LimitedNotDeductibleExpenses = "LIMITED_NOT_DEDUCTIBLE_EXPENSES",
+  MaintenanceCosts = "MAINTENANCE_COSTS",
+  OfficeCosts = "OFFICE_COSTS",
+  OtherExpenses = "OTHER_EXPENSES",
+  OtherUsageAndServiceWithdrawals = "OTHER_USAGE_AND_SERVICE_WITHDRAWALS",
+  Payroll = "PAYROLL",
+  PrivateIn = "PRIVATE_IN",
+  PrivateOut = "PRIVATE_OUT",
+  PrivateWithdrawal = "PRIVATE_WITHDRAWAL",
+  PublicTransport = "PUBLIC_TRANSPORT",
+  Rent = "RENT",
+  RevenueSb = "REVENUE_SB",
+  ShippingCosts = "SHIPPING_COSTS",
+  SoftwareAndLicenses = "SOFTWARE_AND_LICENSES",
+  TaxPayment = "TAX_PAYMENT",
+  TaxRefund = "TAX_REFUND",
+  Telecommunication = "TELECOMMUNICATION",
+  TradeTaxPayment = "TRADE_TAX_PAYMENT",
+  TradeTaxRefund = "TRADE_TAX_REFUND",
+  TravelCosts = "TRAVEL_COSTS",
+  Vat = "VAT",
+  VatOnUnpaidItems = "VAT_ON_UNPAID_ITEMS",
+  VatPayment = "VAT_PAYMENT",
+  VatRefund = "VAT_REFUND",
+  WasteDisposals = "WASTE_DISPOSALS",
 }
 
 export type CategoryGroup = {
-  __typename?: 'CategoryGroup';
-  amount: Scalars['Int'];
-  categoryCode: Scalars['String'];
-  categoryCodeTranslation: Scalars['String'];
+  __typename?: "CategoryGroup";
+  amount: Scalars["Int"];
+  categoryCode: Scalars["String"];
+  categoryCodeTranslation: Scalars["String"];
   transactions: Array<TransactionForAccountingView>;
 };
 
 export type ChangeCardPinEncryptedInput = {
-  deviceId: Scalars['String'];
-  encryptedPin: Scalars['String'];
-  keyId: Scalars['String'];
-  signature: Scalars['String'];
+  deviceId: Scalars["String"];
+  encryptedPin: Scalars["String"];
+  keyId: Scalars["String"];
+  signature: Scalars["String"];
 };
 
 export type ChangeCardPinWithChangeRequestInput = {
-  encryptedPin: Scalars['String'];
-  keyId: Scalars['String'];
+  encryptedPin: Scalars["String"];
+  keyId: Scalars["String"];
 };
 
 export type Client = {
-  __typename?: 'Client';
+  __typename?: "Client";
   /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
   grantTypes?: Maybe<Array<GrantType>>;
-  id: Scalars['ID'];
+  id: Scalars["ID"];
   /** The name of the OAuth2 client displayed when users log in */
-  name: Scalars['String'];
+  name: Scalars["String"];
   /** The URL to redirect to after authentication */
-  redirectUri?: Maybe<Scalars['String']>;
+  redirectUri?: Maybe<Scalars["String"]>;
   /** The scopes the client has access to, limiting access to the corresponding parts of the API */
   scopes?: Maybe<Array<ScopeType>>;
 };
 
 export enum CompanyType {
-  Einzelunternehmer = 'EINZELUNTERNEHMER',
-  EK = 'E_K',
-  Freiberufler = 'FREIBERUFLER',
-  Gbr = 'GBR',
-  Gewerbetreibender = 'GEWERBETREIBENDER',
-  Gmbh = 'GMBH',
-  GmbhUndCoKg = 'GMBH_UND_CO_KG',
-  Kg = 'KG',
-  Kgaa = 'KGAA',
-  Limited = 'LIMITED',
-  Ohg = 'OHG',
-  Partgg = 'PARTGG',
-  Selbstaendig = 'SELBSTAENDIG',
-  Ug = 'UG'
+  Einzelunternehmer = "EINZELUNTERNEHMER",
+  EK = "E_K",
+  Freiberufler = "FREIBERUFLER",
+  Gbr = "GBR",
+  Gewerbetreibender = "GEWERBETREIBENDER",
+  Gmbh = "GMBH",
+  GmbhUndCoKg = "GMBH_UND_CO_KG",
+  Kg = "KG",
+  Kgaa = "KGAA",
+  Limited = "LIMITED",
+  Ohg = "OHG",
+  Partgg = "PARTGG",
+  Selbstaendig = "SELBSTAENDIG",
+  Ug = "UG",
 }
 
 export type ConfirmChangeRequestArgs = {
-  changeRequestId: Scalars['String'];
-  deviceId: Scalars['String'];
-  signature: Scalars['String'];
+  changeRequestId: Scalars["String"];
+  deviceId: Scalars["String"];
+  signature: Scalars["String"];
 };
 
 export type ConfirmChangeRequestResponse = {
-  __typename?: 'ConfirmChangeRequestResponse';
-  success: Scalars['Boolean'];
+  __typename?: "ConfirmChangeRequestResponse";
+  success: Scalars["Boolean"];
 };
 
 export type ConfirmFraudResponse = {
-  __typename?: 'ConfirmFraudResponse';
-  id: Scalars['String'];
+  __typename?: "ConfirmFraudResponse";
+  id: Scalars["String"];
   resolution: CaseResolution;
 };
 
 export type ConfirmationRequest = {
-  __typename?: 'ConfirmationRequest';
-  confirmationId: Scalars['String'];
+  __typename?: "ConfirmationRequest";
+  confirmationId: Scalars["String"];
 };
 
 export type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
 
 export type ConfirmationStatus = {
-  __typename?: 'ConfirmationStatus';
-  status: Scalars['String'];
+  __typename?: "ConfirmationStatus";
+  status: Scalars["String"];
 };
 
 export type CreateAssetResponse = {
-  __typename?: 'CreateAssetResponse';
-  assetId: Scalars['ID'];
+  __typename?: "CreateAssetResponse";
+  assetId: Scalars["ID"];
   formData: Array<FormDataPair>;
-  name?: Maybe<Scalars['String']>;
-  url: Scalars['String'];
+  name?: Maybe<Scalars["String"]>;
+  url: Scalars["String"];
 };
 
 export type CreateBusinessAddressInput = {
-  city: Scalars['String'];
-  movingDate: Scalars['DateTime'];
-  postCode: Scalars['String'];
-  street: Scalars['String'];
+  city: Scalars["String"];
+  movingDate: Scalars["DateTime"];
+  postCode: Scalars["String"];
+  street: Scalars["String"];
 };
 
 /** The available fields to create an OAuth2 client */
@@ -611,191 +606,191 @@ export type CreateClientInput = {
   /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
   grantTypes: Array<GrantType>;
   /** The name of the OAuth2 client displayed when users log in */
-  name: Scalars['String'];
+  name: Scalars["String"];
   /** The URL to redirect to after authentication */
-  redirectUri?: InputMaybe<Scalars['String']>;
+  redirectUri?: InputMaybe<Scalars["String"]>;
   /** The scopes the client has access to, limiting access to the corresponding parts of the API */
   scopes: Array<ScopeType>;
   /** The OAuth2 client secret */
-  secret?: InputMaybe<Scalars['String']>;
+  secret?: InputMaybe<Scalars["String"]>;
 };
 
 export type CreateDeclarationApprovalInput = {
-  declarationId: Scalars['ID'];
+  declarationId: Scalars["ID"];
   declarationType: TaxDeclarationType;
-  delaySubmission?: InputMaybe<Scalars['Boolean']>;
-  jointDeclaration?: InputMaybe<Scalars['Boolean']>;
+  delaySubmission?: InputMaybe<Scalars["Boolean"]>;
+  jointDeclaration?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type CreateDeclarationDeclineInput = {
-  declarationId: Scalars['ID'];
+  declarationId: Scalars["ID"];
   declarationType: TaxDeclarationType;
-  reason: Scalars['String'];
+  reason: Scalars["String"];
 };
 
 export type CreateDraftTransactionResponse = {
-  __typename?: 'CreateDraftTransactionResponse';
+  __typename?: "CreateDraftTransactionResponse";
   assetData: CreateAssetResponse;
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
 
 export type CreateInvoiceLogoResponse = {
-  __typename?: 'CreateInvoiceLogoResponse';
+  __typename?: "CreateInvoiceLogoResponse";
   formData: Array<InvoiceLogoFormDataPair>;
-  url: Scalars['String'];
+  url: Scalars["String"];
 };
 
 export type CreateReviewResponse = {
-  __typename?: 'CreateReviewResponse';
-  error?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Float']>;
+  __typename?: "CreateReviewResponse";
+  error?: Maybe<Scalars["String"]>;
+  id?: Maybe<Scalars["Float"]>;
 };
 
 /** The available fields to create a SEPA Transfer */
 export type CreateSepaTransferInput = {
   /** The amount of the SEPA Transfer in cents */
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   /** The end to end ID of the SEPA Transfer */
-  e2eId?: InputMaybe<Scalars['String']>;
+  e2eId?: InputMaybe<Scalars["String"]>;
   /** The IBAN of the SEPA Transfer recipient */
-  iban: Scalars['String'];
+  iban: Scalars["String"];
   /** The personal note of the SEPA Transfer - 250 max characters */
-  personalNote?: InputMaybe<Scalars['String']>;
+  personalNote?: InputMaybe<Scalars["String"]>;
   /** The purpose of the SEPA Transfer - 140 max characters */
-  purpose?: InputMaybe<Scalars['String']>;
+  purpose?: InputMaybe<Scalars["String"]>;
   /** The name of the SEPA Transfer recipient */
-  recipient: Scalars['String'];
+  recipient: Scalars["String"];
 };
 
 export type CreateTaxNumberInput = {
-  description: Scalars['String'];
-  isMainBusinessTaxNumber: Scalars['Boolean'];
-  taxNumber: Scalars['String'];
+  description: Scalars["String"];
+  isMainBusinessTaxNumber: Scalars["Boolean"];
+  taxNumber: Scalars["String"];
   type: TaxNumberType;
-  validFrom?: InputMaybe<Scalars['DateTime']>;
+  validFrom?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type CreateTransactionSplitsInput = {
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   category?: InputMaybe<TransactionCategory>;
-  categoryCode?: InputMaybe<Scalars['String']>;
-  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
-  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  categoryCode?: InputMaybe<Scalars["String"]>;
+  userSelectedBookingDate?: InputMaybe<Scalars["DateTime"]>;
+  vatCategoryCode?: InputMaybe<Scalars["String"]>;
   vatRate?: InputMaybe<VatRate>;
 };
 
 /** The available fields to create a transfer */
 export type CreateTransferInput = {
   /** The amount of the transfer in cents */
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   /** The user selected category for the SEPA Transfer */
   category?: InputMaybe<TransactionCategory>;
   /** The end to end ID of the transfer */
-  e2eId?: InputMaybe<Scalars['String']>;
+  e2eId?: InputMaybe<Scalars["String"]>;
   /** The date at which the payment will be executed for Timed Orders or Standing Orders */
-  executeAt?: InputMaybe<Scalars['DateTime']>;
+  executeAt?: InputMaybe<Scalars["DateTime"]>;
   /** The IBAN of the transfer recipient */
-  iban: Scalars['String'];
+  iban: Scalars["String"];
   /** The date at which the last payment will be executed for Standing Orders */
-  lastExecutionDate?: InputMaybe<Scalars['DateTime']>;
+  lastExecutionDate?: InputMaybe<Scalars["DateTime"]>;
   /** The personal note of the transfer - 250 max characters */
-  personalNote?: InputMaybe<Scalars['String']>;
+  personalNote?: InputMaybe<Scalars["String"]>;
   /** The purpose of the transfer - 140 max characters */
-  purpose?: InputMaybe<Scalars['String']>;
+  purpose?: InputMaybe<Scalars["String"]>;
   /** The name of the transfer recipient */
-  recipient: Scalars['String'];
+  recipient: Scalars["String"];
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: InputMaybe<StandingOrderReoccurrenceType>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
-  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  userSelectedBookingDate?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type CreateUserInput = {
   attribution?: InputMaybe<AttributionData>;
   /** User's email. This will be used as their username. */
-  email: Scalars['String'];
+  email: Scalars["String"];
   impactAttribution?: InputMaybe<AttributionData>;
-  language?: InputMaybe<Scalars['String']>;
-  marketingConsentAccepted?: InputMaybe<Scalars['Boolean']>;
-  password: Scalars['String'];
+  language?: InputMaybe<Scalars["String"]>;
+  marketingConsentAccepted?: InputMaybe<Scalars["Boolean"]>;
+  password: Scalars["String"];
   /** User has accepted latest Kontist terms when signing up */
-  terms?: InputMaybe<Scalars['Boolean']>;
+  terms?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type Customer = {
-  __typename?: 'Customer';
-  address?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  taxNumber?: Maybe<Scalars['String']>;
-  vatNumber?: Maybe<Scalars['String']>;
+  __typename?: "Customer";
+  address?: Maybe<Scalars["String"]>;
+  country?: Maybe<Scalars["String"]>;
+  email?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  name?: Maybe<Scalars["String"]>;
+  taxNumber?: Maybe<Scalars["String"]>;
+  vatNumber?: Maybe<Scalars["String"]>;
 };
 
 export enum CustomerVettingStatus {
-  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
-  InformationReceived = 'INFORMATION_RECEIVED',
-  InformationRequested = 'INFORMATION_REQUESTED',
-  NotVetted = 'NOT_VETTED',
-  NoMatch = 'NO_MATCH',
-  PotentialMatch = 'POTENTIAL_MATCH',
-  RiskAccepted = 'RISK_ACCEPTED',
-  RiskRejected = 'RISK_REJECTED',
-  VettingNotRequired = 'VETTING_NOT_REQUIRED'
+  CustomerUnresponsive = "CUSTOMER_UNRESPONSIVE",
+  InformationReceived = "INFORMATION_RECEIVED",
+  InformationRequested = "INFORMATION_REQUESTED",
+  NotVetted = "NOT_VETTED",
+  NoMatch = "NO_MATCH",
+  PotentialMatch = "POTENTIAL_MATCH",
+  RiskAccepted = "RISK_ACCEPTED",
+  RiskRejected = "RISK_REJECTED",
+  VettingNotRequired = "VETTING_NOT_REQUIRED",
 }
 
 export type DashboardInvoice = {
-  __typename?: 'DashboardInvoice';
-  amount?: Maybe<Scalars['Int']>;
-  dueDate?: Maybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
-  invoiceNumber?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  paidAt?: Maybe<Scalars['DateTime']>;
+  __typename?: "DashboardInvoice";
+  amount?: Maybe<Scalars["Int"]>;
+  dueDate?: Maybe<Scalars["DateTime"]>;
+  id: Scalars["ID"];
+  invoiceNumber?: Maybe<Scalars["Int"]>;
+  name?: Maybe<Scalars["String"]>;
+  paidAt?: Maybe<Scalars["DateTime"]>;
   status: InvoiceStatusType;
-  transactionId?: Maybe<Scalars['ID']>;
+  transactionId?: Maybe<Scalars["ID"]>;
 };
 
 export type Declaration = {
-  __typename?: 'Declaration';
-  amount?: Maybe<Scalars['Int']>;
-  id: Scalars['Int'];
-  period: Scalars['String'];
+  __typename?: "Declaration";
+  amount?: Maybe<Scalars["Int"]>;
+  id: Scalars["Int"];
+  period: Scalars["String"];
   submissionStatus?: Maybe<SubmissionStatus>;
-  uploadedAt?: Maybe<Scalars['DateTime']>;
-  year: Scalars['Int'];
+  uploadedAt?: Maybe<Scalars["DateTime"]>;
+  year: Scalars["Int"];
 };
 
 export type DeclarationApproval = {
-  __typename?: 'DeclarationApproval';
-  createdAt: Scalars['DateTime'];
-  delaySubmission?: Maybe<Scalars['Boolean']>;
-  id: Scalars['ID'];
-  jointDeclaration?: Maybe<Scalars['Boolean']>;
-  updatedAt: Scalars['DateTime'];
+  __typename?: "DeclarationApproval";
+  createdAt: Scalars["DateTime"];
+  delaySubmission?: Maybe<Scalars["Boolean"]>;
+  id: Scalars["ID"];
+  jointDeclaration?: Maybe<Scalars["Boolean"]>;
+  updatedAt: Scalars["DateTime"];
 };
 
 export type DeclarationDecline = {
-  __typename?: 'DeclarationDecline';
-  createdAt: Scalars['DateTime'];
-  id: Scalars['ID'];
-  reason: Scalars['String'];
-  updatedAt: Scalars['DateTime'];
+  __typename?: "DeclarationDecline";
+  createdAt: Scalars["DateTime"];
+  id: Scalars["ID"];
+  reason: Scalars["String"];
+  updatedAt: Scalars["DateTime"];
 };
 
 export type DeclarationStats = {
-  __typename?: 'DeclarationStats';
-  amount: Scalars['Int'];
+  __typename?: "DeclarationStats";
+  amount: Scalars["Int"];
   categoryGroups: Array<CategoryGroup>;
   uncategorized: Array<TransactionForAccountingView>;
 };
 
 export enum DeclarationType {
-  Euer = 'EUER',
-  GewSt = 'GewSt',
-  USt = 'USt',
-  UStVa = 'UStVA'
+  Euer = "EUER",
+  GewSt = "GewSt",
+  USt = "USt",
+  UStVa = "UStVA",
 }
 
 export enum DeliveryMethod {
@@ -804,436 +799,441 @@ export enum DeliveryMethod {
 }
 
 export type DependentsTaxIds = {
-  deTaxId: Scalars['String'];
-  id: Scalars['ID'];
+  deTaxId: Scalars["String"];
+  id: Scalars["ID"];
 };
 
 export type Depreciation = {
-  __typename?: 'Depreciation';
-  depreciationAmount: Scalars['Float'];
-  depreciationMonths: Scalars['Float'];
-  startAmount: Scalars['Float'];
-  year: Scalars['Float'];
+  __typename?: "Depreciation";
+  depreciationAmount: Scalars["Float"];
+  depreciationMonths: Scalars["Float"];
+  startAmount: Scalars["Float"];
+  year: Scalars["Float"];
 };
 
 export enum DeviceActivityType {
-  AppStart = 'APP_START',
-  ConsentProvided = 'CONSENT_PROVIDED',
-  PasswordReset = 'PASSWORD_RESET'
+  AppStart = "APP_START",
+  ConsentProvided = "CONSENT_PROVIDED",
+  PasswordReset = "PASSWORD_RESET",
 }
 
 export enum DeviceConsentEventType {
-  Approved = 'APPROVED',
-  Rejected = 'REJECTED'
+  Approved = "APPROVED",
+  Rejected = "REJECTED",
 }
 
 export type DirectDebitFee = {
-  __typename?: 'DirectDebitFee';
-  amount: Scalars['Int'];
-  id: Scalars['Int'];
+  __typename?: "DirectDebitFee";
+  amount: Scalars["Int"];
+  id: Scalars["Int"];
   invoiceStatus: InvoiceStatus;
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars["String"]>;
   type: TransactionFeeType;
-  usedAt?: Maybe<Scalars['DateTime']>;
+  usedAt?: Maybe<Scalars["DateTime"]>;
 };
 
 export type Discount = {
-  __typename?: 'Discount';
-  amount: Scalars['Float'];
-  couponIsValid: Scalars['Boolean'];
-  description?: Maybe<Scalars['String']>;
-  subtitle?: Maybe<Scalars['String']>;
+  __typename?: "Discount";
+  amount: Scalars["Float"];
+  couponIsValid: Scalars["Boolean"];
+  description?: Maybe<Scalars["String"]>;
+  subtitle?: Maybe<Scalars["String"]>;
 };
 
 export type Document = {
-  __typename?: 'Document';
-  createdAt: Scalars['DateTime'];
-  downloadUrl: Scalars['String'];
-  id: Scalars['ID'];
+  __typename?: "Document";
+  createdAt: Scalars["DateTime"];
+  downloadUrl: Scalars["String"];
+  id: Scalars["ID"];
   metadata?: Maybe<DocumentMetadata>;
-  name: Scalars['String'];
-  note?: Maybe<Scalars['String']>;
-  type: Scalars['String'];
-  url: Scalars['String'];
+  name: Scalars["String"];
+  note?: Maybe<Scalars["String"]>;
+  type: Scalars["String"];
+  url: Scalars["String"];
 };
 
 export type DocumentCategory = {
-  __typename?: 'DocumentCategory';
-  categoryName: Scalars['String'];
-  folderName: Scalars['String'];
-  id: Scalars['ID'];
+  __typename?: "DocumentCategory";
+  categoryName: Scalars["String"];
+  folderName: Scalars["String"];
+  id: Scalars["ID"];
 };
 
 export enum DocumentMatchStatus {
-  AlreadyHasAsset = 'ALREADY_HAS_ASSET',
-  LaterMatch = 'LATER_MATCH',
-  ManualMatch = 'MANUAL_MATCH',
-  ManualMatchUser = 'MANUAL_MATCH_USER',
-  NoMatches = 'NO_MATCHES',
-  OtherProviderMatch = 'OTHER_PROVIDER_MATCH',
-  TooManyMatches = 'TOO_MANY_MATCHES',
-  WrongMatch = 'WRONG_MATCH'
+  AlreadyHasAsset = "ALREADY_HAS_ASSET",
+  LaterMatch = "LATER_MATCH",
+  ManualMatch = "MANUAL_MATCH",
+  ManualMatchUser = "MANUAL_MATCH_USER",
+  NoMatches = "NO_MATCHES",
+  OtherProviderMatch = "OTHER_PROVIDER_MATCH",
+  TooManyMatches = "TOO_MANY_MATCHES",
+  WrongMatch = "WRONG_MATCH",
 }
 
 export type DocumentMetadata = {
-  __typename?: 'DocumentMetadata';
+  __typename?: "DocumentMetadata";
   category: DocumentCategory;
 };
 
 export enum DocumentType {
-  Expense = 'EXPENSE',
-  Invoice = 'INVOICE',
-  Voucher = 'VOUCHER'
+  Expense = "EXPENSE",
+  Invoice = "INVOICE",
+  Voucher = "VOUCHER",
 }
 
 export enum DocumentUploadSource {
-  Backoffice = 'BACKOFFICE',
-  Email = 'EMAIL',
-  EmailFetch = 'EMAIL_FETCH',
-  Mobile = 'MOBILE',
-  Web = 'WEB'
+  Backoffice = "BACKOFFICE",
+  Email = "EMAIL",
+  EmailFetch = "EMAIL_FETCH",
+  Mobile = "MOBILE",
+  Web = "WEB",
 }
 
 export type DraftTransaction = {
-  __typename?: 'DraftTransaction';
-  amount?: Maybe<Scalars['Int']>;
+  __typename?: "DraftTransaction";
+  amount?: Maybe<Scalars["Int"]>;
   assets: Array<Asset>;
   categoryCode?: Maybe<CategoryCode>;
-  id: Scalars['ID'];
-  isCashTransaction: Scalars['Boolean'];
-  name?: Maybe<Scalars['String']>;
-  note?: Maybe<Scalars['String']>;
-  paymentDate?: Maybe<Scalars['DateTime']>;
+  id: Scalars["ID"];
+  isCashTransaction: Scalars["Boolean"];
+  name?: Maybe<Scalars["String"]>;
+  note?: Maybe<Scalars["String"]>;
+  paymentDate?: Maybe<Scalars["DateTime"]>;
   vatCategoryCode?: Maybe<VatCategoryCode>;
   vatRate?: Maybe<VatRate>;
 };
 
 export type EmailDocument = {
-  __typename?: 'EmailDocument';
-  amount?: Maybe<Scalars['Int']>;
-  createdAt: Scalars['DateTime'];
-  currency?: Maybe<Scalars['String']>;
-  date?: Maybe<Scalars['DateTime']>;
-  documentNumber?: Maybe<Scalars['String']>;
-  filename: Scalars['String'];
-  iban?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
+  __typename?: "EmailDocument";
+  amount?: Maybe<Scalars["Int"]>;
+  createdAt: Scalars["DateTime"];
+  currency?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["DateTime"]>;
+  documentNumber?: Maybe<Scalars["String"]>;
+  filename: Scalars["String"];
+  iban?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
   matchStatus?: Maybe<DocumentMatchStatus>;
   /** Returns an array of transactions which potential match with an email document. Note that just a subset of transaction fields gets returned */
   matches?: Maybe<Array<Transaction>>;
-  name?: Maybe<Scalars['String']>;
-  transactionId?: Maybe<Scalars['ID']>;
-  url: Scalars['String'];
+  name?: Maybe<Scalars["String"]>;
+  transactionId?: Maybe<Scalars["ID"]>;
+  url: Scalars["String"];
 };
 
 export type ExitBusinessAssetPayload = {
+<<<<<<< Updated upstream
   exitAmount?: InputMaybe<Scalars['Float']>;
   exitDate: Scalars['String'];
+=======
+  exitAmount: Scalars["Float"];
+  exitDate: Scalars["String"];
+>>>>>>> Stashed changes
   exitReason: ExitReason;
-  isExitedWithVat: Scalars['Boolean'];
-  note: Scalars['String'];
+  isExitedWithVat: Scalars["Boolean"];
+  note: Scalars["String"];
 };
 
 export enum ExitReason {
-  Depreciated = 'DEPRECIATED',
-  Lost = 'LOST',
-  PrivateUse = 'PRIVATE_USE',
-  Sold = 'SOLD'
+  Depreciated = "DEPRECIATED",
+  Lost = "LOST",
+  PrivateUse = "PRIVATE_USE",
+  Sold = "SOLD",
 }
 
 export type FibuFinalCheckTask = {
-  __typename?: 'FibuFinalCheckTask';
+  __typename?: "FibuFinalCheckTask";
   status: FibuFinalCheckTaskStatus;
   type: FibuFinalCheckTaskType;
 };
 
 export enum FibuFinalCheckTaskStatus {
-  Completed = 'COMPLETED',
-  Todo = 'TODO'
+  Completed = "COMPLETED",
+  Todo = "TODO",
 }
 
 export enum FibuFinalCheckTaskType {
-  SubmitAssets = 'SUBMIT_ASSETS',
-  SubmitExternalTransactions = 'SUBMIT_EXTERNAL_TRANSACTIONS',
-  TaxReceipts = 'TAX_RECEIPTS',
-  UploadAdvisor = 'UPLOAD_ADVISOR',
-  UploadManual = 'UPLOAD_MANUAL',
-  UploadTool = 'UPLOAD_TOOL'
+  SubmitAssets = "SUBMIT_ASSETS",
+  SubmitExternalTransactions = "SUBMIT_EXTERNAL_TRANSACTIONS",
+  TaxReceipts = "TAX_RECEIPTS",
+  UploadAdvisor = "UPLOAD_ADVISOR",
+  UploadManual = "UPLOAD_MANUAL",
+  UploadTool = "UPLOAD_TOOL",
 }
 
 export type FilterPreset = {
-  value: Scalars['String'];
+  value: Scalars["String"];
 };
 
 export type FilterPresetInput = {
-  value: Scalars['String'];
-  year?: InputMaybe<Scalars['Int']>;
+  value: Scalars["String"];
+  year?: InputMaybe<Scalars["Int"]>;
 };
 
 export type FormDataPair = {
-  __typename?: 'FormDataPair';
-  key: Scalars['String'];
-  value: Scalars['String'];
+  __typename?: "FormDataPair";
+  key: Scalars["String"];
+  value: Scalars["String"];
 };
 
 export enum Gender {
-  Female = 'FEMALE',
-  Male = 'MALE'
+  Female = "FEMALE",
+  Male = "MALE",
 }
 
 export type GenericFeature = {
-  __typename?: 'GenericFeature';
-  name: Scalars['String'];
+  __typename?: "GenericFeature";
+  name: Scalars["String"];
 };
 
 export type GenericFilterPreset = FilterPreset & {
-  __typename?: 'GenericFilterPreset';
-  value: Scalars['String'];
+  __typename?: "GenericFilterPreset";
+  value: Scalars["String"];
 };
 
 export type GooglePayCardToken = {
-  __typename?: 'GooglePayCardToken';
-  tokenRefId: Scalars['String'];
-  walletId: Scalars['String'];
+  __typename?: "GooglePayCardToken";
+  tokenRefId: Scalars["String"];
+  walletId: Scalars["String"];
 };
 
 export enum GrantType {
-  AuthorizationCode = 'AUTHORIZATION_CODE',
-  ClientCredentials = 'CLIENT_CREDENTIALS',
-  Password = 'PASSWORD',
-  RefreshToken = 'REFRESH_TOKEN'
+  AuthorizationCode = "AUTHORIZATION_CODE",
+  ClientCredentials = "CLIENT_CREDENTIALS",
+  Password = "PASSWORD",
+  RefreshToken = "REFRESH_TOKEN",
 }
 
 export type Icon = {
-  __typename?: 'Icon';
-  uri: Scalars['String'];
+  __typename?: "Icon";
+  uri: Scalars["String"];
 };
 
 export type IdentificationDetails = {
-  __typename?: 'IdentificationDetails';
+  __typename?: "IdentificationDetails";
   /** The number of identifications attempted by the user */
-  attempts: Scalars['Int'];
+  attempts: Scalars["Int"];
   /** The link to use for IDNow identification */
-  link?: Maybe<Scalars['String']>;
+  link?: Maybe<Scalars["String"]>;
   /** The user's IDNow identification status */
   status?: Maybe<IdentificationStatus>;
 };
 
 export enum IdentificationStatus {
-  Aborted = 'ABORTED',
-  Canceled = 'CANCELED',
-  Created = 'CREATED',
-  Expired = 'EXPIRED',
-  Failed = 'FAILED',
-  Pending = 'PENDING',
-  PendingFailed = 'PENDING_FAILED',
-  PendingSuccessful = 'PENDING_SUCCESSFUL',
-  Successful = 'SUCCESSFUL'
+  Aborted = "ABORTED",
+  Canceled = "CANCELED",
+  Created = "CREATED",
+  Expired = "EXPIRED",
+  Failed = "FAILED",
+  Pending = "PENDING",
+  PendingFailed = "PENDING_FAILED",
+  PendingSuccessful = "PENDING_SUCCESSFUL",
+  Successful = "SUCCESSFUL",
 }
 
 export enum IdnowReminderType {
-  Email = 'EMAIL',
-  Sms = 'SMS'
+  Email = "EMAIL",
+  Sms = "SMS",
 }
 
 export enum IntegrationType {
-  Fastbill = 'FASTBILL',
-  Lexoffice = 'LEXOFFICE'
+  Fastbill = "FASTBILL",
+  Lexoffice = "LEXOFFICE",
 }
 
 export enum InternationalCustomers {
-  Eu = 'EU',
-  None = 'NONE',
-  Worldwide = 'WORLDWIDE'
+  Eu = "EU",
+  None = "NONE",
+  Worldwide = "WORLDWIDE",
 }
 
 export type Invoice = {
-  __typename?: 'Invoice';
+  __typename?: "Invoice";
   customer?: Maybe<Customer>;
-  dueDate?: Maybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
-  invoiceNumber?: Maybe<Scalars['Float']>;
-  invoiceSettingsId?: Maybe<Scalars['String']>;
-  note?: Maybe<Scalars['String']>;
+  dueDate?: Maybe<Scalars["DateTime"]>;
+  id: Scalars["ID"];
+  invoiceNumber?: Maybe<Scalars["Float"]>;
+  invoiceSettingsId?: Maybe<Scalars["String"]>;
+  note?: Maybe<Scalars["String"]>;
   /** A list of products from the invoice */
   products?: Maybe<Array<InvoiceProductOutput>>;
-  status: Scalars['String'];
-  transactionId: Scalars['ID'];
+  status: Scalars["String"];
+  transactionId: Scalars["ID"];
 };
 
 export type InvoiceCustomerInput = {
-  address?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  email?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  taxNumber?: InputMaybe<Scalars['String']>;
-  vatNumber?: InputMaybe<Scalars['String']>;
+  address?: InputMaybe<Scalars["String"]>;
+  country?: InputMaybe<Scalars["String"]>;
+  email?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["String"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  taxNumber?: InputMaybe<Scalars["String"]>;
+  vatNumber?: InputMaybe<Scalars["String"]>;
 };
 
 export type InvoiceCustomerOutput = {
-  __typename?: 'InvoiceCustomerOutput';
-  address?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  taxNumber?: Maybe<Scalars['String']>;
-  vatNumber?: Maybe<Scalars['String']>;
+  __typename?: "InvoiceCustomerOutput";
+  address?: Maybe<Scalars["String"]>;
+  country?: Maybe<Scalars["String"]>;
+  email?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  name?: Maybe<Scalars["String"]>;
+  taxNumber?: Maybe<Scalars["String"]>;
+  vatNumber?: Maybe<Scalars["String"]>;
 };
 
 export type InvoiceInput = {
-  customerId?: InputMaybe<Scalars['String']>;
-  dueDate?: InputMaybe<Scalars['DateTime']>;
-  id?: InputMaybe<Scalars['String']>;
-  invoiceSettingsId?: InputMaybe<Scalars['String']>;
-  note?: InputMaybe<Scalars['String']>;
+  customerId?: InputMaybe<Scalars["String"]>;
+  dueDate?: InputMaybe<Scalars["DateTime"]>;
+  id?: InputMaybe<Scalars["String"]>;
+  invoiceSettingsId?: InputMaybe<Scalars["String"]>;
+  note?: InputMaybe<Scalars["String"]>;
   products?: InputMaybe<Array<InvoiceProductInput>>;
-  status: Scalars['String'];
+  status: Scalars["String"];
 };
 
 export type InvoiceLogoFormDataPair = {
-  __typename?: 'InvoiceLogoFormDataPair';
-  key: Scalars['String'];
-  value: Scalars['String'];
+  __typename?: "InvoiceLogoFormDataPair";
+  key: Scalars["String"];
+  value: Scalars["String"];
 };
 
 export type InvoiceOutput = {
-  __typename?: 'InvoiceOutput';
+  __typename?: "InvoiceOutput";
   customer?: Maybe<InvoiceCustomerOutput>;
-  customerId?: Maybe<Scalars['String']>;
-  dueDate?: Maybe<Scalars['DateTime']>;
-  id?: Maybe<Scalars['String']>;
-  invoiceNumber?: Maybe<Scalars['Float']>;
-  invoiceSettingsId?: Maybe<Scalars['String']>;
-  note?: Maybe<Scalars['String']>;
+  customerId?: Maybe<Scalars["String"]>;
+  dueDate?: Maybe<Scalars["DateTime"]>;
+  id?: Maybe<Scalars["String"]>;
+  invoiceNumber?: Maybe<Scalars["Float"]>;
+  invoiceSettingsId?: Maybe<Scalars["String"]>;
+  note?: Maybe<Scalars["String"]>;
   products?: Maybe<Array<InvoiceProductOutput>>;
-  status: Scalars['String'];
+  status: Scalars["String"];
 };
 
 export type InvoicePageInfo = {
-  __typename?: 'InvoicePageInfo';
-  currentPage: Scalars['Int'];
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
+  __typename?: "InvoicePageInfo";
+  currentPage: Scalars["Int"];
+  hasNextPage: Scalars["Boolean"];
+  hasPreviousPage: Scalars["Boolean"];
 };
 
 export type InvoiceProductInput = {
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-  price?: InputMaybe<Scalars['Float']>;
-  quantity?: InputMaybe<Scalars['Float']>;
-  vat?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["String"]>;
+  price?: InputMaybe<Scalars["Float"]>;
+  quantity?: InputMaybe<Scalars["Float"]>;
+  vat?: InputMaybe<Scalars["String"]>;
 };
 
 export type InvoiceProductOutput = {
-  __typename?: 'InvoiceProductOutput';
-  description?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
-  price?: Maybe<Scalars['Float']>;
-  quantity?: Maybe<Scalars['Float']>;
-  vat?: Maybe<Scalars['String']>;
+  __typename?: "InvoiceProductOutput";
+  description?: Maybe<Scalars["String"]>;
+  id: Scalars["String"];
+  price?: Maybe<Scalars["Float"]>;
+  quantity?: Maybe<Scalars["Float"]>;
+  vat?: Maybe<Scalars["String"]>;
 };
 
 export type InvoiceSettingsInput = {
-  city?: InputMaybe<Scalars['String']>;
-  companyName?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
+  city?: InputMaybe<Scalars["String"]>;
+  companyName?: InputMaybe<Scalars["String"]>;
+  country?: InputMaybe<Scalars["String"]>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
-  dueDateDefaultOffset?: InputMaybe<Scalars['Float']>;
-  email?: InputMaybe<Scalars['String']>;
-  nextInvoiceNumber?: InputMaybe<Scalars['Float']>;
-  phoneNumber?: InputMaybe<Scalars['String']>;
-  postCode?: InputMaybe<Scalars['String']>;
-  senderName?: InputMaybe<Scalars['String']>;
-  streetLine?: InputMaybe<Scalars['String']>;
-  taxNumber?: InputMaybe<Scalars['String']>;
-  vatNumber?: InputMaybe<Scalars['String']>;
+  dueDateDefaultOffset?: InputMaybe<Scalars["Float"]>;
+  email?: InputMaybe<Scalars["String"]>;
+  nextInvoiceNumber?: InputMaybe<Scalars["Float"]>;
+  phoneNumber?: InputMaybe<Scalars["String"]>;
+  postCode?: InputMaybe<Scalars["String"]>;
+  senderName?: InputMaybe<Scalars["String"]>;
+  streetLine?: InputMaybe<Scalars["String"]>;
+  taxNumber?: InputMaybe<Scalars["String"]>;
+  vatNumber?: InputMaybe<Scalars["String"]>;
 };
 
 export type InvoiceSettingsOutput = {
-  __typename?: 'InvoiceSettingsOutput';
-  city?: Maybe<Scalars['String']>;
-  companyName?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
+  __typename?: "InvoiceSettingsOutput";
+  city?: Maybe<Scalars["String"]>;
+  companyName?: Maybe<Scalars["String"]>;
+  country?: Maybe<Scalars["String"]>;
   /** Number of days which get added to today's date to create a default value for due date on invoice creation form */
-  dueDateDefaultOffset?: Maybe<Scalars['Float']>;
-  email?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  dueDateDefaultOffset?: Maybe<Scalars["Float"]>;
+  email?: Maybe<Scalars["String"]>;
+  id: Scalars["String"];
   /** If a user's setting has a logoPath, we calculate a url to the thumbnail from it */
-  logoUrl?: Maybe<Scalars['String']>;
-  nextInvoiceNumber?: Maybe<Scalars['Float']>;
-  phoneNumber?: Maybe<Scalars['String']>;
-  postCode?: Maybe<Scalars['String']>;
-  senderName?: Maybe<Scalars['String']>;
-  streetLine?: Maybe<Scalars['String']>;
-  taxNumber?: Maybe<Scalars['String']>;
-  vatNumber?: Maybe<Scalars['String']>;
+  logoUrl?: Maybe<Scalars["String"]>;
+  nextInvoiceNumber?: Maybe<Scalars["Float"]>;
+  phoneNumber?: Maybe<Scalars["String"]>;
+  postCode?: Maybe<Scalars["String"]>;
+  senderName?: Maybe<Scalars["String"]>;
+  streetLine?: Maybe<Scalars["String"]>;
+  taxNumber?: Maybe<Scalars["String"]>;
+  vatNumber?: Maybe<Scalars["String"]>;
 };
 
 export enum InvoiceStatus {
-  Closed = 'CLOSED',
-  Open = 'OPEN',
-  Pending = 'PENDING',
-  Rejected = 'REJECTED'
+  Closed = "CLOSED",
+  Open = "OPEN",
+  Pending = "PENDING",
+  Rejected = "REJECTED",
 }
 
 export enum InvoiceStatusType {
-  Created = 'CREATED',
-  Draft = 'DRAFT',
-  Paid = 'PAID',
-  Sent = 'SENT'
+  Created = "CREATED",
+  Draft = "DRAFT",
+  Paid = "PAID",
+  Sent = "SENT",
 }
 
 export type InvoicingDashboardData = {
-  __typename?: 'InvoicingDashboardData';
+  __typename?: "InvoicingDashboardData";
   data: Array<DashboardInvoice>;
   pageInfo: InvoicePageInfo;
 };
 
 export type Jwe = {
-  alg: Scalars['String'];
-  enc: Scalars['String'];
+  alg: Scalars["String"];
+  enc: Scalars["String"];
 };
 
 export type Jwk = {
-  e: Scalars['String'];
-  kty: Scalars['String'];
-  n: Scalars['String'];
+  e: Scalars["String"];
+  kty: Scalars["String"];
+  n: Scalars["String"];
 };
 
 export enum MaximumCashTransactionsPercentage {
-  Hundred = 'HUNDRED',
-  Null = 'NULL',
-  Ten = 'TEN'
+  Hundred = "HUNDRED",
+  Null = "NULL",
+  Ten = "TEN",
 }
 
 export type MissingTaxAssetsFilterPreset = FilterPreset & {
-  __typename?: 'MissingTaxAssetsFilterPreset';
-  value: Scalars['String'];
-  year: Scalars['Int'];
+  __typename?: "MissingTaxAssetsFilterPreset";
+  value: Scalars["String"];
+  year: Scalars["Int"];
 };
 
 export type Money = {
-  __typename?: 'Money';
+  __typename?: "Money";
   /** The amount the user pays */
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   /** The amount the user saves */
-  discountAmount: Scalars['Int'];
+  discountAmount: Scalars["Int"];
   /** The amount the user saves in percentage */
-  discountPercentage?: Maybe<Scalars['Int']>;
+  discountPercentage?: Maybe<Scalars["Int"]>;
   /** The amount plus discount amount */
-  fullAmount?: Maybe<Scalars['Int']>;
+  fullAmount?: Maybe<Scalars["Int"]>;
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
+  __typename?: "Mutation";
   /** Activate a card */
   activateCard: Card;
   /** Activate Overdraft Application  - only available for Kontist Application */
   activateOverdraft?: Maybe<Overdraft>;
   /** Add restricted key to selected device */
-  addDeviceKey: Scalars['String'];
+  addDeviceKey: Scalars["String"];
   /** Adds Google Pay card token reference id for given wallet id */
   addGooglePayCardToken: GooglePayCardToken;
   /** Send Lead data to designated Zap to redirect lead to Agreas */
@@ -1287,7 +1287,7 @@ export type Mutation = {
   /** Create an OAuth2 client */
   createClient: Client;
   /** Records consent from the given person to collect device fingerprints on their registered device */
-  createConsentForDeviceMonitoring?: Maybe<Scalars['String']>;
+  createConsentForDeviceMonitoring?: Maybe<Scalars["String"]>;
   /** Creates a draft external transaction entry */
   createDraftTransaction: CreateDraftTransactionResponse;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
@@ -1359,7 +1359,7 @@ export type Mutation = {
   resetLastQuestionnaireAnswer: Questionnaire;
   resetQuestionnaire: MutationResult;
   /** Set the card holder representation for the customer */
-  setCardHolderRepresentation: Scalars['String'];
+  setCardHolderRepresentation: Scalars["String"];
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
   skipIncomeTax: TaxCase;
@@ -1416,115 +1416,100 @@ export type Mutation = {
   upsertUserTour: UserTour;
   userConfirmation: MutationResult;
   /** Returns encrypted card details for virtual card */
-  virtualCardDetails: Scalars['String'];
+  virtualCardDetails: Scalars["String"];
   whitelistCard: WhitelistCardResponse;
 };
 
-
 export type MutationActivateCardArgs = {
-  id: Scalars['String'];
-  verificationToken?: InputMaybe<Scalars['String']>;
+  id: Scalars["String"];
+  verificationToken?: InputMaybe<Scalars["String"]>;
 };
-
 
 export type MutationAddDeviceKeyArgs = {
-  deviceId: Scalars['String'];
-  key: Scalars['String'];
-  signature: Scalars['String'];
+  deviceId: Scalars["String"];
+  key: Scalars["String"];
+  signature: Scalars["String"];
 };
-
 
 export type MutationAddGooglePayCardTokenArgs = {
-  id: Scalars['String'];
-  tokenRefId: Scalars['String'];
-  walletId: Scalars['String'];
+  id: Scalars["String"];
+  tokenRefId: Scalars["String"];
+  walletId: Scalars["String"];
 };
-
 
 export type MutationApproveDeclarationArgs = {
   payload: CreateDeclarationApprovalInput;
 };
 
-
 export type MutationAuthorizeChangeRequestArgs = {
-  changeRequestId: Scalars['String'];
-  deviceId: Scalars['String'];
+  changeRequestId: Scalars["String"];
+  deviceId: Scalars["String"];
 };
-
 
 export type MutationCancelTransferArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
   type: TransferType;
 };
-
 
 export type MutationCardPushProvisioningArgs = {
   android?: InputMaybe<PushProvisioningAndroidInput>;
-  cardId: Scalars['String'];
+  cardId: Scalars["String"];
   ios?: InputMaybe<PushProvisioningIosInput>;
 };
 
-
 export type MutationCategorizeTransactionForDeclarationArgs = {
   category?: InputMaybe<TransactionCategory>;
-  categoryCode?: InputMaybe<Scalars['String']>;
-  date?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  isSplit?: InputMaybe<Scalars['Boolean']>;
-  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  categoryCode?: InputMaybe<Scalars["String"]>;
+  date?: InputMaybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  isSplit?: InputMaybe<Scalars["Boolean"]>;
+  vatCategoryCode?: InputMaybe<Scalars["String"]>;
 };
-
 
 export type MutationChangeCardPinArgs = {
-  id: Scalars['String'];
-  pin: Scalars['String'];
+  id: Scalars["String"];
+  pin: Scalars["String"];
 };
 
-
 export type MutationChangeCardPinEncryptedArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
   payload: ChangeCardPinEncryptedInput;
 };
 
-
 export type MutationChangeCardPinWithChangeRequestArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
   payload: ChangeCardPinWithChangeRequestInput;
 };
 
-
 export type MutationChangeCardStatusArgs = {
   action: CardAction;
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
 
-
 export type MutationConfirmCancelTransferArgs = {
-  authorizationToken: Scalars['String'];
-  confirmationId: Scalars['String'];
+  authorizationToken: Scalars["String"];
+  confirmationId: Scalars["String"];
   type: TransferType;
 };
 
-
 export type MutationConfirmCardPushProvisioningArgs = {
-  cardId: Scalars['String'];
+  cardId: Scalars["String"];
   payload: ConfirmChangeRequestArgs;
 };
 
-
 export type MutationConfirmChangeCardPinArgs = {
-  authorizationToken: Scalars['String'];
-  confirmationId: Scalars['String'];
-  id: Scalars['String'];
+  authorizationToken: Scalars["String"];
+  confirmationId: Scalars["String"];
+  id: Scalars["String"];
 };
-
 
 export type MutationConfirmChangeRequestArgs = {
-  changeRequestId: Scalars['String'];
-  deviceId: Scalars['String'];
-  signature: Scalars['String'];
+  changeRequestId: Scalars["String"];
+  deviceId: Scalars["String"];
+  signature: Scalars["String"];
 };
 
+<<<<<<< Updated upstream
 
 export type MutationConfirmDirectDebitRefundArgs = {
   changeRequestId: Scalars['String'];
@@ -1534,223 +1519,192 @@ export type MutationConfirmDirectDebitRefundArgs = {
 };
 
 
+=======
+>>>>>>> Stashed changes
 export type MutationConfirmTransferArgs = {
-  authorizationToken: Scalars['String'];
-  confirmationId: Scalars['String'];
+  authorizationToken: Scalars["String"];
+  confirmationId: Scalars["String"];
 };
-
 
 export type MutationConfirmTransfersArgs = {
-  authorizationToken: Scalars['String'];
-  confirmationId: Scalars['String'];
+  authorizationToken: Scalars["String"];
+  confirmationId: Scalars["String"];
 };
-
 
 export type MutationConfirmUpdateSolarisUserArgs = {
   payload: ConfirmChangeRequestArgs;
 };
 
-
 export type MutationConnectIntegrationArgs = {
-  authorizationData: Scalars['String'];
+  authorizationData: Scalars["String"];
   type: IntegrationType;
 };
-
 
 export type MutationCreateActivityForDeviceMonitoringArgs = {
   activityType: DeviceActivityType;
 };
 
-
 export type MutationCreateBusinessAddressArgs = {
   payload: CreateBusinessAddressInput;
 };
 
-
 export type MutationCreateCardArgs = {
-  cardHolderRepresentation?: InputMaybe<Scalars['String']>;
+  cardHolderRepresentation?: InputMaybe<Scalars["String"]>;
   type: CardType;
 };
-
 
 export type MutationCreateClientArgs = {
   client: CreateClientInput;
 };
 
-
 export type MutationCreateConsentForDeviceMonitoringArgs = {
   eventType: DeviceConsentEventType;
 };
 
-
 export type MutationCreateDraftTransactionArgs = {
-  fileName: Scalars['String'];
+  fileName: Scalars["String"];
 };
-
 
 export type MutationCreateInvoiceLogoArgs = {
-  filetype: Scalars['String'];
+  filetype: Scalars["String"];
 };
-
 
 export type MutationCreateQuestionnaireDocumentAssetArgs = {
-  filetype: Scalars['String'];
-  name: Scalars['String'];
-  questionnaireDocumentId: Scalars['ID'];
+  filetype: Scalars["String"];
+  name: Scalars["String"];
+  questionnaireDocumentId: Scalars["ID"];
 };
-
 
 export type MutationCreateReviewArgs = {
   platform: ReviewTriggerPlatform;
   triggerName: ReviewTriggerName;
 };
 
-
 export type MutationCreateTaxNumberArgs = {
   payload: CreateTaxNumberInput;
 };
 
-
 export type MutationCreateTransactionAssetArgs = {
-  assetableType?: InputMaybe<Scalars['String']>;
-  filetype: Scalars['String'];
-  name: Scalars['String'];
-  transactionId: Scalars['ID'];
+  assetableType?: InputMaybe<Scalars["String"]>;
+  filetype: Scalars["String"];
+  name: Scalars["String"];
+  transactionId: Scalars["ID"];
   uploadPlatform?: InputMaybe<RequestPlatform>;
 };
 
-
 export type MutationCreateTransactionSplitsArgs = {
   splits: Array<CreateTransactionSplitsInput>;
-  transactionId: Scalars['ID'];
+  transactionId: Scalars["ID"];
 };
-
 
 export type MutationCreateTransferArgs = {
   transfer: CreateTransferInput;
 };
 
-
 export type MutationCreateTransfersArgs = {
   transfers: Array<CreateSepaTransferInput>;
 };
-
 
 export type MutationCreateUserArgs = {
   payload: CreateUserInput;
 };
 
-
 export type MutationCreateUserEmailAliasArgs = {
-  alias: Scalars['String'];
-  hash: Scalars['String'];
+  alias: Scalars["String"];
+  hash: Scalars["String"];
 };
-
 
 export type MutationDeclineDeclarationArgs = {
   payload: CreateDeclarationDeclineInput;
 };
 
-
 export type MutationDeleteAssetArgs = {
-  assetId: Scalars['ID'];
+  assetId: Scalars["ID"];
 };
 
+<<<<<<< Updated upstream
 
 export type MutationDeleteBusinessAssetArgs = {
   id: Scalars['ID'];
 };
 
 
+=======
+>>>>>>> Stashed changes
 export type MutationDeleteClientArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
-
 
 export type MutationDeleteDocumentArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
-
 
 export type MutationDeleteDraftTransactionArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
-
 
 export type MutationDeleteEmailDocumentArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
-
 
 export type MutationDeleteExternalTransactionArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
-
 
 export type MutationDeleteGooglePayCardTokenArgs = {
-  id: Scalars['String'];
-  tokenRefId: Scalars['String'];
-  walletId: Scalars['String'];
+  id: Scalars["String"];
+  tokenRefId: Scalars["String"];
+  walletId: Scalars["String"];
 };
-
 
 export type MutationDeleteInvoiceArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
-
 
 export type MutationDeleteQuestionnaireDocumentArgs = {
-  questionnaireDocumentId: Scalars['ID'];
+  questionnaireDocumentId: Scalars["ID"];
 };
-
 
 export type MutationDeleteTaxNumberArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
-
 
 export type MutationDeleteTransactionAssetArgs = {
-  assetId: Scalars['ID'];
+  assetId: Scalars["ID"];
 };
-
 
 export type MutationDeleteTransactionSplitsArgs = {
-  transactionId: Scalars['ID'];
+  transactionId: Scalars["ID"];
 };
-
 
 export type MutationDismissBannerArgs = {
   name: BannerName;
 };
 
-
 export type MutationDuplicateInvoiceArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
 
-
 export type MutationExitBusinessAssetArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
   payload: ExitBusinessAssetPayload;
 };
 
-
 export type MutationFinalizeAssetUploadArgs = {
-  assetId: Scalars['ID'];
+  assetId: Scalars["ID"];
 };
-
 
 export type MutationFinalizeTaxCaseArgs = {
-  shouldFinalizeBusinessTax?: InputMaybe<Scalars['Boolean']>;
-  shouldFinalizeIncomeTax?: InputMaybe<Scalars['Boolean']>;
-  taxCaseId: Scalars['ID'];
+  shouldFinalizeBusinessTax?: InputMaybe<Scalars["Boolean"]>;
+  shouldFinalizeIncomeTax?: InputMaybe<Scalars["Boolean"]>;
+  taxCaseId: Scalars["ID"];
 };
-
 
 export type MutationFinalizeTransactionAssetUploadArgs = {
-  assetId: Scalars['ID'];
+  assetId: Scalars["ID"];
 };
 
+<<<<<<< Updated upstream
 
 export type MutationInitDirectDebitRefundArgs = {
   deliveryMethod: DeliveryMethod;
@@ -1759,898 +1713,876 @@ export type MutationInitDirectDebitRefundArgs = {
 };
 
 
+=======
+>>>>>>> Stashed changes
 export type MutationMatchEmailDocumentToTransactionArgs = {
-  emailDocumentId: Scalars['ID'];
-  transactionId: Scalars['ID'];
+  emailDocumentId: Scalars["ID"];
+  transactionId: Scalars["ID"];
 };
-
 
 export type MutationPostponeQuestionnaireAnswerArgs = {
-  questionName: Scalars['String'];
-  questionnaireId: Scalars['ID'];
+  questionName: Scalars["String"];
+  questionnaireId: Scalars["ID"];
 };
-
 
 export type MutationRefundDirectDebitArgs = {
-  transactionId: Scalars['String'];
+  transactionId: Scalars["String"];
 };
-
 
 export type MutationReorderCardArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
-
 
 export type MutationReplaceCardArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
-
 
 export type MutationRequestCardPushProvisioningArgs = {
   android?: InputMaybe<PushProvisioningAndroidInput>;
-  cardId: Scalars['String'];
-  deviceId: Scalars['String'];
+  cardId: Scalars["String"];
+  deviceId: Scalars["String"];
   ios?: InputMaybe<PushProvisioningIosInput>;
 };
 
-
 export type MutationResetLastQuestionnaireAnswerArgs = {
-  questionnaireId: Scalars['ID'];
+  questionnaireId: Scalars["ID"];
 };
 
+<<<<<<< Updated upstream
 
 export type MutationResetQuestionnaireArgs = {
   questionnaireId: Scalars['ID'];
 };
 
 
+=======
+>>>>>>> Stashed changes
 export type MutationSetCardHolderRepresentationArgs = {
-  cardHolderRepresentation: Scalars['String'];
+  cardHolderRepresentation: Scalars["String"];
 };
-
 
 export type MutationSignPoaArgs = {
   dependents?: InputMaybe<Array<UserDependentInput>>;
-  signature: Scalars['String'];
+  signature: Scalars["String"];
 };
 
+<<<<<<< Updated upstream
 
 export type MutationSkipIncomeTaxArgs = {
   taxCaseId: Scalars['ID'];
 };
 
 
+=======
+>>>>>>> Stashed changes
 export type MutationStartQuestionnaireArgs = {
-  questionnaireId?: InputMaybe<Scalars['ID']>;
+  questionnaireId?: InputMaybe<Scalars["ID"]>;
   type: QuestionnaireType;
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
-
 
 export type MutationSubmitBookkeepingQuestionnaireArgs = {
-  questionnaireId: Scalars['ID'];
+  questionnaireId: Scalars["ID"];
 };
-
 
 export type MutationSubmitDeclarationArgs = {
-  period: Scalars['String'];
-  year: Scalars['Int'];
+  period: Scalars["String"];
+  year: Scalars["Int"];
 };
-
 
 export type MutationSubmitQuestionnaireAnswerArgs = {
-  questionName: Scalars['String'];
-  questionnaireId: Scalars['ID'];
-  value?: InputMaybe<Scalars['JSON']>;
+  questionName: Scalars["String"];
+  questionnaireId: Scalars["ID"];
+  value?: InputMaybe<Scalars["JSON"]>;
 };
 
-
 export type MutationSubscribeToPlanArgs = {
-  couponCode?: InputMaybe<Scalars['String']>;
+  couponCode?: InputMaybe<Scalars["String"]>;
   type: PurchaseType;
 };
 
-
 export type MutationUpdateCardSettingsArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
   settings: CardSettingsInput;
 };
-
 
 export type MutationUpdateClientArgs = {
   client: UpdateClientInput;
 };
 
-
 export type MutationUpdateConsentForDeviceMonitoringArgs = {
-  deviceConsentId: Scalars['String'];
+  deviceConsentId: Scalars["String"];
   eventType: DeviceConsentEventType;
 };
 
-
 export type MutationUpdateDocumentArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
   metadata?: InputMaybe<UpdateDocumentMetadata>;
-  name?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars["String"]>;
 };
-
 
 export type MutationUpdateDraftTransactionArgs = {
   payload: UpdateDraftTransactionInput;
 };
 
-
 export type MutationUpdateExternalTransactionArgs = {
   payload: UserExternalTransactionInput;
 };
-
 
 export type MutationUpdateInvoiceArgs = {
   payload: InvoiceInput;
 };
 
-
 export type MutationUpdateInvoiceCustomerArgs = {
   payload: InvoiceCustomerInput;
 };
-
 
 export type MutationUpdateInvoiceSettingsArgs = {
   payload: InvoiceSettingsInput;
 };
 
-
 export type MutationUpdateOverdraftArgs = {
-  offeredScreenShown?: InputMaybe<Scalars['Boolean']>;
-  rejectionScreenShown?: InputMaybe<Scalars['Boolean']>;
+  offeredScreenShown?: InputMaybe<Scalars["Boolean"]>;
+  rejectionScreenShown?: InputMaybe<Scalars["Boolean"]>;
 };
 
-
 export type MutationUpdateReviewArgs = {
-  reviewId: Scalars['Int'];
+  reviewId: Scalars["Int"];
   status: UserReviewStatus;
 };
 
-
 export type MutationUpdateSolarisUserArgs = {
-  deviceId: Scalars['String'];
+  deviceId: Scalars["String"];
   payload: UpdateSolarisUserInput;
 };
 
-
 export type MutationUpdateSubscriptionPlanArgs = {
-  couponCode?: InputMaybe<Scalars['String']>;
+  couponCode?: InputMaybe<Scalars["String"]>;
   newPlan: PurchaseType;
 };
 
-
 export type MutationUpdateTaxNumberArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
   payload: UpdateTaxNumberInput;
 };
-
 
 export type MutationUpdateTaxYearSettingsArgs = {
   taxYearSettings: Array<TaxYearSettingInput>;
 };
 
-
 export type MutationUpdateTransactionArgs = {
   category?: InputMaybe<TransactionCategory>;
-  categoryCode?: InputMaybe<Scalars['String']>;
-  id: Scalars['String'];
-  personalNote?: InputMaybe<Scalars['String']>;
+  categoryCode?: InputMaybe<Scalars["String"]>;
+  id: Scalars["String"];
+  personalNote?: InputMaybe<Scalars["String"]>;
   splits?: InputMaybe<Array<TransactionSplitInput>>;
-  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
-  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  userSelectedBookingDate?: InputMaybe<Scalars["DateTime"]>;
+  vatCategoryCode?: InputMaybe<Scalars["String"]>;
   vatRate?: InputMaybe<VatRate>;
 };
 
-
 export type MutationUpdateTransactionSplitsArgs = {
   splits: Array<UpdateTransactionSplitsInput>;
-  transactionId: Scalars['ID'];
+  transactionId: Scalars["ID"];
 };
-
 
 export type MutationUpdateTransferArgs = {
   transfer: UpdateTransferInput;
 };
 
-
 export type MutationUpdateUserNotificationsArgs = {
-  active: Scalars['Boolean'];
+  active: Scalars["Boolean"];
   type: NotificationType;
 };
-
 
 export type MutationUpdateUserSignupInformationArgs = {
   payload: UserUpdateInput;
 };
 
-
 export type MutationUpdateUserTaxDetailsArgs = {
   payload: UserTaxDetailsInput;
 };
-
 
 export type MutationUpsertDeclarationArgs = {
   payload: UpsertDeclarationArgs;
 };
 
-
 export type MutationUpsertProductsArgs = {
   payload: Array<UserProductInput>;
 };
 
-
 export type MutationUpsertQuestionnaireDocumentArgs = {
   payload: QuestionnaireDocumentInput;
-  questionnaireId: Scalars['ID'];
+  questionnaireId: Scalars["ID"];
 };
 
+<<<<<<< Updated upstream
 
 export type MutationUpsertUserTourArgs = {
   payload: UpsertUserTourInput;
 };
 
 
+=======
+>>>>>>> Stashed changes
 export type MutationUserConfirmationArgs = {
   confirmation: UserConfirmation;
-  year?: InputMaybe<Scalars['Int']>;
+  year?: InputMaybe<Scalars["Int"]>;
 };
-
 
 export type MutationVirtualCardDetailsArgs = {
   args: VirtualCardDetailsArgs;
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
 
 export type MutationResult = {
-  __typename?: 'MutationResult';
-  success: Scalars['Boolean'];
+  __typename?: "MutationResult";
+  success: Scalars["Boolean"];
 };
 
 export enum Nationality {
-  Ad = 'AD',
-  Ae = 'AE',
-  Af = 'AF',
-  Ag = 'AG',
-  Ai = 'AI',
-  Al = 'AL',
-  Am = 'AM',
-  Ao = 'AO',
-  Aq = 'AQ',
-  Ar = 'AR',
-  As = 'AS',
-  At = 'AT',
-  Au = 'AU',
-  Aw = 'AW',
-  Ax = 'AX',
-  Az = 'AZ',
-  Ba = 'BA',
-  Bb = 'BB',
-  Bd = 'BD',
-  Be = 'BE',
-  Bf = 'BF',
-  Bg = 'BG',
-  Bh = 'BH',
-  Bi = 'BI',
-  Bj = 'BJ',
-  Bl = 'BL',
-  Bm = 'BM',
-  Bn = 'BN',
-  Bo = 'BO',
-  Br = 'BR',
-  Bs = 'BS',
-  Bt = 'BT',
-  Bv = 'BV',
-  Bw = 'BW',
-  By = 'BY',
-  Bz = 'BZ',
-  Ca = 'CA',
-  Cc = 'CC',
-  Cd = 'CD',
-  Cf = 'CF',
-  Cg = 'CG',
-  Ch = 'CH',
-  Ci = 'CI',
-  Ck = 'CK',
-  Cl = 'CL',
-  Cm = 'CM',
-  Cn = 'CN',
-  Co = 'CO',
-  Cr = 'CR',
-  Cu = 'CU',
-  Cv = 'CV',
-  Cw = 'CW',
-  Cx = 'CX',
-  Cy = 'CY',
-  Cz = 'CZ',
-  De = 'DE',
-  Dj = 'DJ',
-  Dk = 'DK',
-  Dm = 'DM',
-  Do = 'DO',
-  Dz = 'DZ',
-  Ec = 'EC',
-  Ee = 'EE',
-  Eg = 'EG',
-  Eh = 'EH',
-  Er = 'ER',
-  Es = 'ES',
-  Et = 'ET',
-  Fi = 'FI',
-  Fj = 'FJ',
-  Fk = 'FK',
-  Fm = 'FM',
-  Fo = 'FO',
-  Fr = 'FR',
-  Ga = 'GA',
-  Gb = 'GB',
-  Gd = 'GD',
-  Ge = 'GE',
-  Gf = 'GF',
-  Gg = 'GG',
-  Gh = 'GH',
-  Gi = 'GI',
-  Gl = 'GL',
-  Gm = 'GM',
-  Gn = 'GN',
-  Gp = 'GP',
-  Gq = 'GQ',
-  Gr = 'GR',
-  Gs = 'GS',
-  Gt = 'GT',
-  Gu = 'GU',
-  Gw = 'GW',
-  Gy = 'GY',
-  Hk = 'HK',
-  Hm = 'HM',
-  Hn = 'HN',
-  Hr = 'HR',
-  Ht = 'HT',
-  Hu = 'HU',
-  Id = 'ID',
-  Ie = 'IE',
-  Il = 'IL',
-  Im = 'IM',
-  In = 'IN',
-  Io = 'IO',
-  Iq = 'IQ',
-  Ir = 'IR',
-  Is = 'IS',
-  It = 'IT',
-  Je = 'JE',
-  Jm = 'JM',
-  Jo = 'JO',
-  Jp = 'JP',
-  Ke = 'KE',
-  Kg = 'KG',
-  Kh = 'KH',
-  Ki = 'KI',
-  Km = 'KM',
-  Kn = 'KN',
-  Kp = 'KP',
-  Kr = 'KR',
-  Kw = 'KW',
-  Ky = 'KY',
-  Kz = 'KZ',
-  La = 'LA',
-  Lb = 'LB',
-  Lc = 'LC',
-  Li = 'LI',
-  Lk = 'LK',
-  Lr = 'LR',
-  Ls = 'LS',
-  Lt = 'LT',
-  Lu = 'LU',
-  Lv = 'LV',
-  Ly = 'LY',
-  Ma = 'MA',
-  Mc = 'MC',
-  Md = 'MD',
-  Me = 'ME',
-  Mf = 'MF',
-  Mg = 'MG',
-  Mh = 'MH',
-  Mk = 'MK',
-  Ml = 'ML',
-  Mm = 'MM',
-  Mn = 'MN',
-  Mo = 'MO',
-  Mp = 'MP',
-  Mq = 'MQ',
-  Mr = 'MR',
-  Ms = 'MS',
-  Mt = 'MT',
-  Mu = 'MU',
-  Mv = 'MV',
-  Mw = 'MW',
-  Mx = 'MX',
-  My = 'MY',
-  Mz = 'MZ',
-  Na = 'NA',
-  Nc = 'NC',
-  Ne = 'NE',
-  Nf = 'NF',
-  Ng = 'NG',
-  Ni = 'NI',
-  Nl = 'NL',
-  No = 'NO',
-  Np = 'NP',
-  Nr = 'NR',
-  Nu = 'NU',
-  Nz = 'NZ',
-  Om = 'OM',
-  Pa = 'PA',
-  Pe = 'PE',
-  Pf = 'PF',
-  Pg = 'PG',
-  Ph = 'PH',
-  Pk = 'PK',
-  Pl = 'PL',
-  Pm = 'PM',
-  Pn = 'PN',
-  Pr = 'PR',
-  Ps = 'PS',
-  Pt = 'PT',
-  Pw = 'PW',
-  Py = 'PY',
-  Qa = 'QA',
-  Re = 'RE',
-  Ro = 'RO',
-  Rs = 'RS',
-  Ru = 'RU',
-  Rw = 'RW',
-  Sa = 'SA',
-  Sb = 'SB',
-  Sc = 'SC',
-  Sd = 'SD',
-  Se = 'SE',
-  Sg = 'SG',
-  Si = 'SI',
-  Sj = 'SJ',
-  Sk = 'SK',
-  Sl = 'SL',
-  Sm = 'SM',
-  Sn = 'SN',
-  So = 'SO',
-  Sr = 'SR',
-  Ss = 'SS',
-  St = 'ST',
-  Sv = 'SV',
-  Sx = 'SX',
-  Sy = 'SY',
-  Sz = 'SZ',
-  Tc = 'TC',
-  Td = 'TD',
-  Tf = 'TF',
-  Tg = 'TG',
-  Th = 'TH',
-  Tj = 'TJ',
-  Tk = 'TK',
-  Tl = 'TL',
-  Tm = 'TM',
-  Tn = 'TN',
-  To = 'TO',
-  Tr = 'TR',
-  Tt = 'TT',
-  Tv = 'TV',
-  Tw = 'TW',
-  Tz = 'TZ',
-  Ua = 'UA',
-  Ug = 'UG',
-  Um = 'UM',
-  Us = 'US',
-  Uy = 'UY',
-  Uz = 'UZ',
-  Va = 'VA',
-  Vc = 'VC',
-  Ve = 'VE',
-  Vg = 'VG',
-  Vi = 'VI',
-  Vn = 'VN',
-  Vu = 'VU',
-  Wf = 'WF',
-  Ws = 'WS',
-  Xk = 'XK',
-  Ye = 'YE',
-  Yt = 'YT',
-  Za = 'ZA',
-  Zm = 'ZM',
-  Zw = 'ZW'
+  Ad = "AD",
+  Ae = "AE",
+  Af = "AF",
+  Ag = "AG",
+  Ai = "AI",
+  Al = "AL",
+  Am = "AM",
+  Ao = "AO",
+  Aq = "AQ",
+  Ar = "AR",
+  As = "AS",
+  At = "AT",
+  Au = "AU",
+  Aw = "AW",
+  Ax = "AX",
+  Az = "AZ",
+  Ba = "BA",
+  Bb = "BB",
+  Bd = "BD",
+  Be = "BE",
+  Bf = "BF",
+  Bg = "BG",
+  Bh = "BH",
+  Bi = "BI",
+  Bj = "BJ",
+  Bl = "BL",
+  Bm = "BM",
+  Bn = "BN",
+  Bo = "BO",
+  Br = "BR",
+  Bs = "BS",
+  Bt = "BT",
+  Bv = "BV",
+  Bw = "BW",
+  By = "BY",
+  Bz = "BZ",
+  Ca = "CA",
+  Cc = "CC",
+  Cd = "CD",
+  Cf = "CF",
+  Cg = "CG",
+  Ch = "CH",
+  Ci = "CI",
+  Ck = "CK",
+  Cl = "CL",
+  Cm = "CM",
+  Cn = "CN",
+  Co = "CO",
+  Cr = "CR",
+  Cu = "CU",
+  Cv = "CV",
+  Cw = "CW",
+  Cx = "CX",
+  Cy = "CY",
+  Cz = "CZ",
+  De = "DE",
+  Dj = "DJ",
+  Dk = "DK",
+  Dm = "DM",
+  Do = "DO",
+  Dz = "DZ",
+  Ec = "EC",
+  Ee = "EE",
+  Eg = "EG",
+  Eh = "EH",
+  Er = "ER",
+  Es = "ES",
+  Et = "ET",
+  Fi = "FI",
+  Fj = "FJ",
+  Fk = "FK",
+  Fm = "FM",
+  Fo = "FO",
+  Fr = "FR",
+  Ga = "GA",
+  Gb = "GB",
+  Gd = "GD",
+  Ge = "GE",
+  Gf = "GF",
+  Gg = "GG",
+  Gh = "GH",
+  Gi = "GI",
+  Gl = "GL",
+  Gm = "GM",
+  Gn = "GN",
+  Gp = "GP",
+  Gq = "GQ",
+  Gr = "GR",
+  Gs = "GS",
+  Gt = "GT",
+  Gu = "GU",
+  Gw = "GW",
+  Gy = "GY",
+  Hk = "HK",
+  Hm = "HM",
+  Hn = "HN",
+  Hr = "HR",
+  Ht = "HT",
+  Hu = "HU",
+  Id = "ID",
+  Ie = "IE",
+  Il = "IL",
+  Im = "IM",
+  In = "IN",
+  Io = "IO",
+  Iq = "IQ",
+  Ir = "IR",
+  Is = "IS",
+  It = "IT",
+  Je = "JE",
+  Jm = "JM",
+  Jo = "JO",
+  Jp = "JP",
+  Ke = "KE",
+  Kg = "KG",
+  Kh = "KH",
+  Ki = "KI",
+  Km = "KM",
+  Kn = "KN",
+  Kp = "KP",
+  Kr = "KR",
+  Kw = "KW",
+  Ky = "KY",
+  Kz = "KZ",
+  La = "LA",
+  Lb = "LB",
+  Lc = "LC",
+  Li = "LI",
+  Lk = "LK",
+  Lr = "LR",
+  Ls = "LS",
+  Lt = "LT",
+  Lu = "LU",
+  Lv = "LV",
+  Ly = "LY",
+  Ma = "MA",
+  Mc = "MC",
+  Md = "MD",
+  Me = "ME",
+  Mf = "MF",
+  Mg = "MG",
+  Mh = "MH",
+  Mk = "MK",
+  Ml = "ML",
+  Mm = "MM",
+  Mn = "MN",
+  Mo = "MO",
+  Mp = "MP",
+  Mq = "MQ",
+  Mr = "MR",
+  Ms = "MS",
+  Mt = "MT",
+  Mu = "MU",
+  Mv = "MV",
+  Mw = "MW",
+  Mx = "MX",
+  My = "MY",
+  Mz = "MZ",
+  Na = "NA",
+  Nc = "NC",
+  Ne = "NE",
+  Nf = "NF",
+  Ng = "NG",
+  Ni = "NI",
+  Nl = "NL",
+  No = "NO",
+  Np = "NP",
+  Nr = "NR",
+  Nu = "NU",
+  Nz = "NZ",
+  Om = "OM",
+  Pa = "PA",
+  Pe = "PE",
+  Pf = "PF",
+  Pg = "PG",
+  Ph = "PH",
+  Pk = "PK",
+  Pl = "PL",
+  Pm = "PM",
+  Pn = "PN",
+  Pr = "PR",
+  Ps = "PS",
+  Pt = "PT",
+  Pw = "PW",
+  Py = "PY",
+  Qa = "QA",
+  Re = "RE",
+  Ro = "RO",
+  Rs = "RS",
+  Ru = "RU",
+  Rw = "RW",
+  Sa = "SA",
+  Sb = "SB",
+  Sc = "SC",
+  Sd = "SD",
+  Se = "SE",
+  Sg = "SG",
+  Si = "SI",
+  Sj = "SJ",
+  Sk = "SK",
+  Sl = "SL",
+  Sm = "SM",
+  Sn = "SN",
+  So = "SO",
+  Sr = "SR",
+  Ss = "SS",
+  St = "ST",
+  Sv = "SV",
+  Sx = "SX",
+  Sy = "SY",
+  Sz = "SZ",
+  Tc = "TC",
+  Td = "TD",
+  Tf = "TF",
+  Tg = "TG",
+  Th = "TH",
+  Tj = "TJ",
+  Tk = "TK",
+  Tl = "TL",
+  Tm = "TM",
+  Tn = "TN",
+  To = "TO",
+  Tr = "TR",
+  Tt = "TT",
+  Tv = "TV",
+  Tw = "TW",
+  Tz = "TZ",
+  Ua = "UA",
+  Ug = "UG",
+  Um = "UM",
+  Us = "US",
+  Uy = "UY",
+  Uz = "UZ",
+  Va = "VA",
+  Vc = "VC",
+  Ve = "VE",
+  Vg = "VG",
+  Vi = "VI",
+  Vn = "VN",
+  Vu = "VU",
+  Wf = "WF",
+  Ws = "WS",
+  Xk = "XK",
+  Ye = "YE",
+  Yt = "YT",
+  Za = "ZA",
+  Zm = "ZM",
+  Zw = "ZW",
 }
 
 export type Notification = {
-  __typename?: 'Notification';
-  active: Scalars['Boolean'];
+  __typename?: "Notification";
+  active: Scalars["Boolean"];
   type: NotificationType;
 };
 
 export enum NotificationType {
-  All = 'ALL',
-  AtmWithdrawalTransactions = 'ATM_WITHDRAWAL_TRANSACTIONS',
-  CardTransactions = 'CARD_TRANSACTIONS',
-  DirectDebitTransactions = 'DIRECT_DEBIT_TRANSACTIONS',
-  IncomingTransactions = 'INCOMING_TRANSACTIONS',
-  ProductInfo = 'PRODUCT_INFO',
-  ReceiptScanning = 'RECEIPT_SCANNING',
-  Statements = 'STATEMENTS',
-  Tax = 'TAX',
-  Transactions = 'TRANSACTIONS'
+  All = "ALL",
+  AtmWithdrawalTransactions = "ATM_WITHDRAWAL_TRANSACTIONS",
+  CardTransactions = "CARD_TRANSACTIONS",
+  DirectDebitTransactions = "DIRECT_DEBIT_TRANSACTIONS",
+  IncomingTransactions = "INCOMING_TRANSACTIONS",
+  ProductInfo = "PRODUCT_INFO",
+  ReceiptScanning = "RECEIPT_SCANNING",
+  Statements = "STATEMENTS",
+  Tax = "TAX",
+  Transactions = "TRANSACTIONS",
 }
 
 export type Overdraft = {
-  __typename?: 'Overdraft';
-  id: Scalars['String'];
+  __typename?: "Overdraft";
+  id: Scalars["String"];
   /** Available overdraft limit */
-  limit?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars["Int"]>;
   /** Indicates if offered screen for overdraft was shown */
-  offeredScreenShown: Scalars['Boolean'];
+  offeredScreenShown: Scalars["Boolean"];
   /** Indicates if rejection screen for overdraft was shown */
-  rejectionScreenShown: Scalars['Boolean'];
+  rejectionScreenShown: Scalars["Boolean"];
   /** Overdraft request date */
-  requestedAt: Scalars['DateTime'];
+  requestedAt: Scalars["DateTime"];
   /** Overdraft status */
   status: OverdraftApplicationStatus;
 };
 
 export enum OverdraftApplicationStatus {
-  AccountSnapshotPending = 'ACCOUNT_SNAPSHOT_PENDING',
-  AccountSnapshotVerificationPending = 'ACCOUNT_SNAPSHOT_VERIFICATION_PENDING',
-  Created = 'CREATED',
-  Expired = 'EXPIRED',
-  InitialScoringPending = 'INITIAL_SCORING_PENDING',
-  Offered = 'OFFERED',
-  OverdraftCreated = 'OVERDRAFT_CREATED',
-  Rejected = 'REJECTED'
+  AccountSnapshotPending = "ACCOUNT_SNAPSHOT_PENDING",
+  AccountSnapshotVerificationPending = "ACCOUNT_SNAPSHOT_VERIFICATION_PENDING",
+  Created = "CREATED",
+  Expired = "EXPIRED",
+  InitialScoringPending = "INITIAL_SCORING_PENDING",
+  Offered = "OFFERED",
+  OverdraftCreated = "OVERDRAFT_CREATED",
+  Rejected = "REJECTED",
 }
 
 export type PageInfo = {
-  __typename?: 'PageInfo';
-  endCursor?: Maybe<Scalars['String']>;
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
-  startCursor?: Maybe<Scalars['String']>;
+  __typename?: "PageInfo";
+  endCursor?: Maybe<Scalars["String"]>;
+  hasNextPage: Scalars["Boolean"];
+  hasPreviousPage: Scalars["Boolean"];
+  startCursor?: Maybe<Scalars["String"]>;
 };
 
 export enum PaymentFrequency {
-  Monthly = 'MONTHLY',
-  None = 'NONE',
-  NoneQuarterly = 'NONE_QUARTERLY',
-  Quarterly = 'QUARTERLY',
-  Yearly = 'YEARLY'
+  Monthly = "MONTHLY",
+  None = "NONE",
+  NoneQuarterly = "NONE_QUARTERLY",
+  Quarterly = "QUARTERLY",
+  Yearly = "YEARLY",
 }
 
 export type PendingTransactionVerification = {
-  __typename?: 'PendingTransactionVerification';
+  __typename?: "PendingTransactionVerification";
   /** Transaction amount */
-  amount: Scalars['String'];
+  amount: Scalars["String"];
   /** Change request id to authenticate verification */
-  authenticateChangeRequestId: Scalars['String'];
+  authenticateChangeRequestId: Scalars["String"];
   /** Change request id to decline verification */
-  declineChangeRequestId: Scalars['String'];
+  declineChangeRequestId: Scalars["String"];
   /** When verification gets expired */
-  expiresAt: Scalars['String'];
+  expiresAt: Scalars["String"];
   /** Transaction merchant name */
-  name: Scalars['String'];
+  name: Scalars["String"];
 };
 
 export enum PermanentExtensionStatus {
-  DoesHave = 'DOES_HAVE',
-  DoesNotHave = 'DOES_NOT_HAVE',
-  DoesNotKnow = 'DOES_NOT_KNOW'
+  DoesHave = "DOES_HAVE",
+  DoesNotHave = "DOES_NOT_HAVE",
+  DoesNotKnow = "DOES_NOT_KNOW",
 }
 
 export enum Platform {
-  Android = 'ANDROID',
-  Ios = 'IOS',
-  Web = 'WEB'
+  Android = "ANDROID",
+  Ios = "IOS",
+  Web = "WEB",
 }
 
 export type Product = {
-  __typename?: 'Product';
-  description?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  price?: Maybe<Scalars['Float']>;
-  vat?: Maybe<Scalars['String']>;
+  __typename?: "Product";
+  description?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  price?: Maybe<Scalars["Float"]>;
+  vat?: Maybe<Scalars["String"]>;
 };
 
 export type PublicMutationResult = {
-  __typename?: 'PublicMutationResult';
-  success: Scalars['Boolean'];
+  __typename?: "PublicMutationResult";
+  success: Scalars["Boolean"];
 };
 
 export enum PurchaseState {
-  Pending = 'PENDING',
-  Processed = 'PROCESSED'
+  Pending = "PENDING",
+  Processed = "PROCESSED",
 }
 
 export enum PurchaseType {
-  Accounting = 'ACCOUNTING',
-  Basic = 'BASIC',
-  BasicInitial = 'BASIC_INITIAL',
-  Bookkeeping = 'BOOKKEEPING',
-  Card = 'CARD',
-  Kontax = 'KONTAX',
-  KontaxPending = 'KONTAX_PENDING',
-  KontaxSb = 'KONTAX_SB',
-  Lexoffice = 'LEXOFFICE',
-  Premium = 'PREMIUM'
+  Accounting = "ACCOUNTING",
+  Basic = "BASIC",
+  BasicInitial = "BASIC_INITIAL",
+  Bookkeeping = "BOOKKEEPING",
+  Card = "CARD",
+  Kontax = "KONTAX",
+  KontaxPending = "KONTAX_PENDING",
+  KontaxSb = "KONTAX_SB",
+  Lexoffice = "LEXOFFICE",
+  Premium = "PREMIUM",
 }
 
 export type PushProvisioningAndroidInput = {
   /** Stable identifier for a physical Android device Google refers to this atribute as a Stable hardware ID in their SDK documentation the method getStableHardwareId describes how you can retrieve this value. */
-  deviceId?: InputMaybe<Scalars['String']>;
+  deviceId?: InputMaybe<Scalars["String"]>;
   /** Unique 24-byte identifier for each instance of a [Android user, Google account] pair wallet. ID is computed as a keyed hash of the Android user ID and the Google account ID. The key to this hash lives on Google servers, meaning the wallet ID is created during user setup as an RPC. */
-  walletAccountId?: InputMaybe<Scalars['String']>;
+  walletAccountId?: InputMaybe<Scalars["String"]>;
 };
 
 export type PushProvisioningIosInput = {
   /** An array of leaf and sub-CA certificates in Base64 encoded format provided by Apple. Each object contains a DER encoded X.509 certificate, with the leaf first and followed by sub-CA */
-  certificates?: InputMaybe<Array<Scalars['String']>>;
+  certificates?: InputMaybe<Array<Scalars["String"]>>;
   /** A one-time-use nonce in Base64 encoded format provided by Apple */
-  nonce?: InputMaybe<Scalars['String']>;
+  nonce?: InputMaybe<Scalars["String"]>;
   /** Nonce signature in Base64 encoded format provided by Apple */
-  nonceSignature?: InputMaybe<Scalars['String']>;
+  nonceSignature?: InputMaybe<Scalars["String"]>;
 };
 
 export type PushProvisioningOutput = {
-  __typename?: 'PushProvisioningOutput';
-  activationData?: Maybe<Scalars['String']>;
-  encryptedPassData?: Maybe<Scalars['String']>;
-  ephemeralPublicKey?: Maybe<Scalars['String']>;
-  walletPayload?: Maybe<Scalars['String']>;
+  __typename?: "PushProvisioningOutput";
+  activationData?: Maybe<Scalars["String"]>;
+  encryptedPassData?: Maybe<Scalars["String"]>;
+  ephemeralPublicKey?: Maybe<Scalars["String"]>;
+  walletPayload?: Maybe<Scalars["String"]>;
 };
 
 export type Query = {
-  __typename?: 'Query';
+  __typename?: "Query";
   draftTransactions: Array<DraftTransaction>;
   /** Get all released generic features, that are needed before user creation */
   genericFeatures: Array<GenericFeature>;
   /** Determines if user device has restricted key added */
-  hasDeviceRestrictedKey: Scalars['Boolean'];
+  hasDeviceRestrictedKey: Scalars["Boolean"];
   status: SystemStatus;
   /** The current user information */
   viewer?: Maybe<User>;
 };
 
-
 export type QueryHasDeviceRestrictedKeyArgs = {
-  deviceId: Scalars['String'];
+  deviceId: Scalars["String"];
 };
 
 export type Questionnaire = {
-  __typename?: 'Questionnaire';
-  completedAt?: Maybe<Scalars['DateTime']>;
-  context?: Maybe<Scalars['JSON']>;
+  __typename?: "Questionnaire";
+  completedAt?: Maybe<Scalars["DateTime"]>;
+  context?: Maybe<Scalars["JSON"]>;
   documents: Array<QuestionnaireDocument>;
-  id: Scalars['ID'];
+  id: Scalars["ID"];
   lastAnswer?: Maybe<QuestionnaireAnswer>;
   nextQuestion?: Maybe<QuestionnaireQuestion>;
-  startedAt?: Maybe<Scalars['DateTime']>;
+  startedAt?: Maybe<Scalars["DateTime"]>;
   status: QuestionnaireStatus;
-  syncedAt?: Maybe<Scalars['DateTime']>;
+  syncedAt?: Maybe<Scalars["DateTime"]>;
   type: QuestionnaireType;
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
 
-
 export type QuestionnaireNextQuestionArgs = {
-  includePostponed?: InputMaybe<Scalars['Boolean']>;
+  includePostponed?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type QuestionnaireAnswer = {
-  __typename?: 'QuestionnaireAnswer';
+  __typename?: "QuestionnaireAnswer";
   documentsStatus: QuestionnaireAnswerDocumentsStatus;
-  postponedAt?: Maybe<Scalars['DateTime']>;
-  questionName: Scalars['String'];
-  submittedAt?: Maybe<Scalars['DateTime']>;
-  syncedAt?: Maybe<Scalars['DateTime']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-  value?: Maybe<Scalars['JSON']>;
+  postponedAt?: Maybe<Scalars["DateTime"]>;
+  questionName: Scalars["String"];
+  submittedAt?: Maybe<Scalars["DateTime"]>;
+  syncedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]>;
+  value?: Maybe<Scalars["JSON"]>;
 };
 
 export enum QuestionnaireAnswerDocumentsStatus {
-  Deleted = 'DELETED',
-  NotRequired = 'NOT_REQUIRED',
-  Pending = 'PENDING',
-  Uploaded = 'UPLOADED'
+  Deleted = "DELETED",
+  NotRequired = "NOT_REQUIRED",
+  Pending = "PENDING",
+  Uploaded = "UPLOADED",
 }
 
 export type QuestionnaireDocument = {
-  __typename?: 'QuestionnaireDocument';
+  __typename?: "QuestionnaireDocument";
   assets: Array<Asset>;
-  createdAt: Scalars['DateTime'];
-  id: Scalars['ID'];
-  inputs?: Maybe<Scalars['JSON']>;
-  isLastYearSuggestion: Scalars['Boolean'];
-  syncedAt?: Maybe<Scalars['DateTime']>;
+  createdAt: Scalars["DateTime"];
+  id: Scalars["ID"];
+  inputs?: Maybe<Scalars["JSON"]>;
+  isLastYearSuggestion: Scalars["Boolean"];
+  syncedAt?: Maybe<Scalars["DateTime"]>;
   type: QuestionnaireDocumentType;
-  updatedAt: Scalars['DateTime'];
+  updatedAt: Scalars["DateTime"];
 };
 
 export type QuestionnaireDocumentInput = {
-  id?: InputMaybe<Scalars['ID']>;
-  inputs: Scalars['JSONObject'];
+  id?: InputMaybe<Scalars["ID"]>;
+  inputs: Scalars["JSONObject"];
   type: QuestionnaireDocumentType;
 };
 
 export enum QuestionnaireDocumentType {
-  EoyCarUsageLogbook = 'EOY_CAR_USAGE_LOGBOOK',
-  EoyCarUsageOther = 'EOY_CAR_USAGE_OTHER',
-  EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
-  EoyCarUsagePurchaseContract = 'EOY_CAR_USAGE_PURCHASE_CONTRACT',
-  EoyCarUsageTraveledKmWithPrivateCar = 'EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
-  EoyIncomeTaxAdditionalIncomeAddlSelfEmployment = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_ADDL_SELF_EMPLOYMENT',
-  EoyIncomeTaxAdditionalIncomeCapitalAssetsIntl = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_CAPITAL_ASSETS_INTL',
-  EoyIncomeTaxAdditionalIncomeCrypto = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_CRYPTO',
-  EoyIncomeTaxAdditionalIncomeEmployedWork = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_EMPLOYED_WORK',
-  EoyIncomeTaxAdditionalIncomeEmploymentExpenses = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_EMPLOYMENT_EXPENSES',
-  EoyIncomeTaxAdditionalIncomeInternationalIncome = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_INTERNATIONAL_INCOME',
-  EoyIncomeTaxAdditionalIncomeOther = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_OTHER',
-  EoyIncomeTaxAdditionalIncomePartnerAddlSelfEmployment = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_ADDL_SELF_EMPLOYMENT',
-  EoyIncomeTaxAdditionalIncomePartnerCapitalAssetsIntl = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_CAPITAL_ASSETS_INTL',
-  EoyIncomeTaxAdditionalIncomePartnerCrypto = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_CRYPTO',
-  EoyIncomeTaxAdditionalIncomePartnerEmployedWork = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_EMPLOYED_WORK',
-  EoyIncomeTaxAdditionalIncomePartnerEmploymentExpenses = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_EMPLOYMENT_EXPENSES',
-  EoyIncomeTaxAdditionalIncomePartnerInternationalIncome = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_INTERNATIONAL_INCOME',
-  EoyIncomeTaxAdditionalIncomePartnerOther = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_OTHER',
-  EoyIncomeTaxAdditionalIncomePartnerPensions = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_PENSIONS',
-  EoyIncomeTaxAdditionalIncomePartnerSaleOfProperty = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_SALE_OF_PROPERTY',
-  EoyIncomeTaxAdditionalIncomePensions = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PENSIONS',
-  EoyIncomeTaxAdditionalIncomeSaleOfProperty = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_SALE_OF_PROPERTY',
-  EoyIncomeTaxBasicDataOther = 'EOY_INCOME_TAX_BASIC_DATA_OTHER',
-  EoyIncomeTaxBasicDataPartnerOther = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_OTHER',
-  EoyIncomeTaxBasicDataPartnerProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER_PROOF_OF_DISABILITY',
-  EoyIncomeTaxBasicDataProofOfDisability = 'EOY_INCOME_TAX_BASIC_DATA_PROOF_OF_DISABILITY',
-  EoyIncomeTaxBasicDataRentalAndLease = 'EOY_INCOME_TAX_BASIC_DATA_RENTAL_AND_LEASE',
-  EoyIncomeTaxChildAdditionalHealthInsurance = 'EOY_INCOME_TAX_CHILD_ADDITIONAL_HEALTH_INSURANCE',
-  EoyIncomeTaxChildChildcare = 'EOY_INCOME_TAX_CHILD_CHILDCARE',
-  EoyIncomeTaxChildDisabilityCosts = 'EOY_INCOME_TAX_CHILD_DISABILITY_COSTS',
-  EoyIncomeTaxChildExtensiveMedicalExpenses = 'EOY_INCOME_TAX_CHILD_EXTENSIVE_MEDICAL_EXPENSES',
-  EoyIncomeTaxChildOther = 'EOY_INCOME_TAX_CHILD_OTHER',
-  EoyIncomeTaxChildProofOfDisability = 'EOY_INCOME_TAX_CHILD_PROOF_OF_DISABILITY',
-  EoyIncomeTaxChildSchoolFees = 'EOY_INCOME_TAX_CHILD_SCHOOL_FEES',
-  EoyIncomeTaxChildUniversityFees = 'EOY_INCOME_TAX_CHILD_UNIVERSITY_FEES',
-  EoyIncomeTaxPrivateExpensesAccidentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_ACCIDENT_INSURANCE',
-  EoyIncomeTaxPrivateExpensesAliments = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_ALIMENTS',
-  EoyIncomeTaxPrivateExpensesDisabilityInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_DISABILITY_INSURANCE',
-  EoyIncomeTaxPrivateExpensesExtraordinaryBurdens = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_EXTRAORDINARY_BURDENS',
-  EoyIncomeTaxPrivateExpensesHealthInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_HEALTH_INSURANCE',
-  EoyIncomeTaxPrivateExpensesHouseholdServices = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_HOUSEHOLD_SERVICES',
-  EoyIncomeTaxPrivateExpensesLifeInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_LIFE_INSURANCE',
-  EoyIncomeTaxPrivateExpensesOther = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_OTHER',
-  EoyIncomeTaxPrivateExpensesPartnerAccidentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_ACCIDENT_INSURANCE',
-  EoyIncomeTaxPrivateExpensesPartnerAliments = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_ALIMENTS',
-  EoyIncomeTaxPrivateExpensesPartnerDisabilityInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_DISABILITY_INSURANCE',
-  EoyIncomeTaxPrivateExpensesPartnerExtraordinaryBurdens = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_EXTRAORDINARY_BURDENS',
-  EoyIncomeTaxPrivateExpensesPartnerHealthInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_HEALTH_INSURANCE',
-  EoyIncomeTaxPrivateExpensesPartnerHouseholdServices = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_HOUSEHOLD_SERVICES',
-  EoyIncomeTaxPrivateExpensesPartnerLifeInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_LIFE_INSURANCE',
-  EoyIncomeTaxPrivateExpensesPartnerOther = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_OTHER',
-  EoyIncomeTaxPrivateExpensesPartnerPensionInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_PENSION_INSURANCE',
-  EoyIncomeTaxPrivateExpensesPartnerPrivateDonations = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_PRIVATE_DONATIONS',
-  EoyIncomeTaxPrivateExpensesPartnerReister = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_REISTER',
-  EoyIncomeTaxPrivateExpensesPartnerRurup = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_RURUP',
-  EoyIncomeTaxPrivateExpensesPartnerUnemploymentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_UNEMPLOYMENT_INSURANCE',
-  EoyIncomeTaxPrivateExpensesPartnerUniversityFees = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_UNIVERSITY_FEES',
-  EoyIncomeTaxPrivateExpensesPartnerVehicleLiability = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_VEHICLE_LIABILITY',
-  EoyIncomeTaxPrivateExpensesPensionInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PENSION_INSURANCE',
-  EoyIncomeTaxPrivateExpensesPrivateDonations = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PRIVATE_DONATIONS',
-  EoyIncomeTaxPrivateExpensesReister = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_REISTER',
-  EoyIncomeTaxPrivateExpensesRurup = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_RURUP',
-  EoyIncomeTaxPrivateExpensesUnemploymentInsurance = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_UNEMPLOYMENT_INSURANCE',
-  EoyIncomeTaxPrivateExpensesUniversityFees = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_UNIVERSITY_FEES',
-  EoyIncomeTaxPrivateExpensesVehicleLiability = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_VEHICLE_LIABILITY',
-  EoyOfficeUsageElectricity = 'EOY_OFFICE_USAGE_ELECTRICITY',
-  EoyOfficeUsageFloorPlan = 'EOY_OFFICE_USAGE_FLOOR_PLAN',
-  EoyOfficeUsageHeating = 'EOY_OFFICE_USAGE_HEATING',
-  EoyOfficeUsageOther = 'EOY_OFFICE_USAGE_OTHER',
-  EoyOfficeUsagePhoneOrInternet = 'EOY_OFFICE_USAGE_PHONE_OR_INTERNET',
-  EoyOfficeUsageRentOrInterest = 'EOY_OFFICE_USAGE_RENT_OR_INTEREST',
-  EoyOfficeUsageUtility = 'EOY_OFFICE_USAGE_UTILITY',
-  EoyOfficeUsageUtilityAfterPayment = 'EOY_OFFICE_USAGE_UTILITY_AFTER_PAYMENT',
-  EoyTravelExpensesBusinessTrips = 'EOY_TRAVEL_EXPENSES_BUSINESS_TRIPS',
-  EoyTravelExpensesOther = 'EOY_TRAVEL_EXPENSES_OTHER'
+  EoyCarUsageLogbook = "EOY_CAR_USAGE_LOGBOOK",
+  EoyCarUsageOther = "EOY_CAR_USAGE_OTHER",
+  EoyCarUsagePrivatelyPaidCarExpenses = "EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES",
+  EoyCarUsagePurchaseContract = "EOY_CAR_USAGE_PURCHASE_CONTRACT",
+  EoyCarUsageTraveledKmWithPrivateCar = "EOY_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR",
+  EoyIncomeTaxAdditionalIncomeAddlSelfEmployment = "EOY_INCOME_TAX_ADDITIONAL_INCOME_ADDL_SELF_EMPLOYMENT",
+  EoyIncomeTaxAdditionalIncomeCapitalAssetsIntl = "EOY_INCOME_TAX_ADDITIONAL_INCOME_CAPITAL_ASSETS_INTL",
+  EoyIncomeTaxAdditionalIncomeCrypto = "EOY_INCOME_TAX_ADDITIONAL_INCOME_CRYPTO",
+  EoyIncomeTaxAdditionalIncomeEmployedWork = "EOY_INCOME_TAX_ADDITIONAL_INCOME_EMPLOYED_WORK",
+  EoyIncomeTaxAdditionalIncomeEmploymentExpenses = "EOY_INCOME_TAX_ADDITIONAL_INCOME_EMPLOYMENT_EXPENSES",
+  EoyIncomeTaxAdditionalIncomeInternationalIncome = "EOY_INCOME_TAX_ADDITIONAL_INCOME_INTERNATIONAL_INCOME",
+  EoyIncomeTaxAdditionalIncomeOther = "EOY_INCOME_TAX_ADDITIONAL_INCOME_OTHER",
+  EoyIncomeTaxAdditionalIncomePartnerAddlSelfEmployment = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_ADDL_SELF_EMPLOYMENT",
+  EoyIncomeTaxAdditionalIncomePartnerCapitalAssetsIntl = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_CAPITAL_ASSETS_INTL",
+  EoyIncomeTaxAdditionalIncomePartnerCrypto = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_CRYPTO",
+  EoyIncomeTaxAdditionalIncomePartnerEmployedWork = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_EMPLOYED_WORK",
+  EoyIncomeTaxAdditionalIncomePartnerEmploymentExpenses = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_EMPLOYMENT_EXPENSES",
+  EoyIncomeTaxAdditionalIncomePartnerInternationalIncome = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_INTERNATIONAL_INCOME",
+  EoyIncomeTaxAdditionalIncomePartnerOther = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_OTHER",
+  EoyIncomeTaxAdditionalIncomePartnerPensions = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_PENSIONS",
+  EoyIncomeTaxAdditionalIncomePartnerSaleOfProperty = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER_SALE_OF_PROPERTY",
+  EoyIncomeTaxAdditionalIncomePensions = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PENSIONS",
+  EoyIncomeTaxAdditionalIncomeSaleOfProperty = "EOY_INCOME_TAX_ADDITIONAL_INCOME_SALE_OF_PROPERTY",
+  EoyIncomeTaxBasicDataOther = "EOY_INCOME_TAX_BASIC_DATA_OTHER",
+  EoyIncomeTaxBasicDataPartnerOther = "EOY_INCOME_TAX_BASIC_DATA_PARTNER_OTHER",
+  EoyIncomeTaxBasicDataPartnerProofOfDisability = "EOY_INCOME_TAX_BASIC_DATA_PARTNER_PROOF_OF_DISABILITY",
+  EoyIncomeTaxBasicDataProofOfDisability = "EOY_INCOME_TAX_BASIC_DATA_PROOF_OF_DISABILITY",
+  EoyIncomeTaxBasicDataRentalAndLease = "EOY_INCOME_TAX_BASIC_DATA_RENTAL_AND_LEASE",
+  EoyIncomeTaxChildAdditionalHealthInsurance = "EOY_INCOME_TAX_CHILD_ADDITIONAL_HEALTH_INSURANCE",
+  EoyIncomeTaxChildChildcare = "EOY_INCOME_TAX_CHILD_CHILDCARE",
+  EoyIncomeTaxChildDisabilityCosts = "EOY_INCOME_TAX_CHILD_DISABILITY_COSTS",
+  EoyIncomeTaxChildExtensiveMedicalExpenses = "EOY_INCOME_TAX_CHILD_EXTENSIVE_MEDICAL_EXPENSES",
+  EoyIncomeTaxChildOther = "EOY_INCOME_TAX_CHILD_OTHER",
+  EoyIncomeTaxChildProofOfDisability = "EOY_INCOME_TAX_CHILD_PROOF_OF_DISABILITY",
+  EoyIncomeTaxChildSchoolFees = "EOY_INCOME_TAX_CHILD_SCHOOL_FEES",
+  EoyIncomeTaxChildUniversityFees = "EOY_INCOME_TAX_CHILD_UNIVERSITY_FEES",
+  EoyIncomeTaxPrivateExpensesAccidentInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_ACCIDENT_INSURANCE",
+  EoyIncomeTaxPrivateExpensesAliments = "EOY_INCOME_TAX_PRIVATE_EXPENSES_ALIMENTS",
+  EoyIncomeTaxPrivateExpensesDisabilityInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_DISABILITY_INSURANCE",
+  EoyIncomeTaxPrivateExpensesExtraordinaryBurdens = "EOY_INCOME_TAX_PRIVATE_EXPENSES_EXTRAORDINARY_BURDENS",
+  EoyIncomeTaxPrivateExpensesHealthInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_HEALTH_INSURANCE",
+  EoyIncomeTaxPrivateExpensesHouseholdServices = "EOY_INCOME_TAX_PRIVATE_EXPENSES_HOUSEHOLD_SERVICES",
+  EoyIncomeTaxPrivateExpensesLifeInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_LIFE_INSURANCE",
+  EoyIncomeTaxPrivateExpensesOther = "EOY_INCOME_TAX_PRIVATE_EXPENSES_OTHER",
+  EoyIncomeTaxPrivateExpensesPartnerAccidentInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_ACCIDENT_INSURANCE",
+  EoyIncomeTaxPrivateExpensesPartnerAliments = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_ALIMENTS",
+  EoyIncomeTaxPrivateExpensesPartnerDisabilityInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_DISABILITY_INSURANCE",
+  EoyIncomeTaxPrivateExpensesPartnerExtraordinaryBurdens = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_EXTRAORDINARY_BURDENS",
+  EoyIncomeTaxPrivateExpensesPartnerHealthInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_HEALTH_INSURANCE",
+  EoyIncomeTaxPrivateExpensesPartnerHouseholdServices = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_HOUSEHOLD_SERVICES",
+  EoyIncomeTaxPrivateExpensesPartnerLifeInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_LIFE_INSURANCE",
+  EoyIncomeTaxPrivateExpensesPartnerOther = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_OTHER",
+  EoyIncomeTaxPrivateExpensesPartnerPensionInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_PENSION_INSURANCE",
+  EoyIncomeTaxPrivateExpensesPartnerPrivateDonations = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_PRIVATE_DONATIONS",
+  EoyIncomeTaxPrivateExpensesPartnerReister = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_REISTER",
+  EoyIncomeTaxPrivateExpensesPartnerRurup = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_RURUP",
+  EoyIncomeTaxPrivateExpensesPartnerUnemploymentInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_UNEMPLOYMENT_INSURANCE",
+  EoyIncomeTaxPrivateExpensesPartnerUniversityFees = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_UNIVERSITY_FEES",
+  EoyIncomeTaxPrivateExpensesPartnerVehicleLiability = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER_VEHICLE_LIABILITY",
+  EoyIncomeTaxPrivateExpensesPensionInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PENSION_INSURANCE",
+  EoyIncomeTaxPrivateExpensesPrivateDonations = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PRIVATE_DONATIONS",
+  EoyIncomeTaxPrivateExpensesReister = "EOY_INCOME_TAX_PRIVATE_EXPENSES_REISTER",
+  EoyIncomeTaxPrivateExpensesRurup = "EOY_INCOME_TAX_PRIVATE_EXPENSES_RURUP",
+  EoyIncomeTaxPrivateExpensesUnemploymentInsurance = "EOY_INCOME_TAX_PRIVATE_EXPENSES_UNEMPLOYMENT_INSURANCE",
+  EoyIncomeTaxPrivateExpensesUniversityFees = "EOY_INCOME_TAX_PRIVATE_EXPENSES_UNIVERSITY_FEES",
+  EoyIncomeTaxPrivateExpensesVehicleLiability = "EOY_INCOME_TAX_PRIVATE_EXPENSES_VEHICLE_LIABILITY",
+  EoyOfficeUsageElectricity = "EOY_OFFICE_USAGE_ELECTRICITY",
+  EoyOfficeUsageFloorPlan = "EOY_OFFICE_USAGE_FLOOR_PLAN",
+  EoyOfficeUsageHeating = "EOY_OFFICE_USAGE_HEATING",
+  EoyOfficeUsageOther = "EOY_OFFICE_USAGE_OTHER",
+  EoyOfficeUsagePhoneOrInternet = "EOY_OFFICE_USAGE_PHONE_OR_INTERNET",
+  EoyOfficeUsageRentOrInterest = "EOY_OFFICE_USAGE_RENT_OR_INTEREST",
+  EoyOfficeUsageUtility = "EOY_OFFICE_USAGE_UTILITY",
+  EoyOfficeUsageUtilityAfterPayment = "EOY_OFFICE_USAGE_UTILITY_AFTER_PAYMENT",
+  EoyTravelExpensesBusinessTrips = "EOY_TRAVEL_EXPENSES_BUSINESS_TRIPS",
+  EoyTravelExpensesOther = "EOY_TRAVEL_EXPENSES_OTHER",
 }
 
 export type QuestionnaireQuestion = {
-  __typename?: 'QuestionnaireQuestion';
-  allowExit?: Maybe<Scalars['Boolean']>;
-  defaultAnswer?: Maybe<Scalars['JSON']>;
-  inputConfig?: Maybe<Scalars['JSONObject']>;
+  __typename?: "QuestionnaireQuestion";
+  allowExit?: Maybe<Scalars["Boolean"]>;
+  defaultAnswer?: Maybe<Scalars["JSON"]>;
+  inputConfig?: Maybe<Scalars["JSONObject"]>;
   lastYearAnswer?: Maybe<QuestionnaireAnswer>;
-  name: Scalars['String'];
-  postponable?: Maybe<Scalars['Boolean']>;
+  name: Scalars["String"];
+  postponable?: Maybe<Scalars["Boolean"]>;
   previousQuestionsAnswers?: Maybe<Array<QuestionnaireAnswer>>;
-  suggestLastYearAnswer?: Maybe<Scalars['Boolean']>;
-  topic?: Maybe<Scalars['String']>;
+  suggestLastYearAnswer?: Maybe<Scalars["Boolean"]>;
+  topic?: Maybe<Scalars["String"]>;
 };
 
 export enum QuestionnaireStatus {
-  Completed = 'COMPLETED',
-  DocumentsUploaded = 'DOCUMENTS_UPLOADED',
-  NotStarted = 'NOT_STARTED',
-  Started = 'STARTED'
+  Completed = "COMPLETED",
+  DocumentsUploaded = "DOCUMENTS_UPLOADED",
+  NotStarted = "NOT_STARTED",
+  Started = "STARTED",
 }
 
 export type QuestionnaireTask = {
-  __typename?: 'QuestionnaireTask';
+  __typename?: "QuestionnaireTask";
   status: QuestionnaireTaskStatus;
   type: QuestionnaireType;
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
 
 export enum QuestionnaireTaskStatus {
-  Completed = 'COMPLETED',
-  InProgress = 'IN_PROGRESS',
-  InReview = 'IN_REVIEW',
-  ToDo = 'TO_DO'
+  Completed = "COMPLETED",
+  InProgress = "IN_PROGRESS",
+  InReview = "IN_REVIEW",
+  ToDo = "TO_DO",
 }
 
 export enum QuestionnaireType {
-  EoyBasicData = 'EOY_BASIC_DATA',
-  EoyBookkeeping = 'EOY_BOOKKEEPING',
-  EoyCarUsage = 'EOY_CAR_USAGE',
-  EoyIncomeTax = 'EOY_INCOME_TAX',
-  EoyIncomeTaxAdditionalIncome = 'EOY_INCOME_TAX_ADDITIONAL_INCOME',
-  EoyIncomeTaxAdditionalIncomePartner = 'EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER',
-  EoyIncomeTaxBasicData = 'EOY_INCOME_TAX_BASIC_DATA',
-  EoyIncomeTaxBasicDataPartner = 'EOY_INCOME_TAX_BASIC_DATA_PARTNER',
-  EoyIncomeTaxChild = 'EOY_INCOME_TAX_CHILD',
-  EoyIncomeTaxPrivateExpenses = 'EOY_INCOME_TAX_PRIVATE_EXPENSES',
-  EoyIncomeTaxPrivateExpensesPartner = 'EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER',
-  EoyOfficeUsage = 'EOY_OFFICE_USAGE',
-  EoyTravelExpenses = 'EOY_TRAVEL_EXPENSES',
-  StartOfTheYear = 'START_OF_THE_YEAR'
+  EoyBasicData = "EOY_BASIC_DATA",
+  EoyBookkeeping = "EOY_BOOKKEEPING",
+  EoyCarUsage = "EOY_CAR_USAGE",
+  EoyIncomeTax = "EOY_INCOME_TAX",
+  EoyIncomeTaxAdditionalIncome = "EOY_INCOME_TAX_ADDITIONAL_INCOME",
+  EoyIncomeTaxAdditionalIncomePartner = "EOY_INCOME_TAX_ADDITIONAL_INCOME_PARTNER",
+  EoyIncomeTaxBasicData = "EOY_INCOME_TAX_BASIC_DATA",
+  EoyIncomeTaxBasicDataPartner = "EOY_INCOME_TAX_BASIC_DATA_PARTNER",
+  EoyIncomeTaxChild = "EOY_INCOME_TAX_CHILD",
+  EoyIncomeTaxPrivateExpenses = "EOY_INCOME_TAX_PRIVATE_EXPENSES",
+  EoyIncomeTaxPrivateExpensesPartner = "EOY_INCOME_TAX_PRIVATE_EXPENSES_PARTNER",
+  EoyOfficeUsage = "EOY_OFFICE_USAGE",
+  EoyTravelExpenses = "EOY_TRAVEL_EXPENSES",
+  StartOfTheYear = "START_OF_THE_YEAR",
 }
 
 export type RawTransactionProjection = {
-  __typename?: 'RawTransactionProjection';
+  __typename?: "RawTransactionProjection";
   actionReason?: Maybe<ActionReason>;
   /** The amount of the transaction in cents */
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   /** View a single Asset for a transaction */
   asset?: Maybe<TransactionAsset>;
   /** List of uploaded Asset files for this transaction */
   assets: Array<TransactionAsset>;
   /** The date at which the transaction was booked (created) */
+<<<<<<< Updated upstream
   bookingDate: Scalars['DateTime'];
   /** View a single Business Asset for a transaction */
   businessAsset?: Maybe<BusinessAssetResponse>;
   canBeRecategorized: Scalars['Boolean'];
+=======
+  bookingDate: Scalars["DateTime"];
+  canBeRecategorized: Scalars["Boolean"];
+>>>>>>> Stashed changes
   categorizationType?: Maybe<CategorizationType>;
   category?: Maybe<TransactionCategory>;
-  categoryCode?: Maybe<Scalars['String']>;
-  categoryCodeTranslation?: Maybe<Scalars['String']>;
-  createdAt: Scalars['DateTime'];
-  description?: Maybe<Scalars['String']>;
+  categoryCode?: Maybe<Scalars["String"]>;
+  categoryCodeTranslation?: Maybe<Scalars["String"]>;
+  createdAt: Scalars["DateTime"];
+  description?: Maybe<Scalars["String"]>;
   directDebitFees: Array<DirectDebitFee>;
-  documentDownloadUrl?: Maybe<Scalars['String']>;
-  documentNumber?: Maybe<Scalars['String']>;
-  documentPreviewUrl?: Maybe<Scalars['String']>;
+  documentDownloadUrl?: Maybe<Scalars["String"]>;
+  documentNumber?: Maybe<Scalars["String"]>;
+  documentPreviewUrl?: Maybe<Scalars["String"]>;
   documentType?: Maybe<DocumentType>;
-  e2eId?: Maybe<Scalars['String']>;
+  e2eId?: Maybe<Scalars["String"]>;
   fees: Array<TransactionFee>;
-  foreignCurrency?: Maybe<Scalars['String']>;
-  hasAssets: Scalars['Boolean'];
-  iban?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  mandateNumber?: Maybe<Scalars['String']>;
-  merchantCategoryCode?: Maybe<Scalars['String']>;
-  merchantCountryCode?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  originalAmount?: Maybe<Scalars['Float']>;
-  paymentMethod: Scalars['String'];
-  personalNote?: Maybe<Scalars['String']>;
+  foreignCurrency?: Maybe<Scalars["String"]>;
+  hasAssets: Scalars["Boolean"];
+  iban?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  mandateNumber?: Maybe<Scalars["String"]>;
+  merchantCategoryCode?: Maybe<Scalars["String"]>;
+  merchantCountryCode?: Maybe<Scalars["String"]>;
+  name?: Maybe<Scalars["String"]>;
+  originalAmount?: Maybe<Scalars["Float"]>;
+  paymentMethod: Scalars["String"];
+  personalNote?: Maybe<Scalars["String"]>;
   predictedCategory?: Maybe<TransactionCategory>;
   /** Date predicted for tax/vat payment/refund predicted category */
-  predictedUserSelectedBookingDate?: Maybe<Scalars['DateTime']>;
-  purpose?: Maybe<Scalars['String']>;
-  receiptName?: Maybe<Scalars['String']>;
-  recurlyInvoiceNumber?: Maybe<Scalars['String']>;
+  predictedUserSelectedBookingDate?: Maybe<Scalars["DateTime"]>;
+  purpose?: Maybe<Scalars["String"]>;
+  receiptName?: Maybe<Scalars["String"]>;
+  recurlyInvoiceNumber?: Maybe<Scalars["String"]>;
   source: TransactionSource;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
@@ -2660,212 +2592,211 @@ export type RawTransactionProjection = {
   transactionAssets: Array<Asset>;
   type: TransactionProjectionType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  userSelectedBookingDate?: Maybe<Scalars["DateTime"]>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
-  valutaDate?: Maybe<Scalars['DateTime']>;
-  vatCategoryCode?: Maybe<Scalars['String']>;
+  valutaDate?: Maybe<Scalars["DateTime"]>;
+  vatCategoryCode?: Maybe<Scalars["String"]>;
   vatRate?: Maybe<VatRate>;
-  verified?: Maybe<Scalars['Boolean']>;
+  verified?: Maybe<Scalars["Boolean"]>;
 };
-
 
 export type RawTransactionProjectionAssetArgs = {
-  assetId: Scalars['ID'];
+  assetId: Scalars["ID"];
 };
 
-
 export type RawTransactionProjectionTransactionAssetArgs = {
-  assetId: Scalars['ID'];
+  assetId: Scalars["ID"];
 };
 
 export type RecurlyAccount = {
-  __typename?: 'RecurlyAccount';
-  accountManagementUrl: Scalars['String'];
-  balance: Scalars['Float'];
-  pastDue: Scalars['Boolean'];
-  pastDueSince?: Maybe<Scalars['DateTime']>;
-  recurlyAccountId: Scalars['String'];
+  __typename?: "RecurlyAccount";
+  accountManagementUrl: Scalars["String"];
+  balance: Scalars["Float"];
+  pastDue: Scalars["Boolean"];
+  pastDueSince?: Maybe<Scalars["DateTime"]>;
+  recurlyAccountId: Scalars["String"];
 };
 
 export type ReferralDetails = {
-  __typename?: 'ReferralDetails';
+  __typename?: "ReferralDetails";
   /** Amount in euros granted to user and their referee */
-  bonusAmount: Scalars['Int'];
-  code?: Maybe<Scalars['String']>;
-  copy: Scalars['String'];
-  link?: Maybe<Scalars['String']>;
+  bonusAmount: Scalars["Int"];
+  code?: Maybe<Scalars["String"]>;
+  copy: Scalars["String"];
+  link?: Maybe<Scalars["String"]>;
 };
 
 export enum RequestPlatform {
-  Backend = 'BACKEND',
-  Backoffice = 'BACKOFFICE',
-  Email = 'EMAIL',
-  Giovanni = 'GIOVANNI',
-  Invoicing = 'INVOICING',
-  Mobile = 'MOBILE',
-  NativeShare = 'NATIVE_SHARE',
-  Web = 'WEB'
+  Backend = "BACKEND",
+  Backoffice = "BACKOFFICE",
+  Email = "EMAIL",
+  Giovanni = "GIOVANNI",
+  Invoicing = "INVOICING",
+  Mobile = "MOBILE",
+  NativeShare = "NATIVE_SHARE",
+  Web = "WEB",
 }
 
 export enum ReviewTriggerName {
-  BatchTransfers = 'BATCH_TRANSFERS',
-  Googlepay = 'GOOGLEPAY',
-  OutgoingTransactions = 'OUTGOING_TRANSACTIONS',
-  OverdraftOffered = 'OVERDRAFT_OFFERED',
-  PhysicalCardActivated = 'PHYSICAL_CARD_ACTIVATED',
-  ReceiptsScanned = 'RECEIPTS_SCANNED',
-  SettingsButtonClicked = 'SETTINGS_BUTTON_CLICKED',
-  VirtualCardActivated = 'VIRTUAL_CARD_ACTIVATED'
+  BatchTransfers = "BATCH_TRANSFERS",
+  Googlepay = "GOOGLEPAY",
+  OutgoingTransactions = "OUTGOING_TRANSACTIONS",
+  OverdraftOffered = "OVERDRAFT_OFFERED",
+  PhysicalCardActivated = "PHYSICAL_CARD_ACTIVATED",
+  ReceiptsScanned = "RECEIPTS_SCANNED",
+  SettingsButtonClicked = "SETTINGS_BUTTON_CLICKED",
+  VirtualCardActivated = "VIRTUAL_CARD_ACTIVATED",
 }
 
 export enum ReviewTriggerPlatform {
-  Mobile = 'MOBILE',
-  Webapp = 'WEBAPP'
+  Mobile = "MOBILE",
+  Webapp = "WEBAPP",
 }
 
 export enum RiskClassificationStatus {
-  CustomerUnresponsive = 'CUSTOMER_UNRESPONSIVE',
-  InformationReceived = 'INFORMATION_RECEIVED',
-  InformationRequested = 'INFORMATION_REQUESTED',
-  NormalRisk = 'NORMAL_RISK',
-  NotScored = 'NOT_SCORED',
-  PotentialRisk = 'POTENTIAL_RISK',
-  RiskAccepted = 'RISK_ACCEPTED',
-  RiskRejected = 'RISK_REJECTED',
-  ScoringNotRequired = 'SCORING_NOT_REQUIRED'
+  CustomerUnresponsive = "CUSTOMER_UNRESPONSIVE",
+  InformationReceived = "INFORMATION_RECEIVED",
+  InformationRequested = "INFORMATION_REQUESTED",
+  NormalRisk = "NORMAL_RISK",
+  NotScored = "NOT_SCORED",
+  PotentialRisk = "POTENTIAL_RISK",
+  RiskAccepted = "RISK_ACCEPTED",
+  RiskRejected = "RISK_REJECTED",
+  ScoringNotRequired = "SCORING_NOT_REQUIRED",
 }
 
 export enum ScopeType {
-  Accounts = 'ACCOUNTS',
-  Admin = 'ADMIN',
-  Banners = 'BANNERS',
-  CardFraud = 'CARD_FRAUD',
-  ChangeRequest = 'CHANGE_REQUEST',
-  Clients = 'CLIENTS',
-  Offline = 'OFFLINE',
-  Overdraft = 'OVERDRAFT',
-  Signup = 'SIGNUP',
-  Statements = 'STATEMENTS',
-  Subscriptions = 'SUBSCRIPTIONS',
-  Transactions = 'TRANSACTIONS',
-  Transfers = 'TRANSFERS',
-  Users = 'USERS'
+  Accounts = "ACCOUNTS",
+  Admin = "ADMIN",
+  Banners = "BANNERS",
+  CardFraud = "CARD_FRAUD",
+  ChangeRequest = "CHANGE_REQUEST",
+  Clients = "CLIENTS",
+  Offline = "OFFLINE",
+  Overdraft = "OVERDRAFT",
+  Signup = "SIGNUP",
+  Statements = "STATEMENTS",
+  Subscriptions = "SUBSCRIPTIONS",
+  Transactions = "TRANSACTIONS",
+  Transfers = "TRANSFERS",
+  Users = "USERS",
 }
 
 export enum ScreeningProgress {
-  NotScreened = 'NOT_SCREENED',
-  PotentialMatch = 'POTENTIAL_MATCH',
-  ScreenedAccepted = 'SCREENED_ACCEPTED',
-  ScreenedDeclined = 'SCREENED_DECLINED'
+  NotScreened = "NOT_SCREENED",
+  PotentialMatch = "POTENTIAL_MATCH",
+  ScreenedAccepted = "SCREENED_ACCEPTED",
+  ScreenedDeclined = "SCREENED_DECLINED",
 }
 
 export enum ScreeningStatus {
-  NotScreened = 'NOT_SCREENED',
-  PotentialMatch = 'POTENTIAL_MATCH',
-  ScreenedAccepted = 'SCREENED_ACCEPTED',
-  ScreenedDeclined = 'SCREENED_DECLINED'
+  NotScreened = "NOT_SCREENED",
+  PotentialMatch = "POTENTIAL_MATCH",
+  ScreenedAccepted = "SCREENED_ACCEPTED",
+  ScreenedDeclined = "SCREENED_DECLINED",
 }
 
 export type SeizureProtection = {
-  __typename?: 'SeizureProtection';
+  __typename?: "SeizureProtection";
   currentBlockedAmount: AccountBalance;
   protectedAmount: AccountBalance;
   protectedAmountExpiring: AccountBalance;
-  protectedAmountExpiringDate: Scalars['String'];
+  protectedAmountExpiringDate: Scalars["String"];
 };
 
 export type SepaTransfer = {
-  __typename?: 'SepaTransfer';
+  __typename?: "SepaTransfer";
   /** The amount of the SEPA Transfer in cents */
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   /** List of uploaded Asset files for this transfer */
   assets: Array<Asset>;
   /** The end to end ID of the SEPA Transfer */
-  e2eId?: Maybe<Scalars['String']>;
+  e2eId?: Maybe<Scalars["String"]>;
   /** The IBAN of the SEPA Transfer recipient */
-  iban: Scalars['String'];
-  id: Scalars['String'];
+  iban: Scalars["String"];
+  id: Scalars["String"];
   /** The purpose of the SEPA Transfer - 140 max characters */
-  purpose?: Maybe<Scalars['String']>;
+  purpose?: Maybe<Scalars["String"]>;
   /** The name of the SEPA Transfer recipient */
-  recipient: Scalars['String'];
+  recipient: Scalars["String"];
   /** The status of the SEPA Transfer */
   status: SepaTransferStatus;
 };
 
 export enum SepaTransferStatus {
-  Authorized = 'AUTHORIZED',
-  Booked = 'BOOKED',
-  Confirmed = 'CONFIRMED'
+  Authorized = "AUTHORIZED",
+  Booked = "BOOKED",
+  Confirmed = "CONFIRMED",
 }
 
 export type SolarisAccountBalance = {
-  __typename?: 'SolarisAccountBalance';
+  __typename?: "SolarisAccountBalance";
   availableBalance?: Maybe<AccountBalance>;
   balance?: Maybe<AccountBalance>;
   seizureProtection?: Maybe<SeizureProtection>;
 };
 
 export enum StandingOrderReoccurrenceType {
-  Annually = 'ANNUALLY',
-  EverySixMonths = 'EVERY_SIX_MONTHS',
-  Monthly = 'MONTHLY',
-  Quarterly = 'QUARTERLY'
+  Annually = "ANNUALLY",
+  EverySixMonths = "EVERY_SIX_MONTHS",
+  Monthly = "MONTHLY",
+  Quarterly = "QUARTERLY",
 }
 
 export enum Status {
-  Error = 'ERROR'
+  Error = "ERROR",
 }
 
 export enum SubmissionStatus {
-  AlreadySubmitted = 'ALREADY_SUBMITTED',
-  NotNeeded = 'NOT_NEEDED'
+  AlreadySubmitted = "ALREADY_SUBMITTED",
+  NotNeeded = "NOT_NEEDED",
 }
 
 export type Subscription = {
-  __typename?: 'Subscription';
+  __typename?: "Subscription";
   newTransaction: Transaction;
 };
 
 export type SubscriptionFeature = {
-  __typename?: 'SubscriptionFeature';
+  __typename?: "SubscriptionFeature";
   icon?: Maybe<Icon>;
-  title: Scalars['String'];
+  title: Scalars["String"];
 };
 
 export type SubscriptionFeatureGroup = {
-  __typename?: 'SubscriptionFeatureGroup';
+  __typename?: "SubscriptionFeatureGroup";
   features: Array<SubscriptionFeature>;
   icon?: Maybe<Icon>;
-  title?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars["String"]>;
 };
 
 export type SubscriptionPlan = {
-  __typename?: 'SubscriptionPlan';
-  button: Scalars['String'];
-  description: Scalars['String'];
+  __typename?: "SubscriptionPlan";
+  button: Scalars["String"];
+  description: Scalars["String"];
   featureGroups: Array<SubscriptionFeatureGroup>;
-  featuresToggleLabel?: Maybe<Scalars['String']>;
+  featuresToggleLabel?: Maybe<Scalars["String"]>;
   fee: Money;
-  subtitle?: Maybe<Scalars['String']>;
-  title: Scalars['String'];
+  subtitle?: Maybe<Scalars["String"]>;
+  title: Scalars["String"];
   type: PurchaseType;
 };
 
 export type SubscriptionPlansResponse = {
-  __typename?: 'SubscriptionPlansResponse';
-  couponCode?: Maybe<Scalars['String']>;
+  __typename?: "SubscriptionPlansResponse";
+  couponCode?: Maybe<Scalars["String"]>;
   couponValidFor?: Maybe<Array<PurchaseType>>;
   plans: Array<SubscriptionPlan>;
 };
 
 export type SystemStatus = {
-  __typename?: 'SystemStatus';
-  message?: Maybe<Scalars['String']>;
+  __typename?: "SystemStatus";
+  message?: Maybe<Scalars["String"]>;
   type?: Maybe<Status>;
 };
 
 export type TaxCase = {
+<<<<<<< Updated upstream
   __typename?: 'TaxCase';
   businessTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
   deadline: Scalars['DateTime'];
@@ -2873,129 +2804,137 @@ export type TaxCase = {
   id: Scalars['ID'];
   incomeTaxFinalizedAt?: Maybe<Scalars['DateTime']>;
   incomeTaxSkippedAt?: Maybe<Scalars['DateTime']>;
+=======
+  __typename?: "TaxCase";
+  businessTaxFinalizedAt?: Maybe<Scalars["DateTime"]>;
+  deadline: Scalars["DateTime"];
+  finalizedAt?: Maybe<Scalars["DateTime"]>;
+  id: Scalars["ID"];
+  incomeTaxFinalizedAt?: Maybe<Scalars["DateTime"]>;
+>>>>>>> Stashed changes
   status: TaxCaseStatus;
-  taxOfficeDeadline?: Maybe<Scalars['DateTime']>;
-  userFinalizedAt?: Maybe<Scalars['DateTime']>;
-  year: Scalars['Int'];
+  taxOfficeDeadline?: Maybe<Scalars["DateTime"]>;
+  userFinalizedAt?: Maybe<Scalars["DateTime"]>;
+  year: Scalars["Int"];
 };
 
 export enum TaxCaseStatus {
-  Done = 'DONE',
-  InProgress = 'IN_PROGRESS',
-  NotStarted = 'NOT_STARTED'
+  Done = "DONE",
+  InProgress = "IN_PROGRESS",
+  NotStarted = "NOT_STARTED",
 }
 
 export type TaxDeclaration = {
-  __typename?: 'TaxDeclaration';
+  __typename?: "TaxDeclaration";
   declarationApproval?: Maybe<DeclarationApproval>;
   declarationType: TaxDeclarationType;
   finalForms?: Maybe<TaxDeclarationSubmissionInfo>;
-  id: Scalars['ID'];
+  id: Scalars["ID"];
   previewForms?: Maybe<TaxDeclarationSavedDraftInfo>;
   status: TaxDeclarationStatus;
-  statusUpdatedAt?: Maybe<Scalars['DateTime']>;
-  year: Scalars['Int'];
+  statusUpdatedAt?: Maybe<Scalars["DateTime"]>;
+  year: Scalars["Int"];
 };
 
 export type TaxDeclarationExternalAsset = {
-  __typename?: 'TaxDeclarationExternalAsset';
-  createdAt: Scalars['DateTime'];
-  filetype: Scalars['String'];
-  url: Scalars['String'];
+  __typename?: "TaxDeclarationExternalAsset";
+  createdAt: Scalars["DateTime"];
+  filetype: Scalars["String"];
+  url: Scalars["String"];
 };
 
 export type TaxDeclarationSavedDraftInfo = {
-  __typename?: 'TaxDeclarationSavedDraftInfo';
-  calculationSheetUrl?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  createdBy?: Maybe<Scalars['String']>;
+  __typename?: "TaxDeclarationSavedDraftInfo";
+  calculationSheetUrl?: Maybe<Scalars["String"]>;
+  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdBy?: Maybe<Scalars["String"]>;
   externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
-  pdfUrl?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
+  pdfUrl?: Maybe<Scalars["String"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]>;
 };
 
 export enum TaxDeclarationStatus {
-  AppealProcessCompleted = 'APPEAL_PROCESS_COMPLETED',
-  AppealProcessStarted = 'APPEAL_PROCESS_STARTED',
-  ApprovedByTaxConsultant = 'APPROVED_BY_TAX_CONSULTANT',
-  ApprovedByUser = 'APPROVED_BY_USER',
-  Closed = 'CLOSED',
-  CompletedByData = 'COMPLETED_BY_DATA',
-  CompletedByOps = 'COMPLETED_BY_OPS',
-  ConsultationData = 'CONSULTATION_DATA',
-  InProgressData = 'IN_PROGRESS_DATA',
-  InProgressOps = 'IN_PROGRESS_OPS',
-  InProgressTaxConsultant = 'IN_PROGRESS_TAX_CONSULTANT',
-  NotRelevant = 'NOT_RELEVANT',
-  ObjectedByFinanzamt = 'OBJECTED_BY_FINANZAMT',
-  ObjectedByTaxConsultant = 'OBJECTED_BY_TAX_CONSULTANT',
-  ObjectedByUser = 'OBJECTED_BY_USER',
-  Open = 'OPEN',
-  ReceivedTaxBill = 'RECEIVED_TAX_BILL',
-  Submitted = 'SUBMITTED',
-  WaitingForUserApproval = 'WAITING_FOR_USER_APPROVAL'
+  AppealProcessCompleted = "APPEAL_PROCESS_COMPLETED",
+  AppealProcessStarted = "APPEAL_PROCESS_STARTED",
+  ApprovedByTaxConsultant = "APPROVED_BY_TAX_CONSULTANT",
+  ApprovedByUser = "APPROVED_BY_USER",
+  Closed = "CLOSED",
+  CompletedByData = "COMPLETED_BY_DATA",
+  CompletedByOps = "COMPLETED_BY_OPS",
+  ConsultationData = "CONSULTATION_DATA",
+  InProgressData = "IN_PROGRESS_DATA",
+  InProgressOps = "IN_PROGRESS_OPS",
+  InProgressTaxConsultant = "IN_PROGRESS_TAX_CONSULTANT",
+  NotRelevant = "NOT_RELEVANT",
+  ObjectedByFinanzamt = "OBJECTED_BY_FINANZAMT",
+  ObjectedByTaxConsultant = "OBJECTED_BY_TAX_CONSULTANT",
+  ObjectedByUser = "OBJECTED_BY_USER",
+  Open = "OPEN",
+  ReceivedTaxBill = "RECEIVED_TAX_BILL",
+  Submitted = "SUBMITTED",
+  WaitingForUserApproval = "WAITING_FOR_USER_APPROVAL",
 }
 
 export type TaxDeclarationSubmissionInfo = {
-  __typename?: 'TaxDeclarationSubmissionInfo';
-  calculationSheetUrl?: Maybe<Scalars['String']>;
+  __typename?: "TaxDeclarationSubmissionInfo";
+  calculationSheetUrl?: Maybe<Scalars["String"]>;
   externalAssets?: Maybe<Array<TaxDeclarationExternalAsset>>;
-  pdfUrl?: Maybe<Scalars['String']>;
-  submissionAgent?: Maybe<Scalars['String']>;
-  submissionDate?: Maybe<Scalars['DateTime']>;
+  pdfUrl?: Maybe<Scalars["String"]>;
+  submissionAgent?: Maybe<Scalars["String"]>;
+  submissionDate?: Maybe<Scalars["DateTime"]>;
 };
 
 export enum TaxDeclarationType {
-  Euer = 'EUER',
-  IncomeTax = 'INCOME_TAX',
-  TradeTax = 'TRADE_TAX',
-  VatAnnual = 'VAT_ANNUAL'
+  Euer = "EUER",
+  IncomeTax = "INCOME_TAX",
+  TradeTax = "TRADE_TAX",
+  VatAnnual = "VAT_ANNUAL",
 }
 
 /** Tax numbers of users */
 export type TaxNumber = {
-  __typename?: 'TaxNumber';
-  deletedAt?: Maybe<Scalars['DateTime']>;
-  description: Scalars['String'];
-  id: Scalars['ID'];
-  isMainBusinessTaxNumber: Scalars['Boolean'];
-  taxNumber: Scalars['String'];
+  __typename?: "TaxNumber";
+  deletedAt?: Maybe<Scalars["DateTime"]>;
+  description: Scalars["String"];
+  id: Scalars["ID"];
+  isMainBusinessTaxNumber: Scalars["Boolean"];
+  taxNumber: Scalars["String"];
   type: TaxNumberType;
-  validFrom?: Maybe<Scalars['DateTime']>;
+  validFrom?: Maybe<Scalars["DateTime"]>;
 };
 
 export enum TaxNumberType {
-  Business = 'BUSINESS',
-  Personal = 'PERSONAL'
+  Business = "BUSINESS",
+  Personal = "PERSONAL",
 }
 
 export enum TaxPaymentFrequency {
-  Quarterly = 'QUARTERLY'
+  Quarterly = "QUARTERLY",
 }
 
 export type TaxYearSetting = {
-  __typename?: 'TaxYearSetting';
+  __typename?: "TaxYearSetting";
   /** Flag if the corresponding year should be excluded from the tax calculations completely */
-  excluded?: Maybe<Scalars['Boolean']>;
+  excluded?: Maybe<Scalars["Boolean"]>;
   /** Tax rate that should be applied in the corresponding year */
-  taxRate?: Maybe<Scalars['Int']>;
+  taxRate?: Maybe<Scalars["Int"]>;
   /** Tax year the individual settings apply to */
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
 
 export type TaxYearSettingInput = {
   /** Flag if the corresponding year should be excluded from the tax calculations completely */
-  excluded?: InputMaybe<Scalars['Boolean']>;
+  excluded?: InputMaybe<Scalars["Boolean"]>;
   /** Tax rate that should be applied in the corresponding year */
-  taxRate?: InputMaybe<Scalars['Int']>;
+  taxRate?: InputMaybe<Scalars["Int"]>;
   /** Tax year the individual settings apply to */
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
 
 export enum ThreeStateAnswer {
-  No = 'NO',
-  NotSure = 'NOT_SURE',
-  Yes = 'YES'
+  No = "NO",
+  NotSure = "NOT_SURE",
+  Yes = "YES",
 }
 
 export enum TourName {
@@ -3009,9 +2948,10 @@ export enum TourStatus {
 }
 
 export type Transaction = {
-  __typename?: 'Transaction';
+  __typename?: "Transaction";
   actionReason?: Maybe<ActionReason>;
   /** The amount of the transaction in cents */
+<<<<<<< Updated upstream
   amount: Scalars['Int'];
   /** View a single Asset for a transaction */
   asset?: Maybe<TransactionAsset>;
@@ -3022,36 +2962,44 @@ export type Transaction = {
   /** View a single Business Asset for a transaction */
   businessAsset?: Maybe<BusinessAssetResponse>;
   canBeRecategorized: Scalars['Boolean'];
+=======
+  amount: Scalars["Int"];
+  /** List of uploaded Asset files for this transaction */
+  assets: Array<TransactionAsset>;
+  /** The date at which the transaction was booked (created) */
+  bookingDate: Scalars["DateTime"];
+  canBeRecategorized: Scalars["Boolean"];
+>>>>>>> Stashed changes
   categorizationType?: Maybe<CategorizationType>;
   category?: Maybe<TransactionCategory>;
-  categoryCode?: Maybe<Scalars['String']>;
-  categoryCodeTranslation?: Maybe<Scalars['String']>;
-  createdAt: Scalars['DateTime'];
-  description?: Maybe<Scalars['String']>;
+  categoryCode?: Maybe<Scalars["String"]>;
+  categoryCodeTranslation?: Maybe<Scalars["String"]>;
+  createdAt: Scalars["DateTime"];
+  description?: Maybe<Scalars["String"]>;
   directDebitFees: Array<DirectDebitFee>;
-  documentDownloadUrl?: Maybe<Scalars['String']>;
-  documentNumber?: Maybe<Scalars['String']>;
-  documentPreviewUrl?: Maybe<Scalars['String']>;
+  documentDownloadUrl?: Maybe<Scalars["String"]>;
+  documentNumber?: Maybe<Scalars["String"]>;
+  documentPreviewUrl?: Maybe<Scalars["String"]>;
   documentType?: Maybe<DocumentType>;
-  e2eId?: Maybe<Scalars['String']>;
+  e2eId?: Maybe<Scalars["String"]>;
   fees: Array<TransactionFee>;
-  foreignCurrency?: Maybe<Scalars['String']>;
-  hasAssets: Scalars['Boolean'];
-  iban?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  mandateNumber?: Maybe<Scalars['String']>;
-  merchantCategoryCode?: Maybe<Scalars['String']>;
-  merchantCountryCode?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  originalAmount?: Maybe<Scalars['Float']>;
-  paymentMethod: Scalars['String'];
-  personalNote?: Maybe<Scalars['String']>;
+  foreignCurrency?: Maybe<Scalars["String"]>;
+  hasAssets: Scalars["Boolean"];
+  iban?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  mandateNumber?: Maybe<Scalars["String"]>;
+  merchantCategoryCode?: Maybe<Scalars["String"]>;
+  merchantCountryCode?: Maybe<Scalars["String"]>;
+  name?: Maybe<Scalars["String"]>;
+  originalAmount?: Maybe<Scalars["Float"]>;
+  paymentMethod: Scalars["String"];
+  personalNote?: Maybe<Scalars["String"]>;
   predictedCategory?: Maybe<TransactionCategory>;
   /** Date predicted for tax/vat payment/refund predicted category */
-  predictedUserSelectedBookingDate?: Maybe<Scalars['DateTime']>;
-  purpose?: Maybe<Scalars['String']>;
-  receiptName?: Maybe<Scalars['String']>;
-  recurlyInvoiceNumber?: Maybe<Scalars['String']>;
+  predictedUserSelectedBookingDate?: Maybe<Scalars["DateTime"]>;
+  purpose?: Maybe<Scalars["String"]>;
+  receiptName?: Maybe<Scalars["String"]>;
+  recurlyInvoiceNumber?: Maybe<Scalars["String"]>;
   source: TransactionSource;
   /** Metadata of separate pseudo-transactions created when splitting the parent transaction */
   splits: Array<TransactionSplit>;
@@ -3061,12 +3009,12 @@ export type Transaction = {
   transactionAssets: Array<Asset>;
   type: TransactionProjectionType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
+  userSelectedBookingDate?: Maybe<Scalars["DateTime"]>;
   /** The date at which the transaction was processed and the amount deducted from the user's account */
-  valutaDate?: Maybe<Scalars['DateTime']>;
-  vatCategoryCode?: Maybe<Scalars['String']>;
+  valutaDate?: Maybe<Scalars["DateTime"]>;
+  vatCategoryCode?: Maybe<Scalars["String"]>;
   vatRate?: Maybe<VatRate>;
-  verified?: Maybe<Scalars['Boolean']>;
+  verified?: Maybe<Scalars["Boolean"]>;
 };
 
 
@@ -3080,337 +3028,344 @@ export type TransactionTransactionAssetArgs = {
 };
 
 export type TransactionAsset = {
-  __typename?: 'TransactionAsset';
-  assetableId: Scalars['ID'];
-  filetype: Scalars['String'];
-  fullsize: Scalars['String'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  path: Scalars['String'];
-  thumbnail: Scalars['String'];
+  __typename?: "TransactionAsset";
+  assetableId: Scalars["ID"];
+  filetype: Scalars["String"];
+  fullsize: Scalars["String"];
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  path: Scalars["String"];
+  thumbnail: Scalars["String"];
 };
 
 export enum TransactionCategory {
-  Private = 'PRIVATE',
-  ReverseCharge = 'REVERSE_CHARGE',
-  TaxPayment = 'TAX_PAYMENT',
-  TaxRefund = 'TAX_REFUND',
-  TaxSaving = 'TAX_SAVING',
-  Vat = 'VAT',
-  Vat_0 = 'VAT_0',
-  Vat_5 = 'VAT_5',
-  Vat_7 = 'VAT_7',
-  Vat_16 = 'VAT_16',
-  Vat_19 = 'VAT_19',
-  VatPayment = 'VAT_PAYMENT',
-  VatRefund = 'VAT_REFUND',
-  VatSaving = 'VAT_SAVING'
+  Private = "PRIVATE",
+  ReverseCharge = "REVERSE_CHARGE",
+  TaxPayment = "TAX_PAYMENT",
+  TaxRefund = "TAX_REFUND",
+  TaxSaving = "TAX_SAVING",
+  Vat = "VAT",
+  Vat_0 = "VAT_0",
+  Vat_5 = "VAT_5",
+  Vat_7 = "VAT_7",
+  Vat_16 = "VAT_16",
+  Vat_19 = "VAT_19",
+  VatPayment = "VAT_PAYMENT",
+  VatRefund = "VAT_REFUND",
+  VatSaving = "VAT_SAVING",
 }
 
 export type TransactionCondition = {
-  amount_eq?: InputMaybe<Scalars['Int']>;
-  amount_gt?: InputMaybe<Scalars['Int']>;
-  amount_gte?: InputMaybe<Scalars['Int']>;
-  amount_in?: InputMaybe<Array<Scalars['Int']>>;
-  amount_lt?: InputMaybe<Scalars['Int']>;
-  amount_lte?: InputMaybe<Scalars['Int']>;
-  amount_ne?: InputMaybe<Scalars['Int']>;
-  assets_exist?: InputMaybe<Scalars['Boolean']>;
-  bookingDate_eq?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_gt?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_gte?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_lt?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_lte?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_ne?: InputMaybe<Scalars['DateTime']>;
+  amount_eq?: InputMaybe<Scalars["Int"]>;
+  amount_gt?: InputMaybe<Scalars["Int"]>;
+  amount_gte?: InputMaybe<Scalars["Int"]>;
+  amount_in?: InputMaybe<Array<Scalars["Int"]>>;
+  amount_lt?: InputMaybe<Scalars["Int"]>;
+  amount_lte?: InputMaybe<Scalars["Int"]>;
+  amount_ne?: InputMaybe<Scalars["Int"]>;
+  assets_exist?: InputMaybe<Scalars["Boolean"]>;
+  bookingDate_eq?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_gt?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_gte?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_lt?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_lte?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_ne?: InputMaybe<Scalars["DateTime"]>;
   category_eq?: InputMaybe<TransactionCategory>;
   category_in?: InputMaybe<Array<TransactionCategory>>;
-  iban_eq?: InputMaybe<Scalars['String']>;
-  iban_in?: InputMaybe<Array<Scalars['String']>>;
-  iban_like?: InputMaybe<Scalars['String']>;
-  iban_likeAny?: InputMaybe<Array<Scalars['String']>>;
-  iban_ne?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_like?: InputMaybe<Scalars['String']>;
-  name_likeAny?: InputMaybe<Array<Scalars['String']>>;
-  name_ne?: InputMaybe<Scalars['String']>;
+  iban_eq?: InputMaybe<Scalars["String"]>;
+  iban_in?: InputMaybe<Array<Scalars["String"]>>;
+  iban_like?: InputMaybe<Scalars["String"]>;
+  iban_likeAny?: InputMaybe<Array<Scalars["String"]>>;
+  iban_ne?: InputMaybe<Scalars["String"]>;
+  name_eq?: InputMaybe<Scalars["String"]>;
+  name_in?: InputMaybe<Array<Scalars["String"]>>;
+  name_like?: InputMaybe<Scalars["String"]>;
+  name_likeAny?: InputMaybe<Array<Scalars["String"]>>;
+  name_ne?: InputMaybe<Scalars["String"]>;
   operator?: InputMaybe<BaseOperator>;
-  purpose_eq?: InputMaybe<Scalars['String']>;
-  purpose_like?: InputMaybe<Scalars['String']>;
-  purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
-  purpose_ne?: InputMaybe<Scalars['String']>;
-  source_eq?: InputMaybe<Scalars['String']>;
-  source_in?: InputMaybe<Array<Scalars['String']>>;
-  source_ne?: InputMaybe<Scalars['String']>;
-  valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_lt?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_lte?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_ne?: InputMaybe<Scalars['DateTime']>;
-  vatAssets_exist?: InputMaybe<Scalars['Boolean']>;
+  purpose_eq?: InputMaybe<Scalars["String"]>;
+  purpose_like?: InputMaybe<Scalars["String"]>;
+  purpose_likeAny?: InputMaybe<Array<Scalars["String"]>>;
+  purpose_ne?: InputMaybe<Scalars["String"]>;
+  source_eq?: InputMaybe<Scalars["String"]>;
+  source_in?: InputMaybe<Array<Scalars["String"]>>;
+  source_ne?: InputMaybe<Scalars["String"]>;
+  valutaDate_eq?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_gt?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_gte?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_lt?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_lte?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_ne?: InputMaybe<Scalars["DateTime"]>;
+  vatAssets_exist?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type TransactionFee = {
-  __typename?: 'TransactionFee';
+  __typename?: "TransactionFee";
   status: TransactionFeeStatus;
   type: TransactionFeeType;
-  unitAmount?: Maybe<Scalars['Int']>;
-  usedAt?: Maybe<Scalars['DateTime']>;
+  unitAmount?: Maybe<Scalars["Int"]>;
+  usedAt?: Maybe<Scalars["DateTime"]>;
 };
 
 export enum TransactionFeeStatus {
-  Cancelled = 'CANCELLED',
-  Charged = 'CHARGED',
-  Created = 'CREATED',
-  Refunded = 'REFUNDED',
-  RefundInitiated = 'REFUND_INITIATED'
+  Cancelled = "CANCELLED",
+  Charged = "CHARGED",
+  Created = "CREATED",
+  Refunded = "REFUNDED",
+  RefundInitiated = "REFUND_INITIATED",
 }
 
 export enum TransactionFeeType {
-  Atm = 'ATM',
-  CardReplacement = 'CARD_REPLACEMENT',
-  DirectDebitReturn = 'DIRECT_DEBIT_RETURN',
-  ForeignTransaction = 'FOREIGN_TRANSACTION',
-  FreeKontistTransaction = 'FREE_KONTIST_TRANSACTION',
-  KontistTransaction = 'KONTIST_TRANSACTION',
-  SecondReminderEmail = 'SECOND_REMINDER_EMAIL'
+  Atm = "ATM",
+  CardReplacement = "CARD_REPLACEMENT",
+  DirectDebitReturn = "DIRECT_DEBIT_RETURN",
+  ForeignTransaction = "FOREIGN_TRANSACTION",
+  FreeKontistTransaction = "FREE_KONTIST_TRANSACTION",
+  KontistTransaction = "KONTIST_TRANSACTION",
+  SecondReminderEmail = "SECOND_REMINDER_EMAIL",
 }
 
 export type TransactionFilter = {
-  amount_eq?: InputMaybe<Scalars['Int']>;
-  amount_gt?: InputMaybe<Scalars['Int']>;
-  amount_gte?: InputMaybe<Scalars['Int']>;
-  amount_in?: InputMaybe<Array<Scalars['Int']>>;
-  amount_lt?: InputMaybe<Scalars['Int']>;
-  amount_lte?: InputMaybe<Scalars['Int']>;
-  amount_ne?: InputMaybe<Scalars['Int']>;
-  assets_exist?: InputMaybe<Scalars['Boolean']>;
-  bookingDate_eq?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_gt?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_gte?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_lt?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_lte?: InputMaybe<Scalars['DateTime']>;
-  bookingDate_ne?: InputMaybe<Scalars['DateTime']>;
+  amount_eq?: InputMaybe<Scalars["Int"]>;
+  amount_gt?: InputMaybe<Scalars["Int"]>;
+  amount_gte?: InputMaybe<Scalars["Int"]>;
+  amount_in?: InputMaybe<Array<Scalars["Int"]>>;
+  amount_lt?: InputMaybe<Scalars["Int"]>;
+  amount_lte?: InputMaybe<Scalars["Int"]>;
+  amount_ne?: InputMaybe<Scalars["Int"]>;
+  assets_exist?: InputMaybe<Scalars["Boolean"]>;
+  bookingDate_eq?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_gt?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_gte?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_lt?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_lte?: InputMaybe<Scalars["DateTime"]>;
+  bookingDate_ne?: InputMaybe<Scalars["DateTime"]>;
   category_eq?: InputMaybe<TransactionCategory>;
   category_in?: InputMaybe<Array<TransactionCategory>>;
   conditions?: InputMaybe<Array<TransactionCondition>>;
-  iban_eq?: InputMaybe<Scalars['String']>;
-  iban_in?: InputMaybe<Array<Scalars['String']>>;
-  iban_like?: InputMaybe<Scalars['String']>;
-  iban_likeAny?: InputMaybe<Array<Scalars['String']>>;
-  iban_ne?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_like?: InputMaybe<Scalars['String']>;
-  name_likeAny?: InputMaybe<Array<Scalars['String']>>;
-  name_ne?: InputMaybe<Scalars['String']>;
+  iban_eq?: InputMaybe<Scalars["String"]>;
+  iban_in?: InputMaybe<Array<Scalars["String"]>>;
+  iban_like?: InputMaybe<Scalars["String"]>;
+  iban_likeAny?: InputMaybe<Array<Scalars["String"]>>;
+  iban_ne?: InputMaybe<Scalars["String"]>;
+  name_eq?: InputMaybe<Scalars["String"]>;
+  name_in?: InputMaybe<Array<Scalars["String"]>>;
+  name_like?: InputMaybe<Scalars["String"]>;
+  name_likeAny?: InputMaybe<Array<Scalars["String"]>>;
+  name_ne?: InputMaybe<Scalars["String"]>;
   operator?: InputMaybe<BaseOperator>;
-  purpose_eq?: InputMaybe<Scalars['String']>;
-  purpose_like?: InputMaybe<Scalars['String']>;
-  purpose_likeAny?: InputMaybe<Array<Scalars['String']>>;
-  purpose_ne?: InputMaybe<Scalars['String']>;
-  source_eq?: InputMaybe<Scalars['String']>;
-  source_in?: InputMaybe<Array<Scalars['String']>>;
-  source_ne?: InputMaybe<Scalars['String']>;
-  valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_lt?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_lte?: InputMaybe<Scalars['DateTime']>;
-  valutaDate_ne?: InputMaybe<Scalars['DateTime']>;
-  vatAssets_exist?: InputMaybe<Scalars['Boolean']>;
+  purpose_eq?: InputMaybe<Scalars["String"]>;
+  purpose_like?: InputMaybe<Scalars["String"]>;
+  purpose_likeAny?: InputMaybe<Array<Scalars["String"]>>;
+  purpose_ne?: InputMaybe<Scalars["String"]>;
+  source_eq?: InputMaybe<Scalars["String"]>;
+  source_in?: InputMaybe<Array<Scalars["String"]>>;
+  source_ne?: InputMaybe<Scalars["String"]>;
+  valutaDate_eq?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_gt?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_gte?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_lt?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_lte?: InputMaybe<Scalars["DateTime"]>;
+  valutaDate_ne?: InputMaybe<Scalars["DateTime"]>;
+  vatAssets_exist?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type TransactionForAccountingView = {
-  __typename?: 'TransactionForAccountingView';
-  amount: Scalars['Int'];
+  __typename?: "TransactionForAccountingView";
+  amount: Scalars["Int"];
   category?: Maybe<TransactionCategory>;
-  categoryCode?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  isSplit: Scalars['Boolean'];
-  name?: Maybe<Scalars['String']>;
-  purpose?: Maybe<Scalars['String']>;
-  selectedBookingDate?: Maybe<Scalars['DateTime']>;
-  valutaDate: Scalars['DateTime'];
-  vatAmount?: Maybe<Scalars['Int']>;
-  vatCategoryCode?: Maybe<Scalars['String']>;
-  vatRate?: Maybe<Scalars['String']>;
+  categoryCode?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  isSplit: Scalars["Boolean"];
+  name?: Maybe<Scalars["String"]>;
+  purpose?: Maybe<Scalars["String"]>;
+  selectedBookingDate?: Maybe<Scalars["DateTime"]>;
+  valutaDate: Scalars["DateTime"];
+  vatAmount?: Maybe<Scalars["Int"]>;
+  vatCategoryCode?: Maybe<Scalars["String"]>;
+  vatRate?: Maybe<Scalars["String"]>;
 };
 
 export enum TransactionProjectionType {
-  Atm = 'ATM',
-  CancellationBooking = 'CANCELLATION_BOOKING',
-  CancellationCardTransaction = 'CANCELLATION_CARD_TRANSACTION',
-  CancellationCharge = 'CANCELLATION_CHARGE',
-  CancellationDirectDebit = 'CANCELLATION_DIRECT_DEBIT',
-  CancellationDoubleBooking = 'CANCELLATION_DOUBLE_BOOKING',
-  CancellationInterestAccrued = 'CANCELLATION_INTEREST_ACCRUED',
-  CancellationSepaCreditTransferReturn = 'CANCELLATION_SEPA_CREDIT_TRANSFER_RETURN',
-  CancellationSepaDirectDebitReturn = 'CANCELLATION_SEPA_DIRECT_DEBIT_RETURN',
-  CancelManualLoad = 'CANCEL_MANUAL_LOAD',
-  CardTransaction = 'CARD_TRANSACTION',
-  CardUsage = 'CARD_USAGE',
-  CashAtmReversal = 'CASH_ATM_REVERSAL',
-  CashManual = 'CASH_MANUAL',
-  CashManualReversal = 'CASH_MANUAL_REVERSAL',
-  Charge = 'CHARGE',
-  CommissionOverdraft = 'COMMISSION_OVERDRAFT',
-  CreditPresentment = 'CREDIT_PRESENTMENT',
-  CreditTransferCancellation = 'CREDIT_TRANSFER_CANCELLATION',
-  CurrencyTransactionCancellation = 'CURRENCY_TRANSACTION_CANCELLATION',
-  ChargeRecallRequest = 'ChargeRecallRequest',
-  CorrectionCardTransaction = 'CorrectionCardTransaction',
-  CorrectionSepaCreditTransfer = 'CorrectionSEPACreditTransfer',
-  DebitPresentment = 'DEBIT_PRESENTMENT',
-  DepositFee = 'DEPOSIT_FEE',
-  DirectDebit = 'DIRECT_DEBIT',
-  DirectDebitAutomaticTopup = 'DIRECT_DEBIT_AUTOMATIC_TOPUP',
-  DirectDebitReturn = 'DIRECT_DEBIT_RETURN',
-  DisputeClearing = 'DISPUTE_CLEARING',
-  DisputeTransaction = 'DISPUTE_TRANSACTION',
-  ExternalTransaction = 'EXTERNAL_TRANSACTION',
-  ExternalTransactionCash = 'EXTERNAL_TRANSACTION_CASH',
-  ForcePostTransaction = 'FORCE_POST_TRANSACTION',
-  ForeignPayment = 'FOREIGN_PAYMENT',
-  InterestAccrued = 'INTEREST_ACCRUED',
-  InternationalCreditTransfer = 'INTERNATIONAL_CREDIT_TRANSFER',
-  IntraCustomerTransfer = 'INTRA_CUSTOMER_TRANSFER',
-  InterestExcessDeposit = 'InterestExcessDeposit',
-  InterestOverdraft = 'InterestOverdraft',
-  InterestOverdraftExceeded = 'InterestOverdraftExceeded',
-  ManualLoad = 'MANUAL_LOAD',
-  Oct = 'OCT',
-  Other = 'OTHER',
-  PurchaseReversal = 'PURCHASE_REVERSAL',
-  Rebooking = 'REBOOKING',
-  RebookedSepaCreditTransferReturn = 'RebookedSEPACreditTransferReturn',
-  RebookedSepaDirectDebitCoreReturn = 'RebookedSEPADirectDebitCoreReturn',
-  ReimbursementCustomer = 'ReimbursementCustomer',
-  SepaInstantCreditTransfer = 'SEPAInstantCreditTransfer',
-  SepaCreditTransfer = 'SEPA_CREDIT_TRANSFER',
-  SepaCreditTransferReturn = 'SEPA_CREDIT_TRANSFER_RETURN',
-  SepaDirectDebit = 'SEPA_DIRECT_DEBIT',
-  SepaDirectDebitReturn = 'SEPA_DIRECT_DEBIT_RETURN',
-  Transfer = 'TRANSFER',
-  TransferToBankAccount = 'TRANSFER_TO_BANK_ACCOUNT',
-  Target2CreditTransfer = 'Target2CreditTransfer',
-  VerificationCode = 'VERIFICATION_CODE',
-  WireTransferTopup = 'WIRE_TRANSFER_TOPUP'
+  Atm = "ATM",
+  CancellationBooking = "CANCELLATION_BOOKING",
+  CancellationCardTransaction = "CANCELLATION_CARD_TRANSACTION",
+  CancellationCharge = "CANCELLATION_CHARGE",
+  CancellationDirectDebit = "CANCELLATION_DIRECT_DEBIT",
+  CancellationDoubleBooking = "CANCELLATION_DOUBLE_BOOKING",
+  CancellationInterestAccrued = "CANCELLATION_INTEREST_ACCRUED",
+  CancellationSepaCreditTransferReturn = "CANCELLATION_SEPA_CREDIT_TRANSFER_RETURN",
+  CancellationSepaDirectDebitReturn = "CANCELLATION_SEPA_DIRECT_DEBIT_RETURN",
+  CancelManualLoad = "CANCEL_MANUAL_LOAD",
+  CardTransaction = "CARD_TRANSACTION",
+  CardUsage = "CARD_USAGE",
+  CashAtmReversal = "CASH_ATM_REVERSAL",
+  CashManual = "CASH_MANUAL",
+  CashManualReversal = "CASH_MANUAL_REVERSAL",
+  Charge = "CHARGE",
+  CommissionOverdraft = "COMMISSION_OVERDRAFT",
+  CreditPresentment = "CREDIT_PRESENTMENT",
+  CreditTransferCancellation = "CREDIT_TRANSFER_CANCELLATION",
+  CurrencyTransactionCancellation = "CURRENCY_TRANSACTION_CANCELLATION",
+  ChargeRecallRequest = "ChargeRecallRequest",
+  CorrectionCardTransaction = "CorrectionCardTransaction",
+  CorrectionSepaCreditTransfer = "CorrectionSEPACreditTransfer",
+  DebitPresentment = "DEBIT_PRESENTMENT",
+  DepositFee = "DEPOSIT_FEE",
+  DirectDebit = "DIRECT_DEBIT",
+  DirectDebitAutomaticTopup = "DIRECT_DEBIT_AUTOMATIC_TOPUP",
+  DirectDebitReturn = "DIRECT_DEBIT_RETURN",
+  DisputeClearing = "DISPUTE_CLEARING",
+  DisputeTransaction = "DISPUTE_TRANSACTION",
+  ExternalTransaction = "EXTERNAL_TRANSACTION",
+  ExternalTransactionCash = "EXTERNAL_TRANSACTION_CASH",
+  ForcePostTransaction = "FORCE_POST_TRANSACTION",
+  ForeignPayment = "FOREIGN_PAYMENT",
+  InterestAccrued = "INTEREST_ACCRUED",
+  InternationalCreditTransfer = "INTERNATIONAL_CREDIT_TRANSFER",
+  IntraCustomerTransfer = "INTRA_CUSTOMER_TRANSFER",
+  InterestExcessDeposit = "InterestExcessDeposit",
+  InterestOverdraft = "InterestOverdraft",
+  InterestOverdraftExceeded = "InterestOverdraftExceeded",
+  ManualLoad = "MANUAL_LOAD",
+  Oct = "OCT",
+  Other = "OTHER",
+  PurchaseReversal = "PURCHASE_REVERSAL",
+  Rebooking = "REBOOKING",
+  RebookedSepaCreditTransferReturn = "RebookedSEPACreditTransferReturn",
+  RebookedSepaDirectDebitCoreReturn = "RebookedSEPADirectDebitCoreReturn",
+  ReimbursementCustomer = "ReimbursementCustomer",
+  SepaInstantCreditTransfer = "SEPAInstantCreditTransfer",
+  SepaCreditTransfer = "SEPA_CREDIT_TRANSFER",
+  SepaCreditTransferReturn = "SEPA_CREDIT_TRANSFER_RETURN",
+  SepaDirectDebit = "SEPA_DIRECT_DEBIT",
+  SepaDirectDebitReturn = "SEPA_DIRECT_DEBIT_RETURN",
+  Transfer = "TRANSFER",
+  TransferToBankAccount = "TRANSFER_TO_BANK_ACCOUNT",
+  Target2CreditTransfer = "Target2CreditTransfer",
+  VerificationCode = "VERIFICATION_CODE",
+  WireTransferTopup = "WIRE_TRANSFER_TOPUP",
 }
 
 export enum TransactionSource {
-  BackofficeManual = 'BACKOFFICE_MANUAL',
-  Solaris = 'SOLARIS',
-  User = 'USER'
+  BackofficeManual = "BACKOFFICE_MANUAL",
+  Solaris = "SOLARIS",
+  User = "USER",
 }
 
 export type TransactionSplit = {
-  __typename?: 'TransactionSplit';
-  amount: Scalars['Int'];
+  __typename?: "TransactionSplit";
+  amount: Scalars["Int"];
   categorizationType?: Maybe<CategorizationType>;
   category?: Maybe<TransactionCategory>;
+<<<<<<< Updated upstream
   categoryCode?: Maybe<Scalars['String']>;
   categoryCodeTranslation?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
   uuid: Scalars['ID'];
+=======
+  categoryCode?: Maybe<Scalars["String"]>;
+  id: Scalars["Int"];
+  userSelectedBookingDate?: Maybe<Scalars["DateTime"]>;
+  uuid: Scalars["ID"];
+>>>>>>> Stashed changes
   vatCategoryCode?: Maybe<VatCategoryCode>;
   vatRate?: Maybe<VatRate>;
 };
 
 export type TransactionSplitInput = {
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   category?: InputMaybe<TransactionCategory>;
-  categoryCode?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
-  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  categoryCode?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["Int"]>;
+  userSelectedBookingDate?: InputMaybe<Scalars["DateTime"]>;
+  vatCategoryCode?: InputMaybe<Scalars["String"]>;
   vatRate?: InputMaybe<VatRate>;
 };
 
 export type TransactionsConnection = {
-  __typename?: 'TransactionsConnection';
+  __typename?: "TransactionsConnection";
   edges: Array<TransactionsConnectionEdge>;
   pageInfo: PageInfo;
 };
 
 export type TransactionsConnectionEdge = {
-  __typename?: 'TransactionsConnectionEdge';
-  cursor: Scalars['String'];
+  __typename?: "TransactionsConnectionEdge";
+  cursor: Scalars["String"];
   node: Transaction;
 };
 
 export type Transfer = {
-  __typename?: 'Transfer';
+  __typename?: "Transfer";
   /** The amount of the transfer in cents */
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   /** List of uploaded Asset files for this transfer */
   assets?: Maybe<Array<Asset>>;
   /** The user selected category for the SEPA Transfer */
   category?: Maybe<TransactionCategory>;
   /** The end to end ID of the transfer */
-  e2eId?: Maybe<Scalars['String']>;
+  e2eId?: Maybe<Scalars["String"]>;
   /** The date at which the payment will be executed for Timed Orders or Standing Orders */
-  executeAt?: Maybe<Scalars['DateTime']>;
+  executeAt?: Maybe<Scalars["DateTime"]>;
   /** The IBAN of the transfer recipient */
-  iban: Scalars['String'];
-  id: Scalars['String'];
+  iban: Scalars["String"];
+  id: Scalars["String"];
   /** The date at which the last payment will be executed for Standing Orders */
-  lastExecutionDate?: Maybe<Scalars['DateTime']>;
+  lastExecutionDate?: Maybe<Scalars["DateTime"]>;
   /** The date at which the next payment will be executed for Standing Orders */
-  nextOccurrence?: Maybe<Scalars['DateTime']>;
+  nextOccurrence?: Maybe<Scalars["DateTime"]>;
   /** The personal note of the transfer - 250 max characters */
-  personalNote?: Maybe<Scalars['String']>;
+  personalNote?: Maybe<Scalars["String"]>;
   /** The purpose of the transfer - 140 max characters */
-  purpose?: Maybe<Scalars['String']>;
+  purpose?: Maybe<Scalars["String"]>;
   /** The name of the transfer recipient */
-  recipient: Scalars['String'];
+  recipient: Scalars["String"];
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: Maybe<StandingOrderReoccurrenceType>;
   /** The status of the transfer */
   status?: Maybe<TransferStatus>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
-  userSelectedBookingDate?: Maybe<Scalars['DateTime']>;
-  uuid: Scalars['String'];
+  userSelectedBookingDate?: Maybe<Scalars["DateTime"]>;
+  uuid: Scalars["String"];
 };
 
 export enum TransferStatus {
-  Active = 'ACTIVE',
-  AuthorizationRequired = 'AUTHORIZATION_REQUIRED',
-  Authorized = 'AUTHORIZED',
-  Booked = 'BOOKED',
-  Canceled = 'CANCELED',
-  ConfirmationRequired = 'CONFIRMATION_REQUIRED',
-  Confirmed = 'CONFIRMED',
-  Created = 'CREATED',
-  Executed = 'EXECUTED',
-  Failed = 'FAILED',
-  Inactive = 'INACTIVE',
-  Scheduled = 'SCHEDULED'
+  Active = "ACTIVE",
+  AuthorizationRequired = "AUTHORIZATION_REQUIRED",
+  Authorized = "AUTHORIZED",
+  Booked = "BOOKED",
+  Canceled = "CANCELED",
+  ConfirmationRequired = "CONFIRMATION_REQUIRED",
+  Confirmed = "CONFIRMED",
+  Created = "CREATED",
+  Executed = "EXECUTED",
+  Failed = "FAILED",
+  Inactive = "INACTIVE",
+  Scheduled = "SCHEDULED",
 }
 
 export type TransferSuggestion = {
-  __typename?: 'TransferSuggestion';
-  iban: Scalars['String'];
-  name: Scalars['String'];
+  __typename?: "TransferSuggestion";
+  iban: Scalars["String"];
+  name: Scalars["String"];
 };
 
 export enum TransferType {
-  SepaTransfer = 'SEPA_TRANSFER',
-  StandingOrder = 'STANDING_ORDER',
-  TimedOrder = 'TIMED_ORDER'
+  SepaTransfer = "SEPA_TRANSFER",
+  StandingOrder = "STANDING_ORDER",
+  TimedOrder = "TIMED_ORDER",
 }
 
 export type TransfersConnection = {
-  __typename?: 'TransfersConnection';
+  __typename?: "TransfersConnection";
   edges: Array<TransfersConnectionEdge>;
   pageInfo: PageInfo;
 };
 
 export type TransfersConnectionEdge = {
-  __typename?: 'TransfersConnectionEdge';
-  cursor: Scalars['String'];
+  __typename?: "TransfersConnectionEdge";
+  cursor: Scalars["String"];
   node: Transfer;
 };
 
@@ -3419,11 +3374,11 @@ export type TransfersConnectionFilter = {
 };
 
 export type UnfinishedTransfer = {
-  __typename?: 'UnfinishedTransfer';
-  amount: Scalars['Int'];
-  iban: Scalars['String'];
-  purpose: Scalars['String'];
-  recipient: Scalars['String'];
+  __typename?: "UnfinishedTransfer";
+  amount: Scalars["Int"];
+  iban: Scalars["String"];
+  purpose: Scalars["String"];
+  recipient: Scalars["String"];
 };
 
 /** The available fields to update an OAuth2 client */
@@ -3431,23 +3386,24 @@ export type UpdateClientInput = {
   /** The grant types (i.e. ways to obtain access tokens) allowed for the client */
   grantTypes?: InputMaybe<Array<GrantType>>;
   /** The id of the OAuth2 client to update */
-  id: Scalars['String'];
+  id: Scalars["String"];
   /** The name of the OAuth2 client displayed when users log in */
-  name?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars["String"]>;
   /** The URL to redirect to after authentication */
-  redirectUri?: InputMaybe<Scalars['String']>;
+  redirectUri?: InputMaybe<Scalars["String"]>;
   /** The scopes the client has access to, limiting access to the corresponding parts of the API */
   scopes?: InputMaybe<Array<ScopeType>>;
   /** The OAuth2 client secret */
-  secret?: InputMaybe<Scalars['String']>;
+  secret?: InputMaybe<Scalars["String"]>;
 };
 
 export type UpdateDocumentMetadata = {
   /** Document's category Id */
-  documentCategoryId?: InputMaybe<Scalars['String']>;
+  documentCategoryId?: InputMaybe<Scalars["String"]>;
 };
 
 export type UpdateDraftTransactionInput = {
+<<<<<<< Updated upstream
   amount?: InputMaybe<Scalars['Int']>;
   assetUploaded?: InputMaybe<Scalars['Boolean']>;
   businessAsset?: InputMaybe<BusinessAssetInput>;
@@ -3457,71 +3413,88 @@ export type UpdateDraftTransactionInput = {
   name?: InputMaybe<Scalars['String']>;
   note?: InputMaybe<Scalars['String']>;
   paymentDate?: InputMaybe<Scalars['DateTime']>;
+=======
+  amount?: InputMaybe<Scalars["Int"]>;
+  assetUploaded?: InputMaybe<Scalars["Boolean"]>;
+  categoryCode?: InputMaybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  isCashTransaction?: InputMaybe<Scalars["Boolean"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  note?: InputMaybe<Scalars["String"]>;
+  paymentDate?: InputMaybe<Scalars["DateTime"]>;
+>>>>>>> Stashed changes
   splits?: InputMaybe<Array<TransactionSplitInput>>;
-  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatCategoryCode?: InputMaybe<Scalars["String"]>;
   vatRate?: InputMaybe<VatRate>;
 };
 
 export type UpdateSolarisUserInput = {
-  amlConfirmed?: InputMaybe<Scalars['Boolean']>;
+  amlConfirmed?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type UpdateSubscriptionPlanResult = {
-  __typename?: 'UpdateSubscriptionPlanResult';
-  couponCode?: Maybe<Scalars['String']>;
-  hasCanceledDowngrade: Scalars['Boolean'];
-  hasOrderedPhysicalCard: Scalars['Boolean'];
-  newPlan: Scalars['String'];
+  __typename?: "UpdateSubscriptionPlanResult";
+  couponCode?: Maybe<Scalars["String"]>;
+  hasCanceledDowngrade: Scalars["Boolean"];
+  hasOrderedPhysicalCard: Scalars["Boolean"];
+  newPlan: Scalars["String"];
   previousPlans: Array<PurchaseType>;
-  updateActiveAt: Scalars['String'];
+  updateActiveAt: Scalars["String"];
 };
 
 export type UpdateTaxNumberInput = {
-  description: Scalars['String'];
-  isMainBusinessTaxNumber: Scalars['Boolean'];
-  taxNumber: Scalars['String'];
+  description: Scalars["String"];
+  isMainBusinessTaxNumber: Scalars["Boolean"];
+  taxNumber: Scalars["String"];
   type: TaxNumberType;
-  validFrom?: InputMaybe<Scalars['DateTime']>;
+  validFrom?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type UpdateTransactionSplitsInput = {
-  amount: Scalars['Int'];
+  amount: Scalars["Int"];
   category?: InputMaybe<TransactionCategory>;
+<<<<<<< Updated upstream
   categoryCode?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['Int']>;
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
   vatCategoryCode?: InputMaybe<Scalars['String']>;
+=======
+  categoryCode?: InputMaybe<Scalars["String"]>;
+  id: Scalars["Int"];
+  userSelectedBookingDate?: InputMaybe<Scalars["DateTime"]>;
+  vatCategoryCode?: InputMaybe<Scalars["String"]>;
+>>>>>>> Stashed changes
   vatRate?: InputMaybe<VatRate>;
 };
 
 /** The available fields to update a transfer */
 export type UpdateTransferInput = {
   /** The amount of the Standing Order payment in cents */
-  amount?: InputMaybe<Scalars['Int']>;
+  amount?: InputMaybe<Scalars["Int"]>;
   /** The user selected category for the SEPA Transfer */
   category?: InputMaybe<TransactionCategory>;
   /** The end to end ID of the Standing Order, if not specified with the update, it will be set to null */
-  e2eId?: InputMaybe<Scalars['String']>;
+  e2eId?: InputMaybe<Scalars["String"]>;
   /** The ID of the transfer to update */
-  id: Scalars['String'];
+  id: Scalars["String"];
   /** The date at which the last payment will be executed */
-  lastExecutionDate?: InputMaybe<Scalars['DateTime']>;
+  lastExecutionDate?: InputMaybe<Scalars["DateTime"]>;
   /** The personal note of the transfer - 250 max characters */
-  personalNote?: InputMaybe<Scalars['String']>;
+  personalNote?: InputMaybe<Scalars["String"]>;
   /** The purpose of the Standing Order - 140 max characters, if not specified with the update, it will be set to null */
-  purpose?: InputMaybe<Scalars['String']>;
+  purpose?: InputMaybe<Scalars["String"]>;
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: InputMaybe<StandingOrderReoccurrenceType>;
   /** The type of transfer to update, currently only Standing Orders are supported */
   type: TransferType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
-  userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
+  userSelectedBookingDate?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type UpsertDeclarationArgs = {
-  period: Scalars['String'];
+  period: Scalars["String"];
   submissionStatus: SubmissionStatus;
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
 
 export type UpsertUserTourInput = {
@@ -3530,17 +3503,17 @@ export type UpsertUserTourInput = {
 };
 
 export type User = {
-  __typename?: 'User';
+  __typename?: "User";
   /** The current state of user's Kontist account based on his subscription plan */
   accountState?: Maybe<AccountState>;
-  amlConfirmedOn?: Maybe<Scalars['DateTime']>;
-  amlFollowUpDate?: Maybe<Scalars['DateTime']>;
+  amlConfirmedOn?: Maybe<Scalars["DateTime"]>;
+  amlFollowUpDate?: Maybe<Scalars["DateTime"]>;
   /** Information about the plans a user can subscribe to */
   availablePlans: Array<SubscriptionPlan>;
   /** The state of banners in mobile or web app for the user */
   banners?: Maybe<Array<Banner>>;
-  birthDate?: Maybe<Scalars['DateTime']>;
-  birthPlace?: Maybe<Scalars['String']>;
+  birthDate?: Maybe<Scalars["DateTime"]>;
+  birthPlace?: Maybe<Scalars["String"]>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
   /** Return a business asset by id */
@@ -3548,20 +3521,20 @@ export type User = {
   /** User's business assets */
   businessAssets?: Maybe<Array<BusinessAssetResponse>>;
   /** Business description provided by the user */
-  businessPurpose?: Maybe<Scalars['String']>;
-  businessTradingName?: Maybe<Scalars['String']>;
-  city?: Maybe<Scalars['String']>;
+  businessPurpose?: Maybe<Scalars["String"]>;
+  businessTradingName?: Maybe<Scalars["String"]>;
+  city?: Maybe<Scalars["String"]>;
   /** The details of an existing OAuth2 client */
   client?: Maybe<Client>;
   /** The list of all OAuth2 clients for the current user */
   clients: Array<Client>;
   /** @deprecated This field will be removed in an upcoming release. You should now rely on "isSelfEmployed" instead. */
   companyType?: Maybe<CompanyType>;
-  country?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars["String"]>;
   /** Coupon code assigned to the user that can be redeemed during subscription update */
-  couponCodeOffer?: Maybe<Scalars['String']>;
+  couponCodeOffer?: Maybe<Scalars["String"]>;
   /** @deprecated This field will be removed in an upcoming release */
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars["DateTime"];
   /** The user's Solaris customer vetting status */
   customerVettingStatus?: Maybe<CustomerVettingStatus>;
   /** User's documents */
@@ -3569,27 +3542,27 @@ export type User = {
   /** User's documents */
   documents: Array<Document>;
   /** The economic sector of the user's business */
-  economicSector?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
+  economicSector?: Maybe<Scalars["String"]>;
+  email: Scalars["String"];
   emailDocument: EmailDocument;
   emailDocuments: Array<EmailDocument>;
   euerDeclaration?: Maybe<TaxDeclaration>;
   /** Active user features */
-  features: Array<Scalars['String']>;
+  features: Array<Scalars["String"]>;
   fibuFinalCheckTasks?: Maybe<Array<FibuFinalCheckTask>>;
-  firstName?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars["String"]>;
   gender?: Maybe<Gender>;
-  hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
-  hasBusinessTaxNumberUpdatedAt?: Maybe<Scalars['DateTime']>;
-  hasPersonalTaxNumber?: Maybe<Scalars['Boolean']>;
-  hasPersonalTaxNumberUpdatedAt?: Maybe<Scalars['DateTime']>;
+  hasBusinessTaxNumber?: Maybe<Scalars["Boolean"]>;
+  hasBusinessTaxNumberUpdatedAt?: Maybe<Scalars["DateTime"]>;
+  hasPersonalTaxNumber?: Maybe<Scalars["Boolean"]>;
+  hasPersonalTaxNumberUpdatedAt?: Maybe<Scalars["DateTime"]>;
   /** IDNow identification details for user */
   identification: IdentificationDetails;
   /**
    * The link to use for IDNow identification
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.identification.link"
    */
-  identificationLink?: Maybe<Scalars['String']>;
+  identificationLink?: Maybe<Scalars["String"]>;
   /**
    * The user's IDNow identification status
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.identification.status"
@@ -3599,42 +3572,42 @@ export type User = {
   /** Bookkeeping partners information for user */
   integrations: Array<UserIntegration>;
   invoice?: Maybe<Invoice>;
-  invoiceAsset: Scalars['String'];
+  invoiceAsset: Scalars["String"];
   /** The list of all customers of the current user */
   invoiceCustomers?: Maybe<Array<InvoiceCustomerOutput>>;
-  invoicePdf: Scalars['String'];
+  invoicePdf: Scalars["String"];
   invoiceSettings?: Maybe<InvoiceSettingsOutput>;
   invoices: InvoicingDashboardData;
-  isSelfEmployed?: Maybe<Scalars['Boolean']>;
+  isSelfEmployed?: Maybe<Scalars["Boolean"]>;
   /** Indicates whether the user pays taxes in the US */
-  isUSPerson?: Maybe<Scalars['Boolean']>;
-  language?: Maybe<Scalars['String']>;
+  isUSPerson?: Maybe<Scalars["Boolean"]>;
+  language?: Maybe<Scalars["String"]>;
   /** User's last business address before a specific date */
   lastBusinessAddress: BusinessAddress;
-  lastName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars["String"]>;
   mainAccount?: Maybe<Account>;
   /** User metadata. These fields are likely to get frequently updated or changed. */
   metadata: UserMetadata;
-  missingBusinessTaxNumberNote?: Maybe<Scalars['String']>;
-  missingPersonalTaxNumberNote?: Maybe<Scalars['String']>;
-  mobileNumber?: Maybe<Scalars['String']>;
+  missingBusinessTaxNumberNote?: Maybe<Scalars["String"]>;
+  missingPersonalTaxNumberNote?: Maybe<Scalars["String"]>;
+  mobileNumber?: Maybe<Scalars["String"]>;
   nationality?: Maybe<Nationality>;
   /** All push-notification types and their state */
   notifications: Array<Notification>;
   /** Business economic sector provided by the user */
-  otherEconomicSector?: Maybe<Scalars['String']>;
-  poaExportedAt?: Maybe<Scalars['DateTime']>;
-  poaSignedAt?: Maybe<Scalars['DateTime']>;
+  otherEconomicSector?: Maybe<Scalars["String"]>;
+  poaExportedAt?: Maybe<Scalars["DateTime"]>;
+  poaSignedAt?: Maybe<Scalars["DateTime"]>;
   /** Retrieves signed POA PDF for user. */
-  poaUrl?: Maybe<Scalars['String']>;
-  postCode?: Maybe<Scalars['String']>;
+  poaUrl?: Maybe<Scalars["String"]>;
+  postCode?: Maybe<Scalars["String"]>;
   /** Premium subscription discount for user */
   premiumSubscriptionDiscount: Discount;
-  publicId: Scalars['ID'];
+  publicId: Scalars["ID"];
   questionnaire?: Maybe<Questionnaire>;
   questionnaireTasks: Array<QuestionnaireTask>;
   questionnaires?: Maybe<Array<Questionnaire>>;
-  receiptMatchingIntroDismissedAt?: Maybe<Scalars['DateTime']>;
+  receiptMatchingIntroDismissedAt?: Maybe<Scalars["DateTime"]>;
   /** The user's associated Recurly Account */
   recurlyAccount?: Maybe<RecurlyAccount>;
   /** Referral details for user */
@@ -3643,7 +3616,7 @@ export type User = {
    * The user's referral code to use for promotional purposes
    * @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.referral.code"
    */
-  referralCode?: Maybe<Scalars['String']>;
+  referralCode?: Maybe<Scalars["String"]>;
   /** The user's Solaris risk clarification status */
   riskClassificationStatus?: Maybe<RiskClassificationStatus>;
   /** The user's Solaris screening progress */
@@ -3653,7 +3626,7 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
    */
   screeningStatus?: Maybe<ScreeningStatus>;
-  street?: Maybe<Scalars['String']>;
+  street?: Maybe<Scalars["String"]>;
   /** The available subscription plans */
   subscriptionPlans: SubscriptionPlansResponse;
   /** The plans a user has subscribed to */
@@ -3666,242 +3639,234 @@ export type User = {
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxPaymentFrequency" */
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.taxRate" */
-  taxRate?: Maybe<Scalars['Int']>;
-  taxServiceOnboardingCompletedAt?: Maybe<Scalars['DateTime']>;
+  taxRate?: Maybe<Scalars["Int"]>;
+  taxServiceOnboardingCompletedAt?: Maybe<Scalars["DateTime"]>;
   tradeTaxDeclaration?: Maybe<TaxDeclaration>;
   unfinishedTransfers: Array<UnfinishedTransfer>;
+<<<<<<< Updated upstream
   untrustedPhoneNumber?: Maybe<Scalars['String']>;
   /** User's tours */
   userTours: Array<UserTour>;
+=======
+  untrustedPhoneNumber?: Maybe<Scalars["String"]>;
+>>>>>>> Stashed changes
   vatAnnualDeclaration?: Maybe<TaxDeclaration>;
-  vatDeclarationBannerDismissedAt?: Maybe<Scalars['DateTime']>;
+  vatDeclarationBannerDismissedAt?: Maybe<Scalars["DateTime"]>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatNumber" */
-  vatNumber?: Maybe<Scalars['String']>;
+  vatNumber?: Maybe<Scalars["String"]>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatPaymentFrequency" */
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatRate" */
   vatRate?: Maybe<UserVatRate>;
-  workAsHandyman?: Maybe<Scalars['Boolean']>;
+  workAsHandyman?: Maybe<Scalars["Boolean"]>;
 };
-
 
 export type UserAvailablePlansArgs = {
-  couponCode?: InputMaybe<Scalars['String']>;
+  couponCode?: InputMaybe<Scalars["String"]>;
 };
-
 
 export type UserBannersArgs = {
-  isWebapp?: InputMaybe<Scalars['Boolean']>;
+  isWebapp?: InputMaybe<Scalars["Boolean"]>;
 };
 
+<<<<<<< Updated upstream
 
 export type UserBusinessAssetArgs = {
   businessAssetId: Scalars['ID'];
 };
 
 
+=======
+>>>>>>> Stashed changes
 export type UserClientArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
-
 
 export type UserDocumentCategoriesArgs = {
-  categoryNames?: InputMaybe<Array<Scalars['String']>>;
+  categoryNames?: InputMaybe<Array<Scalars["String"]>>;
 };
-
 
 export type UserDocumentsArgs = {
-  categoryIds?: InputMaybe<Array<Scalars['String']>>;
-  year?: InputMaybe<Scalars['Int']>;
+  categoryIds?: InputMaybe<Array<Scalars["String"]>>;
+  year?: InputMaybe<Scalars["Int"]>;
 };
-
 
 export type UserEmailDocumentArgs = {
-  id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars["String"]>;
 };
 
-
 export type UserEmailDocumentsArgs = {
-  filterByUnmatched?: InputMaybe<Scalars['Boolean']>;
+  filterByUnmatched?: InputMaybe<Scalars["Boolean"]>;
   uploadSources?: InputMaybe<Array<DocumentUploadSource>>;
 };
 
-
 export type UserEuerDeclarationArgs = {
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
-
 
 export type UserFibuFinalCheckTasksArgs = {
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
-
 
 export type UserIncomeTaxDeclarationArgs = {
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
-
 
 export type UserInvoiceArgs = {
-  id: Scalars['String'];
+  id: Scalars["String"];
 };
-
 
 export type UserInvoiceAssetArgs = {
-  invoiceId: Scalars['ID'];
-  isBase64: Scalars['Boolean'];
+  invoiceId: Scalars["ID"];
+  isBase64: Scalars["Boolean"];
 };
-
 
 export type UserInvoicesArgs = {
-  pageNumber: Scalars['Int'];
+  pageNumber: Scalars["Int"];
 };
-
 
 export type UserMetadataArgs = {
   platform?: InputMaybe<Platform>;
 };
 
-
 export type UserPremiumSubscriptionDiscountArgs = {
-  couponCode?: InputMaybe<Scalars['String']>;
+  couponCode?: InputMaybe<Scalars["String"]>;
 };
-
 
 export type UserQuestionnaireArgs = {
-  questionnaireId?: InputMaybe<Scalars['ID']>;
+  questionnaireId?: InputMaybe<Scalars["ID"]>;
   type: QuestionnaireType;
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
-
 
 export type UserQuestionnairesArgs = {
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
-
 
 export type UserSubscriptionPlansArgs = {
-  couponCode?: InputMaybe<Scalars['String']>;
+  couponCode?: InputMaybe<Scalars["String"]>;
 };
-
 
 export type UserTaxCaseArgs = {
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
-
 
 export type UserTradeTaxDeclarationArgs = {
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
 
-
 export type UserVatAnnualDeclarationArgs = {
-  year: Scalars['Int'];
+  year: Scalars["Int"];
 };
 
 export enum UserConfirmation {
-  AdvisorDocumentsUploaded = 'ADVISOR_DOCUMENTS_UPLOADED',
-  ManualDocumentsUploaded = 'MANUAL_DOCUMENTS_UPLOADED',
-  SubmitAssets = 'SUBMIT_ASSETS',
-  SubmitExternalTransactions = 'SUBMIT_EXTERNAL_TRANSACTIONS',
-  TaxDeclarationNotNeeded = 'TAX_DECLARATION_NOT_NEEDED',
-  ToolsDocumentsUploaded = 'TOOLS_DOCUMENTS_UPLOADED'
+  AdvisorDocumentsUploaded = "ADVISOR_DOCUMENTS_UPLOADED",
+  ManualDocumentsUploaded = "MANUAL_DOCUMENTS_UPLOADED",
+  SubmitAssets = "SUBMIT_ASSETS",
+  SubmitExternalTransactions = "SUBMIT_EXTERNAL_TRANSACTIONS",
+  TaxDeclarationNotNeeded = "TAX_DECLARATION_NOT_NEEDED",
+  ToolsDocumentsUploaded = "TOOLS_DOCUMENTS_UPLOADED",
 }
 
 export type UserDependent = {
-  __typename?: 'UserDependent';
-  birthDate: Scalars['DateTime'];
-  deTaxId?: Maybe<Scalars['String']>;
-  firstName: Scalars['String'];
-  id: Scalars['ID'];
-  lastName: Scalars['String'];
-  marriageEndDate?: Maybe<Scalars['DateTime']>;
-  marriageStartDate?: Maybe<Scalars['DateTime']>;
+  __typename?: "UserDependent";
+  birthDate: Scalars["DateTime"];
+  deTaxId?: Maybe<Scalars["String"]>;
+  firstName: Scalars["String"];
+  id: Scalars["ID"];
+  lastName: Scalars["String"];
+  marriageEndDate?: Maybe<Scalars["DateTime"]>;
+  marriageStartDate?: Maybe<Scalars["DateTime"]>;
   type: UserDependentType;
 };
 
 export type UserDependentInput = {
-  birthDate: Scalars['String'];
-  deTaxId?: InputMaybe<Scalars['String']>;
-  firstName: Scalars['String'];
-  id?: InputMaybe<Scalars['ID']>;
-  lastName: Scalars['String'];
-  marriageEndDate?: InputMaybe<Scalars['String']>;
-  marriageStartDate?: InputMaybe<Scalars['String']>;
+  birthDate: Scalars["String"];
+  deTaxId?: InputMaybe<Scalars["String"]>;
+  firstName: Scalars["String"];
+  id?: InputMaybe<Scalars["ID"]>;
+  lastName: Scalars["String"];
+  marriageEndDate?: InputMaybe<Scalars["String"]>;
+  marriageStartDate?: InputMaybe<Scalars["String"]>;
   type: UserDependentType;
 };
 
 export enum UserDependentType {
-  Child = 'CHILD',
-  Partner = 'PARTNER'
+  Child = "CHILD",
+  Partner = "PARTNER",
 }
 
 export type UserExternalTransactionInput = {
+<<<<<<< Updated upstream
   amount: Scalars['Float'];
   businessAsset?: InputMaybe<BusinessAssetInput>;
+=======
+  amount: Scalars["Float"];
+>>>>>>> Stashed changes
   businessAssetForm?: InputMaybe<BusinessAssetForm>;
-  categoryCode?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
-  iban?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-  isCashTransaction?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  note?: InputMaybe<Scalars['String']>;
-  paymentDate: Scalars['DateTime'];
+  categoryCode?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]>;
+  iban?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["String"]>;
+  isCashTransaction?: InputMaybe<Scalars["Boolean"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  note?: InputMaybe<Scalars["String"]>;
+  paymentDate: Scalars["DateTime"];
   splits?: InputMaybe<Array<TransactionSplitInput>>;
-  vatCategoryCode?: InputMaybe<Scalars['String']>;
+  vatCategoryCode?: InputMaybe<Scalars["String"]>;
   vatRate?: InputMaybe<VatRate>;
 };
 
 export type UserIntegration = {
-  __typename?: 'UserIntegration';
-  hasAccount: Scalars['Boolean'];
-  isConnected: Scalars['Boolean'];
+  __typename?: "UserIntegration";
+  hasAccount: Scalars["Boolean"];
+  isConnected: Scalars["Boolean"];
   type: IntegrationType;
 };
 
 export type UserMetadata = {
-  __typename?: 'UserMetadata';
-  acceptedTermsVersion?: Maybe<Scalars['String']>;
+  __typename?: "UserMetadata";
+  acceptedTermsVersion?: Maybe<Scalars["String"]>;
   /** List of months user can request a bank statement for */
   availableStatements?: Maybe<Array<AvailableStatements>>;
-  categorizationScreenShown?: Maybe<Scalars['Boolean']>;
-  currentTermsAccepted: Scalars['Boolean'];
-  currentTermsVersion: Scalars['String'];
-  directDebitMandateAccepted: Scalars['Boolean'];
-  emailConnections: Array<Scalars['String']>;
-  emailFetchSetupUrl?: Maybe<Scalars['String']>;
-  intercomDigest?: Maybe<Scalars['String']>;
+  categorizationScreenShown?: Maybe<Scalars["Boolean"]>;
+  currentTermsAccepted: Scalars["Boolean"];
+  currentTermsVersion: Scalars["String"];
+  directDebitMandateAccepted: Scalars["Boolean"];
+  emailConnections: Array<Scalars["String"]>;
+  emailFetchSetupUrl?: Maybe<Scalars["String"]>;
+  intercomDigest?: Maybe<Scalars["String"]>;
   /** Is user's Kontist account closed */
-  isAccountClosed: Scalars['Boolean'];
-  lastTermsVersionAcceptedAt?: Maybe<Scalars['DateTime']>;
-  lastTermsVersionRejectedAt?: Maybe<Scalars['DateTime']>;
-  lastTermsVersionSkippedAt?: Maybe<Scalars['DateTime']>;
-  marketingConsentAccepted: Scalars['Boolean'];
-  newTermsDeadlineDate: Scalars['String'];
-  phoneNumberVerificationRequired: Scalars['Boolean'];
-  signupCompleted: Scalars['Boolean'];
-  taxAdvisoryTermsVersionAccepted: Scalars['Boolean'];
+  isAccountClosed: Scalars["Boolean"];
+  lastTermsVersionAcceptedAt?: Maybe<Scalars["DateTime"]>;
+  lastTermsVersionRejectedAt?: Maybe<Scalars["DateTime"]>;
+  lastTermsVersionSkippedAt?: Maybe<Scalars["DateTime"]>;
+  marketingConsentAccepted: Scalars["Boolean"];
+  newTermsDeadlineDate: Scalars["String"];
+  phoneNumberVerificationRequired: Scalars["Boolean"];
+  signupCompleted: Scalars["Boolean"];
+  taxAdvisoryTermsVersionAccepted: Scalars["Boolean"];
+  isBookkeepingEntryDialogDisplayed: Scalars["Boolean"];
 };
 
 export type UserProductInput = {
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-  price?: InputMaybe<Scalars['Float']>;
-  vat?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["String"]>;
+  price?: InputMaybe<Scalars["Float"]>;
+  vat?: InputMaybe<Scalars["String"]>;
 };
 
 export enum UserReviewStatus {
-  Feedback = 'FEEDBACK',
-  NegativePending = 'NEGATIVE_PENDING',
-  NegativeReminder = 'NEGATIVE_REMINDER',
-  PositivePending = 'POSITIVE_PENDING',
-  PositiveReminder = 'POSITIVE_REMINDER',
-  Reviewed = 'REVIEWED'
+  Feedback = "FEEDBACK",
+  NegativePending = "NEGATIVE_PENDING",
+  NegativeReminder = "NEGATIVE_REMINDER",
+  PositivePending = "POSITIVE_PENDING",
+  PositiveReminder = "POSITIVE_REMINDER",
+  Reviewed = "REVIEWED",
 }
 
 export type UserSubscription = {
-  __typename?: 'UserSubscription';
+  __typename?: "UserSubscription";
   /** The state of the subscription */
   state: PurchaseState;
   /** The type of the plans a user has subscribed to */
@@ -3909,38 +3874,38 @@ export type UserSubscription = {
 };
 
 export type UserTaxDetails = {
-  __typename?: 'UserTaxDetails';
-  adjustAdvancePayments: Scalars['Boolean'];
-  deTaxId?: Maybe<Scalars['String']>;
+  __typename?: "UserTaxDetails";
+  adjustAdvancePayments: Scalars["Boolean"];
+  deTaxId?: Maybe<Scalars["String"]>;
   dependents?: Maybe<Array<UserDependent>>;
-  hasBusinessTaxNumber?: Maybe<Scalars['Boolean']>;
-  lastTaxPaymentDate?: Maybe<Scalars['DateTime']>;
-  lastVatPaymentDate?: Maybe<Scalars['DateTime']>;
-  missingBusinessTaxNumberNote?: Maybe<Scalars['String']>;
-  missingPersonalTaxNumberNote?: Maybe<Scalars['String']>;
-  needsToProvideTaxIdentification: Scalars['Boolean'];
+  hasBusinessTaxNumber?: Maybe<Scalars["Boolean"]>;
+  lastTaxPaymentDate?: Maybe<Scalars["DateTime"]>;
+  lastVatPaymentDate?: Maybe<Scalars["DateTime"]>;
+  missingBusinessTaxNumberNote?: Maybe<Scalars["String"]>;
+  missingPersonalTaxNumberNote?: Maybe<Scalars["String"]>;
+  needsToProvideTaxIdentification: Scalars["Boolean"];
   permanentExtensionStatus?: Maybe<PermanentExtensionStatus>;
-  personalTaxNumber?: Maybe<Scalars['String']>;
-  taxNumber?: Maybe<Scalars['String']>;
+  personalTaxNumber?: Maybe<Scalars["String"]>;
+  taxNumber?: Maybe<Scalars["String"]>;
   /** @deprecated This field will be removed in an upcoming release. Do not rely on it for any new features */
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
-  taxRate?: Maybe<Scalars['Int']>;
-  vatNumber?: Maybe<Scalars['String']>;
+  taxRate?: Maybe<Scalars["Int"]>;
+  vatNumber?: Maybe<Scalars["String"]>;
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   vatRate?: Maybe<UserVatRate>;
 };
 
 export type UserTaxDetailsInput = {
-  deTaxId?: InputMaybe<Scalars['String']>;
+  deTaxId?: InputMaybe<Scalars["String"]>;
   dependentsTaxIds?: InputMaybe<Array<DependentsTaxIds>>;
-  hasBusinessTaxNumber?: InputMaybe<Scalars['Boolean']>;
-  hasPersonalTaxNumber?: InputMaybe<Scalars['Boolean']>;
-  missingBusinessTaxNumberNote?: InputMaybe<Scalars['String']>;
-  missingPersonalTaxNumberNote?: InputMaybe<Scalars['String']>;
+  hasBusinessTaxNumber?: InputMaybe<Scalars["Boolean"]>;
+  hasPersonalTaxNumber?: InputMaybe<Scalars["Boolean"]>;
+  missingBusinessTaxNumberNote?: InputMaybe<Scalars["String"]>;
+  missingPersonalTaxNumberNote?: InputMaybe<Scalars["String"]>;
   permanentExtensionStatus?: InputMaybe<PermanentExtensionStatus>;
-  personalTaxNumber?: InputMaybe<Scalars['String']>;
-  taxNumber?: InputMaybe<Scalars['String']>;
-  vatNumber?: InputMaybe<Scalars['String']>;
+  personalTaxNumber?: InputMaybe<Scalars["String"]>;
+  taxNumber?: InputMaybe<Scalars["String"]>;
+  vatNumber?: InputMaybe<Scalars["String"]>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
 };
 
@@ -3953,116 +3918,116 @@ export type UserTour = {
 
 export type UserUpdateInput = {
   /** The version of terms user has accepted */
-  acceptedTermsVersion?: InputMaybe<Scalars['String']>;
+  acceptedTermsVersion?: InputMaybe<Scalars["String"]>;
   /** Indicates if user started upgrading to accounting plan */
-  accountingOnboardingStarted?: InputMaybe<Scalars['Boolean']>;
-  accountingTool?: InputMaybe<Scalars['String']>;
-  adjustAdvancePayments?: InputMaybe<Scalars['Boolean']>;
-  birthDate?: InputMaybe<Scalars['DateTime']>;
-  birthPlace?: InputMaybe<Scalars['String']>;
-  businessPurpose?: InputMaybe<Scalars['String']>;
-  businessTradingName?: InputMaybe<Scalars['String']>;
-  categorizationScreenShown?: InputMaybe<Scalars['Boolean']>;
-  city?: InputMaybe<Scalars['String']>;
+  accountingOnboardingStarted?: InputMaybe<Scalars["Boolean"]>;
+  accountingTool?: InputMaybe<Scalars["String"]>;
+  adjustAdvancePayments?: InputMaybe<Scalars["Boolean"]>;
+  birthDate?: InputMaybe<Scalars["DateTime"]>;
+  birthPlace?: InputMaybe<Scalars["String"]>;
+  businessPurpose?: InputMaybe<Scalars["String"]>;
+  businessTradingName?: InputMaybe<Scalars["String"]>;
+  categorizationScreenShown?: InputMaybe<Scalars["Boolean"]>;
+  city?: InputMaybe<Scalars["String"]>;
   companyType?: InputMaybe<CompanyType>;
   country?: InputMaybe<Nationality>;
   /** Indicates user has accepted Kontist direct debit mandate */
-  directDebitMandateAccepted?: InputMaybe<Scalars['Boolean']>;
-  economicSector?: InputMaybe<Scalars['String']>;
-  firstName?: InputMaybe<Scalars['String']>;
+  directDebitMandateAccepted?: InputMaybe<Scalars["Boolean"]>;
+  economicSector?: InputMaybe<Scalars["String"]>;
+  firstName?: InputMaybe<Scalars["String"]>;
   gender?: InputMaybe<Gender>;
-  hasEmployees?: InputMaybe<Scalars['Boolean']>;
-  hasMoreThanOneBusiness?: InputMaybe<Scalars['Boolean']>;
-  hasSecondBusinessAccount?: InputMaybe<Scalars['Boolean']>;
-  idnowReminderTime?: InputMaybe<Scalars['DateTime']>;
+  hasEmployees?: InputMaybe<Scalars["Boolean"]>;
+  hasMoreThanOneBusiness?: InputMaybe<Scalars["Boolean"]>;
+  hasSecondBusinessAccount?: InputMaybe<Scalars["Boolean"]>;
+  idnowReminderTime?: InputMaybe<Scalars["DateTime"]>;
   idnowReminderType?: InputMaybe<IdnowReminderType>;
   internationalCustomers?: InputMaybe<InternationalCustomers>;
-  isSelfEmployed?: InputMaybe<Scalars['Boolean']>;
+  isSelfEmployed?: InputMaybe<Scalars["Boolean"]>;
   /** Indicates whether the user pays taxes in the US */
-  isUSPerson?: InputMaybe<Scalars['Boolean']>;
-  language?: InputMaybe<Scalars['String']>;
-  lastName?: InputMaybe<Scalars['String']>;
+  isUSPerson?: InputMaybe<Scalars["Boolean"]>;
+  language?: InputMaybe<Scalars["String"]>;
+  lastName?: InputMaybe<Scalars["String"]>;
   /** Indicates user has accepted to receive Kontist marketing communication */
-  marketingConsentAccepted?: InputMaybe<Scalars['Boolean']>;
+  marketingConsentAccepted?: InputMaybe<Scalars["Boolean"]>;
   maximumCashTransactionsPercentage?: InputMaybe<MaximumCashTransactionsPercentage>;
   nationality?: InputMaybe<Nationality>;
   /** Indicates user has confirmed he is acting as a business and not a consumer */
-  nonConsumerConfirmed?: InputMaybe<Scalars['Boolean']>;
-  otherEconomicSector?: InputMaybe<Scalars['String']>;
+  nonConsumerConfirmed?: InputMaybe<Scalars["Boolean"]>;
+  otherEconomicSector?: InputMaybe<Scalars["String"]>;
   /** Indicates user has confirmed he is opening their account in their name, for the use of their business */
-  ownEconomicInterestConfirmed?: InputMaybe<Scalars['Boolean']>;
+  ownEconomicInterestConfirmed?: InputMaybe<Scalars["Boolean"]>;
   permanentExtensionStatus?: InputMaybe<PermanentExtensionStatus>;
-  postCode?: InputMaybe<Scalars['String']>;
-  profession?: InputMaybe<Scalars['String']>;
-  street?: InputMaybe<Scalars['String']>;
+  postCode?: InputMaybe<Scalars["String"]>;
+  profession?: InputMaybe<Scalars["String"]>;
+  street?: InputMaybe<Scalars["String"]>;
   subjectToAccounting?: InputMaybe<ThreeStateAnswer>;
-  taxAdvisoryTermsVersionAccepted?: InputMaybe<Scalars['String']>;
+  taxAdvisoryTermsVersionAccepted?: InputMaybe<Scalars["String"]>;
   /** Indicates if user started upgrading to Kontax plan */
-  taxServiceOnboardingStarted?: InputMaybe<Scalars['Boolean']>;
+  taxServiceOnboardingStarted?: InputMaybe<Scalars["Boolean"]>;
   /** Sets a mobile number for the user to be verified later */
-  untrustedPhoneNumber?: InputMaybe<Scalars['String']>;
-  vatNumber?: InputMaybe<Scalars['String']>;
+  untrustedPhoneNumber?: InputMaybe<Scalars["String"]>;
+  vatNumber?: InputMaybe<Scalars["String"]>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
-  vatRate?: InputMaybe<Scalars['Int']>;
-  workAsHandyman?: InputMaybe<Scalars['Boolean']>;
-  workingInEcommerce?: InputMaybe<Scalars['Boolean']>;
+  vatRate?: InputMaybe<Scalars["Int"]>;
+  workAsHandyman?: InputMaybe<Scalars["Boolean"]>;
+  workingInEcommerce?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export enum UserVatRate {
-  Vat_0 = 'VAT_0',
-  Vat_19 = 'VAT_19'
+  Vat_0 = "VAT_0",
+  Vat_19 = "VAT_19",
 }
 
 export enum VatCategoryCode {
-  Dit_5 = 'DIT_5',
-  Dit_7 = 'DIT_7',
-  Dit_16 = 'DIT_16',
-  Dit_19 = 'DIT_19',
-  ExportDelivery = 'EXPORT_DELIVERY',
-  Income_0 = 'INCOME_0',
-  Income_0Itd = 'INCOME_0_ITD',
-  Income_5 = 'INCOME_5',
-  Income_7 = 'INCOME_7',
-  Income_13B5Ustg = 'INCOME_13B5_USTG',
-  Income_16 = 'INCOME_16',
-  Income_19 = 'INCOME_19',
-  IncomeEuB2B = 'INCOME_EU_B2B',
-  IncomeEuB2C_5 = 'INCOME_EU_B2C_5',
-  IncomeEuB2C_7 = 'INCOME_EU_B2C_7',
-  IncomeEuB2C_16 = 'INCOME_EU_B2C_16',
-  IncomeEuB2C_19 = 'INCOME_EU_B2C_19',
-  IncomeEuIntraB2B = 'INCOME_EU_INTRA_B2B',
-  IncomeEuIntraB2C_5 = 'INCOME_EU_INTRA_B2C_5',
-  IncomeEuIntraB2C_7 = 'INCOME_EU_INTRA_B2C_7',
-  IncomeEuIntraB2C_16 = 'INCOME_EU_INTRA_B2C_16',
-  IncomeEuIntraB2C_19 = 'INCOME_EU_INTRA_B2C_19',
-  IntraAcquisitionIt = 'INTRA_ACQUISITION_IT',
-  NonTaxable = 'NON_TAXABLE',
-  NoItd = 'NO_ITD',
-  NoVat = 'NO_VAT',
-  ReverseCharge = 'REVERSE_CHARGE',
-  ReverseChargeIt = 'REVERSE_CHARGE_IT'
+  Dit_5 = "DIT_5",
+  Dit_7 = "DIT_7",
+  Dit_16 = "DIT_16",
+  Dit_19 = "DIT_19",
+  ExportDelivery = "EXPORT_DELIVERY",
+  Income_0 = "INCOME_0",
+  Income_0Itd = "INCOME_0_ITD",
+  Income_5 = "INCOME_5",
+  Income_7 = "INCOME_7",
+  Income_13B5Ustg = "INCOME_13B5_USTG",
+  Income_16 = "INCOME_16",
+  Income_19 = "INCOME_19",
+  IncomeEuB2B = "INCOME_EU_B2B",
+  IncomeEuB2C_5 = "INCOME_EU_B2C_5",
+  IncomeEuB2C_7 = "INCOME_EU_B2C_7",
+  IncomeEuB2C_16 = "INCOME_EU_B2C_16",
+  IncomeEuB2C_19 = "INCOME_EU_B2C_19",
+  IncomeEuIntraB2B = "INCOME_EU_INTRA_B2B",
+  IncomeEuIntraB2C_5 = "INCOME_EU_INTRA_B2C_5",
+  IncomeEuIntraB2C_7 = "INCOME_EU_INTRA_B2C_7",
+  IncomeEuIntraB2C_16 = "INCOME_EU_INTRA_B2C_16",
+  IncomeEuIntraB2C_19 = "INCOME_EU_INTRA_B2C_19",
+  IntraAcquisitionIt = "INTRA_ACQUISITION_IT",
+  NonTaxable = "NON_TAXABLE",
+  NoItd = "NO_ITD",
+  NoVat = "NO_VAT",
+  ReverseCharge = "REVERSE_CHARGE",
+  ReverseChargeIt = "REVERSE_CHARGE_IT",
 }
 
 export enum VatRate {
-  ReverseCharge = 'REVERSE_CHARGE',
-  Vat_0 = 'VAT_0',
-  Vat_5 = 'VAT_5',
-  Vat_7 = 'VAT_7',
-  Vat_16 = 'VAT_16',
-  Vat_19 = 'VAT_19'
+  ReverseCharge = "REVERSE_CHARGE",
+  Vat_0 = "VAT_0",
+  Vat_5 = "VAT_5",
+  Vat_7 = "VAT_7",
+  Vat_16 = "VAT_16",
+  Vat_19 = "VAT_19",
 }
 
 export type VirtualCardDetailsArgs = {
-  deviceId: Scalars['String'];
+  deviceId: Scalars["String"];
   jwe: Jwe;
   jwk: Jwk;
-  signature: Scalars['String'];
+  signature: Scalars["String"];
 };
 
 export type WhitelistCardResponse = {
-  __typename?: 'WhitelistCardResponse';
-  id: Scalars['String'];
+  __typename?: "WhitelistCardResponse";
+  id: Scalars["String"];
   resolution: CaseResolution;
-  whitelistedUntil: Scalars['String'];
+  whitelistedUntil: Scalars["String"];
 };
