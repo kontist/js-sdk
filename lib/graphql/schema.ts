@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -3300,10 +3297,10 @@ export enum TransactionProjectionType {
   SepaCreditTransferReturn = 'SEPA_CREDIT_TRANSFER_RETURN',
   SepaDirectDebit = 'SEPA_DIRECT_DEBIT',
   SepaDirectDebitReturn = 'SEPA_DIRECT_DEBIT_RETURN',
-  Target2CreditTransfer = 'TARGET2_CREDIT_TRANSFER',
+  Target2CreditTransfer_2 = 'TARGET2_CREDIT_TRANSFER_2',
   Transfer = 'TRANSFER',
   TransferToBankAccount = 'TRANSFER_TO_BANK_ACCOUNT',
-  Target2CreditTransfer = 'Target2CreditTransfer',
+  Target2CreditTransfer1 = 'Target2CreditTransfer1',
   VerificationCode = 'VERIFICATION_CODE',
   WireTransferTopup = 'WIRE_TRANSFER_TOPUP'
 }

@@ -5,6 +5,7 @@ import {
   BatchTransfer,
   ConfirmationRequestOrTransfer,
   CreateTransferInput,
+  MutationCreateTransferArgs,
   Query,
   Transfer as TransferModel,
   TransfersConnectionEdge,
@@ -31,9 +32,18 @@ const TRANSFER_FIELDS = `
   personalNote
 `;
 
-const CREATE_TRANSFER = `mutation createTransfer($transfer: CreateTransferInput!) {
-  createTransfer(transfer: $transfer) {
+const CREATE_TRANSFER = `mutation createTransfer(
+  $transfer: CreateTransferInput!
+  $deviceId: String
+  $deliveryMethod: DeliveryMethod
+) {
+  createTransfer(
+    transfer: $transfer
+    deviceId: $deviceId
+    deliveryMethod: $deliveryMethod
+  ) {
     confirmationId
+    stringToSign
   }
 }`;
 
@@ -187,11 +197,24 @@ export class Transfer extends IterableModel<
    * Creates single wire transfer / timed order / standing order
    *
    * @param transfer  transfer data including at least recipient, IBAN and amount
-   * @returns         confirmation id used to confirm the transfer
+   * @param deviceId  device id used for device signing authorization
+   * @param deliveryMethod  delivery method used for device signing / mobile number authorization
+   * @returns         confirmation id and optional string to sign used to confirm the transfer
    */
-  public async createOne(transfer: CreateTransferInput): Promise<string> {
-    const result = await this.client.rawQuery(CREATE_TRANSFER, { transfer });
-    return result.createTransfer.confirmationId;
+  public async createOne({
+    transfer,
+    deviceId,
+    deliveryMethod,
+  }: MutationCreateTransferArgs): Promise<{
+    confirmationId: string;
+    stringToSign?: string;
+  }> {
+    const result = await this.client.rawQuery(CREATE_TRANSFER, {
+      transfer,
+      deviceId,
+      deliveryMethod,
+    });
+    return result.createTransfer;
   }
 
   /**
@@ -203,7 +226,7 @@ export class Transfer extends IterableModel<
    */
   public async confirmOne(
     confirmationId: string,
-    authorizationToken: string,
+    authorizationToken: string
   ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       authorizationToken,
@@ -232,7 +255,7 @@ export class Transfer extends IterableModel<
    */
   public async confirmMany(
     confirmationId: string,
-    authorizationToken: string,
+    authorizationToken: string
   ): Promise<BatchTransfer> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFERS, {
       authorizationToken,
@@ -250,7 +273,7 @@ export class Transfer extends IterableModel<
    */
   public async cancelTransfer(
     type: TransferType,
-    id: string,
+    id: string
   ): Promise<ConfirmationRequestOrTransfer> {
     const result = await this.client.rawQuery(CANCEL_TRANSFER, { type, id });
     return result.cancelTransfer;
@@ -267,7 +290,7 @@ export class Transfer extends IterableModel<
   public async confirmCancelTransfer(
     type: TransferType,
     confirmationId: string,
-    authorizationToken: string,
+    authorizationToken: string
   ): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_CANCEL_TRANSFER, {
       authorizationToken,
@@ -283,7 +306,9 @@ export class Transfer extends IterableModel<
    * @param transfer  transfer data including at least id and type. For Timed Orders and Sepa Transfers, only category and userSelectedBooking date can be updated
    * @returns         confirmation id used to confirm the update of Standing order or Transfer for Sepa Transfer / Timed Order
    */
-  public async update(transfer: UpdateTransferInput): Promise<ConfirmationRequestOrTransfer> {
+  public async update(
+    transfer: UpdateTransferInput
+  ): Promise<ConfirmationRequestOrTransfer> {
     const result = await this.client.rawQuery(UPDATE_TRANSFER, { transfer });
     return result.updateTransfer;
   }
@@ -295,12 +320,12 @@ export class Transfer extends IterableModel<
    * @returns     result page
    */
   public async fetch(
-    args: AccountTransfersArgs,
+    args: AccountTransfersArgs
   ): Promise<ResultPage<TransferModel, AccountTransfersArgs>> {
     const result: Query = await this.client.rawQuery(FETCH_TRANSFERS, args);
 
     const transfers = (result.viewer?.mainAccount?.transfers?.edges ?? []).map(
-      (edge: TransfersConnectionEdge) => edge.node,
+      (edge: TransfersConnectionEdge) => edge.node
     );
 
     const pageInfo = result.viewer?.mainAccount?.transfers?.pageInfo ?? {
