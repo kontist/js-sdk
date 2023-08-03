@@ -3261,6 +3261,7 @@ export enum TransactionProjectionType {
   CurrencyTransactionCancellation = 'CURRENCY_TRANSACTION_CANCELLATION',
   ChargeRecallRequest = 'ChargeRecallRequest',
   CorrectionCardTransaction = 'CorrectionCardTransaction',
+  CorrectionNostro = 'CorrectionNostro',
   CorrectionSepaCreditTransfer = 'CorrectionSEPACreditTransfer',
   DebitPresentment = 'DEBIT_PRESENTMENT',
   DepositFee = 'DEPOSIT_FEE',
@@ -3274,6 +3275,7 @@ export enum TransactionProjectionType {
   ForcePostTransaction = 'FORCE_POST_TRANSACTION',
   ForeignPayment = 'FOREIGN_PAYMENT',
   InterestAccrued = 'INTEREST_ACCRUED',
+  InternalTransfer = 'INTERNAL_TRANSFER',
   InternationalCreditTransfer = 'INTERNATIONAL_CREDIT_TRANSFER',
   IntraCustomerTransfer = 'INTRA_CUSTOMER_TRANSFER',
   InterestExcessDeposit = 'InterestExcessDeposit',
@@ -3294,7 +3296,8 @@ export enum TransactionProjectionType {
   SepaDirectDebitReturn = 'SEPA_DIRECT_DEBIT_RETURN',
   Transfer = 'TRANSFER',
   TransferToBankAccount = 'TRANSFER_TO_BANK_ACCOUNT',
-  Target2CreditTransfer = 'Target2CreditTransfer',
+  Target2CreditTransfer1 = 'Target2CreditTransfer1',
+  Target2CreditTransfer2 = 'Target2CreditTransfer2',
   VerificationCode = 'VERIFICATION_CODE',
   WireTransferTopup = 'WIRE_TRANSFER_TOPUP'
 }
