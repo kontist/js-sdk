@@ -15,8 +15,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -582,6 +585,7 @@ export type ConfirmFraudResponse = {
 export type ConfirmationRequest = {
   __typename?: 'ConfirmationRequest';
   confirmationId: Scalars['String'];
+  stringToSign: Scalars['String'];
 };
 
 export type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
@@ -1627,6 +1631,8 @@ export type MutationCreateTransactionSplitsArgs = {
 
 
 export type MutationCreateTransferArgs = {
+  deliveryMethod?: InputMaybe<DeliveryMethod>;
+  deviceId?: InputMaybe<Scalars['String']>;
   transfer: CreateTransferInput;
 };
 
@@ -3261,6 +3267,7 @@ export enum TransactionProjectionType {
   CurrencyTransactionCancellation = 'CURRENCY_TRANSACTION_CANCELLATION',
   ChargeRecallRequest = 'ChargeRecallRequest',
   CorrectionCardTransaction = 'CorrectionCardTransaction',
+  CorrectionNostro = 'CorrectionNostro',
   CorrectionSepaCreditTransfer = 'CorrectionSEPACreditTransfer',
   DebitPresentment = 'DEBIT_PRESENTMENT',
   DepositFee = 'DEPOSIT_FEE',
@@ -3274,6 +3281,7 @@ export enum TransactionProjectionType {
   ForcePostTransaction = 'FORCE_POST_TRANSACTION',
   ForeignPayment = 'FOREIGN_PAYMENT',
   InterestAccrued = 'INTEREST_ACCRUED',
+  InternalTransfer = 'INTERNAL_TRANSFER',
   InternationalCreditTransfer = 'INTERNATIONAL_CREDIT_TRANSFER',
   IntraCustomerTransfer = 'INTRA_CUSTOMER_TRANSFER',
   InterestExcessDeposit = 'InterestExcessDeposit',
@@ -3292,6 +3300,7 @@ export enum TransactionProjectionType {
   SepaCreditTransferReturn = 'SEPA_CREDIT_TRANSFER_RETURN',
   SepaDirectDebit = 'SEPA_DIRECT_DEBIT',
   SepaDirectDebitReturn = 'SEPA_DIRECT_DEBIT_RETURN',
+  Target2CreditTransfer = 'TARGET2_CREDIT_TRANSFER',
   Transfer = 'TRANSFER',
   TransferToBankAccount = 'TRANSFER_TO_BANK_ACCOUNT',
   Target2CreditTransfer = 'Target2CreditTransfer',
