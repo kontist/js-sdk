@@ -8,6 +8,7 @@ import {
   TransactionCategory,
   CreateTransferInput,
   UnfinishedTransfer,
+  DeliveryMethod,
 } from "../../lib/graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
 
@@ -15,6 +16,8 @@ describe("Transfer", () => {
   let graphqlClientStub: { rawQuery: sinon.SinonStub };
   let transferInstance: TransferClass;
   let result: any;
+  const deviceId = "device-id";
+  const deliveryMethod = DeliveryMethod.DeviceSigning;
 
   before(() => {
     graphqlClientStub = {
@@ -35,6 +38,7 @@ describe("Transfer", () => {
     };
     const createTransferResult = {
       confirmationId: 100,
+      stringToSign: "string-to-sign",
     };
 
     before(async () => {
@@ -42,18 +46,22 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         createTransfer: createTransferResult,
       });
-      result = await transferInstance.createOne({ transfer });
+      result = await transferInstance.createOne({
+        transfer,
+        deviceId,
+        deliveryMethod,
+      });
     });
 
     it("should send createOne GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("createTransfer");
-      expect(variables).to.eql({ transfer });
+      expect(variables).to.eql({ transfer, deviceId, deliveryMethod });
     });
 
     it("should return confirmTransfers result", () => {
-      expect(result).to.eql(100);
+      expect(result).to.eql(createTransferResult);
     });
   });
 
@@ -79,7 +87,12 @@ describe("Transfer", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("confirmTransfer");
-      expect(variables).to.eql({ confirmationId, authorizationToken });
+      expect(variables).to.eql({
+        confirmationId,
+        authorizationToken,
+        deviceId: undefined,
+        signature: undefined,
+      });
     });
 
     it("should return confirmTransfer result", () => {
@@ -423,7 +436,11 @@ describe("Transfer", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("updateTransfer");
-      expect(variables).to.eql({ transfer: updatePayload });
+      expect(variables).to.eql({
+        transfer: updatePayload,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return updateTransfer result", () => {
@@ -459,7 +476,11 @@ describe("Transfer", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("updateTransfer");
-      expect(variables).to.eql({ transfer: updatePayload });
+      expect(variables).to.eql({
+        transfer: updatePayload,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return updateTransfer result", () => {
@@ -499,7 +520,11 @@ describe("Transfer", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("updateTransfer");
-      expect(variables).to.eql({ transfer: updatePayload });
+      expect(variables).to.eql({
+        transfer: updatePayload,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return updateTransfer result", () => {
