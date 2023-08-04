@@ -3,9 +3,11 @@ import { ResultPage } from "./resultPage";
 import {
   AccountTransfersArgs,
   BatchTransfer,
+  ConfirmationRequest,
   ConfirmationRequestOrTransfer,
   CreateTransferInput,
   MutationCreateTransferArgs,
+  MutationUpdateTransferArgs,
   Query,
   Transfer as TransferModel,
   TransfersConnectionEdge,
@@ -185,6 +187,7 @@ const UPDATE_TRANSFER = `mutation updateTransfer($transfer: UpdateTransferInput!
   updateTransfer(transfer: $transfer) {
     ... on ConfirmationRequest {
       confirmationId
+      stringToSign
     }
 
     ... on Transfer {
@@ -209,10 +212,7 @@ export class Transfer extends IterableModel<
     transfer,
     deviceId,
     deliveryMethod,
-  }: MutationCreateTransferArgs): Promise<{
-    confirmationId: string;
-    stringToSign?: string;
-  }> {
+  }: MutationCreateTransferArgs): Promise<ConfirmationRequest> {
     const result = await this.client.rawQuery(CREATE_TRANSFER, {
       transfer,
       deviceId,
@@ -319,12 +319,20 @@ export class Transfer extends IterableModel<
    * Update a standing order
    *
    * @param transfer  transfer data including at least id and type. For Timed Orders and Sepa Transfers, only category and userSelectedBooking date can be updated
+   * @param deviceId  device id used for device signing authorization
+   * @param deliveryMethod  delivery method used for device signing / mobile number authorization
    * @returns         confirmation id used to confirm the update of Standing order or Transfer for Sepa Transfer / Timed Order
    */
-  public async update(
-    transfer: UpdateTransferInput
-  ): Promise<ConfirmationRequestOrTransfer> {
-    const result = await this.client.rawQuery(UPDATE_TRANSFER, { transfer });
+  public async update({
+    transfer,
+    deliveryMethod,
+    deviceId,
+  }: MutationUpdateTransferArgs): Promise<ConfirmationRequestOrTransfer> {
+    const result = await this.client.rawQuery(UPDATE_TRANSFER, {
+      transfer,
+      deliveryMethod,
+      deviceId,
+    });
     return result.updateTransfer;
   }
 

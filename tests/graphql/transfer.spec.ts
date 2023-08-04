@@ -416,7 +416,7 @@ describe("Transfer", () => {
           confirmationId,
         },
       });
-      result = await transferInstance.update(updatePayload);
+      result = await transferInstance.update({ transfer: updatePayload });
     });
 
     it("should send updateTransfer GraphQL mutation", () => {
@@ -452,7 +452,7 @@ describe("Transfer", () => {
           personalNote,
         },
       });
-      result = await transferInstance.update(updatePayload);
+      result = await transferInstance.update({ transfer: updatePayload });
     });
 
     it("should send updateTransfer GraphQL mutation", () => {
@@ -492,7 +492,7 @@ describe("Transfer", () => {
           personalNote,
         },
       });
-      result = await transferInstance.update(updatePayload);
+      result = await transferInstance.update({ transfer: updatePayload });
     });
 
     it("should send updateTransfer GraphQL mutation", () => {
