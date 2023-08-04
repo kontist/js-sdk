@@ -226,6 +226,8 @@ export class Transfer extends IterableModel<
    *
    * @param confirmationId      confirmation id obtained as a result of `transfer.createOne` call
    * @param authorizationToken  sms token
+   * @param signature           signature of string to sign obtained as a result of `transfer.createOne` call
+   * @param deviceId            device id used for device signing authorization
    * @returns                   confirmed wire transfer
    */
   public async confirmOne({

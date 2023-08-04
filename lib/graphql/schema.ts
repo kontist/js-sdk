@@ -582,7 +582,7 @@ export type ConfirmFraudResponse = {
 export type ConfirmationRequest = {
   __typename?: 'ConfirmationRequest';
   confirmationId: Scalars['String'];
-  stringToSign: Scalars['String'];
+  stringToSign?: Maybe<Scalars['String']>;
 };
 
 export type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
@@ -1536,8 +1536,10 @@ export type MutationConfirmDirectDebitRefundArgs = {
 
 
 export type MutationConfirmTransferArgs = {
-  authorizationToken: Scalars['String'];
+  authorizationToken?: InputMaybe<Scalars['String']>;
   confirmationId: Scalars['String'];
+  deviceId?: InputMaybe<Scalars['String']>;
+  signature?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1957,6 +1959,8 @@ export type MutationUpdateTransactionSplitsArgs = {
 
 
 export type MutationUpdateTransferArgs = {
+  deliveryMethod?: InputMaybe<DeliveryMethod>;
+  deviceId?: InputMaybe<Scalars['String']>;
   transfer: UpdateTransferInput;
 };
 
@@ -3297,10 +3301,10 @@ export enum TransactionProjectionType {
   SepaCreditTransferReturn = 'SEPA_CREDIT_TRANSFER_RETURN',
   SepaDirectDebit = 'SEPA_DIRECT_DEBIT',
   SepaDirectDebitReturn = 'SEPA_DIRECT_DEBIT_RETURN',
-  Target2CreditTransfer_2 = 'TARGET2_CREDIT_TRANSFER_2',
   Transfer = 'TRANSFER',
   TransferToBankAccount = 'TRANSFER_TO_BANK_ACCOUNT',
   Target2CreditTransfer1 = 'Target2CreditTransfer1',
+  Target2CreditTransfer2 = 'Target2CreditTransfer2',
   VerificationCode = 'VERIFICATION_CODE',
   WireTransferTopup = 'WIRE_TRANSFER_TOPUP'
 }
