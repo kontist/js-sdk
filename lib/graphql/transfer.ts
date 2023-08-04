@@ -49,11 +49,15 @@ const CREATE_TRANSFER = `mutation createTransfer(
 
 const CONFIRM_TRANSFER = `mutation confirmTransfer(
   $confirmationId: String!
-  $authorizationToken: String!
+  $authorizationToken: String
+  $signature: String
+  $deviceId: String
 ) {
   confirmTransfer(
     confirmationId: $confirmationId
     authorizationToken: $authorizationToken
+    signature: $signature
+    deviceId: $deviceId
   ) {
     ${TRANSFER_FIELDS}
   }
@@ -224,13 +228,22 @@ export class Transfer extends IterableModel<
    * @param authorizationToken  sms token
    * @returns                   confirmed wire transfer
    */
-  public async confirmOne(
-    confirmationId: string,
-    authorizationToken: string
-  ): Promise<TransferModel> {
+  public async confirmOne({
+    confirmationId,
+    authorizationToken,
+    signature,
+    deviceId,
+  }: {
+    confirmationId: string;
+    authorizationToken?: string;
+    signature?: string;
+    deviceId?: string;
+  }): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_TRANSFER, {
       authorizationToken,
       confirmationId,
+      signature,
+      deviceId,
     });
     return result.confirmTransfer;
   }

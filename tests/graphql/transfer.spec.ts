@@ -69,10 +69,10 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         confirmTransfer: confirmTransferResult,
       });
-      result = await transferInstance.confirmOne(
+      result = await transferInstance.confirmOne({
         confirmationId,
-        authorizationToken
-      );
+        authorizationToken,
+      });
     });
 
     it("should send confirmOne GraphQL mutation", () => {
