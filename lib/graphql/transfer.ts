@@ -14,7 +14,6 @@ import {
   TransferSuggestion,
   TransferType,
   UnfinishedTransfer,
-  UpdateTransferInput,
 } from "./schema";
 
 const TRANSFER_FIELDS = `
