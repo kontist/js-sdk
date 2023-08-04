@@ -182,8 +182,16 @@ const GET_UNFINISHED_TRANSFERS = `
   }
 `;
 
-const UPDATE_TRANSFER = `mutation updateTransfer($transfer: UpdateTransferInput!) {
-  updateTransfer(transfer: $transfer) {
+const UPDATE_TRANSFER = `mutation updateTransfer(
+  $transfer: UpdateTransferInput!
+  $deviceId: String
+  $deliveryMethod: DeliveryMethod
+) {
+  updateTransfer(
+    transfer: $transfer
+    deviceId: $deviceId
+    deliveryMethod: $deliveryMethod
+  ) {
     ... on ConfirmationRequest {
       confirmationId
       stringToSign
