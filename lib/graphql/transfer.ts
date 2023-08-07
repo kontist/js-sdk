@@ -97,14 +97,14 @@ const CONFIRM_TRANSFERS = `mutation confirmTransfers(
 
 const CANCEL_TRANSFER = `mutation cancelTransfer(
   $type: TransferType!,
-  $id: String!
-  $deviceId: String
-  deliveryMethod: DeliveryMethod
+  $id: String!,
+  $deviceId: String,
+  $deliveryMethod: DeliveryMethod
 ) {
   cancelTransfer(
     type: $type,
     id: $id,
-    deviceId: $deviceId
+    deviceId: $deviceId,
     deliveryMethod: $deliveryMethod
   ) {
     ... on ConfirmationRequest {
