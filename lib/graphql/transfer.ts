@@ -121,12 +121,16 @@ const CANCEL_TRANSFER = `mutation cancelTransfer(
 const CONFIRM_CANCEL_TRANSFER = `mutation confirmCancelTransfer(
   $type: TransferType!
   $confirmationId: String!
-  $authorizationToken: String!
+  $authorizationToken: String
+  $deviceId: String
+  $signature: String
 ) {
   confirmCancelTransfer(
     type: $type
     confirmationId: $confirmationId
     authorizationToken: $authorizationToken
+    deviceId: $deviceId
+    signature: $signature
   ) {
     ${TRANSFER_FIELDS}
   }
