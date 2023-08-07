@@ -6,13 +6,14 @@ import {
   ConfirmationRequest,
   ConfirmationRequestOrTransfer,
   CreateTransferInput,
+  MutationCancelTransferArgs,
+  MutationConfirmCancelTransferArgs,
   MutationCreateTransferArgs,
   MutationUpdateTransferArgs,
   Query,
   Transfer as TransferModel,
   TransfersConnectionEdge,
   TransferSuggestion,
-  TransferType,
   UnfinishedTransfer,
 } from "./schema";
 
@@ -94,10 +95,21 @@ const CONFIRM_TRANSFERS = `mutation confirmTransfers(
   }
 }`;
 
-const CANCEL_TRANSFER = `mutation cancelTransfer($type: TransferType!, $id: String!) {
-  cancelTransfer(type: $type, id: $id) {
+const CANCEL_TRANSFER = `mutation cancelTransfer(
+  $type: TransferType!,
+  $id: String!
+  $deviceId: String
+  deliveryMethod: DeliveryMethod
+) {
+  cancelTransfer(
+    type: $type,
+    id: $id,
+    deviceId: $deviceId
+    deliveryMethod: $deliveryMethod
+  ) {
     ... on ConfirmationRequest {
       confirmationId
+      stringToSign
     }
 
     ... on Transfer {
@@ -291,13 +303,22 @@ export class Transfer extends IterableModel<
    *
    * @param type      transfer type
    * @param id        transfer id
+   * @param deliveryMethod  delivery method used for device signing / mobile number authorization
+   * @param deviceId  device id used for device signing authorization
    * @returns         confirmation id used to confirm the cancellation or transfer if confirmation is not needed
    */
-  public async cancelTransfer(
-    type: TransferType,
-    id: string
-  ): Promise<ConfirmationRequestOrTransfer> {
-    const result = await this.client.rawQuery(CANCEL_TRANSFER, { type, id });
+  public async cancelTransfer({
+    type,
+    id,
+    deliveryMethod,
+    deviceId,
+  }: MutationCancelTransferArgs): Promise<ConfirmationRequestOrTransfer> {
+    const result = await this.client.rawQuery(CANCEL_TRANSFER, {
+      type,
+      id,
+      deliveryMethod,
+      deviceId,
+    });
     return result.cancelTransfer;
   }
 
@@ -307,17 +328,23 @@ export class Transfer extends IterableModel<
    * @param type                transfer type
    * @param confirmationId      confirmation id obtained as a result of `transfer.cancelTransfer` call
    * @param authorizationToken  sms token
+   * @param signature           signature of string to sign obtained as a result of `transfer.cancelTransfer` call
+   * @param deviceId            device id used for device signing authorization
    * @returns                   canceled transfer
    */
-  public async confirmCancelTransfer(
-    type: TransferType,
-    confirmationId: string,
-    authorizationToken: string
-  ): Promise<TransferModel> {
+  public async confirmCancelTransfer({
+    type,
+    confirmationId,
+    authorizationToken,
+    signature,
+    deviceId,
+  }: MutationConfirmCancelTransferArgs): Promise<TransferModel> {
     const result = await this.client.rawQuery(CONFIRM_CANCEL_TRANSFER, {
       authorizationToken,
       confirmationId,
       type,
+      deviceId,
+      signature,
     });
     return result.confirmCancelTransfer;
   }

@@ -1454,6 +1454,8 @@ export type MutationAuthorizeChangeRequestArgs = {
 
 
 export type MutationCancelTransferArgs = {
+  deliveryMethod?: InputMaybe<DeliveryMethod>;
+  deviceId?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   type: TransferType;
 };
@@ -1501,8 +1503,10 @@ export type MutationChangeCardStatusArgs = {
 
 
 export type MutationConfirmCancelTransferArgs = {
-  authorizationToken: Scalars['String'];
+  authorizationToken?: InputMaybe<Scalars['String']>;
   confirmationId: Scalars['String'];
+  deviceId?: InputMaybe<Scalars['String']>;
+  signature?: InputMaybe<Scalars['String']>;
   type: TransferType;
 };
 

@@ -187,14 +187,19 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         cancelTransfer: cancelTransferResult,
       });
-      result = await transferInstance.cancelTransfer(type, id);
+      result = await transferInstance.cancelTransfer({ type, id });
     });
 
     it("should send cancelTransfer GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("cancelTransfer");
-      expect(variables).to.eql({ type, id });
+      expect(variables).to.eql({
+        type,
+        id,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return cancelTransfer result", () => {
@@ -215,18 +220,24 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         confirmCancelTransfer: confirmCancelTransferResult,
       });
-      result = await transferInstance.confirmCancelTransfer(
+      result = await transferInstance.confirmCancelTransfer({
         type,
         confirmationId,
-        authorizationToken
-      );
+        authorizationToken,
+      });
     });
 
     it("should send confirmCancelTransfer GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("confirmCancelTransfer");
-      expect(variables).to.eql({ type, confirmationId, authorizationToken });
+      expect(variables).to.eql({
+        type,
+        confirmationId,
+        authorizationToken,
+        deviceId: undefined,
+        signature: undefined,
+      });
     });
 
     it("should return confirmCancelTransfer result", () => {
