@@ -582,6 +582,7 @@ export type ConfirmFraudResponse = {
 export type ConfirmationRequest = {
   __typename?: 'ConfirmationRequest';
   confirmationId: Scalars['String'];
+  stringToSign?: Maybe<Scalars['String']>;
 };
 
 export type ConfirmationRequestOrTransfer = ConfirmationRequest | Transfer;
@@ -1453,6 +1454,8 @@ export type MutationAuthorizeChangeRequestArgs = {
 
 
 export type MutationCancelTransferArgs = {
+  deliveryMethod?: InputMaybe<DeliveryMethod>;
+  deviceId?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   type: TransferType;
 };
@@ -1500,8 +1503,10 @@ export type MutationChangeCardStatusArgs = {
 
 
 export type MutationConfirmCancelTransferArgs = {
-  authorizationToken: Scalars['String'];
+  authorizationToken?: InputMaybe<Scalars['String']>;
   confirmationId: Scalars['String'];
+  deviceId?: InputMaybe<Scalars['String']>;
+  signature?: InputMaybe<Scalars['String']>;
   type: TransferType;
 };
 
@@ -1535,8 +1540,10 @@ export type MutationConfirmDirectDebitRefundArgs = {
 
 
 export type MutationConfirmTransferArgs = {
-  authorizationToken: Scalars['String'];
+  authorizationToken?: InputMaybe<Scalars['String']>;
   confirmationId: Scalars['String'];
+  deviceId?: InputMaybe<Scalars['String']>;
+  signature?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1627,6 +1634,8 @@ export type MutationCreateTransactionSplitsArgs = {
 
 
 export type MutationCreateTransferArgs = {
+  deliveryMethod?: InputMaybe<DeliveryMethod>;
+  deviceId?: InputMaybe<Scalars['String']>;
   transfer: CreateTransferInput;
 };
 
@@ -1954,6 +1963,8 @@ export type MutationUpdateTransactionSplitsArgs = {
 
 
 export type MutationUpdateTransferArgs = {
+  deliveryMethod?: InputMaybe<DeliveryMethod>;
+  deviceId?: InputMaybe<Scalars['String']>;
   transfer: UpdateTransferInput;
 };
 
@@ -3261,6 +3272,7 @@ export enum TransactionProjectionType {
   CurrencyTransactionCancellation = 'CURRENCY_TRANSACTION_CANCELLATION',
   ChargeRecallRequest = 'ChargeRecallRequest',
   CorrectionCardTransaction = 'CorrectionCardTransaction',
+  CorrectionNostro = 'CorrectionNostro',
   CorrectionSepaCreditTransfer = 'CorrectionSEPACreditTransfer',
   DebitPresentment = 'DEBIT_PRESENTMENT',
   DepositFee = 'DEPOSIT_FEE',
@@ -3274,6 +3286,7 @@ export enum TransactionProjectionType {
   ForcePostTransaction = 'FORCE_POST_TRANSACTION',
   ForeignPayment = 'FOREIGN_PAYMENT',
   InterestAccrued = 'INTEREST_ACCRUED',
+  InternalTransfer = 'INTERNAL_TRANSFER',
   InternationalCreditTransfer = 'INTERNATIONAL_CREDIT_TRANSFER',
   IntraCustomerTransfer = 'INTRA_CUSTOMER_TRANSFER',
   InterestExcessDeposit = 'InterestExcessDeposit',
@@ -3294,7 +3307,8 @@ export enum TransactionProjectionType {
   SepaDirectDebitReturn = 'SEPA_DIRECT_DEBIT_RETURN',
   Transfer = 'TRANSFER',
   TransferToBankAccount = 'TRANSFER_TO_BANK_ACCOUNT',
-  Target2CreditTransfer = 'Target2CreditTransfer',
+  Target2CreditTransfer1 = 'Target2CreditTransfer1',
+  Target2CreditTransfer2 = 'Target2CreditTransfer2',
   VerificationCode = 'VERIFICATION_CODE',
   WireTransferTopup = 'WIRE_TRANSFER_TOPUP'
 }

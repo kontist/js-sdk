@@ -7,7 +7,8 @@ import {
   StandingOrderReoccurrenceType,
   TransactionCategory,
   CreateTransferInput,
-  UnfinishedTransfer
+  UnfinishedTransfer,
+  DeliveryMethod,
 } from "../../lib/graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
 
@@ -15,6 +16,8 @@ describe("Transfer", () => {
   let graphqlClientStub: { rawQuery: sinon.SinonStub };
   let transferInstance: TransferClass;
   let result: any;
+  const deviceId = "device-id";
+  const deliveryMethod = DeliveryMethod.DeviceSigning;
 
   before(() => {
     graphqlClientStub = {
@@ -25,16 +28,17 @@ describe("Transfer", () => {
 
   describe("#createOne", () => {
     const transfer: CreateTransferInput = {
-        amount: 1,
-        purpose: "money1",
-        e2eId: "e2e-1",
-        reoccurrence: StandingOrderReoccurrenceType.Annually,
-        lastExecutionDate: "2022-02-01",
-        recipient: "r1",
-        iban: "iban1"
+      amount: 1,
+      purpose: "money1",
+      e2eId: "e2e-1",
+      reoccurrence: StandingOrderReoccurrenceType.Annually,
+      lastExecutionDate: "2022-02-01",
+      recipient: "r1",
+      iban: "iban1",
     };
     const createTransferResult = {
-        confirmationId: 100
+      confirmationId: 100,
+      stringToSign: "string-to-sign",
     };
 
     before(async () => {
@@ -42,18 +46,22 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         createTransfer: createTransferResult,
       });
-      result = await transferInstance.createOne(transfer);
+      result = await transferInstance.createOne({
+        transfer,
+        deviceId,
+        deliveryMethod,
+      });
     });
 
     it("should send createOne GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("createTransfer");
-      expect(variables).to.eql({ transfer });
+      expect(variables).to.eql({ transfer, deviceId, deliveryMethod });
     });
 
     it("should return confirmTransfers result", () => {
-      expect(result).to.eql(100);
+      expect(result).to.eql(createTransferResult);
     });
   });
 
@@ -69,14 +77,22 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         confirmTransfer: confirmTransferResult,
       });
-      result = await transferInstance.confirmOne(confirmationId, authorizationToken);
+      result = await transferInstance.confirmOne({
+        confirmationId,
+        authorizationToken,
+      });
     });
 
     it("should send confirmOne GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("confirmTransfer");
-      expect(variables).to.eql({ confirmationId, authorizationToken });
+      expect(variables).to.eql({
+        confirmationId,
+        authorizationToken,
+        deviceId: undefined,
+        signature: undefined,
+      });
     });
 
     it("should return confirmTransfer result", () => {
@@ -93,7 +109,7 @@ describe("Transfer", () => {
         reoccurrence: StandingOrderReoccurrenceType.Annually,
         lastExecutionDate: "2022-02-01",
         recipient: "r1",
-        iban: "iban1"
+        iban: "iban1",
       },
       {
         amount: 2,
@@ -102,11 +118,11 @@ describe("Transfer", () => {
         reoccurrence: StandingOrderReoccurrenceType.EverySixMonths,
         lastExecutionDate: "2022-02-02",
         recipient: "r2",
-        iban: "iban2"
+        iban: "iban2",
       },
     ];
     const createTransfersResult = {
-        confirmationId: 100
+      confirmationId: 100,
     };
 
     before(async () => {
@@ -128,7 +144,7 @@ describe("Transfer", () => {
       expect(result).to.eql(100);
     });
   });
-  
+
   describe("#confirmMany", () => {
     const confirmationId = "id-stub";
     const authorizationToken = "token";
@@ -141,7 +157,10 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         confirmTransfers: confirmTransfersResult,
       });
-      result = await transferInstance.confirmMany(confirmationId, authorizationToken);
+      result = await transferInstance.confirmMany(
+        confirmationId,
+        authorizationToken
+      );
     });
 
     it("should send confirmMany GraphQL mutation", () => {
@@ -168,14 +187,19 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         cancelTransfer: cancelTransferResult,
       });
-      result = await transferInstance.cancelTransfer(type, id);
+      result = await transferInstance.cancelTransfer({ type, id });
     });
 
     it("should send cancelTransfer GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("cancelTransfer");
-      expect(variables).to.eql({ type, id });
+      expect(variables).to.eql({
+        type,
+        id,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return cancelTransfer result", () => {
@@ -196,18 +220,24 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.resolves({
         confirmCancelTransfer: confirmCancelTransferResult,
       });
-      result = await transferInstance.confirmCancelTransfer(
+      result = await transferInstance.confirmCancelTransfer({
         type,
         confirmationId,
         authorizationToken,
-      );
+      });
     });
 
     it("should send confirmCancelTransfer GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("confirmCancelTransfer");
-      expect(variables).to.eql({ type, confirmationId, authorizationToken });
+      expect(variables).to.eql({
+        type,
+        confirmationId,
+        authorizationToken,
+        deviceId: undefined,
+        signature: undefined,
+      });
     });
 
     it("should return confirmCancelTransfer result", () => {
@@ -235,7 +265,7 @@ describe("Transfer", () => {
             hasNextPage: true,
             hasPreviousPage: false,
           },
-        }),
+        })
       );
 
       graphqlClientStub.rawQuery.onSecondCall().resolves(
@@ -246,7 +276,7 @@ describe("Transfer", () => {
             hasNextPage: false,
             hasPreviousPage: false,
           },
-        }),
+        })
       );
     });
 
@@ -288,7 +318,7 @@ describe("Transfer", () => {
               hasNextPage: false,
               hasPreviousPage: true,
             },
-          }),
+          })
         );
 
         graphqlClientStub.rawQuery.onSecondCall().resolves(
@@ -299,7 +329,7 @@ describe("Transfer", () => {
               hasNextPage: false,
               hasPreviousPage: false,
             },
-          }),
+          })
         );
 
         const firstPage = await transferInstance.fetch({
@@ -377,7 +407,9 @@ describe("Transfer", () => {
       before(async () => {
         graphqlClientStub.rawQuery.reset();
         graphqlClientStub.rawQuery.resolves({});
-        result = await transferInstance.fetch({ type: TransferType.SepaTransfer });
+        result = await transferInstance.fetch({
+          type: TransferType.SepaTransfer,
+        });
       });
 
       it("should return an empty result", () => {
@@ -397,7 +429,7 @@ describe("Transfer", () => {
       e2eId: "some-e2e-id",
       reoccurrence: StandingOrderReoccurrenceType.Annually,
       lastExecutionDate: "2022-02-02",
-      type: TransferType.StandingOrder
+      type: TransferType.StandingOrder,
     };
     const confirmationId = "standing-order:123456789";
 
@@ -405,17 +437,21 @@ describe("Transfer", () => {
       graphqlClientStub.rawQuery.reset();
       graphqlClientStub.rawQuery.resolves({
         updateTransfer: {
-          confirmationId
-        }
+          confirmationId,
+        },
       });
-      result = await transferInstance.update(updatePayload);
+      result = await transferInstance.update({ transfer: updatePayload });
     });
 
     it("should send updateTransfer GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("updateTransfer");
-      expect(variables).to.eql({ transfer: updatePayload });
+      expect(variables).to.eql({
+        transfer: updatePayload,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return updateTransfer result", () => {
@@ -426,7 +462,7 @@ describe("Transfer", () => {
   describe("update - SEPA Transfer", () => {
     const category = TransactionCategory.TaxPayment;
     const userSelectedBookingDate = new Date().toISOString();
-    const personalNote = "business travel"
+    const personalNote = "business travel";
     const updatePayload = {
       id: "some-id",
       type: TransferType.SepaTransfer,
@@ -442,23 +478,27 @@ describe("Transfer", () => {
           category,
           userSelectedBookingDate,
           personalNote,
-        }
+        },
       });
-      result = await transferInstance.update(updatePayload);
+      result = await transferInstance.update({ transfer: updatePayload });
     });
 
     it("should send updateTransfer GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("updateTransfer");
-      expect(variables).to.eql({ transfer: updatePayload });
+      expect(variables).to.eql({
+        transfer: updatePayload,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return updateTransfer result", () => {
       expect(result).to.eql({
         category,
         userSelectedBookingDate,
-        personalNote
+        personalNote,
       });
     });
   });
@@ -466,7 +506,7 @@ describe("Transfer", () => {
   describe("update - Timed Order", () => {
     const category = TransactionCategory.TaxPayment;
     const userSelectedBookingDate = new Date().toISOString();
-    const personalNote = "best French restaurant in Berlin"
+    const personalNote = "best French restaurant in Berlin";
     const updatePayload = {
       id: "some-id",
       type: TransferType.TimedOrder,
@@ -481,24 +521,28 @@ describe("Transfer", () => {
         updateTransfer: {
           category,
           userSelectedBookingDate,
-          personalNote
-        }
+          personalNote,
+        },
       });
-      result = await transferInstance.update(updatePayload);
+      result = await transferInstance.update({ transfer: updatePayload });
     });
 
     it("should send updateTransfer GraphQL mutation", () => {
       expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
       const [query, variables] = graphqlClientStub.rawQuery.getCall(0).args;
       expect(query).to.include("updateTransfer");
-      expect(variables).to.eql({ transfer: updatePayload });
+      expect(variables).to.eql({
+        transfer: updatePayload,
+        deliveryMethod: undefined,
+        deviceId: undefined,
+      });
     });
 
     it("should return updateTransfer result", () => {
       expect(result).to.eql({
         category,
         userSelectedBookingDate,
-        personalNote
+        personalNote,
       });
     });
   });
@@ -506,12 +550,14 @@ describe("Transfer", () => {
   describe("#fetchUnfinished", () => {
     let result: UnfinishedTransfer[];
 
-    const unfinishedTransfers = [{
-      amount: 1234,
-      recipient: "John Doe",
-      iban: "DE32110101001000000029",
-      purpose: "time is money",
-    }];
+    const unfinishedTransfers = [
+      {
+        amount: 1234,
+        recipient: "John Doe",
+        iban: "DE32110101001000000029",
+        purpose: "time is money",
+      },
+    ];
 
     describe("when there are unfinished transfers", () => {
       before(async () => {
