@@ -8,6 +8,7 @@
   "author": "Kontist GmbH",
   "license": "Apache-2.0",
   "scripts": {
+    "prebuild": "node -e \"if (process.version.split('.')[0] !== 'v16') throw new Error('Unsupported Node version')\"",
     "build": "tsc && npx webpack",
     "test": "npm run lint && npm run build && mocha --recursive 'dist/tests/**/*.spec.js'",
     "cover": "nyc npm run test",
@@ -52,5 +53,8 @@
   },
   "bin": {
     "kontist": "./cli/index.js"
+  },
+  "engines": {
+    "node": "16"
   }
 }
