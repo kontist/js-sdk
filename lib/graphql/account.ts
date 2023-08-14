@@ -1,7 +1,12 @@
 import { KontistSDKError } from "../errors";
 import { Model } from "./model";
 import { ResultPage } from "./resultPage";
-import { Account as AccountModel, Query, AccountStats, SolarisAccountBalance } from "./schema";
+import {
+  Account as AccountModel,
+  Query,
+  AccountStats,
+  SolarisAccountBalance,
+} from "./schema";
 
 const GET_ACCOUNT = `query getAccount {
   viewer {
@@ -14,6 +19,7 @@ const GET_ACCOUNT = `query getAccount {
       cardHolderRepresentations
       hasPendingCardFraudCase
       canCreateOverdraft
+      createdAt
     }
   }
 }`;
