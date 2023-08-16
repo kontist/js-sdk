@@ -15,8 +15,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -31,6 +34,7 @@ export type Account = {
   cardHolderRepresentation?: Maybe<Scalars['String']>;
   cardHolderRepresentations: Array<Scalars['String']>;
   cards: Array<Card>;
+  createdAt: Scalars['DateTime'];
   declarationPdfUrl?: Maybe<Scalars['String']>;
   declarationStats: DeclarationStats;
   declarations: Array<Declaration>;
@@ -758,6 +762,28 @@ export type DashboardInvoice = {
   transactionId?: Maybe<Scalars['ID']>;
 };
 
+export type DatevExport = {
+  __typename?: 'DatevExport';
+  id: Scalars['ID'];
+  path: Scalars['String'];
+  skr: Skr;
+  uploadedAt: Scalars['DateTime'];
+  userId: Scalars['ID'];
+  withReceipts: Scalars['Boolean'];
+  year: Scalars['Int'];
+};
+
+export type DatevExportInput = {
+  skr: Skr;
+  withReceipts: Scalars['Boolean'];
+  year: Scalars['Int'];
+};
+
+export type DatevExportedUrl = {
+  __typename?: 'DatevExportedURL';
+  datevExportedUrl: Scalars['String'];
+};
+
 export type Declaration = {
   __typename?: 'Declaration';
   amount?: Maybe<Scalars['Int']>;
@@ -1289,6 +1315,8 @@ export type Mutation = {
   createClient: Client;
   /** Records consent from the given person to collect device fingerprints on their registered device */
   createConsentForDeviceMonitoring?: Maybe<Scalars['String']>;
+  /** Creates a DATEV export and return its url */
+  createDatevExport: DatevExportedUrl;
   /** Creates a draft external transaction entry */
   createDraftTransaction: CreateDraftTransactionResponse;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
@@ -1469,6 +1497,7 @@ export type MutationCardPushProvisioningArgs = {
 
 
 export type MutationCategorizeTransactionForDeclarationArgs = {
+  businessAssetInput?: InputMaybe<BusinessAssetInput>;
   category?: InputMaybe<TransactionCategory>;
   categoryCode?: InputMaybe<Scalars['String']>;
   date?: InputMaybe<Scalars['String']>;
@@ -1587,6 +1616,11 @@ export type MutationCreateClientArgs = {
 
 export type MutationCreateConsentForDeviceMonitoringArgs = {
   eventType: DeviceConsentEventType;
+};
+
+
+export type MutationCreateDatevExportArgs = {
+  payload: DatevExportInput;
 };
 
 
@@ -2022,6 +2056,44 @@ export type MutationResult = {
   success: Scalars['Boolean'];
 };
 
+/** NACE codes */
+export type NaceCode = {
+  __typename?: 'NACECode';
+  code: NaceCodeEnum;
+  deDescription: Scalars['String'];
+  enDescription: Scalars['String'];
+};
+
+export enum NaceCodeEnum {
+  A = 'A',
+  C = 'C',
+  F = 'F',
+  G = 'G',
+  H = 'H',
+  I = 'I',
+  J = 'J',
+  J_62_01 = 'J_62_01',
+  K = 'K',
+  L = 'L',
+  M_69 = 'M_69',
+  M_70_1 = 'M_70_1',
+  M_70_2 = 'M_70_2',
+  M_71 = 'M_71',
+  M_72 = 'M_72',
+  M_73 = 'M_73',
+  M_74_1 = 'M_74_1',
+  M_74_9 = 'M_74_9',
+  N_79 = 'N_79',
+  N_81 = 'N_81',
+  N_82 = 'N_82',
+  O = 'O',
+  P = 'P',
+  Q = 'Q',
+  R = 'R',
+  R_90 = 'R_90',
+  S = 'S'
+}
+
 export enum Nationality {
   Ad = 'AD',
   Ae = 'AE',
@@ -2417,11 +2489,14 @@ export type PushProvisioningOutput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get all existing DATEV Exports */
+  datevExports: Array<DatevExport>;
   draftTransactions: Array<DraftTransaction>;
   /** Get all released generic features, that are needed before user creation */
   genericFeatures: Array<GenericFeature>;
   /** Determines if user device has restricted key added */
   hasDeviceRestrictedKey: Scalars['Boolean'];
+  naceCodes: Array<NaceCode>;
   status: SystemStatus;
   /** The current user information */
   viewer?: Maybe<User>;
@@ -2744,6 +2819,11 @@ export enum RiskClassificationStatus {
   RiskAccepted = 'RISK_ACCEPTED',
   RiskRejected = 'RISK_REJECTED',
   ScoringNotRequired = 'SCORING_NOT_REQUIRED'
+}
+
+export enum Skr {
+  Skr03 = 'SKR03',
+  Skr04 = 'SKR04'
 }
 
 export enum ScopeType {
