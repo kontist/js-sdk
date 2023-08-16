@@ -2056,6 +2056,44 @@ export type MutationResult = {
   success: Scalars['Boolean'];
 };
 
+/** NACE codes */
+export type NaceCode = {
+  __typename?: 'NACECode';
+  code: NaceCodeEnum;
+  deDescription: Scalars['String'];
+  enDescription: Scalars['String'];
+};
+
+export enum NaceCodeEnum {
+  A = 'A',
+  C = 'C',
+  F = 'F',
+  G = 'G',
+  H = 'H',
+  I = 'I',
+  J = 'J',
+  J_62_01 = 'J_62_01',
+  K = 'K',
+  L = 'L',
+  M_69 = 'M_69',
+  M_70_1 = 'M_70_1',
+  M_70_2 = 'M_70_2',
+  M_71 = 'M_71',
+  M_72 = 'M_72',
+  M_73 = 'M_73',
+  M_74_1 = 'M_74_1',
+  M_74_9 = 'M_74_9',
+  N_79 = 'N_79',
+  N_81 = 'N_81',
+  N_82 = 'N_82',
+  O = 'O',
+  P = 'P',
+  Q = 'Q',
+  R = 'R',
+  R_90 = 'R_90',
+  S = 'S'
+}
+
 export enum Nationality {
   Ad = 'AD',
   Ae = 'AE',
@@ -2458,6 +2496,7 @@ export type Query = {
   genericFeatures: Array<GenericFeature>;
   /** Determines if user device has restricted key added */
   hasDeviceRestrictedKey: Scalars['Boolean'];
+  naceCodes: Array<NaceCode>;
   status: SystemStatus;
   /** The current user information */
   viewer?: Maybe<User>;
