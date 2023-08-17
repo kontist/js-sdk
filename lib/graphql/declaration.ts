@@ -112,6 +112,7 @@ const CATEGORIZE_TRANSACTION_MUTATION = `mutation(
   $vatCategoryCode: String,
   $date: String
   $isSplit: Boolean
+  $businessAssetInput: BusinessAssetInput
 ) {
   categorizeTransactionForDeclaration(
     id: $id,
@@ -120,6 +121,7 @@ const CATEGORIZE_TRANSACTION_MUTATION = `mutation(
     vatCategoryCode: $vatCategoryCode,
     date: $date
     isSplit: $isSplit
+    businessAssetInput: $businessAssetInput
   ) {
     category
     categoryCode
