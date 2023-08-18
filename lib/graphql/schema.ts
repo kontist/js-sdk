@@ -2773,6 +2773,13 @@ export type RecurlyAccount = {
   recurlyAccountId: Scalars['String'];
 };
 
+export type RecurlyInvoice = {
+  __typename?: 'RecurlyInvoice';
+  id: Scalars['ID'];
+  recurlyCreatedAt?: Maybe<Scalars['DateTime']>;
+  url: Scalars['String'];
+};
+
 export type ReferralDetails = {
   __typename?: 'ReferralDetails';
   /** Amount in euros granted to user and their referee */
@@ -3731,6 +3738,7 @@ export type User = {
   receiptMatchingIntroDismissedAt?: Maybe<Scalars['DateTime']>;
   /** The user's associated Recurly Account */
   recurlyAccount?: Maybe<RecurlyAccount>;
+  recurlyInvoices: Array<RecurlyInvoice>;
   /** Referral details for user */
   referral: ReferralDetails;
   /**
