@@ -764,11 +764,11 @@ export type DashboardInvoice = {
 
 export type DatevExport = {
   __typename?: 'DatevExport';
+  createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
-  path: Scalars['String'];
   skr: Skr;
-  uploadedAt: Scalars['DateTime'];
-  userId: Scalars['ID'];
+  uploadedAt?: Maybe<Scalars['DateTime']>;
+  url?: Maybe<Scalars['String']>;
   withReceipts: Scalars['Boolean'];
   year: Scalars['Int'];
 };
@@ -777,11 +777,6 @@ export type DatevExportInput = {
   skr: Skr;
   withReceipts: Scalars['Boolean'];
   year: Scalars['Int'];
-};
-
-export type DatevExportedUrl = {
-  __typename?: 'DatevExportedURL';
-  datevExportedUrl: Scalars['String'];
 };
 
 export type Declaration = {
@@ -931,7 +926,7 @@ export type DraftTransaction = {
   name?: Maybe<Scalars['String']>;
   note?: Maybe<Scalars['String']>;
   paymentDate?: Maybe<Scalars['DateTime']>;
-  vatCategoryCode?: Maybe<VatCategoryCode>;
+  vatCategoryCode?: Maybe<Scalars['String']>;
   vatRate?: Maybe<VatRate>;
 };
 
@@ -1315,8 +1310,8 @@ export type Mutation = {
   createClient: Client;
   /** Records consent from the given person to collect device fingerprints on their registered device */
   createConsentForDeviceMonitoring?: Maybe<Scalars['String']>;
-  /** Creates a DATEV export and return its url */
-  createDatevExport: DatevExportedUrl;
+  /** Creates a DATEV export */
+  createDatevExport: DatevExport;
   /** Creates a draft external transaction entry */
   createDraftTransaction: CreateDraftTransactionResponse;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
@@ -4106,6 +4101,8 @@ export type UserUpdateInput = {
   vatNumber?: InputMaybe<Scalars['String']>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
   vatRate?: InputMaybe<Scalars['Int']>;
+  /** The website or social media url of the user */
+  websiteSocialMedia?: InputMaybe<Scalars['String']>;
   workAsHandyman?: InputMaybe<Scalars['Boolean']>;
   workingInEcommerce?: InputMaybe<Scalars['Boolean']>;
 };
