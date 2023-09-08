@@ -29,7 +29,6 @@ const FETCH_PLANS = `query fetchPlans ($couponCode: String) {
       plans {
         type
         title
-        description
         subtitle
         button
         featuresToggleLabel

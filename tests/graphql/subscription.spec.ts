@@ -41,7 +41,6 @@ describe("Subscription", () => {
           {
             type: "BASIC",
             title: "Free",
-            description: "All-round business banking with virtual card",
             subtitle: "/ month plus VAT for the first year, then much more expensive",
             button: "Open Free",
             featuresToggleLabel: "All Kontist Free features",
