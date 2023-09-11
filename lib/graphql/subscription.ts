@@ -28,16 +28,7 @@ const FETCH_PLANS = `query fetchPlans ($couponCode: String) {
       couponValidFor
       plans {
         type
-        title
-        subtitle
-        button
-        featuresToggleLabel
-        featureGroups {
-          title
-          features {
-            title
-          }
-        }
+        discountSubtitle
         fee {
           amount
           discountAmount

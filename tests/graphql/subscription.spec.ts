@@ -40,19 +40,7 @@ describe("Subscription", () => {
         const plans = [
           {
             type: "BASIC",
-            title: "Free",
-            subtitle: "/ month plus VAT for the first year, then much more expensive",
-            button: "Open Free",
-            featuresToggleLabel: "All Kontist Free features",
-            featureGroups: [
-              {
-                title: null,
-                features: [
-                  { title: "Unlimited SEPA transfers" },
-                  { title: "Virtual Card" },
-                ],
-              },
-            ],
+            discountSubtitle: "/ month plus VAT for the first year, then much more expensive",
             fee: {
               amount: 0,
               fullAmount: null,
