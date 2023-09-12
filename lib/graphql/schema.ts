@@ -1043,6 +1043,11 @@ export enum GrantType {
   RefreshToken = 'REFRESH_TOKEN'
 }
 
+export type Icon = {
+  __typename?: 'Icon';
+  uri: Scalars['String'];
+};
+
 export type IdentificationDetails = {
   __typename?: 'IdentificationDetails';
   /** The number of identifications attempted by the user */
@@ -2903,10 +2908,28 @@ export type Subscription = {
   newTransaction: Transaction;
 };
 
+export type SubscriptionFeature = {
+  __typename?: 'SubscriptionFeature';
+  icon?: Maybe<Icon>;
+  title: Scalars['String'];
+};
+
+export type SubscriptionFeatureGroup = {
+  __typename?: 'SubscriptionFeatureGroup';
+  features: Array<SubscriptionFeature>;
+  icon?: Maybe<Icon>;
+  title?: Maybe<Scalars['String']>;
+};
+
 export type SubscriptionPlan = {
   __typename?: 'SubscriptionPlan';
-  discountSubtitle?: Maybe<Scalars['String']>;
+  button: Scalars['String'];
+  description: Scalars['String'];
+  featureGroups: Array<SubscriptionFeatureGroup>;
+  featuresToggleLabel?: Maybe<Scalars['String']>;
   fee: Money;
+  subtitle?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
   type: PurchaseType;
 };
 

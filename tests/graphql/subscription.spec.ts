@@ -40,7 +40,7 @@ describe("Subscription", () => {
         const plans = [
           {
             type: "BASIC",
-            discountSubtitle: "/ month plus VAT for the first year, then much more expensive",
+            subtitle: "/ month plus VAT for the first year, then much more expensive",
             fee: {
               amount: 0,
               fullAmount: null,
