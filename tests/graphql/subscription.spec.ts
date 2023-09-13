@@ -40,20 +40,7 @@ describe("Subscription", () => {
         const plans = [
           {
             type: "BASIC",
-            title: "Free",
-            description: "All-round business banking with virtual card",
             subtitle: "/ month plus VAT for the first year, then much more expensive",
-            button: "Open Free",
-            featuresToggleLabel: "All Kontist Free features",
-            featureGroups: [
-              {
-                title: null,
-                features: [
-                  { title: "Unlimited SEPA transfers" },
-                  { title: "Virtual Card" },
-                ],
-              },
-            ],
             fee: {
               amount: 0,
               fullAmount: null,

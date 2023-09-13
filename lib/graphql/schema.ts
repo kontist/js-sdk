@@ -183,6 +183,14 @@ export enum ActionReason {
   WrongTaxrateAncillaryService = 'WRONG_TAXRATE_ANCILLARY_SERVICE'
 }
 
+export type AddressInput = {
+  city: Scalars['String'];
+  country: Scalars['String'];
+  postCode: Scalars['String'];
+  streetName: Scalars['String'];
+  streetNumber: Scalars['String'];
+};
+
 export type Asset = {
   __typename?: 'Asset';
   assetableId: Scalars['ID'];
@@ -275,6 +283,14 @@ export type BusinessAddress = {
   movingDate: Scalars['DateTime'];
   postCode: Scalars['String'];
   street: Scalars['String'];
+};
+
+export type BusinessAddressInput = {
+  city: Scalars['String'];
+  country: Scalars['String'];
+  postCode: Scalars['String'];
+  streetName: Scalars['String'];
+  streetNumber: Scalars['String'];
 };
 
 export type BusinessAssetForm = {
@@ -567,9 +583,10 @@ export enum CompanyType {
 }
 
 export type ConfirmChangeRequestArgs = {
+  authorizationToken?: InputMaybe<Scalars['String']>;
   changeRequestId: Scalars['String'];
   deviceId: Scalars['String'];
-  signature: Scalars['String'];
+  signature?: InputMaybe<Scalars['String']>;
 };
 
 export type ConfirmChangeRequestResponse = {
@@ -1261,8 +1278,6 @@ export type Mutation = {
   /** Send Lead data to designated Zap to redirect lead to Agreas */
   agerasLeadRedirect: MutationResult;
   approveDeclaration: DeclarationApproval;
-  /** Assign a secret coupon code to the user who is rejected from kontax onboarding */
-  assignKontaxCouponCodeToDeclinedUser: MutationResult;
   authorizeChangeRequest: AuthorizeChangeRequestResponse;
   /** Cancel an existing Timed Order or Standing Order */
   cancelTransfer: ConfirmationRequestOrTransfer;
@@ -1281,8 +1296,6 @@ export type Mutation = {
   changeCardPINWithChangeRequest: ConfirmationRequest;
   /** Block or unblock or close a card */
   changeCardStatus: Card;
-  /** Clear preselected plan */
-  clearPreselectedPlan: MutationResult;
   /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
   /** Confirms adding card to Apple/Google Pay wallet */
@@ -1413,7 +1426,7 @@ export type Mutation = {
   updateOverdraft?: Maybe<Overdraft>;
   updateReview: MutationResult;
   /** Update user fields on solaris */
-  updateSolarisUser: AuthorizeChangeRequestResponse;
+  updateSolarisUser: UserOrAuthResponse;
   /** Update user's subscription plan */
   updateSubscriptionPlan: UpdateSubscriptionPlanResult;
   /** Updates user's taxNumber */
@@ -1549,9 +1562,10 @@ export type MutationConfirmChangeCardPinArgs = {
 
 
 export type MutationConfirmChangeRequestArgs = {
+  authorizationToken?: InputMaybe<Scalars['String']>;
   changeRequestId: Scalars['String'];
   deviceId: Scalars['String'];
-  signature: Scalars['String'];
+  signature?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1951,6 +1965,7 @@ export type MutationUpdateReviewArgs = {
 
 
 export type MutationUpdateSolarisUserArgs = {
+  deliveryMethod?: InputMaybe<DeliveryMethod>;
   deviceId: Scalars['String'];
   payload: UpdateSolarisUserInput;
 };
@@ -2054,40 +2069,12 @@ export type MutationResult = {
 /** NACE codes */
 export type NaceCode = {
   __typename?: 'NACECode';
-  code: NaceCodeEnum;
+  code: Scalars['String'];
   deDescription: Scalars['String'];
   enDescription: Scalars['String'];
+  id: Scalars['Float'];
+  priority: Scalars['Boolean'];
 };
-
-export enum NaceCodeEnum {
-  A = 'A',
-  C = 'C',
-  F = 'F',
-  G = 'G',
-  H = 'H',
-  I = 'I',
-  J = 'J',
-  J_62_01 = 'J_62_01',
-  K = 'K',
-  L = 'L',
-  M_69 = 'M_69',
-  M_70_1 = 'M_70_1',
-  M_70_2 = 'M_70_2',
-  M_71 = 'M_71',
-  M_72 = 'M_72',
-  M_73 = 'M_73',
-  M_74_1 = 'M_74_1',
-  M_74_9 = 'M_74_9',
-  N_79 = 'N_79',
-  N_81 = 'N_81',
-  N_82 = 'N_82',
-  O = 'O',
-  P = 'P',
-  Q = 'Q',
-  R = 'R',
-  R_90 = 'R_90',
-  S = 'S'
-}
 
 export enum Nationality {
   Ad = 'AD',
@@ -2449,6 +2436,7 @@ export enum PurchaseType {
   Accounting = 'ACCOUNTING',
   Basic = 'BASIC',
   BasicInitial = 'BASIC_INITIAL',
+  BizTax = 'BIZ_TAX',
   Bookkeeping = 'BOOKKEEPING',
   Card = 'CARD',
   Kontax = 'KONTAX',
@@ -2484,7 +2472,7 @@ export type PushProvisioningOutput = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Get all existing DATEV Exports */
+  /** Get all existing DATEV Exports requested by the user */
   datevExports: Array<DatevExport>;
   draftTransactions: Array<DraftTransaction>;
   /** Get all released generic features, that are needed before user creation */
@@ -3559,7 +3547,16 @@ export type UpdateDraftTransactionInput = {
 };
 
 export type UpdateSolarisUserInput = {
+  address?: InputMaybe<AddressInput>;
   amlConfirmed?: InputMaybe<Scalars['Boolean']>;
+  businessAddress?: InputMaybe<BusinessAddressInput>;
+  businessPurpose?: InputMaybe<Scalars['String']>;
+  businessTradingName?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  expectedMonthlyRevenueCents?: InputMaybe<Scalars['Int']>;
+  naceCode?: InputMaybe<Scalars['String']>;
+  naceCodeId?: InputMaybe<Scalars['Float']>;
+  websiteSocialMedia?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSubscriptionPlanResult = {
@@ -3637,6 +3634,7 @@ export type User = {
   banners?: Maybe<Array<Banner>>;
   birthDate?: Maybe<Scalars['DateTime']>;
   birthPlace?: Maybe<Scalars['String']>;
+  businessAddress?: Maybe<UserBusinessAddress>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
   /** Return a business asset by id */
@@ -3670,6 +3668,7 @@ export type User = {
   emailDocument: EmailDocument;
   emailDocuments: Array<EmailDocument>;
   euerDeclaration?: Maybe<TaxDeclaration>;
+  expectedMonthlyRevenueCents?: Maybe<Scalars['Float']>;
   /** Active user features */
   features: Array<Scalars['String']>;
   fibuFinalCheckTasks?: Maybe<Array<FibuFinalCheckTask>>;
@@ -3714,6 +3713,7 @@ export type User = {
   missingBusinessTaxNumberNote?: Maybe<Scalars['String']>;
   missingPersonalTaxNumberNote?: Maybe<Scalars['String']>;
   mobileNumber?: Maybe<Scalars['String']>;
+  naceCodeId?: Maybe<Scalars['Float']>;
   nationality?: Maybe<Nationality>;
   /** All push-notification types and their state */
   notifications: Array<Notification>;
@@ -3778,6 +3778,7 @@ export type User = {
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   /** @deprecated This field will be removed in an upcoming release and should now be queried from "viewer.taxDetails.vatRate" */
   vatRate?: Maybe<UserVatRate>;
+  websiteSocialMedia?: Maybe<Scalars['String']>;
   workAsHandyman?: Maybe<Scalars['Boolean']>;
 };
 
@@ -3896,6 +3897,16 @@ export type UserVatAnnualDeclarationArgs = {
   year: Scalars['Int'];
 };
 
+/** Business Address of a User */
+export type UserBusinessAddress = {
+  __typename?: 'UserBusinessAddress';
+  city: Scalars['String'];
+  country: Scalars['String'];
+  id: Scalars['ID'];
+  postCode: Scalars['String'];
+  street: Scalars['String'];
+};
+
 export enum UserConfirmation {
   AdvisorDocumentsUploaded = 'ADVISOR_DOCUMENTS_UPLOADED',
   ManualDocumentsUploaded = 'MANUAL_DOCUMENTS_UPLOADED',
@@ -3980,6 +3991,8 @@ export type UserMetadata = {
   signupCompleted: Scalars['Boolean'];
   taxAdvisoryTermsVersionAccepted: Scalars['Boolean'];
 };
+
+export type UserOrAuthResponse = AuthorizeThroughDeviceSigningOrMobileNumberResponse | User;
 
 export type UserProductInput = {
   description?: InputMaybe<Scalars['String']>;
@@ -4066,6 +4079,8 @@ export type UserUpdateInput = {
   /** Indicates user has accepted Kontist direct debit mandate */
   directDebitMandateAccepted?: InputMaybe<Scalars['Boolean']>;
   economicSector?: InputMaybe<Scalars['String']>;
+  /** Expected monthly revenue in euro cents */
+  expectedMonthlyRevenueCents?: InputMaybe<Scalars['Int']>;
   firstName?: InputMaybe<Scalars['String']>;
   gender?: InputMaybe<Gender>;
   hasEmployees?: InputMaybe<Scalars['Boolean']>;
