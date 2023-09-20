@@ -1333,6 +1333,7 @@ export type Mutation = {
   createReview: CreateReviewResponse;
   /** Create user's taxNumber */
   createTaxNumber: TaxNumber;
+  createTopUp: TopUpCreationResult;
   /** Create a transaction Asset and obtain an upload config */
   createTransactionAsset: CreateAssetResponse;
   /** Create transaction splits */
@@ -1363,6 +1364,7 @@ export type Mutation = {
   deleteInvoice: MutationResult;
   /** Deletes the logo of a user's settings entry */
   deleteInvoiceLogo: MutationResult;
+  deletePaymentMethod: Scalars['Boolean'];
   deleteQuestionnaireDocument: MutationResult;
   /** Delete user's taxNumber */
   deleteTaxNumber: MutationResult;
@@ -1661,6 +1663,11 @@ export type MutationCreateTaxNumberArgs = {
 };
 
 
+export type MutationCreateTopUpArgs = {
+  topUpData: TopUpInput;
+};
+
+
 export type MutationCreateTransactionAssetArgs = {
   assetableType?: InputMaybe<Scalars['String']>;
   filetype: Scalars['String'];
@@ -1748,6 +1755,11 @@ export type MutationDeleteGooglePayCardTokenArgs = {
 
 export type MutationDeleteInvoiceArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationDeletePaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
 };
 
 
@@ -2388,6 +2400,13 @@ export enum PaymentFrequency {
   Yearly = 'YEARLY'
 }
 
+export type PaymentMethod = {
+  __typename?: 'PaymentMethod';
+  cardBrand: Scalars['String'];
+  cardLast4: Scalars['String'];
+  paymentMethodId: Scalars['String'];
+};
+
 export type PendingTransactionVerification = {
   __typename?: 'PendingTransactionVerification';
   /** Transaction amount */
@@ -2479,6 +2498,7 @@ export type Query = {
   genericFeatures: Array<GenericFeature>;
   /** Determines if user device has restricted key added */
   hasDeviceRestrictedKey: Scalars['Boolean'];
+  listPaymentMethods: Array<PaymentMethod>;
   naceCodes: Array<NaceCode>;
   status: SystemStatus;
   /** The current user information */
@@ -2923,13 +2943,18 @@ export type SubscriptionFeatureGroup = {
 
 export type SubscriptionPlan = {
   __typename?: 'SubscriptionPlan';
-  button: Scalars['String'];
-  description: Scalars['String'];
-  featureGroups: Array<SubscriptionFeatureGroup>;
+  /** @deprecated For backwards compatibility on mobile only. From now on use the button copy coming from Lokalise instead. */
+  button?: Maybe<Scalars['String']>;
+  /** @deprecated For backwards compatibility on mobile only. From now on use the description copy coming from Lokalise instead. */
+  description?: Maybe<Scalars['String']>;
+  /** @deprecated For backwards compatibility on mobile only. From now on use the features copy coming from Lokalise instead. */
+  featureGroups?: Maybe<Array<SubscriptionFeatureGroup>>;
+  /** @deprecated For backwards compatibility on mobile only. */
   featuresToggleLabel?: Maybe<Scalars['String']>;
   fee: Money;
   subtitle?: Maybe<Scalars['String']>;
-  title: Scalars['String'];
+  /** @deprecated For backwards compatibility on mobile only. From now on use the title copy coming from Lokalise instead. */
+  title?: Maybe<Scalars['String']>;
   type: PurchaseType;
 };
 
@@ -3078,6 +3103,16 @@ export enum ThreeStateAnswer {
   NotSure = 'NOT_SURE',
   Yes = 'YES'
 }
+
+export type TopUpCreationResult = {
+  __typename?: 'TopUpCreationResult';
+  clientSecret: Scalars['String'];
+};
+
+export type TopUpInput = {
+  amount: Scalars['Float'];
+  paymentMethodId?: InputMaybe<Scalars['String']>;
+};
 
 export enum TourName {
   BookkeepingOnboarding = 'BOOKKEEPING_ONBOARDING'
