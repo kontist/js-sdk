@@ -5,9 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.50.4] - 2023-09-20
+## Revert remove
+- Put back `title, description, button, featuresToggleLabel, featureGroups` from the `subscriptionPlans` query, for backward compatibility
+- Update the schema with the above deprecated fields
+
 ## [0.50.3] - 2023-09-12
 ## Removed
-- Removed `title, description, button, featuresToggleLabel, FeaturesGroups` from the `subscriptionPlans` query
+- Removed `title, description, button, featuresToggleLabel, featureGroups` from the `subscriptionPlans` query
 
 ## [0.49.0] - 2023-01-31
 ## Added
