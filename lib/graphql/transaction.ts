@@ -156,6 +156,7 @@ export const getUpdateTransactionMutation = (
   $categoryCode: String,
   $vatCategoryCode: String,
   $splits: [TransactionSplitInput!],
+  $businessAssetInput: BusinessAssetInput
 ) {
   updateTransaction(
     id: $id
@@ -166,6 +167,7 @@ export const getUpdateTransactionMutation = (
     categoryCode: $categoryCode
     vatCategoryCode: $vatCategoryCode
     splits: $splits
+    businessAssetInput: $businessAssetInput
   ) {
     ${fields}
   }

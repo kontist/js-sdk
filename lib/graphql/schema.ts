@@ -2001,6 +2001,7 @@ export type MutationUpdateTaxYearSettingsArgs = {
 
 
 export type MutationUpdateTransactionArgs = {
+  businessAssetInput?: InputMaybe<BusinessAssetInput>;
   category?: InputMaybe<TransactionCategory>;
   categoryCode?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
