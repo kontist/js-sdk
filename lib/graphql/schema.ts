@@ -38,6 +38,7 @@ export type Account = {
   declarationPdfUrl?: Maybe<Scalars['String']>;
   declarationStats: DeclarationStats;
   declarations: Array<Declaration>;
+  freeTopUpCreated: Scalars['Boolean'];
   hasPendingCardFraudCase: Scalars['Boolean'];
   iban: Scalars['String'];
   /** Overdraft Application - only available for Kontist Application */
@@ -237,6 +238,20 @@ export type AvailableStatements = {
   year: Scalars['Int'];
 };
 
+export type BwaSummary = {
+  __typename?: 'BWASummary';
+  /** Expenses amount in cents */
+  expenses: Scalars['Int'];
+  /** Income amount in cents */
+  income: Scalars['Int'];
+  /** NetIncome amount in cents */
+  netIncome: Scalars['Int'];
+  /** Withdrawals and deposits amount in cents */
+  withdrawalsAndDeposits122: Scalars['Int'];
+  /** Withdrawals and deposits amount in cents */
+  withdrawalsAndDeposits123: Scalars['Int'];
+};
+
 export type Banner = {
   __typename?: 'Banner';
   dismissedAt?: Maybe<Scalars['DateTime']>;
@@ -273,6 +288,12 @@ export enum BatchTransferStatus {
   Failed = 'FAILED',
   Successful = 'SUCCESSFUL'
 }
+
+export type BizTaxBookkeepingConfirmation = {
+  __typename?: 'BizTaxBookkeepingConfirmation';
+  confirmedAt: Scalars['DateTime'];
+  year: Scalars['Int'];
+};
 
 /** Business Address of a Kontax User */
 export type BusinessAddress = {
@@ -613,6 +634,15 @@ export type ConfirmationStatus = {
   status: Scalars['String'];
 };
 
+/** User transfer contacts */
+export type Contact = {
+  __typename?: 'Contact';
+  favorite: Scalars['Boolean'];
+  iban: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
 export type CreateAssetResponse = {
   __typename?: 'CreateAssetResponse';
   assetId: Scalars['ID'];
@@ -640,6 +670,12 @@ export type CreateClientInput = {
   scopes: Array<ScopeType>;
   /** The OAuth2 client secret */
   secret?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateContactArgs = {
+  favorite?: InputMaybe<Scalars['Boolean']>;
+  iban: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type CreateDeclarationApprovalInput = {
@@ -726,8 +762,12 @@ export type CreateTransferInput = {
   purpose?: InputMaybe<Scalars['String']>;
   /** The name of the transfer recipient */
   recipient: Scalars['String'];
+  /** Unique id of transfer session */
+  reference?: InputMaybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: InputMaybe<StandingOrderReoccurrenceType>;
+  /** The type of transfer created by user */
+  type?: InputMaybe<TransferType>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']>;
 };
@@ -1043,6 +1083,13 @@ export enum GrantType {
   RefreshToken = 'REFRESH_TOKEN'
 }
 
+export type IbanInformation = {
+  __typename?: 'IBANInformation';
+  bankName?: Maybe<Scalars['String']>;
+  bic?: Maybe<Scalars['String']>;
+  isSepaInstantTransferAvailable: Scalars['Boolean'];
+};
+
 export type Icon = {
   __typename?: 'Icon';
   uri: Scalars['String'];
@@ -1296,6 +1343,7 @@ export type Mutation = {
   changeCardPINWithChangeRequest: ConfirmationRequest;
   /** Block or unblock or close a card */
   changeCardStatus: Card;
+  confirmBizTaxBookkeeping: BizTaxBookkeepingConfirmation;
   /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
   /** Confirms adding card to Apple/Google Pay wallet */
@@ -1323,6 +1371,8 @@ export type Mutation = {
   createClient: Client;
   /** Records consent from the given person to collect device fingerprints on their registered device */
   createConsentForDeviceMonitoring?: Maybe<Scalars['String']>;
+  /** Create contact */
+  createContact: Contact;
   /** Creates a DATEV export */
   createDatevExport: DatevExport;
   /** Creates a draft external transaction entry */
@@ -1352,6 +1402,8 @@ export type Mutation = {
   deleteBusinessAsset: MutationResult;
   /** Delete an OAuth2 client */
   deleteClient: Client;
+  /** Delete contact */
+  deleteContact: MutationResult;
   /** Deletes document */
   deleteDocument: MutationResult;
   /** Deletes draft transaction */
@@ -1381,6 +1433,8 @@ export type Mutation = {
   finalizeTaxCase: TaxCase;
   /** Confirm and validate an Asset upload as completed */
   finalizeTransactionAssetUpload: TransactionAsset;
+  /** Exports list of receipts for given time frame */
+  generateReceiptExport: ReceiptExportResult;
   initDirectDebitRefund: AuthorizeThroughDeviceSigningOrMobileNumberResponse;
   matchEmailDocumentToTransaction: MutationResult;
   postponeQuestionnaireAnswer: Questionnaire;
@@ -1401,6 +1455,8 @@ export type Mutation = {
   setCardHolderRepresentation: Scalars['String'];
   /** Allow user to sign Power of Attorney */
   signPOA: MutationResult;
+  /** Allow user to sign the seizure payment order */
+  signSeizurePaymentOrder: MutationResult;
   skipIncomeTax: TaxCase;
   startQuestionnaire: Questionnaire;
   submitBookkeepingQuestionnaire: Questionnaire;
@@ -1415,6 +1471,8 @@ export type Mutation = {
   updateClient: Client;
   /** Records change of consent to collect device fingerprints on their registered device */
   updateConsentForDeviceMonitoring?: Maybe<MutationResult>;
+  /** Update contact */
+  updateContact: Contact;
   /** Updates document meta */
   updateDocument: Document;
   /** Updates draft external transaction entry. Returns null if finalized transaction was created */
@@ -1435,6 +1493,8 @@ export type Mutation = {
   updateTaxNumber: TaxNumber;
   /** Update individual tax-related settings per year */
   updateTaxYearSettings: Array<TaxYearSetting>;
+  /** Change Terms And Conditions confirmation status */
+  updateTermsAndConditions: TermsAndConditions;
   /** Categorize a transaction with an optional custom booking date for VAT or Tax categories, and add a personal note */
   updateTransaction: Transaction;
   /** Update transaction splits */
@@ -1541,6 +1601,11 @@ export type MutationChangeCardStatusArgs = {
 };
 
 
+export type MutationConfirmBizTaxBookkeepingArgs = {
+  year: Scalars['Int'];
+};
+
+
 export type MutationConfirmCancelTransferArgs = {
   authorizationToken?: InputMaybe<Scalars['String']>;
   confirmationId: Scalars['String'];
@@ -1627,6 +1692,11 @@ export type MutationCreateClientArgs = {
 
 export type MutationCreateConsentForDeviceMonitoringArgs = {
   eventType: DeviceConsentEventType;
+};
+
+
+export type MutationCreateContactArgs = {
+  payload: CreateContactArgs;
 };
 
 
@@ -1726,6 +1796,11 @@ export type MutationDeleteClientArgs = {
 };
 
 
+export type MutationDeleteContactArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationDeleteDocumentArgs = {
   id: Scalars['ID'];
 };
@@ -1816,6 +1891,11 @@ export type MutationFinalizeTransactionAssetUploadArgs = {
 };
 
 
+export type MutationGenerateReceiptExportArgs = {
+  payload: ReceiptExportInput;
+};
+
+
 export type MutationInitDirectDebitRefundArgs = {
   deliveryMethod: DeliveryMethod;
   deviceId: Scalars['String'];
@@ -1879,6 +1959,12 @@ export type MutationSignPoaArgs = {
 };
 
 
+export type MutationSignSeizurePaymentOrderArgs = {
+  seizureId: Scalars['ID'];
+  signature: Scalars['String'];
+};
+
+
 export type MutationSkipIncomeTaxArgs = {
   taxCaseId: Scalars['ID'];
 };
@@ -1929,6 +2015,11 @@ export type MutationUpdateClientArgs = {
 export type MutationUpdateConsentForDeviceMonitoringArgs = {
   deviceConsentId: Scalars['String'];
   eventType: DeviceConsentEventType;
+};
+
+
+export type MutationUpdateContactArgs = {
+  payload: UpdateContactArgs;
 };
 
 
@@ -1997,6 +2088,11 @@ export type MutationUpdateTaxNumberArgs = {
 
 export type MutationUpdateTaxYearSettingsArgs = {
   taxYearSettings: Array<TaxYearSettingInput>;
+};
+
+
+export type MutationUpdateTermsAndConditionsArgs = {
+  payload: UpdateTermsAndConditionsArgs;
 };
 
 
@@ -2492,23 +2588,50 @@ export type PushProvisioningOutput = {
 
 export type Query = {
   __typename?: 'Query';
+  BWASummary: BwaSummary;
+  contacts: Array<Contact>;
   /** Get all existing DATEV Exports requested by the user */
   datevExports: Array<DatevExport>;
   draftTransactions: Array<DraftTransaction>;
   /** Get all released generic features, that are needed before user creation */
   genericFeatures: Array<GenericFeature>;
+  /** Get bank information for IBAN */
+  getIBANInformation: IbanInformation;
+  /** Get all existing receipt exports requested by the user */
+  getReceiptExports: Array<ReceiptExport>;
   /** Determines if user device has restricted key added */
   hasDeviceRestrictedKey: Scalars['Boolean'];
   listPaymentMethods: Array<PaymentMethod>;
   naceCodes: Array<NaceCode>;
   status: SystemStatus;
+  termsAndConditions?: Maybe<Array<TermsAndConditions>>;
   /** The current user information */
   viewer?: Maybe<User>;
 };
 
 
+export type QueryBwaSummaryArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type QueryContactsArgs = {
+  filter?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetIbanInformationArgs = {
+  iban: Scalars['String'];
+};
+
+
 export type QueryHasDeviceRestrictedKeyArgs = {
   deviceId: Scalars['String'];
+};
+
+
+export type QueryTermsAndConditionsArgs = {
+  name?: InputMaybe<Scalars['String']>;
 };
 
 export type Questionnaire = {
@@ -2568,6 +2691,21 @@ export type QuestionnaireDocumentInput = {
 };
 
 export enum QuestionnaireDocumentType {
+  BizTaxCarUsageLogbook = 'BIZ_TAX_CAR_USAGE_LOGBOOK',
+  BizTaxCarUsageOther = 'BIZ_TAX_CAR_USAGE_OTHER',
+  BizTaxCarUsagePrivatelyPaidCarExpenses = 'BIZ_TAX_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
+  BizTaxCarUsagePurchaseContract = 'BIZ_TAX_CAR_USAGE_PURCHASE_CONTRACT',
+  BizTaxCarUsageTraveledKmWithPrivateCar = 'BIZ_TAX_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
+  BizTaxOfficeUsageElectricity = 'BIZ_TAX_OFFICE_USAGE_ELECTRICITY',
+  BizTaxOfficeUsageFloorPlan = 'BIZ_TAX_OFFICE_USAGE_FLOOR_PLAN',
+  BizTaxOfficeUsageHeating = 'BIZ_TAX_OFFICE_USAGE_HEATING',
+  BizTaxOfficeUsageOther = 'BIZ_TAX_OFFICE_USAGE_OTHER',
+  BizTaxOfficeUsagePhoneOrInternet = 'BIZ_TAX_OFFICE_USAGE_PHONE_OR_INTERNET',
+  BizTaxOfficeUsageRentOrInterest = 'BIZ_TAX_OFFICE_USAGE_RENT_OR_INTEREST',
+  BizTaxOfficeUsageUtility = 'BIZ_TAX_OFFICE_USAGE_UTILITY',
+  BizTaxOfficeUsageUtilityAfterPayment = 'BIZ_TAX_OFFICE_USAGE_UTILITY_AFTER_PAYMENT',
+  BizTaxTravelExpensesBusinessTrips = 'BIZ_TAX_TRAVEL_EXPENSES_BUSINESS_TRIPS',
+  BizTaxTravelExpensesOther = 'BIZ_TAX_TRAVEL_EXPENSES_OTHER',
   EoyCarUsageLogbook = 'EOY_CAR_USAGE_LOGBOOK',
   EoyCarUsageOther = 'EOY_CAR_USAGE_OTHER',
   EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
@@ -2681,6 +2819,10 @@ export enum QuestionnaireTaskStatus {
 }
 
 export enum QuestionnaireType {
+  BizTaxBasicData = 'BIZ_TAX_BASIC_DATA',
+  BizTaxCarUsage = 'BIZ_TAX_CAR_USAGE',
+  BizTaxOfficeUsage = 'BIZ_TAX_OFFICE_USAGE',
+  BizTaxTravelExpenses = 'BIZ_TAX_TRAVEL_EXPENSES',
   EoyBasicData = 'EOY_BASIC_DATA',
   EoyBookkeeping = 'EOY_BOOKKEEPING',
   EoyCarUsage = 'EOY_CAR_USAGE',
@@ -2766,6 +2908,24 @@ export type RawTransactionProjectionAssetArgs = {
 
 export type RawTransactionProjectionTransactionAssetArgs = {
   assetId: Scalars['ID'];
+};
+
+export type ReceiptExport = {
+  __typename?: 'ReceiptExport';
+  creationDate: Scalars['DateTime'];
+  expirationDate: Scalars['DateTime'];
+  filename: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type ReceiptExportInput = {
+  fromDate: Scalars['DateTime'];
+  toDate: Scalars['DateTime'];
+};
+
+export type ReceiptExportResult = {
+  __typename?: 'ReceiptExportResult';
+  count: Scalars['Int'];
 };
 
 export type RecurlyAccount = {
@@ -2910,9 +3070,11 @@ export type SolarisAccountBalance = {
 
 export enum StandingOrderReoccurrenceType {
   Annually = 'ANNUALLY',
+  Biweekly = 'BIWEEKLY',
   EverySixMonths = 'EVERY_SIX_MONTHS',
   Monthly = 'MONTHLY',
-  Quarterly = 'QUARTERLY'
+  Quarterly = 'QUARTERLY',
+  Weekly = 'WEEKLY'
 }
 
 export enum Status {
@@ -3099,6 +3261,19 @@ export type TaxYearSettingInput = {
   year: Scalars['Int'];
 };
 
+/** Terms And conditions */
+export type TermsAndConditions = {
+  __typename?: 'TermsAndConditions';
+  confirmedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  name: TermsAndConditionsName;
+  rejectedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export enum TermsAndConditionsName {
+  TopUp = 'TOP_UP'
+}
+
 export enum ThreeStateAnswer {
   No = 'NO',
   NotSure = 'NOT_SURE',
@@ -3116,6 +3291,7 @@ export type TopUpInput = {
 };
 
 export enum TourName {
+  BizTaxQuestionnairePreview = 'BIZ_TAX_QUESTIONNAIRE_PREVIEW',
   BookkeepingOnboarding = 'BOOKKEEPING_ONBOARDING'
 }
 
@@ -3259,6 +3435,7 @@ export type TransactionCondition = {
   source_eq?: InputMaybe<Scalars['String']>;
   source_in?: InputMaybe<Array<Scalars['String']>>;
   source_ne?: InputMaybe<Scalars['String']>;
+  type_eq?: InputMaybe<TransactionProjectionType>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
@@ -3290,8 +3467,10 @@ export enum TransactionFeeType {
   DirectDebitReturn = 'DIRECT_DEBIT_RETURN',
   ForeignTransaction = 'FOREIGN_TRANSACTION',
   FreeKontistTransaction = 'FREE_KONTIST_TRANSACTION',
+  InstantCreditTransfer = 'INSTANT_CREDIT_TRANSFER',
   KontistTransaction = 'KONTIST_TRANSACTION',
-  SecondReminderEmail = 'SECOND_REMINDER_EMAIL'
+  SecondReminderEmail = 'SECOND_REMINDER_EMAIL',
+  TopUp = 'TOP_UP'
 }
 
 export type TransactionFilter = {
@@ -3330,6 +3509,7 @@ export type TransactionFilter = {
   source_eq?: InputMaybe<Scalars['String']>;
   source_in?: InputMaybe<Array<Scalars['String']>>;
   source_ne?: InputMaybe<Scalars['String']>;
+  type_eq?: InputMaybe<TransactionProjectionType>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']>;
@@ -3415,6 +3595,9 @@ export enum TransactionProjectionType {
   TransferToBankAccount = 'TRANSFER_TO_BANK_ACCOUNT',
   Target2CreditTransfer1 = 'Target2CreditTransfer1',
   Target2CreditTransfer2 = 'Target2CreditTransfer2',
+  TopUpCard = 'TopUpCard',
+  TopUpCardChargeback = 'TopUpCardChargeback',
+  TopUpCardRefund = 'TopUpCardRefund',
   VerificationCode = 'VERIFICATION_CODE',
   WireTransferTopup = 'WIRE_TRANSFER_TOPUP'
 }
@@ -3486,6 +3669,8 @@ export type Transfer = {
   purpose?: Maybe<Scalars['String']>;
   /** The name of the transfer recipient */
   recipient: Scalars['String'];
+  /** Unique id of transfer session */
+  reference?: Maybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: Maybe<StandingOrderReoccurrenceType>;
   /** The status of the transfer */
@@ -3517,6 +3702,7 @@ export type TransferSuggestion = {
 };
 
 export enum TransferType {
+  InstantCreditTransfer = 'INSTANT_CREDIT_TRANSFER',
   SepaTransfer = 'SEPA_TRANSFER',
   StandingOrder = 'STANDING_ORDER',
   TimedOrder = 'TIMED_ORDER'
@@ -3560,6 +3746,13 @@ export type UpdateClientInput = {
   scopes?: InputMaybe<Array<ScopeType>>;
   /** The OAuth2 client secret */
   secret?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateContactArgs = {
+  favorite?: InputMaybe<Scalars['Boolean']>;
+  iban?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateDocumentMetadata = {
@@ -3611,6 +3804,11 @@ export type UpdateTaxNumberInput = {
   taxNumber: Scalars['String'];
   type: TaxNumberType;
   validFrom?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type UpdateTermsAndConditionsArgs = {
+  confirmed: Scalars['Boolean'];
+  name: Scalars['String'];
 };
 
 export type UpdateTransactionSplitsInput = {
@@ -3670,6 +3868,7 @@ export type User = {
   banners?: Maybe<Array<Banner>>;
   birthDate?: Maybe<Scalars['DateTime']>;
   birthPlace?: Maybe<Scalars['String']>;
+  bizTaxBookkeepingConfirmation?: Maybe<BizTaxBookkeepingConfirmation>;
   businessAddress?: Maybe<UserBusinessAddress>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
@@ -3698,6 +3897,8 @@ export type User = {
   documentCategories: Array<DocumentCategory>;
   /** User's documents */
   documents: Array<Document>;
+  /** Retrieves draft of seizure payment order */
+  draftSeizurePaymentOrder: Scalars['String'];
   /** The economic sector of the user's business */
   economicSector?: Maybe<Scalars['String']>;
   email: Scalars['String'];
@@ -3829,6 +4030,11 @@ export type UserBannersArgs = {
 };
 
 
+export type UserBizTaxBookkeepingConfirmationArgs = {
+  year: Scalars['Int'];
+};
+
+
 export type UserBusinessAssetArgs = {
   businessAssetId: Scalars['ID'];
 };
@@ -3847,6 +4053,11 @@ export type UserDocumentCategoriesArgs = {
 export type UserDocumentsArgs = {
   categoryIds?: InputMaybe<Array<Scalars['String']>>;
   year?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type UserDraftSeizurePaymentOrderArgs = {
+  seizureId: Scalars['ID'];
 };
 
 
