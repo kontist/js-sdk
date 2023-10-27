@@ -26,7 +26,6 @@ const TRANSFER_FIELDS = `
   executeAt
   lastExecutionDate
   purpose
-  e2eId
   reoccurrence
   nextOccurrence
   category
@@ -90,7 +89,6 @@ const CONFIRM_TRANSFERS = `mutation confirmTransfers(
       iban
       purpose
       amount
-      e2eId
     }
   }
 }`;
