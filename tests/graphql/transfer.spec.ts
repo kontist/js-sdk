@@ -30,7 +30,6 @@ describe("Transfer", () => {
     const transfer: CreateTransferInput = {
       amount: 1,
       purpose: "money1",
-      e2eId: "e2e-1",
       reoccurrence: StandingOrderReoccurrenceType.Annually,
       lastExecutionDate: "2022-02-01",
       recipient: "r1",
@@ -105,7 +104,6 @@ describe("Transfer", () => {
       {
         amount: 1,
         purpose: "money1",
-        e2eId: "e2e-1",
         reoccurrence: StandingOrderReoccurrenceType.Annually,
         lastExecutionDate: "2022-02-01",
         recipient: "r1",
@@ -114,7 +112,6 @@ describe("Transfer", () => {
       {
         amount: 2,
         purpose: "money2",
-        e2eId: "e2e-2",
         reoccurrence: StandingOrderReoccurrenceType.EverySixMonths,
         lastExecutionDate: "2022-02-02",
         recipient: "r2",
@@ -426,7 +423,6 @@ describe("Transfer", () => {
       id: "some-id",
       amount: 2345,
       purpose: "some money",
-      e2eId: "some-e2e-id",
       reoccurrence: StandingOrderReoccurrenceType.Annually,
       lastExecutionDate: "2022-02-02",
       type: TransferType.StandingOrder,

@@ -53,7 +53,6 @@ export const createTransfer = (
 ): Transfer => {
   return {
     amount: parseInt((Math.random() * 100).toString(), 10),
-    e2eId: "some-e2e-id",
     executeAt: null,
     iban: "DE32110101001000000029",
     id: Math.random().toString(),

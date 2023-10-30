@@ -100,7 +100,6 @@ const TRANSACTION_DETAILS = `
   documentPreviewUrl
   documentDownloadUrl
   documentType
-  e2eId
   mandateNumber
 `;
 
