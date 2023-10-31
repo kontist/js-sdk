@@ -289,12 +289,6 @@ export enum BatchTransferStatus {
   Successful = 'SUCCESSFUL'
 }
 
-export type BizTaxBookkeepingConfirmation = {
-  __typename?: 'BizTaxBookkeepingConfirmation';
-  confirmedAt: Scalars['DateTime'];
-  year: Scalars['Int'];
-};
-
 /** Business Address of a Kontax User */
 export type BusinessAddress = {
   __typename?: 'BusinessAddress';
@@ -602,6 +596,12 @@ export enum CompanyType {
   Selbstaendig = 'SELBSTAENDIG',
   Ug = 'UG'
 }
+
+export type CompleteBookkeepingConfirmation = {
+  __typename?: 'CompleteBookkeepingConfirmation';
+  confirmedAt: Scalars['DateTime'];
+  year: Scalars['Int'];
+};
 
 export type ConfirmChangeRequestArgs = {
   authorizationToken?: InputMaybe<Scalars['String']>;
@@ -1343,7 +1343,6 @@ export type Mutation = {
   changeCardPINWithChangeRequest: ConfirmationRequest;
   /** Block or unblock or close a card */
   changeCardStatus: Card;
-  confirmBizTaxBookkeeping: BizTaxBookkeepingConfirmation;
   /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
   /** Confirms adding card to Apple/Google Pay wallet */
@@ -1351,6 +1350,7 @@ export type Mutation = {
   /** Confirm a PIN change request */
   confirmChangeCardPIN: ConfirmationStatus;
   confirmChangeRequest: ConfirmChangeRequestResponse;
+  confirmCompleteBookkeeping: CompleteBookkeepingConfirmation;
   confirmDirectDebitRefund: MutationResult;
   confirmFraud: ConfirmFraudResponse;
   /** Confirm a transfer creation */
@@ -1601,11 +1601,6 @@ export type MutationChangeCardStatusArgs = {
 };
 
 
-export type MutationConfirmBizTaxBookkeepingArgs = {
-  year: Scalars['Int'];
-};
-
-
 export type MutationConfirmCancelTransferArgs = {
   authorizationToken?: InputMaybe<Scalars['String']>;
   confirmationId: Scalars['String'];
@@ -1633,6 +1628,11 @@ export type MutationConfirmChangeRequestArgs = {
   changeRequestId: Scalars['String'];
   deviceId: Scalars['String'];
   signature?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationConfirmCompleteBookkeepingArgs = {
+  year: Scalars['Int'];
 };
 
 
@@ -2552,9 +2552,9 @@ export enum PurchaseType {
   Accounting = 'ACCOUNTING',
   Basic = 'BASIC',
   BasicInitial = 'BASIC_INITIAL',
-  BizTax = 'BIZ_TAX',
   Bookkeeping = 'BOOKKEEPING',
   Card = 'CARD',
+  Complete = 'COMPLETE',
   Kontax = 'KONTAX',
   KontaxPending = 'KONTAX_PENDING',
   KontaxSb = 'KONTAX_SB',
@@ -2691,21 +2691,21 @@ export type QuestionnaireDocumentInput = {
 };
 
 export enum QuestionnaireDocumentType {
-  BizTaxCarUsageLogbook = 'BIZ_TAX_CAR_USAGE_LOGBOOK',
-  BizTaxCarUsageOther = 'BIZ_TAX_CAR_USAGE_OTHER',
-  BizTaxCarUsagePrivatelyPaidCarExpenses = 'BIZ_TAX_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
-  BizTaxCarUsagePurchaseContract = 'BIZ_TAX_CAR_USAGE_PURCHASE_CONTRACT',
-  BizTaxCarUsageTraveledKmWithPrivateCar = 'BIZ_TAX_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
-  BizTaxOfficeUsageElectricity = 'BIZ_TAX_OFFICE_USAGE_ELECTRICITY',
-  BizTaxOfficeUsageFloorPlan = 'BIZ_TAX_OFFICE_USAGE_FLOOR_PLAN',
-  BizTaxOfficeUsageHeating = 'BIZ_TAX_OFFICE_USAGE_HEATING',
-  BizTaxOfficeUsageOther = 'BIZ_TAX_OFFICE_USAGE_OTHER',
-  BizTaxOfficeUsagePhoneOrInternet = 'BIZ_TAX_OFFICE_USAGE_PHONE_OR_INTERNET',
-  BizTaxOfficeUsageRentOrInterest = 'BIZ_TAX_OFFICE_USAGE_RENT_OR_INTEREST',
-  BizTaxOfficeUsageUtility = 'BIZ_TAX_OFFICE_USAGE_UTILITY',
-  BizTaxOfficeUsageUtilityAfterPayment = 'BIZ_TAX_OFFICE_USAGE_UTILITY_AFTER_PAYMENT',
-  BizTaxTravelExpensesBusinessTrips = 'BIZ_TAX_TRAVEL_EXPENSES_BUSINESS_TRIPS',
-  BizTaxTravelExpensesOther = 'BIZ_TAX_TRAVEL_EXPENSES_OTHER',
+  CompleteCarUsageLogbook = 'COMPLETE_CAR_USAGE_LOGBOOK',
+  CompleteCarUsageOther = 'COMPLETE_CAR_USAGE_OTHER',
+  CompleteCarUsagePrivatelyPaidCarExpenses = 'COMPLETE_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
+  CompleteCarUsagePurchaseContract = 'COMPLETE_CAR_USAGE_PURCHASE_CONTRACT',
+  CompleteCarUsageTraveledKmWithPrivateCar = 'COMPLETE_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
+  CompleteOfficeUsageElectricity = 'COMPLETE_OFFICE_USAGE_ELECTRICITY',
+  CompleteOfficeUsageFloorPlan = 'COMPLETE_OFFICE_USAGE_FLOOR_PLAN',
+  CompleteOfficeUsageHeating = 'COMPLETE_OFFICE_USAGE_HEATING',
+  CompleteOfficeUsageOther = 'COMPLETE_OFFICE_USAGE_OTHER',
+  CompleteOfficeUsagePhoneOrInternet = 'COMPLETE_OFFICE_USAGE_PHONE_OR_INTERNET',
+  CompleteOfficeUsageRentOrInterest = 'COMPLETE_OFFICE_USAGE_RENT_OR_INTEREST',
+  CompleteOfficeUsageUtility = 'COMPLETE_OFFICE_USAGE_UTILITY',
+  CompleteOfficeUsageUtilityAfterPayment = 'COMPLETE_OFFICE_USAGE_UTILITY_AFTER_PAYMENT',
+  CompleteTravelExpensesBusinessTrips = 'COMPLETE_TRAVEL_EXPENSES_BUSINESS_TRIPS',
+  CompleteTravelExpensesOther = 'COMPLETE_TRAVEL_EXPENSES_OTHER',
   EoyCarUsageLogbook = 'EOY_CAR_USAGE_LOGBOOK',
   EoyCarUsageOther = 'EOY_CAR_USAGE_OTHER',
   EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
@@ -2819,10 +2819,10 @@ export enum QuestionnaireTaskStatus {
 }
 
 export enum QuestionnaireType {
-  BizTaxBasicData = 'BIZ_TAX_BASIC_DATA',
-  BizTaxCarUsage = 'BIZ_TAX_CAR_USAGE',
-  BizTaxOfficeUsage = 'BIZ_TAX_OFFICE_USAGE',
-  BizTaxTravelExpenses = 'BIZ_TAX_TRAVEL_EXPENSES',
+  CompleteBasicData = 'COMPLETE_BASIC_DATA',
+  CompleteCarUsage = 'COMPLETE_CAR_USAGE',
+  CompleteOfficeUsage = 'COMPLETE_OFFICE_USAGE',
+  CompleteTravelExpenses = 'COMPLETE_TRAVEL_EXPENSES',
   EoyBasicData = 'EOY_BASIC_DATA',
   EoyBookkeeping = 'EOY_BOOKKEEPING',
   EoyCarUsage = 'EOY_CAR_USAGE',
@@ -3291,8 +3291,8 @@ export type TopUpInput = {
 };
 
 export enum TourName {
-  BizTaxQuestionnairePreview = 'BIZ_TAX_QUESTIONNAIRE_PREVIEW',
-  BookkeepingOnboarding = 'BOOKKEEPING_ONBOARDING'
+  BookkeepingOnboarding = 'BOOKKEEPING_ONBOARDING',
+  CompleteQuestionnairePreview = 'COMPLETE_QUESTIONNAIRE_PREVIEW'
 }
 
 export enum TourStatus {
@@ -3868,7 +3868,6 @@ export type User = {
   banners?: Maybe<Array<Banner>>;
   birthDate?: Maybe<Scalars['DateTime']>;
   birthPlace?: Maybe<Scalars['String']>;
-  bizTaxBookkeepingConfirmation?: Maybe<BizTaxBookkeepingConfirmation>;
   businessAddress?: Maybe<UserBusinessAddress>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
@@ -3886,6 +3885,7 @@ export type User = {
   clients: Array<Client>;
   /** @deprecated This field will be removed in an upcoming release. You should now rely on "isSelfEmployed" instead. */
   companyType?: Maybe<CompanyType>;
+  completeBookkeepingConfirmation?: Maybe<CompleteBookkeepingConfirmation>;
   country?: Maybe<Scalars['String']>;
   /** Coupon code assigned to the user that can be redeemed during subscription update */
   couponCodeOffer?: Maybe<Scalars['String']>;
@@ -4030,11 +4030,6 @@ export type UserBannersArgs = {
 };
 
 
-export type UserBizTaxBookkeepingConfirmationArgs = {
-  year: Scalars['Int'];
-};
-
-
 export type UserBusinessAssetArgs = {
   businessAssetId: Scalars['ID'];
 };
@@ -4042,6 +4037,11 @@ export type UserBusinessAssetArgs = {
 
 export type UserClientArgs = {
   id: Scalars['String'];
+};
+
+
+export type UserCompleteBookkeepingConfirmationArgs = {
+  year: Scalars['Int'];
 };
 
 
