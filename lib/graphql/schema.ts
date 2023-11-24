@@ -295,6 +295,40 @@ export type BizTaxBookkeepingConfirmation = {
   year: Scalars['Int'];
 };
 
+export type BizTaxCarUsageEuerRows = {
+  __typename?: 'BizTaxCarUsageEuerRows';
+  row106: Scalars['Int'];
+  row140: Scalars['Int'];
+  row142: Scalars['Int'];
+  row176: Scalars['Int'];
+};
+
+export type BizTaxHomeOfficeEuerRows = {
+  __typename?: 'BizTaxHomeOfficeEuerRows';
+  row172: Scalars['Int'];
+  row185: Scalars['Int'];
+};
+
+export type BizTaxQuestionnairesEuer = {
+  __typename?: 'BizTaxQuestionnairesEuer';
+  carUsage: BizTaxCarUsageEuerRows;
+  homeOffice: BizTaxHomeOfficeEuerRows;
+  travelExpenses: BizTaxTravelExpensesEuerRows;
+};
+
+export type BizTaxTravelExpensesEuerRows = {
+  __typename?: 'BizTaxTravelExpensesEuerRows';
+  row147: Scalars['Int'];
+  row171: Scalars['Int'];
+  row176: Scalars['Int'];
+};
+
+export type BoundDevice = {
+  __typename?: 'BoundDevice';
+  id: Scalars['String'];
+  name: Scalars['String'];
+};
+
 /** Business Address of a Kontax User */
 export type BusinessAddress = {
   __typename?: 'BusinessAddress';
@@ -901,6 +935,18 @@ export enum DeviceActivityType {
   PasswordReset = 'PASSWORD_RESET'
 }
 
+/** Device binding attempts */
+export type DeviceBindingRequest = {
+  __typename?: 'DeviceBindingRequest';
+  address: Scalars['String'];
+  confirmedAt?: Maybe<Scalars['DateTime']>;
+  createdAt: Scalars['DateTime'];
+  deviceName: Scalars['String'];
+  id: Scalars['ID'];
+  ipAddress: Scalars['String'];
+  rejectedAt?: Maybe<Scalars['DateTime']>;
+};
+
 export enum DeviceConsentEventType {
   Approved = 'APPROVED',
   Rejected = 'REJECTED'
@@ -1053,6 +1099,12 @@ export type FormDataPair = {
   __typename?: 'FormDataPair';
   key: Scalars['String'];
   value: Scalars['String'];
+};
+
+export type FrodaLendingEligibility = {
+  __typename?: 'FrodaLendingEligibility';
+  canRetryOn?: Maybe<Scalars['DateTime']>;
+  eligible: Scalars['Boolean'];
 };
 
 export enum Gender {
@@ -1375,6 +1427,8 @@ export type Mutation = {
   createContact: Contact;
   /** Creates a DATEV export */
   createDatevExport: DatevExport;
+  /** Create device binding request */
+  createDeviceBindingRequest: DeviceBindingRequest;
   /** Creates a draft external transaction entry */
   createDraftTransaction: CreateDraftTransactionResponse;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
@@ -1398,6 +1452,8 @@ export type Mutation = {
   declineDeclaration: DeclarationDecline;
   /** Remove an Asset */
   deleteAsset: MutationResult;
+  /** Delete bound device */
+  deleteBoundDevice: Scalars['Boolean'];
   /** Delete business asset */
   deleteBusinessAsset: MutationResult;
   /** Delete an OAuth2 client */
@@ -1435,8 +1491,12 @@ export type Mutation = {
   finalizeTransactionAssetUpload: TransactionAsset;
   /** Exports list of receipts for given time frame */
   generateReceiptExport: ReceiptExportResult;
+  /** Check if user is eligible for lending */
+  getLendingEligibility: FrodaLendingEligibility;
   initDirectDebitRefund: AuthorizeThroughDeviceSigningOrMobileNumberResponse;
   matchEmailDocumentToTransaction: MutationResult;
+  /** Onboards user if needed */
+  onboardUser: Scalars['String'];
   postponeQuestionnaireAnswer: Questionnaire;
   refundDirectDebit: MutationResult;
   /** Close and order new card. Call when customer's card is damaged */
@@ -1445,6 +1505,8 @@ export type Mutation = {
   replaceCard: Card;
   /** Adds card to Apple/Google Pay wallet */
   requestCardPushProvisioning: AuthorizeChangeRequestResponse;
+  /** Request access url */
+  requestFrodaAccessUrl?: Maybe<Scalars['String']>;
   /** Create a new identification if applicable */
   requestIdentification: IdentificationDetails;
   /** Create Overdraft Application  - only available for Kontist Application */
@@ -1473,6 +1535,8 @@ export type Mutation = {
   updateConsentForDeviceMonitoring?: Maybe<MutationResult>;
   /** Update contact */
   updateContact: Contact;
+  /** Update device binding request */
+  updateDeviceBindingRequest: Scalars['Boolean'];
   /** Updates document meta */
   updateDocument: Document;
   /** Updates draft external transaction entry. Returns null if finalized transaction was created */
@@ -1705,6 +1769,11 @@ export type MutationCreateDatevExportArgs = {
 };
 
 
+export type MutationCreateDeviceBindingRequestArgs = {
+  deviceName: Scalars['String'];
+};
+
+
 export type MutationCreateDraftTransactionArgs = {
   fileName: Scalars['String'];
 };
@@ -1783,6 +1852,11 @@ export type MutationDeclineDeclarationArgs = {
 
 export type MutationDeleteAssetArgs = {
   assetId: Scalars['ID'];
+};
+
+
+export type MutationDeleteBoundDeviceArgs = {
+  deviceId: Scalars['String'];
 };
 
 
@@ -2020,6 +2094,12 @@ export type MutationUpdateConsentForDeviceMonitoringArgs = {
 
 export type MutationUpdateContactArgs = {
   payload: UpdateContactArgs;
+};
+
+
+export type MutationUpdateDeviceBindingRequestArgs = {
+  id: Scalars['String'];
+  isConfirmation: Scalars['Boolean'];
 };
 
 
@@ -2549,7 +2629,6 @@ export enum PurchaseState {
 }
 
 export enum PurchaseType {
-  Accounting = 'ACCOUNTING',
   Basic = 'BASIC',
   BasicInitial = 'BASIC_INITIAL',
   BizTax = 'BIZ_TAX',
@@ -2595,12 +2674,16 @@ export type Query = {
   draftTransactions: Array<DraftTransaction>;
   /** Get all released generic features, that are needed before user creation */
   genericFeatures: Array<GenericFeature>;
+  /** Get device binding request */
+  getDeviceBindingRequest?: Maybe<DeviceBindingRequest>;
   /** Get bank information for IBAN */
   getIBANInformation: IbanInformation;
   /** Get all existing receipt exports requested by the user */
   getReceiptExports: Array<ReceiptExport>;
   /** Determines if user device has restricted key added */
   hasDeviceRestrictedKey: Scalars['Boolean'];
+  /** Returns list of bound devices */
+  listBoundDevices: Array<BoundDevice>;
   listPaymentMethods: Array<PaymentMethod>;
   naceCodes: Array<NaceCode>;
   status: SystemStatus;
@@ -2620,6 +2703,11 @@ export type QueryContactsArgs = {
 };
 
 
+export type QueryGetDeviceBindingRequestArgs = {
+  id?: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryGetIbanInformationArgs = {
   iban: Scalars['String'];
 };
@@ -2636,6 +2724,7 @@ export type QueryTermsAndConditionsArgs = {
 
 export type Questionnaire = {
   __typename?: 'Questionnaire';
+  answers: Array<QuestionnaireAnswer>;
   completedAt?: Maybe<Scalars['DateTime']>;
   context?: Maybe<Scalars['JSON']>;
   documents: Array<QuestionnaireDocument>;
@@ -2647,6 +2736,11 @@ export type Questionnaire = {
   syncedAt?: Maybe<Scalars['DateTime']>;
   type: QuestionnaireType;
   year: Scalars['Int'];
+};
+
+
+export type QuestionnaireAnswersArgs = {
+  questionNames?: InputMaybe<Array<Scalars['String']>>;
 };
 
 
@@ -3271,6 +3365,7 @@ export type TermsAndConditions = {
 };
 
 export enum TermsAndConditionsName {
+  InstantCreditTransfer = 'INSTANT_CREDIT_TRANSFER',
   TopUp = 'TOP_UP'
 }
 
@@ -3415,6 +3510,7 @@ export type TransactionCondition = {
   bookingDate_lt?: InputMaybe<Scalars['DateTime']>;
   bookingDate_lte?: InputMaybe<Scalars['DateTime']>;
   bookingDate_ne?: InputMaybe<Scalars['DateTime']>;
+  categoryCode_exist?: InputMaybe<Scalars['Boolean']>;
   category_eq?: InputMaybe<TransactionCategory>;
   category_in?: InputMaybe<Array<TransactionCategory>>;
   iban_eq?: InputMaybe<Scalars['String']>;
@@ -3443,6 +3539,7 @@ export type TransactionCondition = {
   valutaDate_lte?: InputMaybe<Scalars['DateTime']>;
   valutaDate_ne?: InputMaybe<Scalars['DateTime']>;
   vatAssets_exist?: InputMaybe<Scalars['Boolean']>;
+  vatCategoryCode_exist?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type TransactionFee = {
@@ -3488,6 +3585,7 @@ export type TransactionFilter = {
   bookingDate_lt?: InputMaybe<Scalars['DateTime']>;
   bookingDate_lte?: InputMaybe<Scalars['DateTime']>;
   bookingDate_ne?: InputMaybe<Scalars['DateTime']>;
+  categoryCode_exist?: InputMaybe<Scalars['Boolean']>;
   category_eq?: InputMaybe<TransactionCategory>;
   category_in?: InputMaybe<Array<TransactionCategory>>;
   conditions?: InputMaybe<Array<TransactionCondition>>;
@@ -3517,6 +3615,7 @@ export type TransactionFilter = {
   valutaDate_lte?: InputMaybe<Scalars['DateTime']>;
   valutaDate_ne?: InputMaybe<Scalars['DateTime']>;
   vatAssets_exist?: InputMaybe<Scalars['Boolean']>;
+  vatCategoryCode_exist?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type TransactionForAccountingView = {
@@ -3837,6 +3936,8 @@ export type UpdateTransferInput = {
   personalNote?: InputMaybe<Scalars['String']>;
   /** The purpose of the Standing Order - 140 max characters, if not specified with the update, it will be set to null */
   purpose?: InputMaybe<Scalars['String']>;
+  /** Unique id of transfer session */
+  reference?: InputMaybe<Scalars['String']>;
   /** The reoccurrence type of the payments for Standing Orders */
   reoccurrence?: InputMaybe<StandingOrderReoccurrenceType>;
   /** The type of transfer to update, currently only Standing Orders are supported */
@@ -3869,6 +3970,7 @@ export type User = {
   birthDate?: Maybe<Scalars['DateTime']>;
   birthPlace?: Maybe<Scalars['String']>;
   bizTaxBookkeepingConfirmation?: Maybe<BizTaxBookkeepingConfirmation>;
+  bizTaxQuestionnairesEuer: BizTaxQuestionnairesEuer;
   businessAddress?: Maybe<UserBusinessAddress>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
@@ -4031,6 +4133,11 @@ export type UserBannersArgs = {
 
 
 export type UserBizTaxBookkeepingConfirmationArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type UserBizTaxQuestionnairesEuerArgs = {
   year: Scalars['Int'];
 };
 
@@ -4311,8 +4418,6 @@ export type UserTour = {
 export type UserUpdateInput = {
   /** The version of terms user has accepted */
   acceptedTermsVersion?: InputMaybe<Scalars['String']>;
-  /** Indicates if user started upgrading to accounting plan */
-  accountingOnboardingStarted?: InputMaybe<Scalars['Boolean']>;
   accountingTool?: InputMaybe<Scalars['String']>;
   adjustAdvancePayments?: InputMaybe<Scalars['Boolean']>;
   birthDate?: InputMaybe<Scalars['DateTime']>;

@@ -166,9 +166,9 @@ describe("Subscription", () => {
     it("should call rawQuery and return results", async () => {
       // arrange
       const couponCode = "lexoffice100";
-      const type = PurchaseType.Accounting;
+      const type = PurchaseType.Premium;
       const subscriptionResult = {
-        type: "accounting",
+        type: "premium",
         state: "processed",
       };
       const subscription = new Subscription(client.graphQL);
