@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -59,6 +56,8 @@ export type Account = {
   /** A list of iban/name combinations based on existing user's transactions, provided to assist users when creating new transfers */
   transferSuggestions?: Maybe<Array<TransferSuggestion>>;
   transfers: TransfersConnection;
+  /** Account vat-related settings */
+  vatYearSettings: Array<VatYearSetting>;
 };
 
 
@@ -126,6 +125,12 @@ export type AccountTransfersArgs = {
   last?: InputMaybe<Scalars['Int']>;
   type: TransferType;
   where?: InputMaybe<TransfersConnectionFilter>;
+};
+
+
+/** The bank account of the current user */
+export type AccountVatYearSettingsArgs = {
+  year?: InputMaybe<Scalars['Int']>;
 };
 
 export type AccountBalance = {
@@ -302,6 +307,17 @@ export type BizTaxCarUsageEuerRows = {
   row142: Scalars['Int'];
   row176: Scalars['Int'];
 };
+
+export type BizTaxDeclarationPreview = {
+  __typename?: 'BizTaxDeclarationPreview';
+  pdf: Scalars['String'];
+};
+
+export enum BizTaxDeclarationType {
+  Euer = 'EUER',
+  TradeTax = 'TRADE_TAX',
+  VatAnnual = 'VAT_ANNUAL'
+}
 
 export type BizTaxHomeOfficeEuerRows = {
   __typename?: 'BizTaxHomeOfficeEuerRows';
@@ -1498,6 +1514,7 @@ export type Mutation = {
   /** Onboards user if needed */
   onboardUser: Scalars['String'];
   postponeQuestionnaireAnswer: Questionnaire;
+  previewBizTaxDeclaration: BizTaxDeclarationPreview;
   refundDirectDebit: MutationResult;
   /** Close and order new card. Call when customer's card is damaged */
   reorderCard: Card;
@@ -1570,6 +1587,7 @@ export type Mutation = {
   updateUserSignupInformation: MutationResult;
   /** Update user's tax details */
   updateUserTaxDetails: MutationResult;
+  updateVatYearSetting: VatYearSetting;
   /** Submits UStVA declaration */
   upsertDeclaration: Declaration;
   /** Create or update user products that can be linked to the user's invoice(s) */
@@ -1989,6 +2007,12 @@ export type MutationPostponeQuestionnaireAnswerArgs = {
 };
 
 
+export type MutationPreviewBizTaxDeclarationArgs = {
+  type: BizTaxDeclarationType;
+  year: Scalars['Int'];
+};
+
+
 export type MutationRefundDirectDebitArgs = {
   transactionId: Scalars['String'];
 };
@@ -2215,6 +2239,12 @@ export type MutationUpdateUserSignupInformationArgs = {
 
 export type MutationUpdateUserTaxDetailsArgs = {
   payload: UserTaxDetailsInput;
+};
+
+
+export type MutationUpdateVatYearSettingArgs = {
+  vatPaymentFrequency: PaymentFrequency;
+  year: Scalars['Int'];
 };
 
 
@@ -2786,8 +2816,6 @@ export type QuestionnaireDocumentInput = {
 
 export enum QuestionnaireDocumentType {
   BizTaxCarUsageLogbook = 'BIZ_TAX_CAR_USAGE_LOGBOOK',
-  BizTaxCarUsageOther = 'BIZ_TAX_CAR_USAGE_OTHER',
-  BizTaxCarUsagePrivatelyPaidCarExpenses = 'BIZ_TAX_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
   BizTaxCarUsagePurchaseContract = 'BIZ_TAX_CAR_USAGE_PURCHASE_CONTRACT',
   BizTaxCarUsageTraveledKmWithPrivateCar = 'BIZ_TAX_CAR_USAGE_TRAVELED_KM_WITH_PRIVATE_CAR',
   BizTaxOfficeUsageElectricity = 'BIZ_TAX_OFFICE_USAGE_ELECTRICITY',
@@ -2799,7 +2827,6 @@ export enum QuestionnaireDocumentType {
   BizTaxOfficeUsageUtility = 'BIZ_TAX_OFFICE_USAGE_UTILITY',
   BizTaxOfficeUsageUtilityAfterPayment = 'BIZ_TAX_OFFICE_USAGE_UTILITY_AFTER_PAYMENT',
   BizTaxTravelExpensesBusinessTrips = 'BIZ_TAX_TRAVEL_EXPENSES_BUSINESS_TRIPS',
-  BizTaxTravelExpensesOther = 'BIZ_TAX_TRAVEL_EXPENSES_OTHER',
   EoyCarUsageLogbook = 'EOY_CAR_USAGE_LOGBOOK',
   EoyCarUsageOther = 'EOY_CAR_USAGE_OTHER',
   EoyCarUsagePrivatelyPaidCarExpenses = 'EOY_CAR_USAGE_PRIVATELY_PAID_CAR_EXPENSES',
@@ -3366,6 +3393,7 @@ export type TermsAndConditions = {
 
 export enum TermsAndConditionsName {
   InstantCreditTransfer = 'INSTANT_CREDIT_TRANSFER',
+  Loan = 'LOAN',
   TopUp = 'TOP_UP'
 }
 
@@ -3531,6 +3559,7 @@ export type TransactionCondition = {
   source_eq?: InputMaybe<Scalars['String']>;
   source_in?: InputMaybe<Array<Scalars['String']>>;
   source_ne?: InputMaybe<Scalars['String']>;
+  splits_exist?: InputMaybe<Scalars['Boolean']>;
   type_eq?: InputMaybe<TransactionProjectionType>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
@@ -3607,6 +3636,7 @@ export type TransactionFilter = {
   source_eq?: InputMaybe<Scalars['String']>;
   source_in?: InputMaybe<Array<Scalars['String']>>;
   source_ne?: InputMaybe<Scalars['String']>;
+  splits_exist?: InputMaybe<Scalars['Boolean']>;
   type_eq?: InputMaybe<TransactionProjectionType>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']>;
@@ -4518,6 +4548,13 @@ export enum VatRate {
   Vat_16 = 'VAT_16',
   Vat_19 = 'VAT_19'
 }
+
+/** An account's VAT settings specific to a year */
+export type VatYearSetting = {
+  __typename?: 'VatYearSetting';
+  vatPaymentFrequency: Scalars['String'];
+  year: Scalars['Float'];
+};
 
 export type VirtualCardDetailsArgs = {
   deviceId: Scalars['String'];
