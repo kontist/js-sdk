@@ -1449,6 +1449,8 @@ export type Mutation = {
   createDraftTransaction: CreateDraftTransactionResponse;
   /** The logo a user can add to his invoice. The path to it is stored in invoiceSettings */
   createInvoiceLogo: CreateInvoiceLogoResponse;
+  /** Create an OCR Asset and obtain an upload config */
+  createOCRAsset: CreateAssetResponse;
   createQuestionnaireDocumentAsset: CreateAssetResponse;
   createReview: CreateReviewResponse;
   /** Create user's taxNumber */
@@ -1500,6 +1502,8 @@ export type Mutation = {
   duplicateInvoice: InvoiceOutput;
   /** Exit business asset */
   exitBusinessAsset: MutationResult;
+  /** Performs OCR on the asset and extracts data */
+  extractOCRData?: Maybe<OcrResult>;
   /** Confirm and validate an Asset upload as completed */
   finalizeAssetUpload: Asset;
   finalizeTaxCase: TaxCase;
@@ -1788,6 +1792,7 @@ export type MutationCreateDatevExportArgs = {
 
 
 export type MutationCreateDeviceBindingRequestArgs = {
+  deviceId?: InputMaybe<Scalars['String']>;
   deviceName: Scalars['String'];
 };
 
@@ -1799,6 +1804,12 @@ export type MutationCreateDraftTransactionArgs = {
 
 export type MutationCreateInvoiceLogoArgs = {
   filetype: Scalars['String'];
+};
+
+
+export type MutationCreateOcrAssetArgs = {
+  filetype: Scalars['String'];
+  name: Scalars['String'];
 };
 
 
@@ -1963,6 +1974,11 @@ export type MutationDuplicateInvoiceArgs = {
 export type MutationExitBusinessAssetArgs = {
   id: Scalars['ID'];
   payload: ExitBusinessAssetPayload;
+};
+
+
+export type MutationExtractOcrDataArgs = {
+  assetId: Scalars['String'];
 };
 
 
@@ -2564,6 +2580,14 @@ export enum NotificationType {
   Tax = 'TAX',
   Transactions = 'TRANSACTIONS'
 }
+
+export type OcrResult = {
+  __typename?: 'OCRResult';
+  amount?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
+  iban?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
 
 export type Overdraft = {
   __typename?: 'Overdraft';
@@ -4419,6 +4443,8 @@ export type UserTaxDetails = {
   /** @deprecated This field will be removed in an upcoming release. Do not rely on it for any new features */
   taxPaymentFrequency?: Maybe<TaxPaymentFrequency>;
   taxRate?: Maybe<Scalars['Int']>;
+  vatExemptionWithItd?: Maybe<VatExemptionWithItd>;
+  vatExemptionWithoutItd?: Maybe<VatExemptionWithoutItd>;
   vatNumber?: Maybe<Scalars['String']>;
   vatPaymentFrequency?: Maybe<PaymentFrequency>;
   vatRate?: Maybe<UserVatRate>;
@@ -4434,6 +4460,8 @@ export type UserTaxDetailsInput = {
   permanentExtensionStatus?: InputMaybe<PermanentExtensionStatus>;
   personalTaxNumber?: InputMaybe<Scalars['String']>;
   taxNumber?: InputMaybe<Scalars['String']>;
+  vatExemptionWithItd?: InputMaybe<VatExemptionWithItd>;
+  vatExemptionWithoutItd?: InputMaybe<VatExemptionWithoutItd>;
   vatNumber?: InputMaybe<Scalars['String']>;
   vatPaymentFrequency?: InputMaybe<PaymentFrequency>;
 };
@@ -4538,6 +4566,20 @@ export enum VatCategoryCode {
   NoVat = 'NO_VAT',
   ReverseCharge = 'REVERSE_CHARGE',
   ReverseChargeIt = 'REVERSE_CHARGE_IT'
+}
+
+export enum VatExemptionWithItd {
+  Section_4Nr_7 = 'SECTION_4_NR_7'
+}
+
+export enum VatExemptionWithoutItd {
+  Section_4Nr_8 = 'SECTION_4_NR_8',
+  Section_4Nr_11 = 'SECTION_4_NR_11',
+  Section_4Nr_14 = 'SECTION_4_NR_14',
+  Section_4Nr_16 = 'SECTION_4_NR_16',
+  Section_4Nr_20 = 'SECTION_4_NR_20',
+  Section_4Nr_21 = 'SECTION_4_NR_21',
+  Section_4Nr_22 = 'SECTION_4_NR_22'
 }
 
 export enum VatRate {
