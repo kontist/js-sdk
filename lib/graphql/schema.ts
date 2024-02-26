@@ -15,8 +15,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -197,6 +200,11 @@ export type AddressInput = {
   streetNumber: Scalars['String'];
 };
 
+export enum AnswerType {
+  TextAndFiles = 'TEXT_AND_FILES',
+  TextOnly = 'TEXT_ONLY'
+}
+
 export type Asset = {
   __typename?: 'Asset';
   assetableId: Scalars['ID'];
@@ -308,9 +316,29 @@ export type BizTaxCarUsageEuerRows = {
   row176: Scalars['Int'];
 };
 
-export type BizTaxDeclarationPreview = {
-  __typename?: 'BizTaxDeclarationPreview';
-  pdf: Scalars['String'];
+export type BizTaxDeclarationResultMessage = {
+  __typename?: 'BizTaxDeclarationResultMessage';
+  fieldIdentifier: Scalars['String'];
+  formLineNumber: Scalars['String'];
+  text: Scalars['String'];
+  type: BizTaxDeclarationResultMessageType;
+};
+
+export enum BizTaxDeclarationResultMessageType {
+  Notice = 'NOTICE',
+  ValidationError = 'VALIDATION_ERROR'
+}
+
+export type BizTaxDeclarationSubmission = {
+  __typename?: 'BizTaxDeclarationSubmission';
+  calculationSheet?: Maybe<Scalars['String']>;
+  isFinal: Scalars['Boolean'];
+  isSuccessful: Scalars['Boolean'];
+  messages: Array<BizTaxDeclarationResultMessage>;
+  pdf?: Maybe<Scalars['String']>;
+  submittedAt: Scalars['DateTime'];
+  type: BizTaxDeclarationType;
+  year: Scalars['Int'];
 };
 
 export enum BizTaxDeclarationType {
@@ -874,6 +902,7 @@ export type DatevExport = {
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   skr: Skr;
+  status: DatevExportStatus;
   uploadedAt?: Maybe<Scalars['DateTime']>;
   url?: Maybe<Scalars['String']>;
   withReceipts: Scalars['Boolean'];
@@ -885,6 +914,13 @@ export type DatevExportInput = {
   withReceipts: Scalars['Boolean'];
   year: Scalars['Int'];
 };
+
+export enum DatevExportStatus {
+  Created = 'CREATED',
+  Failed = 'FAILED',
+  InProgress = 'IN_PROGRESS',
+  Succeeded = 'SUCCEEDED'
+}
 
 export type Declaration = {
   __typename?: 'Declaration';
@@ -917,6 +953,7 @@ export type DeclarationStats = {
   __typename?: 'DeclarationStats';
   amount: Scalars['Int'];
   categoryGroups: Array<CategoryGroup>;
+  exitedBusinessAssetsWithVat: Array<BusinessAssetResponse>;
   uncategorized: Array<TransactionForAccountingView>;
 };
 
@@ -1518,7 +1555,7 @@ export type Mutation = {
   /** Onboards user if needed */
   onboardUser: Scalars['String'];
   postponeQuestionnaireAnswer: Questionnaire;
-  previewBizTaxDeclaration: BizTaxDeclarationPreview;
+  previewBizTaxDeclaration: BizTaxDeclarationSubmission;
   refundDirectDebit: MutationResult;
   /** Close and order new card. Call when customer's card is damaged */
   reorderCard: Card;
@@ -1542,9 +1579,12 @@ export type Mutation = {
   signSeizurePaymentOrder: MutationResult;
   skipIncomeTax: TaxCase;
   startQuestionnaire: Questionnaire;
+  submitBizTaxDeclaration: BizTaxDeclarationSubmission;
   submitBookkeepingQuestionnaire: Questionnaire;
   /** Submits UStVA declaration */
   submitDeclaration: Declaration;
+  /** Submit answer to a question */
+  submitQuestionSet: Scalars['Boolean'];
   submitQuestionnaireAnswer: Questionnaire;
   /** Subscribe user to a plan */
   subscribeToPlan: UserSubscription;
@@ -2091,6 +2131,12 @@ export type MutationStartQuestionnaireArgs = {
 };
 
 
+export type MutationSubmitBizTaxDeclarationArgs = {
+  type: BizTaxDeclarationType;
+  year: Scalars['Int'];
+};
+
+
 export type MutationSubmitBookkeepingQuestionnaireArgs = {
   questionnaireId: Scalars['ID'];
 };
@@ -2099,6 +2145,11 @@ export type MutationSubmitBookkeepingQuestionnaireArgs = {
 export type MutationSubmitDeclarationArgs = {
   period: Scalars['String'];
   year: Scalars['Int'];
+};
+
+
+export type MutationSubmitQuestionSetArgs = {
+  input: SubmitQuestionSetInput;
 };
 
 
@@ -2776,6 +2827,28 @@ export type QueryTermsAndConditionsArgs = {
   name?: InputMaybe<Scalars['String']>;
 };
 
+export type Question = {
+  __typename?: 'Question';
+  answerType: AnswerType;
+  documentType?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  question: Scalars['String'];
+};
+
+export type QuestionAnswer = {
+  answer: Scalars['String'];
+  documentIds?: InputMaybe<Array<Scalars['String']>>;
+  questionId: Scalars['String'];
+};
+
+export type QuestionSet = {
+  __typename?: 'QuestionSet';
+  deadline?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  questions: Array<Question>;
+};
+
 export type Questionnaire = {
   __typename?: 'Questionnaire';
   answers: Array<QuestionnaireAnswer>;
@@ -3230,6 +3303,11 @@ export enum SubmissionStatus {
   AlreadySubmitted = 'ALREADY_SUBMITTED',
   NotNeeded = 'NOT_NEEDED'
 }
+
+export type SubmitQuestionSetInput = {
+  answers: Array<QuestionAnswer>;
+  questionSetId: Scalars['String'];
+};
 
 export type Subscription = {
   __typename?: 'Subscription';
@@ -4024,6 +4102,7 @@ export type User = {
   birthDate?: Maybe<Scalars['DateTime']>;
   birthPlace?: Maybe<Scalars['String']>;
   bizTaxBookkeepingConfirmation?: Maybe<BizTaxBookkeepingConfirmation>;
+  bizTaxDeclarationSubmissions: Array<BizTaxDeclarationSubmission>;
   bizTaxQuestionnairesEuer: BizTaxQuestionnairesEuer;
   businessAddress?: Maybe<UserBusinessAddress>;
   /** User's business addresses */
@@ -4143,6 +4222,8 @@ export type User = {
    * @deprecated This field will be removed in an upcoming release and should now be queried from "screeningProgress"
    */
   screeningStatus?: Maybe<ScreeningStatus>;
+  /** Show question set */
+  showQuestionSet?: Maybe<QuestionSet>;
   street?: Maybe<Scalars['String']>;
   /** The available subscription plans */
   subscriptionPlans: SubscriptionPlansResponse;
@@ -4187,6 +4268,11 @@ export type UserBannersArgs = {
 
 
 export type UserBizTaxBookkeepingConfirmationArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type UserBizTaxDeclarationSubmissionsArgs = {
   year: Scalars['Int'];
 };
 
