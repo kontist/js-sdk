@@ -34,6 +34,7 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         exclude: "lib/graphql/schema.flow.js",
+        extractComments: false,
       }),
     ],
   },
