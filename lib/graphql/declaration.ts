@@ -99,6 +99,13 @@ const GET_DECLARATION_STATS = `
               isSplit
             }
           }
+          exitedBusinessAssetsWithVat {
+            id
+            exitAmount
+            exitDate
+            assetClass
+            assetType
+          }
         }
       }
     }

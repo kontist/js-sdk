@@ -169,6 +169,7 @@ describe("Declaration", () => {
               ],
             },
           ],
+          exitedBusinessAssetsWithVat: []
         },
       ];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
