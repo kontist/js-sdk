@@ -1,5 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   entry: "./dist/lib/index.js",
@@ -22,4 +23,18 @@ module.exports = {
       ],
     }),
   ],
+  resolve: {
+    fallback: {
+      // SEE: https://github.com/mulesoft-labs/js-client-oauth2/issues/190
+      querystring: require.resolve("querystring-es3"),
+    },
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        exclude: "lib/graphql/schema.flow.js",
+      }),
+    ],
+  },
 };
