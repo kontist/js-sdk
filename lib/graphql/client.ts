@@ -1,4 +1,4 @@
-import * as ws from "ws";
+import { WebSocket } from "isomorphic-ws";
 
 import { Client, createClient } from "graphql-ws";
 import { GraphQLError, UserUnauthorizedError } from "../errors";
@@ -131,12 +131,11 @@ export class GraphQLClient {
   private createSubscriptionClient = (): Client => {
     const auth = this.getAuthHeader();
     const connectionParams = auth ? { [auth[0]]: auth[1] } : {};
-    const webSocketImpl = typeof window === "undefined" ? ws : window.WebSocket;
 
     return this.createClient({
       url: this.subscriptionEndpoint,
       connectionParams,
-      webSocketImpl,
+      webSocketImpl: WebSocket,
     })
   }
 

@@ -1,5 +1,5 @@
 import * as sinon from "sinon";
-import * as ws from "ws";
+import { WebSocket } from "isomorphic-ws";
 
 import { GraphQLError, UserUnauthorizedError } from "../../lib/errors";
 
@@ -540,38 +540,15 @@ describe("createSubscriptionClient", () => {
     it("should create a new SubscriptionClient and return it", () => {
       const subscriptionClient = client.graphQL.createSubscriptionClient();
       expect(createClientStub.callCount).to.equal(1);
-      const {url, connectionParams} = createClientStub.getCall(
-        0,
-      ).args[0];
+      const { url, connectionParams, webSocketImpl } =
+        createClientStub.getCall(0).args[0];
 
-      expect(url).to.equal(
-        `${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`,
-      );
+      expect(url).to.equal(`${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`);
       expect(connectionParams).to.deep.equal({
         Authorization: "Bearer dummy-token",
       });
+      expect(webSocketImpl).to.equal(WebSocket);
       expect(subscriptionClient).to.equal(fakeGraphqlWsClient);
-    });
-
-    describe("when executing in a browser environment", () => {
-      before(() => {
-        (global as any).window = {
-          WebSocket: {...ws, fake: true},
-        };
-      });
-
-      after(() => {
-        (global as any).window = undefined;
-      });
-
-      it("should use the native browser WebSocket implementation", () => {
-        createClientStub.resetHistory();
-
-        client.graphQL.createSubscriptionClient();
-
-        expect(createClientStub.callCount).to.equal(1);
-        expect(createClientStub.getCall(0).args[0].webSocketImpl.fake).to.equal(true);
-      });
     });
   });
 });
