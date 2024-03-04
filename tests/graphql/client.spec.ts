@@ -1,4 +1,5 @@
 import * as sinon from "sinon";
+import { WebSocket } from "isomorphic-ws";
 
 import { GraphQLError, UserUnauthorizedError } from "../../lib/errors";
 
@@ -539,16 +540,14 @@ describe("createSubscriptionClient", () => {
     it("should create a new SubscriptionClient and return it", () => {
       const subscriptionClient = client.graphQL.createSubscriptionClient();
       expect(createClientStub.callCount).to.equal(1);
-      const {url, connectionParams} = createClientStub.getCall(
-        0,
-      ).args[0];
+      const { url, connectionParams, webSocketImpl } =
+        createClientStub.getCall(0).args[0];
 
-      expect(url).to.equal(
-        `${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`,
-      );
+      expect(url).to.equal(`${KONTIST_SUBSCRIPTION_API_BASE_URL}/api/graphql`);
       expect(connectionParams).to.deep.equal({
         Authorization: "Bearer dummy-token",
       });
+      expect(webSocketImpl).to.equal(WebSocket);
       expect(subscriptionClient).to.equal(fakeGraphqlWsClient);
     });
   });
