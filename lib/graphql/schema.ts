@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -141,6 +138,14 @@ export type AccountBalance = {
   currency?: Maybe<Scalars['String']>;
   unit?: Maybe<Scalars['String']>;
   value: Scalars['Float'];
+};
+
+export type AccountInsight = {
+  __typename?: 'AccountInsight';
+  expense: Scalars['Int'];
+  income: Scalars['Int'];
+  period: Period;
+  profitAndLoss: Scalars['Int'];
 };
 
 export enum AccountState {
@@ -273,6 +278,7 @@ export type Banner = {
 };
 
 export enum BannerName {
+  BizTaxTrial = 'BIZ_TAX_TRIAL',
   Bookkeeping = 'BOOKKEEPING',
   FriendReferral = 'FRIEND_REFERRAL',
   Overdraft = 'OVERDRAFT',
@@ -2703,6 +2709,12 @@ export type PendingTransactionVerification = {
   name: Scalars['String'];
 };
 
+export type Period = {
+  __typename?: 'Period';
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+};
+
 export enum PermanentExtensionStatus {
   DoesHave = 'DOES_HAVE',
   DoesNotHave = 'DOES_NOT_HAVE',
@@ -2787,6 +2799,7 @@ export type Query = {
   getReceiptExports: Array<ReceiptExport>;
   /** Determines if user device has restricted key added */
   hasDeviceRestrictedKey: Scalars['Boolean'];
+  insights: Array<AccountInsight>;
   /** Returns list of bound devices */
   listBoundDevices: Array<BoundDevice>;
   listPaymentMethods: Array<PaymentMethod>;
@@ -2820,6 +2833,12 @@ export type QueryGetIbanInformationArgs = {
 
 export type QueryHasDeviceRestrictedKeyArgs = {
   deviceId: Scalars['String'];
+};
+
+
+export type QueryInsightsArgs = {
+  endDate: Scalars['String'];
+  startDate: Scalars['String'];
 };
 
 
@@ -4104,6 +4123,7 @@ export type User = {
   bizTaxBookkeepingConfirmation?: Maybe<BizTaxBookkeepingConfirmation>;
   bizTaxDeclarationSubmissions: Array<BizTaxDeclarationSubmission>;
   bizTaxQuestionnairesEuer: BizTaxQuestionnairesEuer;
+  biztaxTrialBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   businessAddress?: Maybe<UserBusinessAddress>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
