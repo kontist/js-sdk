@@ -1077,6 +1077,7 @@ export type DraftTransaction = {
   amount?: Maybe<Scalars['Int']>;
   assets: Array<Asset>;
   categoryCode?: Maybe<CategoryCode>;
+  description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   isCashTransaction: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
@@ -3996,6 +3997,7 @@ export type UpdateDraftTransactionInput = {
   assetUploaded?: InputMaybe<Scalars['Boolean']>;
   businessAsset?: InputMaybe<BusinessAssetInput>;
   categoryCode?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   isCashTransaction?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
