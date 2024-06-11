@@ -15,11 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
 
@@ -141,6 +138,22 @@ export type AccountBalance = {
   currency?: Maybe<Scalars['String']>;
   unit?: Maybe<Scalars['String']>;
   value: Scalars['Float'];
+};
+
+export type AccountInsight = {
+  __typename?: 'AccountInsight';
+  expense: Scalars['Int'];
+  income: Scalars['Int'];
+  period: Period;
+  profitAndLoss: Scalars['Int'];
+};
+
+export type AccountInsightV2 = {
+  __typename?: 'AccountInsightV2';
+  expense: Insight;
+  income: Insight;
+  period: Period;
+  profitAndLoss: Insight;
 };
 
 export enum AccountState {
@@ -273,6 +286,7 @@ export type Banner = {
 };
 
 export enum BannerName {
+  BizTaxTrial = 'BIZ_TAX_TRIAL',
   Bookkeeping = 'BOOKKEEPING',
   FriendReferral = 'FRIEND_REFERRAL',
   Overdraft = 'OVERDRAFT',
@@ -316,6 +330,24 @@ export type BizTaxCarUsageEuerRows = {
   row176: Scalars['Int'];
 };
 
+export type BizTaxDeclarationBookkeepingConfirmation = {
+  __typename?: 'BizTaxDeclarationBookkeepingConfirmation';
+  confirmedAt: Scalars['DateTime'];
+  year: Scalars['Int'];
+};
+
+export type BizTaxDeclarationCheckResult = {
+  __typename?: 'BizTaxDeclarationCheckResult';
+  name: Scalars['String'];
+  success: Scalars['Boolean'];
+};
+
+export type BizTaxDeclarationIsRelevant = {
+  __typename?: 'BizTaxDeclarationIsRelevant';
+  isRelevant: Scalars['Boolean'];
+  year: Scalars['Int'];
+};
+
 export type BizTaxDeclarationResultMessage = {
   __typename?: 'BizTaxDeclarationResultMessage';
   fieldIdentifier: Scalars['String'];
@@ -328,6 +360,13 @@ export enum BizTaxDeclarationResultMessageType {
   Notice = 'NOTICE',
   ValidationError = 'VALIDATION_ERROR'
 }
+
+export type BizTaxDeclarationSetting = {
+  __typename?: 'BizTaxDeclarationSetting';
+  bookkeepingConfirmedAt?: Maybe<Scalars['DateTime']>;
+  isRelevant: Scalars['Boolean'];
+  year: Scalars['Int'];
+};
 
 export type BizTaxDeclarationSubmission = {
   __typename?: 'BizTaxDeclarationSubmission';
@@ -1077,7 +1116,6 @@ export type DraftTransaction = {
   amount?: Maybe<Scalars['Int']>;
   assets: Array<Asset>;
   categoryCode?: Maybe<CategoryCode>;
-  description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   isCashTransaction: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
@@ -1145,6 +1183,8 @@ export type FilterPreset = {
 };
 
 export type FilterPresetInput = {
+  insightPresetType?: InputMaybe<InsightPresetType>;
+  insightWithPrivateTransactions?: InputMaybe<Scalars['Boolean']>;
   value: Scalars['String'];
   year?: InputMaybe<Scalars['Int']>;
 };
@@ -1227,6 +1267,29 @@ export enum IdnowReminderType {
   Email = 'EMAIL',
   Sms = 'SMS'
 }
+
+export type Insight = {
+  __typename?: 'Insight';
+  gross: Scalars['Int'];
+  grossAndPrivate: Scalars['Int'];
+  net: Scalars['Int'];
+  netAndPrivate: Scalars['Int'];
+  private: Scalars['Int'];
+  vat: Scalars['Int'];
+};
+
+export enum InsightPresetType {
+  Expense = 'EXPENSE',
+  Income = 'INCOME',
+  ProfitAndLoss = 'PROFIT_AND_LOSS'
+}
+
+export type InsightsFilterPreset = FilterPreset & {
+  __typename?: 'InsightsFilterPreset';
+  insightPresetType: InsightPresetType;
+  insightWithPrivateTransactions?: Maybe<Scalars['Boolean']>;
+  value: Scalars['String'];
+};
 
 export enum IntegrationType {
   Fastbill = 'FASTBILL',
@@ -1418,6 +1481,12 @@ export type Money = {
   fullAmount?: Maybe<Scalars['Int']>;
 };
 
+export type Municipality = {
+  __typename?: 'Municipality';
+  name: Scalars['String'];
+  taxRate: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Activate a card */
@@ -1449,7 +1518,7 @@ export type Mutation = {
   changeCardPINWithChangeRequest: ConfirmationRequest;
   /** Block or unblock or close a card */
   changeCardStatus: Card;
-  confirmBizTaxBookkeeping: BizTaxBookkeepingConfirmation;
+  confirmBizTaxBookkeeping: BizTaxDeclarationBookkeepingConfirmation;
   /** Confirm a Standing Order cancellation */
   confirmCancelTransfer: Transfer;
   /** Confirms adding card to Apple/Google Pay wallet */
@@ -1506,6 +1575,7 @@ export type Mutation = {
   createUser: PublicMutationResult;
   createUserEmailAlias: MutationResult;
   declineDeclaration: DeclarationDecline;
+  declineTrial: MutationResult;
   /** Remove an Asset */
   deleteAsset: MutationResult;
   /** Delete bound device */
@@ -1552,6 +1622,7 @@ export type Mutation = {
   /** Check if user is eligible for lending */
   getLendingEligibility: FrodaLendingEligibility;
   initDirectDebitRefund: AuthorizeThroughDeviceSigningOrMobileNumberResponse;
+  markViewAsSeen: MutationResult;
   matchEmailDocumentToTransaction: MutationResult;
   /** Onboards user if needed */
   onboardUser: Scalars['String'];
@@ -1589,6 +1660,9 @@ export type Mutation = {
   submitQuestionnaireAnswer: Questionnaire;
   /** Subscribe user to a plan */
   subscribeToPlan: UserSubscription;
+  /** Terminate Overdraft  - only available for Kontist Application */
+  terminateOverdraft?: Maybe<MutationResult>;
+  updateBizTaxIsRelevant: BizTaxDeclarationIsRelevant;
   /** Update settings (e.g. limits) */
   updateCardSettings: CardSettings;
   /** Update an OAuth2 client */
@@ -2052,6 +2126,11 @@ export type MutationInitDirectDebitRefundArgs = {
 };
 
 
+export type MutationMarkViewAsSeenArgs = {
+  name: Scalars['String'];
+};
+
+
 export type MutationMatchEmailDocumentToTransactionArgs = {
   emailDocumentId: Scalars['ID'];
   transactionId: Scalars['ID'];
@@ -2164,6 +2243,12 @@ export type MutationSubmitQuestionnaireAnswerArgs = {
 export type MutationSubscribeToPlanArgs = {
   couponCode?: InputMaybe<Scalars['String']>;
   type: PurchaseType;
+};
+
+
+export type MutationUpdateBizTaxIsRelevantArgs = {
+  isRelevant: Scalars['Boolean'];
+  year: Scalars['Int'];
 };
 
 
@@ -2704,6 +2789,12 @@ export type PendingTransactionVerification = {
   name: Scalars['String'];
 };
 
+export type Period = {
+  __typename?: 'Period';
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+};
+
 export enum PermanentExtensionStatus {
   DoesHave = 'DOES_HAVE',
   DoesNotHave = 'DOES_NOT_HAVE',
@@ -2788,9 +2879,12 @@ export type Query = {
   getReceiptExports: Array<ReceiptExport>;
   /** Determines if user device has restricted key added */
   hasDeviceRestrictedKey: Scalars['Boolean'];
+  insights: Array<AccountInsight>;
+  insightsV2: Array<AccountInsightV2>;
   /** Returns list of bound devices */
   listBoundDevices: Array<BoundDevice>;
   listPaymentMethods: Array<PaymentMethod>;
+  municipalities: Array<Municipality>;
   naceCodes: Array<NaceCode>;
   status: SystemStatus;
   termsAndConditions?: Maybe<Array<TermsAndConditions>>;
@@ -2824,6 +2918,23 @@ export type QueryHasDeviceRestrictedKeyArgs = {
 };
 
 
+export type QueryInsightsArgs = {
+  endDate: Scalars['String'];
+  startDate: Scalars['String'];
+};
+
+
+export type QueryInsightsV2Args = {
+  endDate: Scalars['String'];
+  startDate: Scalars['String'];
+};
+
+
+export type QueryMunicipalitiesArgs = {
+  searchTerm?: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryTermsAndConditionsArgs = {
   name?: InputMaybe<Scalars['String']>;
 };
@@ -2845,7 +2956,6 @@ export type QuestionAnswer = {
 export type QuestionSet = {
   __typename?: 'QuestionSet';
   deadline?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   questions: Array<Question>;
 };
@@ -3518,6 +3628,7 @@ export type TopUpInput = {
 
 export enum TourName {
   BizTaxQuestionnairePreview = 'BIZ_TAX_QUESTIONNAIRE_PREVIEW',
+  BizTaxTrial = 'BIZ_TAX_TRIAL',
   BookkeepingOnboarding = 'BOOKKEEPING_ONBOARDING'
 }
 
@@ -3997,7 +4108,6 @@ export type UpdateDraftTransactionInput = {
   assetUploaded?: InputMaybe<Scalars['Boolean']>;
   businessAsset?: InputMaybe<BusinessAssetInput>;
   categoryCode?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   isCashTransaction?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
@@ -4104,8 +4214,11 @@ export type User = {
   birthDate?: Maybe<Scalars['DateTime']>;
   birthPlace?: Maybe<Scalars['String']>;
   bizTaxBookkeepingConfirmation?: Maybe<BizTaxBookkeepingConfirmation>;
+  bizTaxDeclarationChecks: Array<BizTaxDeclarationCheckResult>;
+  bizTaxDeclarationSetting: BizTaxDeclarationSetting;
   bizTaxDeclarationSubmissions: Array<BizTaxDeclarationSubmission>;
   bizTaxQuestionnairesEuer: BizTaxQuestionnairesEuer;
+  biztaxTrialBannerDismissedAt?: Maybe<Scalars['DateTime']>;
   businessAddress?: Maybe<UserBusinessAddress>;
   /** User's business addresses */
   businessAddresses: Array<BusinessAddress>;
@@ -4270,6 +4383,16 @@ export type UserBannersArgs = {
 
 
 export type UserBizTaxBookkeepingConfirmationArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type UserBizTaxDeclarationChecksArgs = {
+  year: Scalars['Int'];
+};
+
+
+export type UserBizTaxDeclarationSettingArgs = {
   year: Scalars['Int'];
 };
 
@@ -4486,6 +4609,8 @@ export type UserMetadata = {
   phoneNumberVerificationRequired: Scalars['Boolean'];
   signupCompleted: Scalars['Boolean'];
   taxAdvisoryTermsVersionAccepted: Scalars['Boolean'];
+  /** Screens and banners seen by user */
+  viewLogs?: Maybe<Array<Scalars['String']>>;
 };
 
 export type UserOrAuthResponse = AuthorizeThroughDeviceSigningOrMobileNumberResponse | User;
