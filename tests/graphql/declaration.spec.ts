@@ -153,6 +153,25 @@ describe("Declaration", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq([]);
     });
+
+    it("should call rawQuery and return empty array for missing vatDeclarationSubmissions", async () => {
+      // arrange
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {},
+        },
+      } as any);
+
+      // act
+      const result = await declaration.fetchDeclarationSubmissions({
+        year: 2024,
+        period: "01"
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq([]);
+    });
   });
 
   describe("#getPdfUrl", () => {
