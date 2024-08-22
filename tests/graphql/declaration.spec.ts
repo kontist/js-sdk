@@ -10,6 +10,8 @@ import {
   TransactionCategory,
   CategorizeTransactionForDeclarationResponse,
   SubmissionStatus,
+  DeclarationSubmission,
+  BizTaxDeclarationResultMessageType,
 } from "../../lib/graphql/schema";
 
 describe("Declaration", () => {
@@ -68,6 +70,72 @@ describe("Declaration", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(declarationsRespone);
+    });
+
+    it("should call rawQuery and return empty array for missing account", async () => {
+      // arrange
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      // act
+      const result = await declaration.fetch({
+        type: DeclarationType.UStVa,
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq([]);
+    });
+  });
+
+  describe("#fetchDeclarationSubmissions", () => {
+    it("should call rawQuery and return declaration submissions array", async () => {
+      // arrange
+      const declarationSubmissionsResponse: DeclarationSubmission[] = [
+        {
+          id: 1,
+          period: "01",
+          year: 2024,
+          submittedAt: "2024-01-01",
+          isFinal: true,
+          isSuccessful: false,
+          messages: [
+            {
+              fieldIdentifier: "fieldIdentifier",
+              formLineNumber: "11",
+              text: "some error text",
+              type: BizTaxDeclarationResultMessageType.Notice,
+            }
+          ],
+        },
+        {
+          id: 2,
+          period: "01",
+          year: 2024,
+          submittedAt: "2024-02-01",
+          isFinal: true,
+          isSuccessful: true,
+          messages: [],
+        },
+      ];
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {
+          mainAccount: {
+            vatDeclarationSubmissions: declarationSubmissionsResponse,
+          },
+        },
+      } as any);
+
+      // act
+      const result = await declaration.fetchDeclarationSubmissions({
+        year: 2024,
+        period: "01"
+      });
+
+      // assert
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.deep.eq(declarationSubmissionsResponse);
     });
 
     it("should call rawQuery and return empty array for missing account", async () => {
