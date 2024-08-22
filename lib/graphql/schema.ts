@@ -58,6 +58,7 @@ export type Account = {
   /** A list of iban/name combinations based on existing user's transactions, provided to assist users when creating new transfers */
   transferSuggestions?: Maybe<Array<TransferSuggestion>>;
   transfers: TransfersConnection;
+  vatDeclarationSubmissions: Array<DeclarationSubmission>;
   /** Account vat-related settings */
   vatYearSettings: Array<VatYearSetting>;
 };
@@ -127,6 +128,13 @@ export type AccountTransfersArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   type: TransferType;
   where?: InputMaybe<TransfersConnectionFilter>;
+};
+
+
+/** The bank account of the current user */
+export type AccountVatDeclarationSubmissionsArgs = {
+  period: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
 };
 
 
@@ -1012,6 +1020,17 @@ export type DeclarationStats = {
   categoryGroups: Array<CategoryGroup>;
   exitedBusinessAssetsWithVat: Array<BusinessAssetResponse>;
   uncategorized: Array<TransactionForAccountingView>;
+};
+
+export type DeclarationSubmission = {
+  __typename?: 'DeclarationSubmission';
+  id: Scalars['Int']['output'];
+  isFinal: Scalars['Boolean']['output'];
+  isSuccessful: Scalars['Boolean']['output'];
+  messages: Array<BizTaxDeclarationResultMessage>;
+  period: Scalars['String']['output'];
+  submittedAt: Scalars['DateTime']['output'];
+  year: Scalars['Int']['output'];
 };
 
 export enum DeclarationType {
