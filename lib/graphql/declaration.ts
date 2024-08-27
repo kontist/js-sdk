@@ -10,6 +10,8 @@ import {
   DeclarationStats,
   MutationCategorizeTransactionForDeclarationArgs,
   CategorizeTransactionForDeclarationResponse,
+  AccountVatDeclarationSubmissionsArgs,
+  DeclarationSubmission
 } from "./schema";
 
 const DECLARATION_FIELDS = `
@@ -21,12 +23,39 @@ const DECLARATION_FIELDS = `
   submissionStatus
 `;
 
+const DECLARATION_SUBMISSION_FIELDS = `
+  id
+  period
+  year
+  isFinal
+  isSuccessful
+  submittedAt
+  messages {
+    type
+    text
+    formLineNumber
+    fieldIdentifier
+  }
+`;
+
 const FETCH_DECLARATIONS = `
   query fetchDeclarations ($type: DeclarationType!) {
     viewer {
       mainAccount {
         declarations (type: $type) {
           ${DECLARATION_FIELDS}
+        }
+      }
+    }
+  }
+`;
+
+const FETCH_DECLARATION_SUBMISSIONS = `
+  query fetchDeclarationSubmissions ($year: Int!, $period: String!) {
+    viewer {
+      mainAccount {
+        vatDeclarationSubmissions (year: $year, period: $period) {
+          ${DECLARATION_SUBMISSION_FIELDS}
         }
       }
     }
@@ -146,6 +175,14 @@ export class Declaration {
     const result: Query = await this.client.rawQuery(FETCH_DECLARATIONS, args);
 
     return result.viewer?.mainAccount?.declarations || [];
+  }
+
+  public async fetchDeclarationSubmissions(
+    args: AccountVatDeclarationSubmissionsArgs
+  ): Promise<DeclarationSubmission[]> {
+    const result: Query = await this.client.rawQuery(FETCH_DECLARATION_SUBMISSIONS, args);
+
+    return result.viewer?.mainAccount?.vatDeclarationSubmissions || [];
   }
 
   public async getPdfUrl(
