@@ -1,15 +1,14 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
+import { Client } from "../..";
 import { createClient } from "../helpers";
 
 describe("Auth: DeviceBinding", () => {
   describe("#createDevice", () => {
     const createDeviceParams = {
       name: "iPhone XS",
-      key:
-        "0402e86575939cd541f016b69b1bc6ee97736f7a6d32c0ad375695ffdc03acf21a3b54224fd164ad6f9cfdfb42b74f49f3d34a41f95d62e893be4977c7ec154f29",
+      key: "0402e86575939cd541f016b69b1bc6ee97736f7a6d32c0ad375695ffdc03acf21a3b54224fd164ad6f9cfdfb42b74f49f3d34a41f95d62e893be4977c7ec154f29",
     };
 
     const createDeviceResponse = {
@@ -51,7 +50,7 @@ describe("Auth: DeviceBinding", () => {
         .resolves();
       const result = await client.auth.device.verifyDevice(
         deviceId,
-        verifyDeviceParams,
+        verifyDeviceParams
       );
 
       expect(requestStub.callCount).to.equal(1);
@@ -123,7 +122,7 @@ describe("Auth: DeviceBinding", () => {
       const result = await client.auth.device.verifyDeviceChallenge(
         deviceId,
         challengeId,
-        verifyDeviceChallengeParams,
+        verifyDeviceChallengeParams
       );
 
       expect(requestStub.callCount).to.equal(1);
@@ -135,7 +134,7 @@ describe("Auth: DeviceBinding", () => {
       expect(result.accessToken).to.equal(verifyDeviceChallengeResponse.token);
       expect(
         client.auth.tokenManager.token &&
-          client.auth.tokenManager.token.accessToken,
+          client.auth.tokenManager.token.accessToken
       ).to.equal(verifyDeviceChallengeResponse.token);
     });
 
@@ -153,7 +152,7 @@ describe("Auth: DeviceBinding", () => {
         const result = await client.auth.device.verifyDeviceChallenge(
           deviceId,
           challengeId,
-          verifyDeviceChallengeParams,
+          verifyDeviceChallengeParams
         );
 
         expect(requestStub.callCount).to.equal(1);
@@ -163,18 +162,18 @@ describe("Auth: DeviceBinding", () => {
           verifyDeviceChallengeParams,
         ]);
         expect(result.accessToken).to.equal(
-          verifyDeviceChallengeResponseWithRefreshToken.token,
+          verifyDeviceChallengeResponseWithRefreshToken.token
         );
         expect(result.refreshToken).to.equal(
-          verifyDeviceChallengeResponseWithRefreshToken.refresh_token,
+          verifyDeviceChallengeResponseWithRefreshToken.refresh_token
         );
         expect(
           client.auth.tokenManager.token &&
-            client.auth.tokenManager.token.accessToken,
+            client.auth.tokenManager.token.accessToken
         ).to.equal(verifyDeviceChallengeResponseWithRefreshToken.token);
         expect(
           client.auth.tokenManager.token &&
-            client.auth.tokenManager.token.refreshToken,
+            client.auth.tokenManager.token.refreshToken
         ).to.equal(verifyDeviceChallengeResponseWithRefreshToken.refresh_token);
       });
     });

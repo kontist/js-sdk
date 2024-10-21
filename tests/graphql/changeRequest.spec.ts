@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { ChangeRequest } from "../../lib/graphql/changeRequest";
+import { Client } from "../..";
+import { ChangeRequest } from "../../graphql/changeRequest";
 import {
   AuthorizeChangeRequestResponse,
   ConfirmChangeRequestResponse,
-} from "../../lib/graphql/schema";
+} from "../../graphql/schema";
 
 describe("ChangeRequest", () => {
   let sandbox: sinon.SinonSandbox;

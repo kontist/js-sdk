@@ -1,13 +1,12 @@
 import * as sinon from "sinon";
 import { WebSocket } from "isomorphic-ws";
-
-import { GraphQLError, UserUnauthorizedError } from "../../lib/errors";
-
 import { GraphQLClient as GQLClient } from "graphql-request";
-import { KONTIST_SUBSCRIPTION_API_BASE_URL } from "../../lib/constants";
-import { SubscriptionType } from "../../lib/graphql/types";
-import { createClient } from "../helpers";
 import { expect } from "chai";
+
+import { GraphQLError, UserUnauthorizedError } from "../../errors";
+import { KONTIST_SUBSCRIPTION_API_BASE_URL } from "../../constants";
+import { SubscriptionType } from "../../graphql/types";
+import { createClient } from "../helpers";
 
 describe("rawQuery", () => {
   describe("Error handling", () => {
@@ -110,13 +109,13 @@ describe("subscribe", () => {
       observableMock.nextHandlers.push(next as any);
       observableMock.errorHandlers.push(error as any);
       return () => {
-          observableMock.nextHandlers = observableMock.nextHandlers.filter(
-            (handler: any) => handler !== next,
-          );
-          observableMock.errorHandlers = observableMock.errorHandlers.filter(
-            (handler: any) => handler !== error,
-          );
-        }
+        observableMock.nextHandlers = observableMock.nextHandlers.filter(
+          (handler: any) => handler !== next
+        );
+        observableMock.errorHandlers = observableMock.errorHandlers.filter(
+          (handler: any) => handler !== error
+        );
+      };
     });
   const clientMock = {
     on: sinon.spy(),
@@ -144,7 +143,7 @@ describe("subscribe", () => {
   });
 
   describe("when adding the first subscription", () => {
-    before(() => {
+    beforeEach(() => {
       const { unsubscribe } = client.graphQL.subscribe({
         query: subscriptionQuery,
         type: SubscriptionType.newTransaction,
@@ -160,11 +159,9 @@ describe("subscribe", () => {
 
     it("should setup a disconnection handler", () => {
       expect(clientMock.on.callCount).to.equal(1);
-      expect(clientMock.on.getCall(0).args[0]).to.equal(
-        'closed'
-      );
+      expect(clientMock.on.getCall(0).args[0]).to.equal("closed");
       expect(clientMock.on.getCall(0).args[1]).to.equal(
-        (client.graphQL as any).handleDisconnection,
+        (client.graphQL as any).handleDisconnection
       );
     });
 
@@ -198,7 +195,9 @@ describe("subscribe", () => {
 
     it("should add a second subscription to its state", () => {
       const subscription = (client.graphQL as any).subscriptions[2];
-      expect(Object.keys((client.graphQL as any).subscriptions).length).to.equal(2);
+      expect(
+        Object.keys((client.graphQL as any).subscriptions).length
+      ).to.equal(2);
       expect(subscription.id).to.equal(2);
       expect(subscription.query).to.equal(subscriptionQuery);
       expect(subscription.type).to.equal(SubscriptionType.newTransaction);
@@ -216,7 +215,7 @@ describe("subscribe", () => {
       const dummyData = {
         [SubscriptionType.newTransaction]: "some-data",
       };
-      observableMock.triggerNext({ data: dummyData});
+      observableMock.triggerNext({ data: dummyData });
 
       expect(firstSubscriptionOnNextStub.callCount).to.equal(1);
       const data = firstSubscriptionOnNextStub.getCall(0).args[0];
@@ -279,7 +278,9 @@ describe("subscribe", () => {
 
       secondSubscriptionUnsubscriber();
 
-      expect(Object.keys((client.graphQL as any).subscriptions).length).to.equal(0);
+      expect(
+        Object.keys((client.graphQL as any).subscriptions).length
+      ).to.equal(0);
 
       expect(clientMock.dispose.callCount).to.equal(1);
       expect((client.graphQL as any).subscriptionClient).to.be.a("null");
@@ -300,12 +301,12 @@ describe("setHeaders", () => {
   let gqlClientSpy: sinon.SinonSpy;
 
   before(() => {
-    gqlClientSpy = sinon.spy(GQLClient.prototype, "setHeaders")
+    gqlClientSpy = sinon.spy(GQLClient.prototype, "setHeaders");
   });
 
   after(() => {
     gqlClientSpy.restore();
-  })
+  });
 
   it("should set custom headers", () => {
     const client = createClient();
@@ -315,8 +316,8 @@ describe("setHeaders", () => {
     client.graphQL.setHeaders(headers);
 
     expect(gqlClientSpy.calledOnceWithExactly(headers)).to.equal(true);
-  })
-})
+  });
+});
 
 describe("createUnsubscriber", () => {
   let client: any;
@@ -492,8 +493,8 @@ describe("handleDisconnection", () => {
     it("should call every subscribed onError handler", () => {
       expect(firstSubscription.onError.callCount).to.equal(1);
 
-      const firstSubscriptionError = firstSubscription.onError.getCall(0)
-        .args[0];
+      const firstSubscriptionError =
+        firstSubscription.onError.getCall(0).args[0];
 
       expect(firstSubscriptionError.message).to.equal("some error");
     });
@@ -553,7 +554,6 @@ describe("createSubscriptionClient", () => {
   });
 });
 
-
 describe("without clientId", () => {
   const sandbox = sinon.createSandbox();
 
@@ -608,7 +608,8 @@ describe("without clientId", () => {
         fake: "client",
       };
 
-      sandbox.stub(client.graphQL, "createClient")
+      sandbox
+        .stub(client.graphQL, "createClient")
         .returns(fakeSubscriptionClient);
     });
 

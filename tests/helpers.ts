@@ -4,10 +4,9 @@ import {
   TransactionSource,
   Transfer,
   TransferStatus,
-} from "../lib/graphql/schema";
-
-import { Client } from "../lib";
-import { ClientOpts } from "../lib/types";
+} from "../graphql/schema";
+import { Client } from "..";
+import { ClientOpts } from "../types";
 
 export const clientId = "26990216-e340-4f54-b5a5-df9baacc0440";
 export const redirectUri = "https://localhost:3000/auth/callback";

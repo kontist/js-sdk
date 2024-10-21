@@ -1,14 +1,14 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
+
 import {
   CardAction,
   CardStatus,
   CardType,
   CaseResolution,
-} from "../../lib/graphql/schema";
-
-import { Client } from "../../lib";
-import { Card } from "../../lib/graphql/card";
+} from "../../graphql/schema";
+import { Client } from "../..";
+import { Card } from "../../graphql/card";
 
 const cardData = {
   id: "010e5dcfdd7949fea50a510e97157168",

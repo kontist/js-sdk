@@ -1,7 +1,8 @@
 import { expect } from "chai";
-import { Client } from "../lib";
-import { Auth } from "../lib/auth";
-import { GraphQLClient } from "../lib/graphql/client";
+
+import { Client } from "..";
+import { Auth } from "../auth";
+import { GraphQLClient } from "../graphql/client";
 
 describe("Client", () => {
   describe("#constructor", () => {

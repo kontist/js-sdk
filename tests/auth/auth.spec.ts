@@ -1,8 +1,8 @@
 import * as sinon from "sinon";
-
-import { ClientOpts } from "../../lib/types";
-import { createClient } from "../helpers";
 import { expect } from "chai";
+
+import { ClientOpts } from "../../types";
+import { createClient } from "../helpers";
 
 describe("Auth", () => {
   const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
@@ -28,7 +28,7 @@ describe("Auth", () => {
         }
 
         expect(error.message).to.equal(
-          "You can provide only one parameter from ['verifier', 'clientSecret'].",
+          "You can provide only one parameter from ['verifier', 'clientSecret']."
         );
       });
     });
@@ -43,7 +43,7 @@ describe("Auth", () => {
         }
 
         expect(error.message).to.equal(
-          "If you are providing a 'verifier', you must also provide 'state' and 'redirectUri' options.",
+          "If you are providing a 'verifier', you must also provide 'state' and 'redirectUri' options."
         );
       };
 
@@ -58,8 +58,14 @@ describe("Auth", () => {
     it("should show deprecation notice and call correct method", () => {
       // arrange
       const client = createClient({ clientSecret });
-      const spyOnShowDeprecationWarning = sandbox.stub(client.auth as any, "showDeprecationWarning");
-      const spyOnGetAuthUri = sandbox.stub(client.auth.tokenManager, "getAuthUri");
+      const spyOnShowDeprecationWarning = sandbox.stub(
+        client.auth as any,
+        "showDeprecationWarning"
+      );
+      const spyOnGetAuthUri = sandbox.stub(
+        client.auth.tokenManager,
+        "getAuthUri"
+      );
       const opts = { query: { test: "123" } };
 
       // act
@@ -75,8 +81,14 @@ describe("Auth", () => {
     it("should show deprecation notice and call correct method", () => {
       // arrange
       const client = createClient({ clientSecret });
-      const spyOnShowDeprecationWarning = sandbox.spy(client.auth as any, "showDeprecationWarning");
-      const spyOnFetchToken = sandbox.stub(client.auth.tokenManager, "fetchToken");
+      const spyOnShowDeprecationWarning = sandbox.spy(
+        client.auth as any,
+        "showDeprecationWarning"
+      );
+      const spyOnFetchToken = sandbox.stub(
+        client.auth.tokenManager,
+        "fetchToken"
+      );
       const callbackUri = "http://example.com";
 
       // act
@@ -92,15 +104,24 @@ describe("Auth", () => {
     it("should show deprecation notice and call correct method", () => {
       // arrange
       const client = createClient({ clientSecret });
-      const spyOnShowDeprecationWarning = sandbox.stub(client.auth as any, "showDeprecationWarning");
-      const spyOnFetchTokenFromCredentials = sandbox.stub(client.auth.tokenManager, "fetchTokenFromCredentials");
+      const spyOnShowDeprecationWarning = sandbox.stub(
+        client.auth as any,
+        "showDeprecationWarning"
+      );
+      const spyOnFetchTokenFromCredentials = sandbox.stub(
+        client.auth.tokenManager,
+        "fetchTokenFromCredentials"
+      );
       const opts = { username: "test", password: "test2" };
 
       // act
       client.auth.fetchTokenFromCredentials(opts);
 
       // assert
-      sinon.assert.calledWith(spyOnShowDeprecationWarning, "fetchTokenFromCredentials");
+      sinon.assert.calledWith(
+        spyOnShowDeprecationWarning,
+        "fetchTokenFromCredentials"
+      );
       sinon.assert.calledWith(spyOnFetchTokenFromCredentials, opts);
     });
   });
@@ -109,7 +130,10 @@ describe("Auth", () => {
     it("should show deprecation notice and call correct method", () => {
       // arrange
       const client = createClient({ clientSecret });
-      const spyOnShowDeprecationWarning = sandbox.stub(client.auth as any, "showDeprecationWarning");
+      const spyOnShowDeprecationWarning = sandbox.stub(
+        client.auth as any,
+        "showDeprecationWarning"
+      );
       const spyOnRefresh = sandbox.stub(client.auth.tokenManager, "refresh");
       const timeout = 1234;
 
@@ -126,7 +150,10 @@ describe("Auth", () => {
     it("should show deprecation notice and call correct method", () => {
       // arrange
       const client = createClient({ clientSecret });
-      const spyOnShowDeprecationWarning = sandbox.stub(client.auth as any, "showDeprecationWarning");
+      const spyOnShowDeprecationWarning = sandbox.stub(
+        client.auth as any,
+        "showDeprecationWarning"
+      );
       const spyOnSetToken = sandbox.stub(client.auth.tokenManager, "setToken");
       const accessToken = "at";
       const refreshToken = "rf";
@@ -137,7 +164,12 @@ describe("Auth", () => {
 
       // assert
       sinon.assert.calledWith(spyOnShowDeprecationWarning, "setToken");
-      sinon.assert.calledWith(spyOnSetToken, accessToken, refreshToken, tokenType);
+      sinon.assert.calledWith(
+        spyOnSetToken,
+        accessToken,
+        refreshToken,
+        tokenType
+      );
     });
   });
 
@@ -145,7 +177,10 @@ describe("Auth", () => {
     it("should show deprecation notice and call correct method", () => {
       // arrange
       const client = createClient({ clientSecret });
-      const spyOnShowDeprecationWarning = sandbox.stub(client.auth as any, "showDeprecationWarning");
+      const spyOnShowDeprecationWarning = sandbox.stub(
+        client.auth as any,
+        "showDeprecationWarning"
+      );
       const spyOnToken = sandbox.spy();
       sandbox.stub(client.auth.tokenManager, "token").get(spyOnToken);
 
@@ -158,5 +193,4 @@ describe("Auth", () => {
       expect(token).to.be.undefined;
     });
   });
-
 });

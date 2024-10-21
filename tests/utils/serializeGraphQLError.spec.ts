@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { serializeGraphQLError } from "../../lib/utils/serializeGraphQLError";
+
+import { serializeGraphQLError } from "../../utils/serializeGraphQLError";
 
 describe("serializeGraphQLError", () => {
   describe("#serializeGraphQLError", () => {

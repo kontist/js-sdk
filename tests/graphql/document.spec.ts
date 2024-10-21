@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { Document } from "../../lib/graphql/document";
-import { Document as DocumentModel } from "../../lib/graphql/schema";
+import { Client } from "../..";
+import { Document } from "../../graphql/document";
+import { Document as DocumentModel } from "../../graphql/schema";
 
 describe("Document", () => {
   let sandbox: sinon.SinonSandbox;

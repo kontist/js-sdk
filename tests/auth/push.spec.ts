@@ -1,11 +1,10 @@
-import * as moment from "moment";
+import dayjs from "dayjs";
 import * as sinon from "sinon";
-
-import { HttpMethod, PushChallengeStatus } from "../../lib/types";
-
-import { PUSH_CHALLENGE_PATH } from "../../lib/auth/push";
-import { createClient } from "../helpers";
 import { expect } from "chai";
+
+import { HttpMethod, PushChallengeStatus } from "../../types";
+import { PUSH_CHALLENGE_PATH } from "../../auth/push";
+import { createClient } from "../helpers";
 
 interface TokenResponse {
   confirmedAccessToken?: string;
@@ -19,19 +18,22 @@ describe("Auth: PushNotificationMFA", () => {
       {
         confirmedAccessToken = "cnf-token-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
         confirmedRefreshToken,
-      }: TokenResponse = {},
+      }: TokenResponse = {}
     ) => {
       const challenge = {
         id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
         status: PushChallengeStatus.PENDING,
-        expiresAt: moment().add(10, "minutes"),
+        expiresAt: dayjs().add(10, "minutes"),
       };
 
       const client = createClient();
 
       (client.auth.push as any).challengePollInterval = 0;
 
-      const requestStub = sinon.stub((client.auth.push as any).request, "fetch");
+      const requestStub = sinon.stub(
+        (client.auth.push as any).request,
+        "fetch"
+      );
       requestStub
         .withArgs(PUSH_CHALLENGE_PATH, HttpMethod.POST)
         .resolves(challenge);
@@ -47,7 +49,7 @@ describe("Auth: PushNotificationMFA", () => {
       requestStub
         .withArgs(
           `${PUSH_CHALLENGE_PATH}/${challenge.id}/token`,
-          HttpMethod.POST,
+          HttpMethod.POST
         )
         .resolves({
           token: confirmedAccessToken,
@@ -72,7 +74,7 @@ describe("Auth: PushNotificationMFA", () => {
         expect(response.refreshToken).to.be.undefined;
         expect(
           client.auth.tokenManager.token &&
-            client.auth.tokenManager.token.accessToken,
+            client.auth.tokenManager.token.accessToken
         ).to.equal(confirmedAccessToken);
 
         requestStub.restore();
@@ -88,7 +90,7 @@ describe("Auth: PushNotificationMFA", () => {
           },
           {
             confirmedRefreshToken,
-          },
+          }
         );
 
         const response: any = await client.auth.push.getConfirmedToken();
@@ -98,7 +100,7 @@ describe("Auth: PushNotificationMFA", () => {
         expect(response.refreshToken).to.equal(confirmedRefreshToken);
         expect(
           client.auth.tokenManager.token &&
-            client.auth.tokenManager.token.accessToken,
+            client.auth.tokenManager.token.accessToken
         ).to.equal(confirmedAccessToken);
 
         requestStub.restore();
@@ -129,7 +131,7 @@ describe("Auth: PushNotificationMFA", () => {
     describe("when challenge is expired", () => {
       it("should throw a `Challenge expired` error", async () => {
         const { requestStub, client } = setup({
-          expiresAt: moment().subtract(2, "minutes"),
+          expiresAt: dayjs().subtract(2, "minutes"),
         });
         let error: any;
 
@@ -156,7 +158,7 @@ describe("Auth: PushNotificationMFA", () => {
         .resolves({
           id: "35f31e77-467a-472a-837b-c34ad3c8a9b4",
           status: PushChallengeStatus.PENDING,
-          expiresAt: moment().add(10, "minutes"),
+          expiresAt: dayjs().add(10, "minutes"),
         });
       const clearTimeoutSpy = sinon.spy(global, "clearTimeout");
 

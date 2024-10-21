@@ -1,13 +1,14 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { Client } from "../../lib";
+
+import { Client } from "../..";
 import {
   Transaction,
   TransactionCategory,
   BaseOperator,
   RequestPlatform,
   VatRate,
-} from "../../lib/graphql/schema";
+} from "../../graphql/schema";
 import {
   NEW_TRANSACTION_SUBSCRIPTION,
   getCreateSplitTransactionMutation,
@@ -17,14 +18,14 @@ import {
   FINALIZE_TRANSACTION_ASSET,
   DELETE_TRANSACTION_ASSET,
   TRANSACTION_FIELDS,
-} from "../../lib/graphql/transaction";
-import { SubscriptionType } from "../../lib/graphql/types";
+  Transaction as TransactionClass,
+} from "../../graphql/transaction";
+import { SubscriptionType } from "../../graphql/types";
 import {
   createClient,
   createTransaction,
   generatePaginatedResponse,
 } from "../helpers";
-import { Transaction as TransactionClass } from "../../lib/graphql/transaction";
 
 describe("Transaction", () => {
   describe("iterator", () => {
@@ -175,7 +176,7 @@ describe("Transaction", () => {
     let transactionInstance: TransactionClass;
     let result: any;
 
-    before(() => {
+    beforeEach(() => {
       graphqlClientStub = {
         rawQuery: sinon.stub(),
       };

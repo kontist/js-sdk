@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { KontistSDKError } from "../lib/errors";
+
+import { KontistSDKError } from "../errors";
 
 describe("Errors", () => {
   describe("#KontistSDKError", () => {
@@ -8,7 +9,7 @@ describe("Errors", () => {
       const opts = {
         status: 1,
         type: "t1",
-        message: "m1"
+        message: "m1",
       };
 
       // act

@@ -1,10 +1,10 @@
 import * as sinon from "sinon";
 import { expect } from "chai";
 
-import { Client } from "../../lib";
-import { KontistSDKError } from "../../lib/errors";
-import { User } from "../../lib/graphql/user";
-import { UserConfirmation } from "../../lib/graphql/schema";
+import { Client } from "../..";
+import { KontistSDKError } from "../../errors";
+import { User } from "../../graphql/user";
+import { UserConfirmation } from "../../graphql/schema";
 
 describe("User", () => {
   let sandbox: sinon.SinonSandbox;
@@ -45,7 +45,9 @@ describe("User", () => {
 
       // assert
       expect(error).to.be.an.instanceOf(KontistSDKError);
-      expect(error.message).to.eq("You are allowed only to fetch your details.");
+      expect(error.message).to.eq(
+        "You are allowed only to fetch your details."
+      );
     });
   });
 
@@ -54,7 +56,9 @@ describe("User", () => {
       // arrange
       const user = new User(client.graphQL);
       const viewer = { email: "test@kontist.com" };
-      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ viewer } as any);
+      const spyOnRawQuery = sandbox
+        .stub(client.graphQL, "rawQuery")
+        .resolves({ viewer } as any);
 
       // act
       const result = await user.get();
@@ -63,7 +67,6 @@ describe("User", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(viewer);
     });
-
   });
 
   describe("#createEmailAlias", () => {
@@ -72,7 +75,9 @@ describe("User", () => {
       const alias = "tester@kontist.com";
       const hash = "12345678";
       const user = new User(client.graphQL);
-      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ createUserEmailAlias: { success: true } } as any);
+      const spyOnRawQuery = sandbox
+        .stub(client.graphQL, "rawQuery")
+        .resolves({ createUserEmailAlias: { success: true } } as any);
 
       // act
       const result = await user.createEmailAlias(alias, hash);
@@ -81,25 +86,26 @@ describe("User", () => {
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.eq(true);
     });
-
   });
 
   describe("#confirm", () => {
-    Object.values(UserConfirmation).forEach(confirmation => {
-      describe(`for ${confirmation}`, () => {  
+    Object.values(UserConfirmation).forEach((confirmation) => {
+      describe(`for ${confirmation}`, () => {
         it("should call rawQuery and return success", async () => {
           // arrange
           const user = new User(client.graphQL);
-          const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({ userConfirmation: { success: true } } as any);
-    
+          const spyOnRawQuery = sandbox
+            .stub(client.graphQL, "rawQuery")
+            .resolves({ userConfirmation: { success: true } } as any);
+
           // act
           const result = await user.confirm({ confirmation, year: 2021 });
-    
+
           // assert
           sinon.assert.calledOnce(spyOnRawQuery);
           expect(result).to.eq(true);
         });
-      })
-    })
+      });
+    });
   });
 });

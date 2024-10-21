@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { Declaration } from "../../lib/graphql/declaration";
+import { Client } from "../..";
+import { Declaration } from "../../graphql/declaration";
 import {
   Declaration as DeclarationModel,
   DeclarationType,
@@ -12,7 +12,7 @@ import {
   SubmissionStatus,
   DeclarationSubmission,
   BizTaxDeclarationResultMessageType,
-} from "../../lib/graphql/schema";
+} from "../../graphql/schema";
 
 describe("Declaration", () => {
   let sandbox: sinon.SinonSandbox;
@@ -106,7 +106,7 @@ describe("Declaration", () => {
               formLineNumber: "11",
               text: "some error text",
               type: BizTaxDeclarationResultMessageType.Notice,
-            }
+            },
           ],
         },
         {
@@ -130,7 +130,7 @@ describe("Declaration", () => {
       // act
       const result = await declaration.fetchDeclarationSubmissions({
         year: 2024,
-        period: "01"
+        period: "01",
       });
 
       // assert
@@ -165,7 +165,7 @@ describe("Declaration", () => {
       // act
       const result = await declaration.fetchDeclarationSubmissions({
         year: 2024,
-        period: "01"
+        period: "01",
       });
 
       // assert
@@ -256,7 +256,7 @@ describe("Declaration", () => {
               ],
             },
           ],
-          exitedBusinessAssetsWithVat: []
+          exitedBusinessAssetsWithVat: [],
         },
       ];
       const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({

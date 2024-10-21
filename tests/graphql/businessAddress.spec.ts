@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { BusinessAddress } from "../../lib/graphql/businessAddress";
+import { Client } from "../..";
+import { BusinessAddress } from "../../graphql/businessAddress";
 
 const businessAddressData = {
   id: "921be5e1-cefb-4b91-9633-fcadca94bd72",
@@ -48,7 +48,10 @@ describe("BusinessAddress", () => {
         viewer: {
           businessAddresses: [
             businessAddressData,
-            { ...businessAddressData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
+            {
+              ...businessAddressData,
+              id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa",
+            },
           ],
         },
       } as any);
@@ -68,7 +71,7 @@ describe("BusinessAddress", () => {
     });
   });
 
-	describe("#fetch last business address", () => {
+  describe("#fetch last business address", () => {
     it("should call rawQuery and return the business addresses details based on input date", async () => {
       // arrange
       const businessAddress = new BusinessAddress(client.graphQL);

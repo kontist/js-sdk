@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { Transfer as TransferClass } from "../../lib/graphql/transfer";
+
+import { Transfer as TransferClass } from "../../graphql/transfer";
 import {
   TransferType,
   Transfer,
@@ -9,7 +10,7 @@ import {
   CreateTransferInput,
   UnfinishedTransfer,
   DeliveryMethod,
-} from "../../lib/graphql/schema";
+} from "../../graphql/schema";
 import { createTransfer, generatePaginatedResponse } from "../helpers";
 
 describe("Transfer", () => {
@@ -19,7 +20,7 @@ describe("Transfer", () => {
   const deviceId = "device-id";
   const deliveryMethod = DeliveryMethod.DeviceSigning;
 
-  before(() => {
+  beforeEach(() => {
     graphqlClientStub = {
       rawQuery: sinon.stub(),
     };

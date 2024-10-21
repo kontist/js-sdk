@@ -16,7 +16,7 @@ You will need a valid client id and setup your redirect uri for authentication. 
 
 ```typescript
 import express from "express";
-import { Client } from "kontist";
+import { Client } from "@src/api/sdk/client";
 
 const CALLBACK_PATH = "/auth/callback";
 const REDIRECT_URI = <YOUR_BASE_URL> + CALLBACK_PATH;

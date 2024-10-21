@@ -1,15 +1,15 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { EmailDocument } from "../../lib/graphql/emailDocument";
+import { Client } from "../..";
+import { EmailDocument } from "../../graphql/emailDocument";
 import {
   DocumentMatchStatus,
   DocumentUploadSource,
   EmailDocument as EmailDocumentModel,
   TransactionProjectionType,
   TransactionSource,
-} from "../../lib/graphql/schema";
+} from "../../graphql/schema";
 
 describe("EmailDocument", () => {
   let sandbox: sinon.SinonSandbox;

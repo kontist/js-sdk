@@ -1,12 +1,11 @@
-import * as crossFetch from 'cross-fetch';
+import * as crossFetch from "cross-fetch";
 import * as sinon from "sinon";
-
-import { KontistSDKError, UserUnauthorizedError } from "../lib/errors";
-
-import { HttpMethod } from "../lib/types";
-import { HttpRequest } from "../lib/request";
-import { TokenManager } from "../lib/auth/tokenManager";
 import { expect } from "chai";
+
+import { KontistSDKError, UserUnauthorizedError } from "../errors";
+import { HttpMethod } from "../types";
+import { HttpRequest } from "../request";
+import { TokenManager } from "../auth/tokenManager";
 
 describe("HttpRequest", () => {
   let sandbox: sinon.SinonSandbox;
@@ -107,9 +106,9 @@ describe("HttpRequest", () => {
       sinon.assert.calledWith(stubOnFetch, "http://localhost:3000/path", {
         method: "POST",
         headers: {
-          "Accept": "application/json",
+          Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": `Bearer eyMockToken`,
+          Authorization: `Bearer eyMockToken`,
         },
         body: '{"test":123}',
       });

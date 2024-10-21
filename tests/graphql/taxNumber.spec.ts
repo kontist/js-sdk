@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { TaxNumberType } from "../../lib/graphql/schema";
-import { TaxNumber } from "../../lib/graphql/taxNumber";
+import { Client } from "../..";
+import { TaxNumberType } from "../../graphql/schema";
+import { TaxNumber } from "../../graphql/taxNumber";
 
 const taxNumberData = {
   id: "921be5e1-cefb-4b91-9633-fcadca94bd72",

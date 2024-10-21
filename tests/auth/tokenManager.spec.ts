@@ -1,13 +1,10 @@
 import * as sinon from "sinon";
-
-import { Client, Constants } from "../../lib";
-import { clientId, createClient, redirectUri } from "../helpers";
-
 import { expect } from "chai";
-import { utils } from "../../lib/utils";
-
 import ClientOAuth2 = require("client-oauth2");
 
+import { Client, Constants } from "../..";
+import { clientId, createClient, redirectUri } from "../helpers";
+import { utils } from "../../utils";
 
 describe("Auth: TokenManager", () => {
   const verifier = "Huag6ykQU7SaEYKtmNUeM8txt4HzEIfG";
@@ -138,7 +135,10 @@ describe("Auth: TokenManager", () => {
     });
 
     it("should call oauthClient.owner.getToken() with proper arguments", async () => {
-      await client.auth.tokenManager.fetchTokenFromCredentials({ username, password });
+      await client.auth.tokenManager.fetchTokenFromCredentials({
+        username,
+        password,
+      });
 
       const stub = oauthClient.owner.getToken as sinon.SinonStub;
       const args = stub.getCall(0).args;
@@ -146,10 +146,11 @@ describe("Auth: TokenManager", () => {
     });
 
     it("should return token data", async () => {
-      const tokenData = await client.auth.tokenManager.fetchTokenFromCredentials({
-        username,
-        password,
-      });
+      const tokenData =
+        await client.auth.tokenManager.fetchTokenFromCredentials({
+          username,
+          password,
+        });
 
       expect(tokenData.data).to.deep.equal(tokenResponseData);
     });
@@ -172,7 +173,7 @@ describe("Auth: TokenManager", () => {
       const origin = "http://some.url";
       const code = "some-random-code";
 
-      before(() => {
+      beforeEach(() => {
         (global as any).window = {};
         (global as any).document = {
           location: {
@@ -208,13 +209,12 @@ describe("Auth: TokenManager", () => {
 
         expect(fetchTokenStub.callCount).to.equal(1);
         expect(fetchTokenStub.getCall(0).args[0]).to.equal(
-          `${origin}?code=${code}&state=${encodeURIComponent(state)}`,
+          `${origin}?code=${code}&state=${encodeURIComponent(state)}`
         );
 
         expect(silentAuthorizationStub.callCount).to.equal(1);
-        const [firstArg, secondArg, thirdArg] = silentAuthorizationStub.getCall(
-          0,
-        ).args;
+        const [firstArg, secondArg, thirdArg] =
+          silentAuthorizationStub.getCall(0).args;
         expect(firstArg).to.include("prompt=none");
         expect(firstArg).to.include("response_mode=web_message");
         expect(secondArg).to.equal(Constants.KONTIST_API_BASE_URL);
@@ -226,7 +226,7 @@ describe("Auth: TokenManager", () => {
         silentAuthorizationStub.restore();
       });
 
-      after(() => {
+      afterEach(() => {
         (global as any).window = undefined;
         (global as any).document = undefined;
       });
@@ -251,7 +251,7 @@ describe("Auth: TokenManager", () => {
 
         client.auth.tokenManager.setToken(
           tokenResponseData.access_token,
-          tokenResponseData.refresh_token,
+          tokenResponseData.refresh_token
         );
 
         const clientOAuth2TokenRefreshStub = sinon
@@ -285,11 +285,14 @@ describe("Auth: TokenManager", () => {
       expect(token.accessToken).to.equal(accessToken);
       expect(token.refreshToken).to.equal(refreshToken);
 
-      token = client.auth.tokenManager.setToken(accessToken, refreshToken, tokenType);
+      token = client.auth.tokenManager.setToken(
+        accessToken,
+        refreshToken,
+        tokenType
+      );
       expect(token.accessToken).to.equal(accessToken);
       expect(token.refreshToken).to.equal(refreshToken);
       expect(token.tokenType).to.equal(tokenType);
     });
   });
-
 });

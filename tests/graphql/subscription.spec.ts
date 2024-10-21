@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
 
-import { Client } from "../../lib";
-import { Subscription } from "../../lib/graphql/subscription";
+import { Client } from "../..";
+import { Subscription } from "../../graphql/subscription";
 import {
   PurchaseType,
   UpdateSubscriptionPlanResult,
-} from "../../lib/graphql/schema";
+} from "../../graphql/schema";
 
 describe("Subscription", () => {
   let sandbox: sinon.SinonSandbox;
@@ -42,7 +42,8 @@ describe("Subscription", () => {
             type: "BASIC",
             title: "Free",
             description: "All-round business banking with virtual card",
-            subtitle: "/ month plus VAT for the first year, then much more expensive",
+            subtitle:
+              "/ month plus VAT for the first year, then much more expensive",
             button: "Open Free",
             featuresToggleLabel: "All Kontist Free features",
             featureGroups: [

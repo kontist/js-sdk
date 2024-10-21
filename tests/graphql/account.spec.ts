@@ -1,9 +1,9 @@
 import * as sinon from "sinon";
-
-import { Account } from "../../lib/graphql/account";
-import { Client } from "../../lib";
-import { KontistSDKError } from "../../lib/errors";
 import { expect } from "chai";
+
+import { Account } from "../../graphql/account";
+import { Client } from "../..";
+import { KontistSDKError } from "../../errors";
 
 const accountStatsData = {
   accountBalance: 1378096,
@@ -17,38 +17,38 @@ const accountStatsData = {
   taxPastYearsAmount: null,
   taxTotal: 0,
   taxMissing: 0,
-}
+};
 
 const solarisBalanceData = {
   balance: {
     value: 1000,
     currency: "EUR",
-    unit: "cents"
+    unit: "cents",
   },
   availableBalance: {
     value: 1000,
     currency: "EUR",
-    unit: "cents"
+    unit: "cents",
   },
   seizureProtection: {
     currentBlockedAmount: {
       value: 1000,
       currency: "EUR",
-      unit: "cents"
+      unit: "cents",
     },
     protectedAmount: {
       value: 1000,
       currency: "EUR",
-      unit: "cents"
+      unit: "cents",
     },
     protectedAmountExpiring: {
       value: 1000,
       currency: "EUR",
-      unit: "cents"
+      unit: "cents",
     },
     protectedAmountExpiringDate: "30-09-2022",
   },
-}
+};
 
 describe("Account", () => {
   let sandbox: sinon.SinonSandbox;
@@ -89,7 +89,9 @@ describe("Account", () => {
 
       // assert
       expect(error).to.be.an.instanceOf(KontistSDKError);
-      expect(error.message).to.eq("You are allowed only to fetch your account details.");
+      expect(error.message).to.eq(
+        "You are allowed only to fetch your account details."
+      );
     });
   });
 
@@ -124,7 +126,7 @@ describe("Account", () => {
       expect(result?.cardHolderRepresentation).to.eq(null);
       expect(result?.cardHolderRepresentations[0]).to.eq("STEPHEN/JAMES");
       expect(result?.hasPendingCardFraudCase).to.eq(false);
-      expect(result?.canCreateOverdraft).to.eq(true); 
+      expect(result?.canCreateOverdraft).to.eq(true);
       expect(result?.pendingTransactionVerification).to.eq(null);
     });
 
