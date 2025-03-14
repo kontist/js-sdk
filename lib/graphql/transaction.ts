@@ -145,7 +145,7 @@ export const NEW_TRANSACTION_SUBSCRIPTION = `subscription {
 }`;
 
 export const getUpdateTransactionMutation = (
-  fields: string
+  fields: string,
 ) => `mutation updateTransaction(
   $id: String!
   $category: TransactionCategory,
@@ -178,7 +178,7 @@ ${TRANSACTION_DETAILS}
 `;
 
 export const getCreateSplitTransactionMutation = (
-  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
+  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS,
 ) => `mutation createTransactionSplits(
   $transactionId: ID!
   $splits: [CreateTransactionSplitsInput!]!
@@ -192,7 +192,7 @@ export const getCreateSplitTransactionMutation = (
 }`;
 
 export const getDeleteSplitTransactionMutation = (
-  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
+  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS,
 ) => `mutation deleteTransactionSplits(
   $transactionId: ID!
 ) {
@@ -204,7 +204,7 @@ export const getDeleteSplitTransactionMutation = (
 }`;
 
 export const getUpdateSplitTransactionMutation = (
-  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS
+  fields = DEFAULT_SPLIT_TRANSACTION_FIELDS,
 ) => `mutation updateTransactionSplits(
   $transactionId: ID!
   $splits: [UpdateTransactionSplitsInput!]!
@@ -298,11 +298,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public async fetch(
     args?: AccountTransactionsArgs,
-    fields = TRANSACTION_FIELDS
+    fields = TRANSACTION_FIELDS,
   ): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(
       getFetchTransactionsQuery(fields),
-      args
+      args,
     );
 
     const transactions = (
@@ -331,10 +331,11 @@ export class Transaction extends IterableModel<TransactionModel> {
     searchQuery: string,
     searchFilter?: SearchFilter,
     preset?: FilterPresetInput,
-    fields?: string
+    fields?: string,
+    accountId?: number,
   ): Promise<ResultPage<TransactionModel>> {
     const filter = this.parseSearchQuery(searchQuery, searchFilter);
-    return this.fetch({ filter, preset }, fields);
+    return this.fetch({ filter, preset, accountId }, fields);
   }
 
   /**
@@ -355,11 +356,11 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async fetchOne(
     args: AccountTransactionArgs,
     fields = `${TRANSACTION_FIELDS}
-              ${TRANSACTION_DETAILS}`
+              ${TRANSACTION_DETAILS}`,
   ) {
     const result: Query = await this.client.rawQuery(
       getFetchTransactionQuery(fields),
-      args
+      args,
     );
 
     return result.viewer?.mainAccount?.transaction;
@@ -367,7 +368,7 @@ export class Transaction extends IterableModel<TransactionModel> {
 
   public subscribe(
     onNext: (event: TransactionModel) => any,
-    onError?: (error: Error) => any
+    onError?: (error: Error) => any,
   ): Subscription {
     return this.client.subscribe({
       onError,
@@ -387,11 +388,11 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async update(
     args: MutationUpdateTransactionArgs,
     fields = `${TRANSACTION_FIELDS}
-  ${TRANSACTION_DETAILS}`
+  ${TRANSACTION_DETAILS}`,
   ) {
     const result = await this.client.rawQuery(
       getUpdateTransactionMutation(fields),
-      args
+      args,
     );
     return result.updateTransaction;
   }
@@ -405,11 +406,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public async createSplit(
     args: MutationCreateTransactionSplitsArgs,
-    fields?: string
+    fields?: string,
   ) {
     const result = await this.client.rawQuery(
       getCreateSplitTransactionMutation(fields),
-      args
+      args,
     );
     return result.createTransactionSplits;
   }
@@ -423,11 +424,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public async deleteSplit(
     args: MutationDeleteTransactionSplitsArgs,
-    fields?: string
+    fields?: string,
   ) {
     const result = await this.client.rawQuery(
       getDeleteSplitTransactionMutation(fields),
-      args
+      args,
     );
     return result.deleteTransactionSplits;
   }
@@ -441,11 +442,11 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public async updateSplit(
     args: MutationUpdateTransactionSplitsArgs,
-    fields?: string
+    fields?: string,
   ) {
     const result = await this.client.rawQuery(
       getUpdateSplitTransactionMutation(fields),
-      args
+      args,
     );
     return result.updateTransactionSplits;
   }
@@ -457,7 +458,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @returns      the required data to upload a file
    */
   public async createTransactionAsset(
-    args: MutationCreateTransactionAssetArgs
+    args: MutationCreateTransactionAssetArgs,
   ) {
     const result = await this.client.rawQuery(CREATE_TRANSACTION_ASSET, args);
     return result.createTransactionAsset;
@@ -470,7 +471,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @returns      the finalized TransactionAsset information
    */
   public async finalizeTransactionAssetUpload(
-    args: MutationFinalizeTransactionAssetUploadArgs
+    args: MutationFinalizeTransactionAssetUploadArgs,
   ) {
     const result = await this.client.rawQuery(FINALIZE_TRANSACTION_ASSET, args);
     return result.finalizeTransactionAssetUpload;
@@ -483,7 +484,7 @@ export class Transaction extends IterableModel<TransactionModel> {
    * @returns      a MutationResult
    */
   public async deleteTransactionAsset(
-    args: MutationDeleteTransactionAssetArgs
+    args: MutationDeleteTransactionAssetArgs,
   ) {
     const result = await this.client.rawQuery(DELETE_TRANSACTION_ASSET, args);
     return result.deleteTransactionAsset;
@@ -492,7 +493,7 @@ export class Transaction extends IterableModel<TransactionModel> {
   private parseAmountSearchTerm(amountTerm: string): AmountSearchFilter {
     const shouldMatchWildCents = !/[,.]/.test(amountTerm);
     const amountInCents = Math.round(
-      parseFloat(amountTerm.replace(",", ".")) * 100
+      parseFloat(amountTerm.replace(",", ".")) * 100,
     );
 
     if (amountInCents > MAX_SEARCH_AMOUNT_IN_CENTS) {
@@ -526,7 +527,7 @@ export class Transaction extends IterableModel<TransactionModel> {
 
   private parseSearchQuery(
     searchQuery: string,
-    searchFilter?: SearchFilter
+    searchFilter?: SearchFilter,
   ): TransactionFilter {
     if (!searchQuery && searchFilter) {
       return searchFilter;
@@ -549,7 +550,7 @@ export class Transaction extends IterableModel<TransactionModel> {
       .reduce(
         (
           partialAmountFilter: AmountSearchFilter,
-          term: string
+          term: string,
         ): AmountSearchFilter => {
           const parsedAmountSearchTerm = this.parseAmountSearchTerm(term);
 
@@ -564,7 +565,7 @@ export class Transaction extends IterableModel<TransactionModel> {
             ],
           };
         },
-        { amount_in: [], conditions: [] }
+        { amount_in: [], conditions: [] },
       );
 
     if (amountFilter.amount_in.length > 0) {
@@ -603,7 +604,7 @@ export class Transaction extends IterableModel<TransactionModel> {
   public async fetchCSV(args?: AccountTransactionsCsvArgs): Promise<string> {
     const result: Query = await this.client.rawQuery(
       FETCH_TRANSACTIONS_CSV,
-      args
+      args,
     );
     return result.viewer?.mainAccount?.transactionsCSV ?? "";
   }
@@ -612,7 +613,7 @@ export class Transaction extends IterableModel<TransactionModel> {
     (GenericFilterPreset | MissingTaxAssetsFilterPreset)[]
   > {
     const result: Query = await this.client.rawQuery(
-      FETCH_TRANSACTION_FILTER_PRESETS
+      FETCH_TRANSACTION_FILTER_PRESETS,
     );
     return result.viewer?.mainAccount?.transactionFilterPresets ?? [];
   }

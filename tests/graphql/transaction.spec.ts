@@ -55,7 +55,7 @@ describe("Transaction", () => {
           key: "transactions",
           items: [firstTransaction, secondTransaction],
           pageInfo: { hasNextPage: true, hasPreviousPage: false },
-        })
+        }),
       );
 
       stub.onSecondCall().resolves(
@@ -63,7 +63,7 @@ describe("Transaction", () => {
           key: "transactions",
           items: [thirdTransaction],
           pageInfo: { hasNextPage: false, hasPreviousPage: false },
-        })
+        }),
       );
     });
 
@@ -114,7 +114,7 @@ describe("Transaction", () => {
           key: "transactions",
           items: [firstTransaction, thirdTransaction],
           pageInfo: { hasPreviousPage: false, hasNextPage: false },
-        })
+        }),
       );
 
       const results = await client.models.transaction.fetch({
@@ -143,14 +143,14 @@ describe("Transaction", () => {
             key: "transactions",
             items: [secondTransaction, thirdTransaction],
             pageInfo: { hasPreviousPage: true, hasNextPage: false },
-          })
+          }),
         );
         stub.onSecondCall().resolves(
           generatePaginatedResponse({
             key: "transactions",
             items: [firstTransaction],
             pageInfo: { hasPreviousPage: false, hasNextPage: false },
-          })
+          }),
         );
 
         const firstPage = await client.models.transaction.fetch({
@@ -209,7 +209,7 @@ describe("Transaction", () => {
       it("should query with custom fields", () => {
         expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
         expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
-          customFields
+          customFields,
         );
       });
     });
@@ -603,7 +603,7 @@ describe("Transaction", () => {
       expect(stub.callCount).to.eq(1);
       expect(stub.args[0][0]).to.eq(
         FINALIZE_TRANSACTION_ASSET,
-        DELETE_TRANSACTION_ASSET
+        DELETE_TRANSACTION_ASSET,
       );
       expect(stub.args[0][1]).to.deep.eq({ assetId: asset.id });
       expect(result).to.deep.eq(asset);
@@ -676,6 +676,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["hello", "world"],
           },
           preset: undefined,
+          accountId: undefined,
         });
       });
     });
@@ -721,6 +722,7 @@ describe("Transaction", () => {
               },
             ],
           },
+          accountId: undefined,
           preset: undefined,
         });
       });
@@ -745,6 +747,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
           },
           preset: undefined,
+          accountId: undefined,
         });
       });
     });
@@ -766,6 +769,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["1.123", "-234,", ".10"],
           },
           preset: undefined,
+          accountId: undefined,
         });
       });
     });
@@ -801,6 +805,7 @@ describe("Transaction", () => {
             ],
           },
           preset: undefined,
+          accountId: undefined,
         });
       });
     });
@@ -835,6 +840,7 @@ describe("Transaction", () => {
             ],
           },
           preset: undefined,
+          accountId: undefined,
         });
       });
     });
@@ -856,6 +862,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["hello", "world"],
           },
           preset: undefined,
+          accountId: undefined,
         });
       });
     });
@@ -876,6 +883,7 @@ describe("Transaction", () => {
               assets_exist: false,
             },
             preset: undefined,
+            accountId: undefined,
           });
         });
       });
@@ -904,6 +912,7 @@ describe("Transaction", () => {
               ],
             },
             preset: undefined,
+            accountId: undefined,
           });
         });
       });
@@ -943,6 +952,7 @@ describe("Transaction", () => {
               ],
             },
             preset: undefined,
+            accountId: undefined,
           });
         });
       });
@@ -968,6 +978,37 @@ describe("Transaction", () => {
               purpose_likeAny: [],
             },
             preset,
+            accountId: undefined,
+          });
+        });
+      });
+    });
+
+    describe("when searching by account id", () => {
+      describe("and input is empty", () => {
+        it("should call fetch event", async () => {
+          // arrange
+          const filterQuery = undefined;
+          const accountId = 1;
+          // act
+          await client.models.transaction.search(
+            "",
+            filterQuery,
+            undefined,
+            undefined,
+            accountId,
+          );
+
+          // assert
+          expect(fetchStub.callCount).to.eq(1);
+          expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+            filter: {
+              name_likeAny: [],
+              operator: "OR",
+              purpose_likeAny: [],
+            },
+            accountId,
+            preset: undefined,
           });
         });
       });
