@@ -2829,11 +2829,11 @@ export type PageInfo = {
 };
 
 export enum PaymentFrequency {
-  Monthly = 'MONTHLY',
-  None = 'NONE',
-  NoneQuarterly = 'NONE_QUARTERLY',
-  Quarterly = 'QUARTERLY',
-  Yearly = 'YEARLY'
+  Monthly = 'monthly',
+  None = 'none',
+  NoneQuarterly = 'none_quarterly',
+  Quarterly = 'quarterly',
+  Yearly = 'yearly'
 }
 
 export type PaymentMethod = {
