@@ -676,6 +676,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["hello", "world"],
           },
           preset: undefined,
+          publicId: undefined,
         });
       });
     });
@@ -722,6 +723,7 @@ describe("Transaction", () => {
             ],
           },
           preset: undefined,
+          publicId: undefined,
         });
       });
     });
@@ -745,6 +747,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["DE12345", "-90,87", "hello", "33.91"],
           },
           preset: undefined,
+          publicId: undefined,
         });
       });
     });
@@ -766,6 +769,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["1.123", "-234,", ".10"],
           },
           preset: undefined,
+          publicId: undefined,
         });
       });
     });
@@ -801,6 +805,7 @@ describe("Transaction", () => {
             ],
           },
           preset: undefined,
+          publicId: undefined,
         });
       });
     });
@@ -835,6 +840,7 @@ describe("Transaction", () => {
             ],
           },
           preset: undefined,
+          publicId: undefined,
         });
       });
     });
@@ -856,6 +862,7 @@ describe("Transaction", () => {
             purpose_likeAny: ["hello", "world"],
           },
           preset: undefined,
+          publicId: undefined,
         });
       });
     });
@@ -876,6 +883,7 @@ describe("Transaction", () => {
               assets_exist: false,
             },
             preset: undefined,
+            publicId: undefined,
           });
         });
       });
@@ -904,6 +912,7 @@ describe("Transaction", () => {
               ],
             },
             preset: undefined,
+            publicId: undefined,
           });
         });
       });
@@ -943,6 +952,7 @@ describe("Transaction", () => {
               ],
             },
             preset: undefined,
+            publicId: undefined,
           });
         });
       });
@@ -968,7 +978,36 @@ describe("Transaction", () => {
               purpose_likeAny: [],
             },
             preset,
+            publicId: undefined,
           });
+        });
+      });
+    });
+
+    describe("when searching by account public id", () => {
+      it("should call fetch event", async () => {
+        // arrange
+        const filterQuery = undefined;
+        const publicId = 'abc123';
+        // act
+        await client.models.transaction.search(
+          "",
+          filterQuery,
+          undefined,
+          undefined,
+          publicId,
+        );
+
+        // assert
+        expect(fetchStub.callCount).to.eq(1);
+        expect(fetchStub.getCall(0).args[0]).to.deep.eq({
+          filter: {
+            name_likeAny: [],
+            operator: "OR",
+            purpose_likeAny: [],
+          },
+          preset: undefined,
+          publicId,
         });
       });
     });
