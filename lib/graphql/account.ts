@@ -20,6 +20,7 @@ const GET_ACCOUNT = `query getAccount {
       hasPendingCardFraudCase
       canCreateOverdraft
       createdAt
+      publicId
     }
   }
 }`;
