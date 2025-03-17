@@ -104,10 +104,10 @@ const TRANSACTION_DETAILS = `
 `;
 
 const getFetchTransactionsQuery = (fields: string) => `
-  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter, $preset: FilterPresetInput) {
+  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter, $preset: FilterPresetInput, $publicId: String) {
     viewer {
       mainAccount {
-        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter, preset: $preset) {
+        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter, preset: $preset, publicId: $publicId) {
           edges {
             node {
               ${fields}
@@ -331,10 +331,11 @@ export class Transaction extends IterableModel<TransactionModel> {
     searchQuery: string,
     searchFilter?: SearchFilter,
     preset?: FilterPresetInput,
-    fields?: string
+    fields?: string,
+    publicId?: string
   ): Promise<ResultPage<TransactionModel>> {
     const filter = this.parseSearchQuery(searchQuery, searchFilter);
-    return this.fetch({ filter, preset }, fields);
+    return this.fetch({ filter, preset, publicId }, fields);
   }
 
   /**
