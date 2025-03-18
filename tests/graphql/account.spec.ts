@@ -109,6 +109,7 @@ describe("Account", () => {
             hasPendingCardFraudCase: false,
             canCreateOverdraft: true,
             pendingTransactionVerification: null,
+            publicId: "1234",
           },
         },
       } as any);
@@ -126,6 +127,7 @@ describe("Account", () => {
       expect(result?.hasPendingCardFraudCase).to.eq(false);
       expect(result?.canCreateOverdraft).to.eq(true); 
       expect(result?.pendingTransactionVerification).to.eq(null);
+      expect(result?.publicId).to.eq("1234");
     });
 
     it("should call rawQuery and return null for empty account", async () => {
