@@ -51,6 +51,11 @@ type AmountSearchFilter = {
   conditions: AmountBetweenFilter[];
 };
 
+export enum TransactionFetchVersion {
+  V1 = "V1",
+  V2 = "V2",
+}
+
 const ASSET_FIELDS = `
   id
   name
@@ -103,11 +108,35 @@ const TRANSACTION_DETAILS = `
   mandateNumber
 `;
 
-const getFetchTransactionsQuery = (fields: string) => `
-  query fetchTransactions ($first: Int, $last: Int, $after: String, $before: String, $filter: TransactionFilter, $preset: FilterPresetInput, $publicId: String) {
+const getFetchTransactionsQuery = (
+  fields: string,
+  version = TransactionFetchVersion.V1
+) => `
+query FetchTransactions${version} (
+  $first: Int,
+  $last: Int,
+  $after: String,
+  $before: String,
+  $filter: TransactionFilter,
+  $preset: FilterPresetInput,
+  $publicId: String
+) {
     viewer {
       mainAccount {
-        transactions(first: $first, last: $last, after: $after, before: $before, filter: $filter, preset: $preset, publicId: $publicId) {
+        ${
+          version === TransactionFetchVersion.V1
+            ? "transactions"
+            : "transactionsV2"
+        }
+        (
+          first: $first,
+          last: $last,
+          after: $after,
+          before: $before,
+          filter: $filter,
+          preset: $preset,
+          publicId: $publicId
+        ) {
           edges {
             node {
               ${fields}
@@ -289,8 +318,7 @@ const FETCH_TRANSACTION_FILTER_PRESETS = `
 
 export class Transaction extends IterableModel<TransactionModel> {
   /**
-   * Fetches first 50 transactions which match the query
-   * Only the main transaction fields will be included in the results
+   * Fetches transactions which match the query
    *
    * @param args  query parameters
    * @param fields  optional custom transaction fields
@@ -298,15 +326,20 @@ export class Transaction extends IterableModel<TransactionModel> {
    */
   public async fetch(
     args?: AccountTransactionsArgs,
-    fields = TRANSACTION_FIELDS
+    fields = TRANSACTION_FIELDS,
+    version: TransactionFetchVersion = TransactionFetchVersion.V1
   ): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(
-      getFetchTransactionsQuery(fields),
+      getFetchTransactionsQuery(fields, version),
       args
     );
 
+    const responseField =
+      version === TransactionFetchVersion.V1
+        ? "transactions"
+        : "transactionsV2";
     const transactions = (
-      result.viewer?.mainAccount?.transactions?.edges ?? []
+      result.viewer?.mainAccount?.[responseField]?.edges ?? []
     ).map((edge: TransactionsConnectionEdge) => edge.node);
 
     const pageInfo = result.viewer?.mainAccount?.transactions?.pageInfo ?? {
@@ -332,10 +365,11 @@ export class Transaction extends IterableModel<TransactionModel> {
     searchFilter?: SearchFilter,
     preset?: FilterPresetInput,
     fields?: string,
-    publicId?: string
+    publicId?: string,
+    version = TransactionFetchVersion.V1
   ): Promise<ResultPage<TransactionModel>> {
     const filter = this.parseSearchQuery(searchQuery, searchFilter);
-    return this.fetch({ filter, preset, publicId }, fields);
+    return this.fetch({ filter, preset, publicId }, fields, version);
   }
 
   /**
