@@ -17,6 +17,7 @@ import {
   FINALIZE_TRANSACTION_ASSET,
   DELETE_TRANSACTION_ASSET,
   TRANSACTION_FIELDS,
+  TransactionFetchVersion,
 } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
@@ -210,6 +211,28 @@ describe("Transaction", () => {
         expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
         expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
           customFields
+        );
+      });
+    });
+
+    describe("when fetching with V2", () => {
+      before(async () => {
+        graphqlClientStub.rawQuery.reset();
+        graphqlClientStub.rawQuery.resolves({});
+        result = await transactionInstance.fetch(
+          undefined,
+          undefined,
+          TransactionFetchVersion.V2
+        );
+      });
+
+      it("should query with V2", () => {
+        expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
+        expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
+          "transactionsV2"
+        );
+        expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
+          "FetchTransactionsV2"
         );
       });
     });
@@ -988,14 +1011,14 @@ describe("Transaction", () => {
       it("should call fetch event", async () => {
         // arrange
         const filterQuery = undefined;
-        const publicId = 'abc123';
+        const publicId = "abc123";
         // act
         await client.models.transaction.search(
           "",
           filterQuery,
           undefined,
           undefined,
-          publicId,
+          publicId
         );
 
         // assert

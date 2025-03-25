@@ -54,6 +54,7 @@ export type Account = {
   transaction?: Maybe<RawTransactionProjection>;
   transactionFilterPresets: Array<FilterPreset>;
   transactions: TransactionsConnection;
+  transactionsV2: TransactionsConnection;
   transactionsCSV: Scalars['String'];
   transfer?: Maybe<Transfer>;
   /** A list of iban/name combinations based on existing user's transactions, provided to assist users when creating new transfers */
