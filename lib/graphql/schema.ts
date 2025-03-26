@@ -54,7 +54,6 @@ export type Account = {
   transaction?: Maybe<RawTransactionProjection>;
   transactionFilterPresets: Array<FilterPreset>;
   transactions: TransactionsConnection;
-  transactionsV2: TransactionsConnection;
   transactionsCSV: Scalars['String'];
   transfer?: Maybe<Transfer>;
   /** A list of iban/name combinations based on existing user's transactions, provided to assist users when creating new transfers */
@@ -3490,6 +3489,7 @@ export type Query = {
   status: SystemStatus;
   suggestion?: Maybe<Array<FindResult>>;
   termsAndConditions?: Maybe<Array<TermsAndConditions>>;
+  transactions: TransactionsConnection;
   /** The current user information */
   viewer?: Maybe<User>;
 };
