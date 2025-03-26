@@ -16,8 +16,8 @@ import {
   CREATE_TRANSACTION_ASSET,
   FINALIZE_TRANSACTION_ASSET,
   DELETE_TRANSACTION_ASSET,
-  TRANSACTION_FIELDS,
   TransactionFetchVersion,
+  TRANSACTION_LIST_FIELDS,
 } from "../../lib/graphql/transaction";
 import { SubscriptionType } from "../../lib/graphql/types";
 import {
@@ -92,7 +92,8 @@ describe("Transaction", () => {
       expect(fetchSpy.callCount).to.equal(2);
       expect(fetchSpy.lastCall.args).to.deep.eq([
         { first: 2, after: "22222" },
-        TRANSACTION_FIELDS,
+        "",
+        TransactionFetchVersion.V1,
       ]);
     });
 
@@ -229,10 +230,13 @@ describe("Transaction", () => {
       it("should query with V2", () => {
         expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
         expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
-          "transactionsV2"
+          "AccountTransactionsQuery"
         );
         expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
-          "FetchTransactionsV2"
+          "transactions("
+        );
+        expect(graphqlClientStub.rawQuery.getCall(0).args[0]).to.contain(
+          TRANSACTION_LIST_FIELDS
         );
       });
     });

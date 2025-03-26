@@ -48,7 +48,10 @@ describe("BusinessAddress", () => {
         viewer: {
           businessAddresses: [
             businessAddressData,
-            { ...businessAddressData, id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa" },
+            {
+              ...businessAddressData,
+              id: "b9ff9d3d-3ab7-452e-a16c-e1611fe443aa",
+            },
           ],
         },
       } as any);
@@ -66,9 +69,25 @@ describe("BusinessAddress", () => {
         },
       });
     });
+
+    it("should return empty list if viewer.businessAddresses is undefined", async () => {
+      const businessAddress = new BusinessAddress(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      const result = await businessAddress.fetch();
+
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result.items).to.deep.eq([]);
+      expect(result.pageInfo).to.deep.eq({
+        hasNextPage: false,
+        hasPreviousPage: false,
+      });
+    });
   });
 
-	describe("#fetch last business address", () => {
+  describe("#fetch last business address", () => {
     it("should call rawQuery and return the business addresses details based on input date", async () => {
       // arrange
       const businessAddress = new BusinessAddress(client.graphQL);
@@ -84,6 +103,18 @@ describe("BusinessAddress", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq({ businessAddressData });
+    });
+
+    it("should return null if viewer.lastBusinessAddress is not present", async () => {
+      const businessAddress = new BusinessAddress(client.graphQL);
+      const spyOnRawQuery = sandbox.stub(client.graphQL, "rawQuery").resolves({
+        viewer: {},
+      } as any);
+
+      const result = await businessAddress.lastBusinessAddress();
+
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.eq(null);
     });
   });
 
@@ -108,6 +139,25 @@ describe("BusinessAddress", () => {
       // assert
       sinon.assert.calledOnce(spyOnRawQuery);
       expect(result).to.deep.eq(businessAddressData);
+    });
+
+    it("should return undefined if createBusinessAddress is not returned in result", async () => {
+      const businessAddress = new BusinessAddress(client.graphQL);
+      const spyOnRawQuery = sandbox
+        .stub(client.graphQL, "rawQuery")
+        .resolves({} as any);
+
+      const result = await businessAddress.create({
+        payload: {
+          street: "Nope Street",
+          postCode: "00000",
+          city: "Nulltown",
+          movingDate: new Date("2000-01-01"),
+        },
+      });
+
+      sinon.assert.calledOnce(spyOnRawQuery);
+      expect(result).to.be.undefined;
     });
   });
 });
