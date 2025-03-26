@@ -97,6 +97,23 @@ export const TRANSACTION_FIELDS = `
   canBeRecategorized
 `;
 
+export const TRANSACTION_LIST_FIELDS = `
+id
+amount
+name
+description
+bookingDate
+createdAt
+category
+userSelectedBookingDate
+type
+splits {
+  id
+  amount
+  category
+  userSelectedBookingDate
+}`.trim();
+
 const TRANSACTION_DETAILS = `
   assets {
     ${ASSET_FIELDS}
@@ -111,7 +128,14 @@ const TRANSACTION_DETAILS = `
 const getFetchTransactionsQuery = (
   fields: string,
   version = TransactionFetchVersion.V1
-) => `
+) => {
+  switch (version) {
+    case TransactionFetchVersion.V1:
+      if (!fields) {
+        fields = TRANSACTION_FIELDS;
+      }
+
+      return `
 query FetchTransactions${version} (
   $first: Int,
   $last: Int,
@@ -153,6 +177,44 @@ query FetchTransactions${version} (
     }
   }
 `;
+
+    case TransactionFetchVersion.V2:
+      if (!fields) {
+        fields = TRANSACTION_LIST_FIELDS;
+      }
+
+      return `
+query AccountTransactionsQuery (
+  $first: Int,
+  $last: Int,
+  $after: String,
+  $before: String,
+  $filter: TransactionFilter,
+  $publicId: String
+) {
+  transactions(
+    first: $first,
+    last: $last,
+    after: $after,
+    before: $before,
+    filter: $filter,
+    publicId: $publicId
+  ) {
+    edges {
+      node {
+        ${fields}
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}`;
+  }
+};
 
 const getFetchTransactionQuery = (fields: string) => `
   query fetchTransaction ($id: ID!) {
@@ -322,11 +384,12 @@ export class Transaction extends IterableModel<TransactionModel> {
    *
    * @param args  query parameters
    * @param fields  optional custom transaction fields
+   * @param version  optional transaction fetch version (default: V1)
    * @returns     result page
    */
   public async fetch(
     args?: AccountTransactionsArgs,
-    fields = TRANSACTION_FIELDS,
+    fields = "",
     version: TransactionFetchVersion = TransactionFetchVersion.V1
   ): Promise<ResultPage<TransactionModel>> {
     const result: Query = await this.client.rawQuery(
@@ -334,19 +397,20 @@ export class Transaction extends IterableModel<TransactionModel> {
       args
     );
 
-    const responseField =
+    const resultTransactions =
       version === TransactionFetchVersion.V1
-        ? "transactions"
-        : "transactionsV2";
-    const transactions = (
-      result.viewer?.mainAccount?.[responseField]?.edges ?? []
-    ).map((edge: TransactionsConnectionEdge) => edge.node);
+        ? result.viewer?.mainAccount?.transactions
+        : result.transactions;
 
-    const pageInfo = result.viewer?.mainAccount?.transactions?.pageInfo ?? {
+    const transactions = (resultTransactions?.edges ?? []).map(
+      (edge: TransactionsConnectionEdge) => edge.node
+    );
+
+    const pageInfo = resultTransactions?.pageInfo ?? {
       hasNextPage: false,
       hasPreviousPage: false,
     };
-    return new ResultPage(this, transactions, pageInfo, args, fields);
+    return new ResultPage(this, transactions, pageInfo, args, fields, version);
   }
 
   /**
