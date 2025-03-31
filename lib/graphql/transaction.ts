@@ -101,7 +101,7 @@ export const TRANSACTION_LIST_FIELDS = `
 id
 amount
 name
-description
+purpose
 bookingDate
 createdAt
 category
