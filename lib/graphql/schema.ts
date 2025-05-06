@@ -4571,6 +4571,7 @@ export enum TransactionProjectionType {
   CancelManualLoad = 'CANCEL_MANUAL_LOAD',
   CardTransaction = 'CARD_TRANSACTION',
   CardUsage = 'CARD_USAGE',
+  FailedCardUsage = 'FAILED_CARD_USAGE',
   CashAtmReversal = 'CASH_ATM_REVERSAL',
   CashManual = 'CASH_MANUAL',
   CashManualReversal = 'CASH_MANUAL_REVERSAL',
