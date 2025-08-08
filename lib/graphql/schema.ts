@@ -33,6 +33,7 @@ export type Account = {
   cardHolderRepresentation?: Maybe<Scalars['String']['output']>;
   cardHolderRepresentations: Array<Scalars['String']['output']>;
   cards: Array<Card>;
+  cardsOverview: Array<BasicCardDetails>;
   createdAt: Scalars['DateTime']['output'];
   declarationPdfUrl?: Maybe<Scalars['String']['output']>;
   declarationStats: DeclarationStats;
@@ -335,6 +336,15 @@ export type BasicAddress = {
   country: Scalars['String']['output'];
 };
 
+export type BasicCardDetails = {
+  __typename?: 'BasicCardDetails';
+  id: Scalars['String']['output'];
+  line1: Scalars['String']['output'];
+  maskedPan: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+};
+
 export type BatchTransfer = {
   __typename?: 'BatchTransfer';
   id: Scalars['String']['output'];
@@ -472,6 +482,7 @@ export type Business = {
   address?: Maybe<UserBusinessAddress>;
   businessPurpose?: Maybe<Scalars['String']['output']>;
   crsCompanyType?: Maybe<CrsCompanyType>;
+  documentsSubmittedAt?: Maybe<Scalars['DateTime']['output']>;
   fatcaCrsConfirmedAt?: Maybe<Scalars['DateTime']['output']>;
   fatcaRelevant?: Maybe<Scalars['Boolean']['output']>;
   foundationDate?: Maybe<Scalars['DateTime']['output']>;
@@ -575,6 +586,7 @@ export type BusinessInput = {
   address?: InputMaybe<UpsertAddressInput>;
   businessPurpose?: InputMaybe<Scalars['String']['input']>;
   crsCompanyType?: InputMaybe<CrsCompanyType>;
+  documentsSubmittedAt?: InputMaybe<Scalars['DateTime']['input']>;
   fatcaCrsConfirmedAt?: InputMaybe<Scalars['DateTime']['input']>;
   fatcaRelevant?: InputMaybe<Scalars['Boolean']['input']>;
   foundationDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -590,6 +602,9 @@ export type BusinessInput = {
 /** Commercial registration provided by Solaris */
 export type BusinessResultLegalRepresentative = {
   __typename?: 'BusinessResultLegalRepresentative';
+  birthDate?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
   firstName: Scalars['String']['output'];
   lastName: Scalars['String']['output'];
 };
@@ -600,12 +615,14 @@ export type BusinessSignupData = {
   businessPurpose?: Maybe<Scalars['String']['output']>;
   crsCompanyType?: Maybe<CrsCompanyType>;
   customerVettingStatus?: Maybe<CustomerVettingStatus>;
+  documentsSubmittedAt?: Maybe<Scalars['DateTime']['output']>;
   fatcaCrsConfirmedAt?: Maybe<Scalars['DateTime']['output']>;
   fatcaRelevant?: Maybe<Scalars['Boolean']['output']>;
   foundationDate?: Maybe<Scalars['DateTime']['output']>;
   legalForm?: Maybe<LegalForm>;
   naceCodeId?: Maybe<Scalars['Float']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  requiredDocuments?: Maybe<RequiredDocuments>;
   riskClassificationStatus?: Maybe<RiskClassificationStatus>;
   screeningProgress?: Maybe<ScreeningProgress>;
   taxRegistrationIssuer?: Maybe<Scalars['String']['output']>;
@@ -954,6 +971,7 @@ export enum CompanyType {
   EsSrc = 'ES_SRC',
   EsSrl = 'ES_SRL',
   Ev = 'EV',
+  EGbr = 'E_GBR',
   EK = 'E_K',
   ForeignCorporation = 'FOREIGN_CORPORATION',
   Freiberufler = 'FREIBERUFLER',
@@ -2026,6 +2044,7 @@ export enum LegalForm {
   EsSrc = 'ES_SRC',
   EsSrl = 'ES_SRL',
   Ev = 'EV',
+  EGbr = 'E_GBR',
   ForeignCorporation = 'FOREIGN_CORPORATION',
   FrAe = 'FR_AE',
   FrEi = 'FR_EI',
@@ -2194,6 +2213,7 @@ export type LegalRepresentativeSignupData = {
   id: Scalars['String']['output'];
   identificationStatus?: Maybe<IdentificationStatus>;
   isCurrentUser: Scalars['Boolean']['output'];
+  isInvited: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
   userId: Scalars['Float']['output'];
 };
@@ -2257,8 +2277,10 @@ export type Mutation = {
   changeCardPINEncrypted: Card;
   /** Encrypted card PIN change with Change Request */
   changeCardPINWithChangeRequest: ConfirmationRequest;
-  /** Block or unblock or close a card */
+  /** Block or unblock a card */
   changeCardStatus: Card;
+  /** Close a card */
+  closeCard: Card;
   closeSubAccount: MutationResult;
   confirmBizTaxBookkeeping: BizTaxDeclarationBookkeepingConfirmation;
   /** Confirm a Standing Order cancellation */
@@ -2385,7 +2407,7 @@ export type Mutation = {
   refundDirectDebit: MutationResult;
   /** Close and order new card. Call when customer's card is damaged */
   reorderCard: Card;
-  /** Call when customer's card is lost or stolen */
+  /** Call when customer's card is lost, stolen or virtual card getting expired */
   replaceCard: Card;
   /** Adds card to Apple/Google Pay wallet */
   requestCardPushProvisioning: AuthorizeChangeRequestResponse;
@@ -2561,6 +2583,11 @@ export type MutationChangeCardPinWithChangeRequestArgs = {
 
 export type MutationChangeCardStatusArgs = {
   action: CardAction;
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationCloseCardArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -2967,6 +2994,7 @@ export type MutationReorderCardArgs = {
 
 export type MutationReplaceCardArgs = {
   id: Scalars['String']['input'];
+  idempotencyKey?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -4209,6 +4237,12 @@ export enum RequestPlatform {
   Web = 'WEB'
 }
 
+export type RequiredDocuments = {
+  __typename?: 'RequiredDocuments';
+  detail?: Maybe<Scalars['String']['output']>;
+  documents: Array<Scalars['String']['output']>;
+};
+
 export enum ReviewTriggerName {
   BatchTransfers = 'BATCH_TRANSFERS',
   Googlepay = 'GOOGLEPAY',
@@ -4424,6 +4458,8 @@ export type SubscriptionPlansResponse = {
   couponCode?: Maybe<Scalars['String']['output']>;
   couponValidFor?: Maybe<Array<PurchaseType>>;
   plans: Array<SubscriptionPlan>;
+  temporalAmount?: Maybe<Scalars['Float']['output']>;
+  temporalUnit?: Maybe<Scalars['String']['output']>;
 };
 
 export type SystemStatus = {
@@ -4746,6 +4782,7 @@ export type TransactionCondition = {
   source_ne?: InputMaybe<Scalars['String']['input']>;
   splits_exist?: InputMaybe<Scalars['Boolean']['input']>;
   type_eq?: InputMaybe<TransactionProjectionType>;
+  type_ne?: InputMaybe<TransactionProjectionType>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']['input']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']['input']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']['input']>;
@@ -4777,9 +4814,11 @@ export enum TransactionFeeType {
   AtmFx = 'ATM_FX',
   CardFx = 'CARD_FX',
   CardReplacement = 'CARD_REPLACEMENT',
+  CashEquivalent = 'CASH_EQUIVALENT',
   DirectDebitReturn = 'DIRECT_DEBIT_RETURN',
   ForeignTransaction = 'FOREIGN_TRANSACTION',
   FreeKontistTransaction = 'FREE_KONTIST_TRANSACTION',
+  Gambling = 'GAMBLING',
   InstantCreditTransfer = 'INSTANT_CREDIT_TRANSFER',
   KontistTransaction = 'KONTIST_TRANSACTION',
   SecondReminderEmail = 'SECOND_REMINDER_EMAIL',
@@ -4826,6 +4865,7 @@ export type TransactionFilter = {
   source_ne?: InputMaybe<Scalars['String']['input']>;
   splits_exist?: InputMaybe<Scalars['Boolean']['input']>;
   type_eq?: InputMaybe<TransactionProjectionType>;
+  type_ne?: InputMaybe<TransactionProjectionType>;
   valutaDate_eq?: InputMaybe<Scalars['DateTime']['input']>;
   valutaDate_gt?: InputMaybe<Scalars['DateTime']['input']>;
   valutaDate_gte?: InputMaybe<Scalars['DateTime']['input']>;
@@ -5587,7 +5627,6 @@ export type UserMetadata = {
   acceptedTermsVersion?: Maybe<Scalars['String']['output']>;
   /** List of months user can request a bank statement for */
   availableStatements?: Maybe<Array<AvailableStatements>>;
-  categorizationScreenShown?: Maybe<Scalars['Boolean']['output']>;
   currentTermsAccepted: Scalars['Boolean']['output'];
   currentTermsVersion: Scalars['String']['output'];
   directDebitMandateAccepted: Scalars['Boolean']['output'];
@@ -5600,7 +5639,7 @@ export type UserMetadata = {
   lastTermsVersionRejectedAt?: Maybe<Scalars['DateTime']['output']>;
   lastTermsVersionSkippedAt?: Maybe<Scalars['DateTime']['output']>;
   marketingConsentAccepted: Scalars['Boolean']['output'];
-  newTermsDeadlineDate: Scalars['String']['output'];
+  newTermsDeadlineDate?: Maybe<Scalars['String']['output']>;
   phoneNumberVerificationRequired: Scalars['Boolean']['output'];
   signupCompleted: Scalars['Boolean']['output'];
   taxAdvisoryTermsVersionAccepted: Scalars['Boolean']['output'];
@@ -5708,7 +5747,6 @@ export type UserUpdateInput = {
   birthPlace?: InputMaybe<Scalars['String']['input']>;
   businessPurpose?: InputMaybe<Scalars['String']['input']>;
   businessTradingName?: InputMaybe<Scalars['String']['input']>;
-  categorizationScreenShown?: InputMaybe<Scalars['Boolean']['input']>;
   city?: InputMaybe<Scalars['String']['input']>;
   companyType?: InputMaybe<CompanyType>;
   country?: InputMaybe<Nationality>;

@@ -248,9 +248,11 @@ const UPDATE_CARD_SETTINGS = `mutation updateCardSettings(
 
 const REPLACE_CARD = `mutation replaceCard(
   $id: String!
+  $idempotencyKey: String
 ) {
   replaceCard(
-    id: $id
+    id: $id,
+    idempotencyKey: $idempotencyKey
   ) {
     ${CARD_FIELDS}
   }
