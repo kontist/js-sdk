@@ -48,6 +48,8 @@ export type Account = {
   overdraft?: Maybe<Overdraft>;
   pendingTransactionVerification: PendingTransactionVerification;
   publicId: Scalars['ID']['output'];
+  /** SEPA Instant Limits for this account (daily, used, remaining, per-transaction) from Solaris; fields may be null if unavailable */
+  sepaInstantLimits: SepaInstantLimits;
   /** Retrieve account balance from Solaris */
   solarisBalance: SolarisAccountBalance;
   /** Different information about account balances, e.g. taxes, VAT, ... */
@@ -868,6 +870,7 @@ export type CompanyDetails = {
   foundedDate?: Maybe<Scalars['String']['output']>;
   legalForm: Scalars['String']['output'];
   legalRepresentatives: Array<BusinessResultLegalRepresentative>;
+  naceCode?: Maybe<NaceCode>;
   naceCodeId?: Maybe<Scalars['Float']['output']>;
   name: Scalars['String']['output'];
   registrationIssuer: Scalars['String']['output'];
@@ -1283,8 +1286,8 @@ export type CreateInvoiceLogoResponse = {
 
 export type CreateLegalRepresentativeInput = {
   email?: InputMaybe<Scalars['String']['input']>;
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateReviewResponse = {
@@ -1354,6 +1357,8 @@ export type CreateTransferInput = {
   type?: InputMaybe<TransferType>;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: InputMaybe<Scalars['DateTime']['input']>;
+  /** The ID of the verification of payee process that was used to verify the recipient's name and IBAN */
+  verificationOfPayeeId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateUserInput = {
@@ -2201,9 +2206,9 @@ export enum LegalForm {
 export type LegalRepresentative = {
   __typename?: 'LegalRepresentative';
   businessId: Scalars['String']['output'];
-  firstName: Scalars['String']['output'];
+  firstName?: Maybe<Scalars['String']['output']>;
   id: Scalars['String']['output'];
-  lastName: Scalars['String']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
 };
 
 export type LegalRepresentativeSignupData = {
@@ -2215,7 +2220,7 @@ export type LegalRepresentativeSignupData = {
   isCurrentUser: Scalars['Boolean']['output'];
   isInvited: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
-  userId: Scalars['Float']['output'];
+  userId?: Maybe<Scalars['Float']['output']>;
 };
 
 export enum MaximumCashTransactionsPercentage {
@@ -2240,6 +2245,19 @@ export type Money = {
   discountPercentage?: Maybe<Scalars['Int']['output']>;
   /** The amount plus discount amount */
   fullAmount?: Maybe<Scalars['Int']['output']>;
+};
+
+export type MoneyAmount = {
+  __typename?: 'MoneyAmount';
+  currency: Scalars['String']['output'];
+  unit: Scalars['String']['output'];
+  value: Scalars['Float']['output'];
+};
+
+export type MoneyAmountInput = {
+  currency: Scalars['String']['input'];
+  unit: Scalars['String']['input'];
+  value: Scalars['Float']['input'];
 };
 
 export type Municipality = {
@@ -2468,6 +2486,8 @@ export type Mutation = {
   /** Updates overdraft application timestamps for rejected and offered overdraft screens - only available for Kontist Application */
   updateOverdraft?: Maybe<Overdraft>;
   updateReview: MutationResult;
+  /** Update SEPA Instant Limits for this account */
+  updateSepaInstantLimits: SepaInstantLimits;
   /** Update user fields on solaris */
   updateSolarisUser: UserOrAuthResponse;
   updateSubAccount: SubAccount;
@@ -2500,6 +2520,7 @@ export type Mutation = {
   /** Upsert user tour */
   upsertUserTour: UserTour;
   userConfirmation: MutationResult;
+  verificationOfPayee: VerificationOfPayee;
   /** Returns encrypted card details for virtual card */
   virtualCardDetails: Scalars['String']['output'];
   whitelistCard: WhitelistCardResponse;
@@ -3191,6 +3212,11 @@ export type MutationUpdateReviewArgs = {
 };
 
 
+export type MutationUpdateSepaInstantLimitsArgs = {
+  payload: UpdateSepaInstantLimitsInput;
+};
+
+
 export type MutationUpdateSolarisUserArgs = {
   customerType?: InputMaybe<CustomerType>;
   deliveryMethod?: InputMaybe<DeliveryMethod>;
@@ -3303,6 +3329,11 @@ export type MutationUpsertUserTourArgs = {
 export type MutationUserConfirmationArgs = {
   confirmation: UserConfirmation;
   year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type MutationVerificationOfPayeeArgs = {
+  payload: VerificationOfPayeeInput;
 };
 
 
@@ -3642,6 +3673,12 @@ export type PageInfo = {
   hasNextPage: Scalars['Boolean']['output'];
   hasPreviousPage: Scalars['Boolean']['output'];
   startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export type PayeeInformation = {
+  __typename?: 'PayeeInformation';
+  iban: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export enum PaymentFrequency {
@@ -4313,6 +4350,14 @@ export type SeizureProtection = {
   protectedAmount: AccountBalance;
   protectedAmountExpiring: AccountBalance;
   protectedAmountExpiringDate: Scalars['String']['output'];
+};
+
+export type SepaInstantLimits = {
+  __typename?: 'SepaInstantLimits';
+  dailyLimit?: Maybe<MoneyAmount>;
+  dailyRemaining?: Maybe<MoneyAmount>;
+  dailyUsed?: Maybe<MoneyAmount>;
+  perTransactionLimit?: Maybe<MoneyAmount>;
 };
 
 export type SepaTransfer = {
@@ -5033,6 +5078,7 @@ export type Transfer = {
   reoccurrence?: Maybe<StandingOrderReoccurrenceType>;
   /** The status of the transfer */
   status?: Maybe<TransferStatus>;
+  type: TransferType;
   /** When a transaction corresponds to a tax or vat payment, the user may specify at which date it should be considered booked */
   userSelectedBookingDate?: Maybe<Scalars['DateTime']['output']>;
   uuid: Scalars['String']['output'];
@@ -5061,6 +5107,7 @@ export type TransferSuggestion = {
 
 export enum TransferType {
   InstantCreditTransfer = 'INSTANT_CREDIT_TRANSFER',
+  ScheduledTransfer = 'SCHEDULED_TRANSFER',
   SepaTransfer = 'SEPA_TRANSFER',
   StandingOrder = 'STANDING_ORDER',
   TimedOrder = 'TIMED_ORDER'
@@ -5153,6 +5200,11 @@ export type UpdateDraftTransactionInput = {
   vatRate?: InputMaybe<VatRate>;
 };
 
+export type UpdateSepaInstantLimitsInput = {
+  dailyLimit?: InputMaybe<MoneyAmountInput>;
+  perTransactionLimit?: InputMaybe<MoneyAmountInput>;
+};
+
 export type UpdateSolarisUserInput = {
   address?: InputMaybe<AddressInput>;
   amlConfirmed?: InputMaybe<Scalars['Boolean']['input']>;
@@ -5227,6 +5279,7 @@ export type UpdateTransferInput = {
 };
 
 export type UpsertAddressInput = {
+  addition?: InputMaybe<Scalars['String']['input']>;
   city: Scalars['String']['input'];
   country: Scalars['String']['input'];
   postCode: Scalars['String']['input'];
@@ -5554,6 +5607,7 @@ export type UserVatAnnualDeclarationArgs = {
 /** Business Address of a User */
 export type UserBusinessAddress = {
   __typename?: 'UserBusinessAddress';
+  addition?: Maybe<Scalars['String']['output']>;
   city: Scalars['String']['output'];
   country: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -5857,6 +5911,34 @@ export type VatYearSetting = {
   __typename?: 'VatYearSetting';
   vatPaymentFrequency: Scalars['String']['output'];
   year: Scalars['Float']['output'];
+};
+
+export type VerificationOfPayee = {
+  __typename?: 'VerificationOfPayee';
+  createdAt: Scalars['DateTime']['output'];
+  expiresAt: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  payee: PayeeInformation;
+  result: VerificationOfPayeeResult;
+  usedFor?: Maybe<VerificationUsedFor>;
+};
+
+export type VerificationOfPayeeInput = {
+  iban: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type VerificationOfPayeeResult = {
+  __typename?: 'VerificationOfPayeeResult';
+  status: Scalars['String']['output'];
+  suggestedName?: Maybe<Scalars['String']['output']>;
+};
+
+export type VerificationUsedFor = {
+  __typename?: 'VerificationUsedFor';
+  id?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['DateTime']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
 };
 
 export type VirtualCardDetailsArgs = {
