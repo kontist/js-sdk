@@ -17,7 +17,7 @@ import {
   UnfinishedTransfer,
 } from "./schema";
 
-const TRANSFER_FIELDS = `
+export const TRANSFER_FIELDS = `
   id
   recipient
   iban
@@ -31,6 +31,7 @@ const TRANSFER_FIELDS = `
   category
   userSelectedBookingDate
   personalNote
+  type
 `;
 
 const CREATE_TRANSFER = `mutation createTransfer(
