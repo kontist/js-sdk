@@ -1634,6 +1634,16 @@ export type EmailDocument = {
   url: Scalars['String']['output'];
 };
 
+export enum ExecutionSchedule {
+  EverySixMonths = 'EVERY_SIX_MONTHS',
+  EveryTwoWeeks = 'EVERY_TWO_WEEKS',
+  Monthly = 'MONTHLY',
+  OneTime = 'ONE_TIME',
+  Quarterly = 'QUARTERLY',
+  Weekly = 'WEEKLY',
+  Yearly = 'YEARLY'
+}
+
 export type ExitBusinessAssetPayload = {
   exitAmount?: InputMaybe<Scalars['Float']['input']>;
   exitDate: Scalars['String']['input'];
@@ -5126,6 +5136,7 @@ export type TransfersConnectionEdge = {
 };
 
 export type TransfersConnectionFilter = {
+  executionSchedule?: InputMaybe<ExecutionSchedule>;
   status?: InputMaybe<TransferStatus>;
 };
 
