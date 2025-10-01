@@ -1644,6 +1644,13 @@ export enum ExecutionSchedule {
   Yearly = 'YEARLY'
 }
 
+export type ExecutionScheduleFilter = {
+  eq?: InputMaybe<ExecutionSchedule>;
+  in?: InputMaybe<Array<ExecutionSchedule>>;
+  ne?: InputMaybe<ExecutionSchedule>;
+  notIn?: InputMaybe<Array<ExecutionSchedule>>;
+};
+
 export type ExitBusinessAssetPayload = {
   exitAmount?: InputMaybe<Scalars['Float']['input']>;
   exitDate: Scalars['String']['input'];
@@ -5136,7 +5143,7 @@ export type TransfersConnectionEdge = {
 };
 
 export type TransfersConnectionFilter = {
-  executionSchedule?: InputMaybe<ExecutionSchedule>;
+  executionSchedule?: InputMaybe<ExecutionScheduleFilter>;
   status?: InputMaybe<TransferStatus>;
 };
 
