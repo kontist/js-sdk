@@ -1,6 +1,9 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { Transfer as TransferClass } from "../../lib/graphql/transfer";
+import {
+  TRANSFER_FIELDS,
+  Transfer as TransferClass,
+} from "../../lib/graphql/transfer";
 import {
   TransferType,
   Transfer,
@@ -583,6 +586,12 @@ describe("Transfer", () => {
         expect(graphqlClientStub.rawQuery.callCount).to.equal(1);
         expect(result).to.eql([]);
       });
+    });
+  });
+
+  describe("transfer fields", () => {
+    it("should include type field", () => {
+      expect(TRANSFER_FIELDS).to.include("type");
     });
   });
 });
